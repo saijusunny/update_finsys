@@ -1,0 +1,416 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+
+
+    {% load static %}
+    {% if user.is_authenticated %}
+
+  
+      <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body{
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #7690da;
+  border-right: none;
+  padding: 5px;
+  height: 36px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9DBFAF;
+  
+}
+
+.searchTerm:focus{
+  color:#7690da;
+}
+
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #7690da;
+  background:#7690da;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.table-row{
+        cursor:pointer;
+}
+/* .table-row:hover{
+    background-color: rgb(217, 232, 51);
+} */
+
+/*Resize the wrap to see the search bar change!*/
+.wrap{
+  width: 40%;
+  /* position: absolute;
+  top: 50%;
+  left: 50%; */
+  /* transform: translate(-50%, -50%); */
+}
+
+      </style>
+
+      
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+  <script src="https://pingendo.com/assets/bootstrap/bootstrap-4.0.0-alpha.6.min.js"></script>
+
+
+  <script>
+    function printDiv() {
+        var divContents = document.getElementById("GFG").innerHTML;
+        var a = window.open( '', 'height=1000, width=2000');
+        a.document.write('<html>');
+        a.document.write(divContents);
+        a.document.write('</body></html>');
+        a.document.close();
+        a.print();
+    }
+</script>
+
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
+<script type="text/javascript">function ExportToExcel(type, fn, dl) {
+       var elt = document.getElementById('tbl_exporttable_to_xls');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('Account Transactions.' + (type || 'xlsx')));
+    }</script>
+
+
+
+
+
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h6 class="mb-0 text-muted">{{ cmp1.cname }}</h6></center>
+                        <center><h3 class="mb-0">Account Transactions</h3></center>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card radius-15">
+                <div class="card-body">
+                    <form action="" method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label style="text-align:left ">Report period</label><br>
+                                <input type="text" name="cust" value="{{cust2}}" hidden>
+                                <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                        list="hosting-plan"
+                                        name="reportperiod" type="text">
+                                    <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                    <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                    </select>
+                            </div>
+                            <div class="col-sm-4" id="frdate" style="display: none;">
+                                <label for="from">From</label>
+                                <input type="date" class="form-control" name="fdate"
+                                       style="background-color: #2f516f;color: white;">
+                            </div>
+                            <div class="col-sm-4" id="todate" style="display: none;">
+                                <label for="from">To</label>
+                                <input type="date" class="form-control" name="ldate"
+                                       style="background-color: #2f516f;color: white;">
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <!-- <div class="col-md-2">
+    
+                            </div> -->
+                            
+                            <div class="col-md-3">
+    
+                                <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Search</button>
+                            </div>
+                            <div class="col-md-3" >
+                                <button class="btn btn-outline-info" onclick="printDiv()">Print</button>
+                                <!-- <button onclick="ExportToExcel('xlsx')">Export to excel</button> -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card radius-15">
+                <div class="card-body">
+                    
+                    <div class="container-fluid">
+                        <div id="GFG" >
+                        <table class="table table-responsive-md mt-4 table-hover" id="tbl_exporttable_to_xls" >
+                            <thead>
+                            <tr>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: center;">ACCOUNT</th>
+                                <th style="text-align: center;">TRANSACTION DETAILS</th>
+                                <th style="text-align: center;">TRANSACTION TYPE</th>
+                                <th style="text-align: center;">TRANSACTION#</th>
+                                <th style="text-align: center;">REFERENCE#</th>
+                                <th style="text-align: center;">DEBIT</th>
+                                <th style="text-align: center;">CREDIT</th>
+                                <th style="text-align: center;">AMOUNT</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                               
+                                    <tr class="table-row " data-href="" >
+                                        <td style="text-align: center;"> As On 
+
+                                            {% if fdate != "" %}
+
+                                            {{fdate}}
+                                            {% else %}
+
+                                            
+                                            01-04-{% now 'Y' %}
+
+                                            {% endif %}
+                                        
+                                        </td>
+                                        <td style="text-align: center;">Opening Balance</td>
+                                        <td style="text-align: center;"> </td>
+                                        <td style="text-align: center;"></td>
+                                        <td style="text-align: center;"> </td>
+                                        <td style="text-align: center;"></td>
+                                        <td style="text-align: center;">₹0.00</td>
+                                        <td style="text-align: center;"></td>
+                                        <td style="text-align: center;"></td>
+                                        
+                                    </tr>
+                                    {% for i in bs %}
+                                    {% if i.cid_id == cmp1.cid %}
+                                    <tr >
+                                        <td style="text-align: center;">{{ i.date | date:'d-m-Y' }}</td>
+                                        <td style="text-align: center;">
+                                            {% if i.account == "Accounts Payable(Creditors)"  %}
+                                                 Accounts Payable
+                                            {% elif i.account == "Account Receivable(Debtors)"  %}
+                                                Accounts Receivable
+                                            {% else %}
+                                                {{ i.account }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Billed"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Vendor Credits"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Vendor Payment"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.details }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Billed"  %}
+                                                Bill
+                                            {% else %}
+                                                {{ i.transactions }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense" %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Billed" %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Vendor Credits" %}
+                                                DN - {{ i.details1 }}
+                                            {% elif i.transactions == "Vendor Payment"  %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.details1 }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">{{ i.details2 }}</td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense" %}
+                                                {{ i.payments }}
+                                            {% elif i.transactions == "Billed" %}
+                                                {{ i.payments }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.payments }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Vendor Credits" %}
+                                                {{ i.payments }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense"  %}
+                                                {{i.payments}} Dr
+                                            {% elif i.transactions == "Billed"  %}
+                                                {{i.payments}} Dr
+                                            {% elif i.transactions == "Vendor Credits"  %}
+                                                {{i.payments}} Cr
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{i.payments}} Dr
+                                            {% endif %}
+                                        </td>    
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% for i in pl %}
+                                {% if i.cid_id == cmp1.cid %}
+                                    <tr >
+                                        <td style="text-align: center;">{{ i.date | date:'d-m-Y' }}</td>
+                                        <td style="text-align: center;">
+                                            {% if i.account == "Accounts Payable(Creditors)"  %}
+                                                 Accounts Payable
+                                            {% elif i.account == "Account Receivable(Debtors)"  %}
+                                                Accounts Receivable
+                                            {% else %}
+                                                {{ i.account }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Billed"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Vendor Credits"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Vendor Payment"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.details }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Billed"  %}
+                                                Bill
+                                            {% else %}
+                                                {{ i.transactions }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense" %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Billed" %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Vendor Credits" %}
+                                                DN - {{ i.details1 }}
+                                            {% elif i.transactions == "Vendor Payment"  %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.details1 }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">{{ i.details2 }}</td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense" %}
+                                                {{ i.payments }}
+                                            {% elif i.transactions == "Billed" %}
+                                                {{ i.payments }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.payments }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Vendor Credits" %}
+                                                {{ i.payments }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense"  %}
+                                                {{i.payments}} Dr
+                                            {% elif i.transactions == "Billed"  %}
+                                                {{i.payments}} Dr
+                                            {% elif i.transactions == "Vendor Credits"  %}
+                                                {{i.payments}} Cr
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{i.payments}} Dr
+                                            {% endif %}
+                                        </td>    
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            {% for i in bs1 %}
+                            {% endfor %}
+                            {% if value != "" %}
+                                <tr>
+                                    <td style="text-align: center;"> </td>
+                                    <td colspan="2" style="text-align: center;">Total Debits and Credits 
+                                        {% if fdate != "" %}
+                                            ( {{fdate}}  - {{ldate}} ) 
+                                        {% else %}
+                                            ( 01-04-{% now 'Y' %} - {{to}} ) 
+                                        {% endif %}    
+                                    </td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;">{{debit}}</td>
+                                    <td style="text-align: center;">{{credit}}</td>
+                                    <td style="text-align: center;"></td>    
+                                </tr>
+                            {% endif %}
+                            
+                            <tr>
+                                <td style="text-align: center;"> As On 
+                                    {% if ldate != "" %}
+                                        {{ldate}}
+                                    {% else %}
+                                        {{to}}
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">Closing Balance</td>
+                                <td style="text-align: center;"> </td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"> </td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;">{{total}}</td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       <script>
+         function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+       </script> 
+        
+       
+    {% endif %}
+{% endblock %}

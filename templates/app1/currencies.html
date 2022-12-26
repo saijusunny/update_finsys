@@ -1,0 +1,209 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+
+<div class="page-content">
+    <div class="card radius-15 h-20">
+        <div class="row">
+            <div class="col-md-12">
+                <center><h2 class="mt-3">CURRENCIES</h2></center>
+                
+                <hr style="width:95%">
+            </div>
+        </div>
+    </div>
+   
+   
+<div class="card radius-15">
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col-md-5">
+                <div class="search-bar">
+                    <div class="input-group">
+                        <div class="input-group-prepend search-arrow-back">
+                            <button class="btn btn-search-back" type="button"><i class="bx bx-arrow-back"></i></button>
+                        </div>
+                        <input type="text" autocomplete="off" id="searchInput" onkeyup="filter(this);" onclick="myFunction1()" class="form-control" placeholder="search" />
+                        <div class="input-group-append">
+                            <button class="btn btn-search" type="button"><i class="lni lni-search-alt"></i></button>
+                        </div>
+                        <div class=" mt-5" id="myDIV" style="z-index:1;position:absolute; 
+                              background-color: #213b52;width:400px;height:1px;">
+                              
+                                 <ul id="searchList" class="one radius-15" style="background-color: #213b52;">
+                                    {% for a in items %}
+                                    <a href="view_item/{{ a.id }}"><li>{{ a.name }}</li></a>
+                                  {% endfor %}
+                             
+                                 </ul>
+                                 </div>
+                
+                            </div>
+                        </div>
+                      </div>
+                 
+                 
+                <div class="col">
+                            <div class="dropdown"><a href="{% url 'addcurrencies' %}" >
+                                    <button type="button" class="btn btn-outline-info  text-grey"
+                                    >+ Add Currency
+                                </button></a>
+                               
+                            </div>
+                </div>
+<!--    MOdal -->
+           
+                </div>
+              </div>
+            <div class="table-responsive">
+                <table class="table table-responsive-md table-hover mt-4" id="tabletobe">
+                    <thead>
+                    <tr>
+                        <th>NAME</th>
+                        <th>SYMBOL</th>
+                    <th></th>
+                       
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for a in curr %}
+                <tr  >
+                                <td>{{ a.code }}</td>
+                                <td>{{ a.symbol }}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <a style="color: black; font-size: 18px; padding:5px;"
+                                        href="{% url 'edit_currencies' a.currencyid %}" type="button" ><i class="bx bx-edit"></i></a>
+                                        <a style="color: black; font-size: 18px; padding:5px;" 
+                                        
+                                    href="{% url 'delete_currency' a.currencyid %}" type="button" ><i class="bx bx-trash"></i></a>
+                                      </div>
+                                </td>
+
+                              
+                            </tr>
+                            {% endfor %}
+                            <tr >
+                                <td>INR - Indian Rupee</td>
+                                <td>₹</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <a style="color: black; font-size: 18px; padding:5px;" type="button" data-toggle="modal"
+                                        data-target="#myexampleModal"><i class="bx bx-edit"></i></a>
+                                        <a style="color: black; font-size: 18px; padding:5px;" type="button" ><i class="bx bx-trash"></i></a>
+                                      </div>
+                                </td>
+                               
+                              
+                             
+                            </tr>
+                            <tr >
+                                <td>USD - United States Dollars</td>
+                                <td>$</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <a style="color: black; font-size: 18px; padding:5px;" type="button" ><i class="bx bx-edit"></i></a>
+                                        <a style="color: black; font-size: 18px; padding:5px;" type="button" ><i class="bx bx-trash"></i></a>
+                                      </div>
+                                </td>
+                               
+                              
+                             
+                            </tr>
+                     
+                  
+                  
+                  
+                   
+                  
+                    </tbody>
+                </table>
+              
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+<script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+
+    $(document).ready(function(){
+      $("#searchList li").hide();
+    
+      $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        if (value !== '' ) {
+        $("#searchList li").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });   
+        } else {
+          $("#searchList li").hide();   
+        }    
+      });
+    });
+    
+       
+       
+     </script>
+
+     <script>
+        function namefilter() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("namefilt");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("tabletobe");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+{% endblock %}

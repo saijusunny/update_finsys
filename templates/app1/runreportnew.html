@@ -1,0 +1,899 @@
+{% extends 'app1/base.html' %}
+{% load static %}
+
+{% block body %}
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">{{ account.name }} Report</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15 p-5">
+            <form action="/app1/runreportfilterednew/{{ account.accountsid }}" method="post">
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label style="text-align:left ">Report period</label><br>
+                            <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                    list="hosting-plan"
+                                    name="reportperiod" type="text">
+                                <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>This month</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>This financial year</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4" id="frdate" style="display: none;">
+                            <label for="from">From</label>
+                            <input type="date" class="form-control" name="fper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-sm-4" id="todate" style="display: none;">
+                            <label for="from">To</label>
+                            <input type="date" class="form-control" name="tper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8 mt-3"></div>
+                        <div class="col-md-2 mt-3">
+                            <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-light">Run
+                                report
+                            </button>
+                        </div>
+                        <div class="col-md-2 mt-3">
+                            <a href="{% url 'gocoa' %}">
+                                <button type="button" class="btn btn-outline-info rounded-pill w-100 text-light">
+                                    Back
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card radius-15 p-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="rectangle"
+                             style=" overflow: scroll; background-color: white;width: 1100px;height:1500px;border: 3px white;padding: 50px;margin: 20px">
+                            <div class="rectangle"
+                                 style="background-image: linear-gradient(dodgerblue, black); width: 1000px; height: 200px; margin-top: 20px;">
+                                <div class="img-container"
+                                     style="width: 140px; height: 140px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); border-radius: 50%; background-color: white; transform: translate(23%, 90%);">
+                                    <img src="{{ cmp1.cimg.url }}"
+                                         style="width: 140px; height: 140px; border-radius: 50%;">
+                                </div>
+                                <h2 style="margin-left: 200px;">{{ cmp1.cname }}</h2>
+                            </div>
+
+                            <div class="table-responsive" style="margin-top: 100px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="center font-weight-light border-dark" style="color: black;">DATE</th>
+                                        <th class="center font-weight-light border-dark" style="color: black;">
+                                            TRANSACTION TYPE
+                                        </th>
+                                        <th class="center font-weight-light border-dark" style="color: black;">NO.</th>
+                                        <th class="center font-weight-light border-dark" style="color: black;">NAME</th>
+                                        <th class="center font-weight-light border-dark" style="color: black;">ACCOUNT
+                                        </th>
+                                        <th class="center font-weight-light border-dark" style="color: black;">CLR</th>
+                                        <th class="center font-weight-light border-dark" style="color: black;">AMOUNT
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for inv in invoic %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Invoice" }}</td>
+                                            <td class="center text-dark">{{ inv.1 }}</td>
+                                            <td class="center text-dark">{{ inv.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ inv.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cn in creditnote %}
+                                        <tr>
+                                            <td class="center text-dark">{{ cn.0 }}</td>
+                                            <td class="center text-dark">{{ "Credit Note" }}</td>
+                                            <td class="center text-dark">{{ cn.1 }}</td>
+                                            <td class="center text-dark">{{ cn.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ cn.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for pay in payment %}
+                                        <tr>
+                                            <td class="center text-dark">{{ pay.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Payment" }}</td>
+                                            <td class="center text-dark">{{ pay.refno }}</td>
+                                            <td class="center text-dark">{{ pay.customer }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ pay.amtapply }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for bil in bill %}
+                                        <tr>
+                                            <td class="center text-dark">{{ bil.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Payment" }}</td>
+                                            <td class="center text-dark">{{ bil.refno }}</td>
+                                            <td class="center text-dark">{{ bil.payee }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ bil.grandtotal }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for bil in bill2 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ bil.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Payment" }}</td>
+                                            <td class="center text-dark">{{ bil.refno }}</td>
+                                            <td class="center text-dark">{{ bil.payee }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ bil.grandtotal }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.refno }}</td>
+                                            <td class="center text-dark">{{ expen.payee }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ expen.grandtotal }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for debi in debit %}
+                                        <tr>
+                                            <td class="center text-dark">{{ debi.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Debit Note" }}</td>
+                                            <td class="center text-dark">{{ debi.refno }}</td>
+                                            <td class="center text-dark">{{ debi.supplier }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ debi.grandtotal }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.0 }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.1 }}</td>
+                                            <td class="center text-dark">{{ expen.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ expen.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for debi in debit1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ debi.0 }}</td>
+                                            <td class="center text-dark">{{ "Debit Note" }}</td>
+                                            <td class="center text-dark">{{ debi.1 }}</td>
+                                            <td class="center text-dark">{{ debi.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ debi.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence2 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.0 }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.1 }}</td>
+                                            <td class="center text-dark">{{ expen.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ expen.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for debi in debit2 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ debi.0 }}</td>
+                                            <td class="center text-dark">{{ "Debit Note" }}</td>
+                                            <td class="center text-dark">{{ debi.1 }}</td>
+                                            <td class="center text-dark">{{ debi.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ debi.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence3 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.0 }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.1 }}</td>
+                                            <td class="center text-dark">{{ expen.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ expen.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for debi in debit3 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ debi.0 }}</td>
+                                            <td class="center text-dark">{{ "Debit Note" }}</td>
+                                            <td class="center text-dark">{{ debi.1 }}</td>
+                                            <td class="center text-dark">{{ debi.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ debi.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in invoic1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Invoice" }}</td>
+                                            <td class="center text-dark">{{ inv.1 }}</td>
+                                            <td class="center text-dark">{{ inv.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ inv.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cn in creditnote1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ cn.0 }}</td>
+                                            <td class="center text-dark">{{ "Credit Note" }}</td>
+                                            <td class="center text-dark">{{ cn.1 }}</td>
+                                            <td class="center text-dark">{{ cn.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ cn.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for sr in salesrecipt1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ sr.0 }}</td>
+                                            <td class="center text-dark">{{ "Sales Receipt" }}</td>
+                                            <td class="center text-dark">{{ sr.1 }}</td>
+                                            <td class="center text-dark">{{ sr.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ sr.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in invoic2 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Invoice" }}</td>
+                                            <td class="center text-dark">{{ inv.1 }}</td>
+                                            <td class="center text-dark">{{ inv.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ inv.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cn in creditnote2 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ cn.0 }}</td>
+                                            <td class="center text-dark">{{ "Credit Note" }}</td>
+                                            <td class="center text-dark">{{ cn.1 }}</td>
+                                            <td class="center text-dark">{{ cn.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ cn.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for sr in salesrecipt2 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ sr.0 }}</td>
+                                            <td class="center text-dark">{{ "Sales Receipt" }}</td>
+                                            <td class="center text-dark">{{ sr.1 }}</td>
+                                            <td class="center text-dark">{{ sr.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ sr.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in invoic3 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Invoice" }}</td>
+                                            <td class="center text-dark">{{ inv.1 }}</td>
+                                            <td class="center text-dark">{{ inv.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ inv.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cn in creditnote3 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ cn.0 }}</td>
+                                            <td class="center text-dark">{{ "Credit Note" }}</td>
+                                            <td class="center text-dark">{{ cn.1 }}</td>
+                                            <td class="center text-dark">{{ cn.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ cn.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for sr in salesrecipt3 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ sr.0 }}</td>
+                                            <td class="center text-dark">{{ "Sales Receipt" }}</td>
+                                            <td class="center text-dark">{{ sr.1 }}</td>
+                                            <td class="center text-dark">{{ sr.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ sr.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in inventory %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.date }}</td>
+                                            <td class="center text-dark">{{ "Inventory Starting Value" }}</td>
+                                            <td class="center text-dark">{{ "START" }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark">{{ 'R' }}</td>
+                                            <td class="center text-dark">+ {{ inv.cxq }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in inventory1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Inventory Starting Value" }}</td>
+                                            <td class="center text-dark">{{ "START" }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark">{{ 'R' }}</td>
+                                            <td class="center text-dark">+ {{ inv.1 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in invoice4 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Invoice" }}</td>
+                                            <td class="center text-dark">{{ inv.1 }}</td>
+                                            <td class="center text-dark">{{ inv.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ inv.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cn in creditnote4 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ cn.0 }}</td>
+                                            <td class="center text-dark">{{ "Credit Note" }}</td>
+                                            <td class="center text-dark">{{ cn.1 }}</td>
+                                            <td class="center text-dark">{{ cn.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ cn.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for sr in salesrecipt4 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ sr.0 }}</td>
+                                            <td class="center text-dark">{{ "Sales Receipt" }}</td>
+                                            <td class="center text-dark">{{ sr.1 }}</td>
+                                            <td class="center text-dark">{{ sr.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ sr.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in invoice5 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Invoice" }}</td>
+                                            <td class="center text-dark">{{ inv.1 }}</td>
+                                            <td class="center text-dark">{{ inv.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ inv.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cn in creditnote5 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ cn.0 }}</td>
+                                            <td class="center text-dark">{{ "Credit Note" }}</td>
+                                            <td class="center text-dark">{{ cn.1 }}</td>
+                                            <td class="center text-dark">{{ cn.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ cn.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for sr in salesrecipt5 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ sr.0 }}</td>
+                                            <td class="center text-dark">{{ "Sales Receipt" }}</td>
+                                            <td class="center text-dark">{{ sr.1 }}</td>
+                                            <td class="center text-dark">{{ sr.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ sr.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for inv in invoice6 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ inv.0 }}</td>
+                                            <td class="center text-dark">{{ "Invoice" }}</td>
+                                            <td class="center text-dark">{{ inv.1 }}</td>
+                                            <td class="center text-dark">{{ inv.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ inv.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cn in creditnote6 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ cn.0 }}</td>
+                                            <td class="center text-dark">{{ "Credit Note" }}</td>
+                                            <td class="center text-dark">{{ cn.1 }}</td>
+                                            <td class="center text-dark">{{ cn.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ cn.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for sr in salesrecipt6 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ sr.0 }}</td>
+                                            <td class="center text-dark">{{ "Sales Receipt" }}</td>
+                                            <td class="center text-dark">{{ sr.1 }}</td>
+                                            <td class="center text-dark">{{ sr.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ sr.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence4 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.0 }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.1 }}</td>
+                                            <td class="center text-dark">{{ expen.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ expen.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for debi in debit4 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ debi.0 }}</td>
+                                            <td class="center text-dark">{{ "Debit Note" }}</td>
+                                            <td class="center text-dark">{{ debi.1 }}</td>
+                                            <td class="center text-dark">{{ debi.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ debi.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence5 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.0 }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.1 }}</td>
+                                            <td class="center text-dark">{{ expen.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ expen.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for debi in debit5 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ debi.0 }}</td>
+                                            <td class="center text-dark">{{ "Debit Note" }}</td>
+                                            <td class="center text-dark">{{ debi.1 }}</td>
+                                            <td class="center text-dark">{{ debi.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ debi.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence6 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.0 }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.1 }}</td>
+                                            <td class="center text-dark">{{ expen.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ expen.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for debi in debit6 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ debi.0 }}</td>
+                                            <td class="center text-dark">{{ "Debit Note" }}</td>
+                                            <td class="center text-dark">{{ debi.1 }}</td>
+                                            <td class="center text-dark">{{ debi.2 }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ debi.3 }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for expen in expence7 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ expen.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Expence" }}</td>
+                                            <td class="center text-dark">{{ expen.refno }}</td>
+                                            <td class="center text-dark">{{ expen.payee }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ expen.grandtotal }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for sr in salesrecipt7 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ sr.saledate }}</td>
+                                            <td class="center text-dark">{{ "Sales Receipt" }}</td>
+                                            <td class="center text-dark">{{ sr.saleno }}</td>
+                                            <td class="center text-dark">{{ sr.salename }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ sr.salegrandtotal }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for pay in payment1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ pay.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Payment" }}</td>
+                                            <td class="center text-dark">{{ pay.refno }}</td>
+                                            <td class="center text-dark">{{ pay.customer }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ pay.amtapply }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for bil in bill1 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ bil.paymdate }}</td>
+                                            <td class="center text-dark">{{ "Payment" }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">{{ bil.payee }}</td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">- {{ bil.grandtotal }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% if account.balfordisp != 0.0 %}
+                                        <tr>
+                                            <td class="center text-dark">{{ account.asof }}</td>
+                                            <td class="center text-dark">{{ "Deposit" }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">{{ account.name }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">+ {{ account.balfordisp }}</td>
+                                        </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <td class="center text-dark border-dark"><b>Total</b></td>
+                                        <td class="center text-dark border-dark"></td>
+                                        <td class="center text-dark border-dark"></td>
+                                        <td class="center text-dark border-dark"></td>
+                                        <td class="center text-dark border-dark"></td>
+                                        <td class="center text-dark border-dark"></td>
+                                        <td class="center text-dark border-dark">{{ accbal }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg"
+         viewBox="0 0 16 16">
+        <path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/>
+    </svg>
+
+    <!-- Modal -->
+    <div class="modal" id="modal1" tabindex="-1" data-bs-backdrop="false" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12"><label style="font-weight: bold;">Customize report name</label></div>
+                            <div class="col-12 "><input type="text" class="form-control " placeholder="Balance Sheet"
+                                                        style="color: black;"></div>
+                            <div class="col-12   pt-4"><label>Add this report to a group</label></div>
+                            <div class="col-12 "><input type="text" class="form-control" placeholder="Name"></div>
+                            <div class="col-12   pt-4"><label>Share with</label></div>
+                            <div class="col-12  pb-2"><input type="text" class="form-control"
+                                                             placeholder="Balance Sheet"></div>
+                            <div class="form-check pt-2" style="margin-left: 20px;">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label " for="flexCheckDefault">
+                                    Share report with community
+                                </label>
+                            </div>
+                            <a href="" class="btn btn-primary px-5 w-75 h-75 mt-3 mb-5"
+                               style="border-radius: 80px; margin-left: 40px;">Save</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal2 -->
+    <div class="modal fade" id="modal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form>
+                        <div class="rectangle" style="background-color: white;
+        
+         width: 800px;
+          height: 1700px;
+          padding: 50px;
+          margin-left:  -50px;
+          margin-top: -20px;
+          border: 1px solid grey;">
+                            <h3 style="color:black;font:10px;">Customise Report</h3>
+                            <div class="line" style="
+                                                        
+        border: none;
+        height: 1px;
+        /* Set the hr color */
+        color: #333; /* old IE */
+        background-color: #333; /* Modern Browsers */
+        ">
+                                <br><i class="fa fa-caret-down" style="font-size:23px"></i>
+                                <label for="validationCustom02">General</label>
+
+                                <br>
+
+                                <br><label for="validationCustom02">Report Period</label><br>
+                                <div>
+                                    <select style="width:200px;height:35px;">
+                                        <option></option>
+                                        <option>option</option>
+                                    </select>
+                                    <input type="date" name="paydate" class="form-control" id="validationCustom02"
+                                           required style="
+         margin-left: auto;border-color:black;border-color:black;
+         margin-top: -20px;width: 30%;background-color: white;color:black;"><label for="validationCustom02"
+                                                                                   style="align-content:right ;"></label><input
+                                        type="date" name="paydate" class="form-control" id="validationCustom02" required
+                                        style="margin-left: 220px;border-color:black;
+         margin-top: -55px;margin-right: 40px;align-content: 100px;width: 30%;background-color: white;color:black;"><br><br>
+                                </div>
+                                <label for="validationCustom02">Accounting Method</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="gender" id="male">
+                                <label for="male">cash</label>
+                                <input type="radio" name="gender" id="female">
+                                <label for="female">Actual</label>
+                                <br><br><label for="validationCustom02">Number Format</label><br><br>
+                                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+                                <label for="vehicle1"> Divide by 1000</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+                                <label for="vehicle2"> Without Paise</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+                                <label for="vehicle2"> Except zero Amount</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+                                <label for="vehicle2"> Show in red</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <br><br><label for="validationCustom02">Negative Numbers</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input name="declared_first" value="" style="margin-right:20px ;"/><br>
+                                <br><i class="fa fa-caret-down" style="font-size:23px"></i>
+                                <label for="validationCustom02">Rows/Columns</label><br><br>
+                                &nbsp;<label for="validationCustom02">Columns</label><br>
+                                <select style='width:200px'>
+                                    <option>Total only</option>
+                                    <option>option</option>
+                                </select>
+                                <label for="validationCustom02">Show non zero or active only</label><br>
+                                <select style='width:200px'>
+                                    <option>Active rows/Active columns</option>
+                                    <option>option</option>
+                                </select>
+                                <br><br><label for="validationCustom02">Select and reorder columns</label><br><br>
+
+                                <div class="column" style="
+          float: left;
+          width: 240px;
+          padding: 10px;
+          height: 180px; /* Should be removed. Only for demonstration */
+          border-style: solid;
+          border-color: black;
+          border-width: 1px;">
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                    <label for="validationCustom02">Previous period</label>&nbsp;&nbsp; <br>
+                                    <span style='font-size:20px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                    <label for="validationCustom02">Change</label>&nbsp;&nbsp; <br>
+                                    <span style='font-size:20px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                    <label for="validationCustom02">Change</label>&nbsp;&nbsp; <br>
+
+                                </div>
+
+
+                                <div class="border-color: rgb(201, 76, 76)">
+                                    <div class="column" style="float: left;
+          width: 20%;
+          padding: 10px;
+          height: 180px;
+          border-style: solid;
+          border-color: black;
+          border-width: 1px;background-color:white;">
+
+                                        <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                        <label for="validationCustom02">Previous Year</label>&nbsp;&nbsp;
+                                        <span style='font-size:20px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                        <label for="validationCustom02">Change</label>&nbsp;&nbsp; <br>
+                                        &nbsp;&nbsp;&nbsp;<span
+                                            style='font-size:20px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                        ;<label for="validationCustom02">Change</label>&nbsp;&nbsp; <br>
+                                    </div>
+                                    <div class="column" style="float: left;
+          width: 18%;
+          padding: 10px;
+          height: 180px;
+          border-style: solid;
+          border-color: black;
+          border-width: 1px;;background-color:white;">
+                                        <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                        <label for="validationCustom02">Year to date</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span style='font-size:20px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                        <label for="validationCustom02">Change</label>&nbsp;&nbsp; <br>
+                                    </div>
+                                    <div class="column" style="float: left;
+          width: 27%;
+          padding: 10px;
+          height: 180px; /* Should be removed. Only for demonstration */
+          border-style: solid;
+          border-color: black;
+          border-width: 1px;;background-color:white;">
+                                        <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                        <label for="validationCustom02">Previous Year to date</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </div>
+                                    <div class="column" style="background-color:white;">
+
+                                    </div>
+                                    <br>
+
+                                    <br>
+                                    <br>
+
+
+                                    <br><br><br><br><br><br><br><br><br><i class="fa fa-caret-down"
+                                                                           style="font-size:23px"></i>
+                                    <label for="validationCustom02">Filter</label><br><br>
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                    &nbsp;&nbsp;<label for="validationCustom02">Distribution account</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    &nbsp;
+
+                                    <select style='width:300px'>
+                                        <option></option>
+                                        <option>option</option>
+                                    </select><br>
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                    &nbsp;&nbsp;&nbsp;<label for="validationCustom02">Customer</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select
+                                        style='width:300px'>
+                                    <option></option>
+                                    <option>option</option>
+                                </select><br>
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                    &nbsp;&nbsp;&nbsp;<label for="validationCustom02">Suppliers</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select
+                                        style='width:300px'>
+                                    <option></option>
+                                    <option>option</option>
+                                </select><br>
+
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+                                    &nbsp;&nbsp;&nbsp;<label for="validationCustom02">Employee</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select
+                                        style='width:300px'>
+                                    <option></option>
+                                    <option>option</option>
+                                </select><br>
+
+
+                                    <br><i class="fa fa-caret-down" style="font-size:23px"></i>
+                                    <label for="validationCustom02">Header / Footer</label><br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<label for="validationCustom02">Header</label><br><br>
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+
+                                    <label for="validationCustom02">Show logo</label><br>
+
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+
+                                    <label for="validationCustom02">Company name</label>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+                                        name="declared_first" value="" style="margin-right:70px ;width:290px ;"/><br>
+
+
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+
+                                    <label for="validationCustom02">Report title</label>
+
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+                                        name="declared_first" value=""
+                                        style="margin-right:70px ;width:290px ;"/><br><br>
+
+                                    &nbsp;&nbsp;<label for="validationCustom02">Footer</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                                        for="validationCustom02">Allignment</label><br>
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+
+                                    <label for="validationCustom02">Date Prepared</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                                        for="validationCustom02">Header</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+                                        name="declared_first" value="" style="margin-right:70px ;width:118px ;"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                                        for="validationCustom02">Footer</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+                                        name="declared_first" value="" style="margin-right:70px ;width:120px ;"/>
+
+
+                                    <br>
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+
+                                    <label for="validationCustom02">Time Prepared</label><br>
+
+                                    <span style='font-size:25px;color:rgb(0,0,0);font-style:normal;font-weight:normal;'>&#10720;</span>
+
+                                    <label for="validationCustom02">Report basis (cash Vs.actual)</label><br>
+                                    <input class=" mt-5 btn btn-primary" type="submit" value="Run Report"
+                                           style="background-color: light-blue; color: white; border-radius: 80px; margin-left: 550px; height: 35px; width: 120px;">
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("nb").style.display = "none"
+
+        function showbox() {
+            var x = document.getElementById("nb");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+        }
+
+        function hidebox() {
+            var x = document.getElementById("nb");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            }
+        }
+
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+            integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+            integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+            crossorigin="anonymous"></script>
+{% endblock %}

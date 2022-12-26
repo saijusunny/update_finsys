@@ -1,0 +1,592 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+
+        </head>
+        <body>
+
+        <!-- Trigger/Open The Modal -->
+<div class="page-content">
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4"></div>
+                    <div class="col-md-5"><h2 style="padding-left: 80px;">GSTR-1</h2>
+                    </div>
+                </div> <hr>
+            </div>
+        </div>
+        <div class="card radius-15">
+            <div class="card-body">
+                <form action="gstr11" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label style="text-align:left ">Report period</label><br>
+                            <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                    list="hosting-plan"
+                                    name="option" type="text">
+                                <option><span class="bx bx-right-arrow-alt"></span>All</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>March-May</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>June-August</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>September-November</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>December-February</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Previous-Year</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4" id="frdate" style="display: none;">
+                            <label for="from">From</label>
+                            <input type="date" class="form-control" name="fper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-sm-4" id="todate" style="display: none;">
+                            <label for="from">To</label>
+                            <input type="date" class="form-control" name="tper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2">
+
+                        </div>
+                        <div class="col-md-2">
+
+                        </div>
+                        <div class="col-md-2">
+
+                            <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Run report</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col" style="border-right:solid 1px gray; margin-top: 10px; margin-bottom: 10px;text-align:center;">
+                        <div class="row">
+                            <div class="col">
+                            <h5>OVERALL SUMMARY</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>       &nbsp;
+
+                <div class="card radius-15">
+                    <div class="card-body">
+                        <div>
+                            &nbsp;<br>
+                        </div>
+                        <div class="tab-content card-body" id="myTabContent">
+                            <div class="tab-pane fade show active" id="Returns" >
+                                    <br><br>
+
+                                    <table class="table table-responsive-md text-center" id="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Particulars</th>
+                                            <th>Voucher Count</th>
+                                            <th>Taxable Amount</th>
+                                            <th>IGST</th>
+                                            <th>CGST</th>
+                                            <th>SGST</th>
+                                            <th>Cess</th>
+                                            <th>Tax Amount</th>
+                                            <th>Invoice Amount</th>
+
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td >B2B</td>
+                                                <td >{{ invoices }}</td>
+                                           
+                                                <td id="in1">{% if cgst.total_amt %}
+                                                    {{ cgst.total_amt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                </td>
+                                                <td id="igst1">{% if cgst.total_igst  %}
+                                                    {{ cgst.total_igst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                     </td>
+                                                <td id="cgst1">
+                                                    {% if cgst.total_cgst  %}
+                                                    {{ cgst.total_cgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="sgst1">
+                                                    {% if cgst.total_sgst   %}
+                                                    {{ cgst.total_sgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                
+                                                <td  id="tcs1">
+                                                    {% if cgst.total_tcs  %}
+                                                    {{ cgst.total_tcs }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="tax1"> 
+                                                    {% if cgst.taxbaleamt  %}
+                                                    {{cgst.taxbaleamt}}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                     </td>
+                                                <td id="invamt1">
+                                                    {% if cgst.total_invamt %}
+                                                    {{ cgst.total_invamt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td >B2C</td>
+                                                <td >{{ invoices1 }}</td>
+                                           
+                                                <td id="in2">{% if cgst1.total_amt %}
+                                                    {{ cgst1.total_amt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                </td>
+                                                <td id="igst2">{% if cgst1.total_igst  %}
+                                                    {{ cgst1.total_igst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                     </td>
+                                                <td id="cgst2">
+                                                    {% if cgst1.total_cgst  %}
+                                                    {{ cgst1.total_cgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="sgst2">
+                                                    {% if cgst1.total_sgst   %}
+                                                    {{ cgst1.total_sgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                
+                                                <td  id="tcs2">
+                                                    {% if cgst1.total_tcs  %}
+                                                    {{ cgst1.total_tcs }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="tax2"> 
+                                                    {% if cgst1.taxbaleamt  %}
+                                                    {{cgst1.taxbaleamt}}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                     </td>
+                                                <td id="invamt2">
+                                                    {% if cgst1.total_invamt %}
+                                                    {{ cgst1.total_invamt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td >Overseas</td>
+                                                <td >{{ invoices2 }}</td>
+                                           
+                                                <td id="in3">{% if cgst2.total_amt %}
+                                                    {{ cgst2.total_amt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                </td>
+                                                <td id="igst3">{% if cgst2.total_igst  %}
+                                                    {{ cgst2.total_igst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                     </td>
+                                                <td id="cgst3">
+                                                    {% if cgst2.total_cgst  %}
+                                                    {{ cgst2.total_cgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="sgst3">
+                                                    {% if cgst2.total_sgst   %}
+                                                    {{ cgst2.total_sgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                
+                                                <td  id="tcs3">
+                                                    {% if cgst2.total_tcs  %}
+                                                    {{ cgst2.total_tcs }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="tax3"> 
+                                                    {% if cgst2.taxbaleamt  %}
+                                                    {{cgst2.taxbaleamt}}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                     </td>
+                                                <td id="invamt3">
+                                                    {% if cgst2.total_invamt %}
+                                                    {{ cgst2.total_invamt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td >SEZ</td>
+                                                <td >{{ invoices3 }}</td>
+                                           
+                                                <td id="in4">{% if cgst3.total_amt %}
+                                                    {{ cgst3.total_amt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                </td>
+                                                <td id="igst4">{% if cgst3.total_igst  %}
+                                                    {{ cgst3.total_igst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                     </td>
+                                                <td id="cgst4">
+                                                    {% if cgst3.total_cgst  %}
+                                                    {{ cgst3.total_cgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="sgst4">
+                                                    {% if cgst3.total_sgst   %}
+                                                    {{ cgst3.total_sgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                
+                                                <td  id="tcs4">
+                                                    {% if cgst3.total_tcs  %}
+                                                    {{ cgst3.total_tcs }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="tax4"> 
+                                                    {% if cgst3.taxbaleamt  %}
+                                                    {{cgst3.taxbaleamt}}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                     </td>
+                                                <td id="invamt4">
+                                                    {% if cgst3.total_invamt %}
+                                                    {{ cgst3.total_invamt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td >Deemed exports</td>
+                                                <td >{{ invoices4 }}</td>
+                                           
+                                                <td id="in5" >{% if cgst4.total_amt %}
+                                                    {{ cgst4.total_amt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                </td>
+                                                <td id="igst5">{% if cgst4.total_igst  %}
+                                                    {{ cgst3.total_igst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                     </td>
+                                                <td id="cgst5">
+                                                    {% if cgst4.total_cgst  %}
+                                                    {{ cgst4.total_cgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="sgst5">
+                                                    {% if cgst4.total_sgst   %}
+                                                    {{ cgst4.total_sgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                
+                                                <td  id="tcs5">
+                                                    {% if cgst4.total_tcs  %}
+                                                    {{ cgst4.total_tcs }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="tax5"> 
+                                                    {% if cgst4.taxbaleamt  %}
+                                                    {{cgst4.taxbaleamt}}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                     </td>
+                                                <td  id="invamt5">
+                                                    {% if cgst4.total_invamt %}
+                                                    {{ cgst4.total_invamt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td >
+                                            </tr>
+
+                                            <tr>
+                                                <td >Exempt</td>
+                                                <td >{{ invoices5 }}</td>
+                                           
+                                                <td id="in6" >{% if cgst5.total_amt %}
+                                                    {{ cgst4.total_amt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                </td>
+                                                <td id="igst6">{% if cgst5.total_igst  %}
+                                                    {{ cgst3.total_igst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                     </td>
+                                                <td id="cgst6">
+                                                    {% if cgst5.total_cgst  %}
+                                                    {{ cgst5.total_cgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="sgst6">
+                                                    {% if cgst5.total_sgst   %}
+                                                    {{ cgst5.total_sgst }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                
+                                                <td  id="tcs6">
+                                                    {% if cgst5.total_tcs  %}
+                                                    {{ cgst5.total_tcs }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td id="tax6"> 
+                                                    {% if cgst5.taxbaleamt  %}
+                                                    {{cgst5.taxbaleamt}}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                     </td>
+                                                <td  id="invamt6">
+                                                    {% if cgst5.total_invamt %}
+                                                    {{ cgst5.total_invamt }}
+                                                    {% else %}
+                                                    0
+                                                    {% endif %}
+                                                    
+                                                </td >
+                                            </tr>
+
+                                            <tr>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;">TOTAL</th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;">{{c}}</th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;" id="tm"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;" id="tm1"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;" id="tm2"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;" id="tm3"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;" id="tm4"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;" id="tm5"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: fff;" id="tm6"></th>
+
+                                            </tr>
+                                            
+                                            
+                                        </tbody>
+                                    </table>
+                                    <script>
+                                        const c1 = document.getElementById('in1').innerText;
+                                        const c2 = document.getElementById('in2').innerText;
+                                        const c3 = document.getElementById('in3').innerText;
+                                        const c4 = document.getElementById('in4').innerText;
+                                        const c5 = document.getElementById('in5').innerText;
+                                        
+                                        total1 = parseInt(c1)+parseInt(c2)+parseInt(c3)+parseInt(c4)+parseInt(c5)
+                                        $('#tm').html(total1);
+
+                                        
+                                        const igst1 = document.getElementById('igst1').innerText;
+                                        const igst2 = document.getElementById('igst2').innerText;
+                                        const igst3 = document.getElementById('igst3').innerText;
+                                        const igst4 = document.getElementById('igst4').innerText;
+                                        const igst5 = document.getElementById('igst5').innerText;
+                                        
+                                        total2 = parseFloat(igst1)+parseFloat(igst2)+parseFloat(igst3)+parseFloat(igst4)+parseFloat(igst5)
+                                        $('#tm1').html(total2);
+
+                                        const cgst1 = document.getElementById('cgst1').innerText;
+                                        const cgst2 = document.getElementById('cgst2').innerText;
+                                        const cgst3 = document.getElementById('cgst3').innerText;
+                                        const cgst4 = document.getElementById('cgst4').innerText;
+                                        const cgst5 = document.getElementById('cgst5').innerText;
+                                        
+                                        total3 = parseFloat(cgst1)+parseFloat(cgst2)+parseFloat(cgst3)+parseFloat(cgst4)+parseFloat(cgst5)
+                                        $('#tm2').html(total3);
+
+                                        const sgst1 = document.getElementById('sgst1').innerText;
+                                        const sgst2 = document.getElementById('sgst2').innerText;
+                                        const sgst3 = document.getElementById('sgst3').innerText;
+                                        const sgst4 = document.getElementById('sgst4').innerText;
+                                        const sgst5 = document.getElementById('sgst5').innerText;
+                                        
+                                        total3 = parseFloat(sgst1)+parseFloat(sgst2)+parseFloat(sgst3)+parseFloat(sgst4)+parseFloat(sgst5)
+                                        $('#tm3').html(total3);
+
+                                        const tcs1 = document.getElementById('tcs1').innerText;
+                                        const tcs2 = document.getElementById('tcs2').innerText;
+                                        const tcs3 = document.getElementById('tcs3').innerText;
+                                        const tcs4 = document.getElementById('tcs4').innerText;
+                                        const tcs5 = document.getElementById('tcs5').innerText;
+                                        
+                                        total4 = parseFloat(tcs1)+parseFloat(tcs2)+parseFloat(tcs3)+parseFloat(tcs4)+parseFloat(tcs5)
+                                        $('#tm4').html(total4);
+
+                                        const tax1 = document.getElementById('tax1').innerText;
+                                        const tax2 = document.getElementById('tax2').innerText;
+                                        const tax3 = document.getElementById('tax3').innerText;
+                                        const tax4 = document.getElementById('tax4').innerText;
+                                        const tax5 = document.getElementById('tax5').innerText;
+                                        
+                                        total5 = parseFloat(tax1)+parseFloat(tax2)+parseFloat(tax3)+parseFloat(tax4)+parseFloat(tax5)
+                                        $('#tm5').html(total5);
+
+                                        const invamt1 = document.getElementById('invamt1').innerText;
+                                        const invamt2 = document.getElementById('invamt2').innerText;
+                                        const invamt3 = document.getElementById('invamt3').innerText;
+                                        const invamt4 = document.getElementById('invamt4').innerText;
+                                        const invamt5 = document.getElementById('invamt5').innerText;
+                                        
+                                        total6 = parseFloat(invamt1)+parseFloat(invamt2)+parseFloat(invamt3)+parseFloat(invamt4)+parseFloat(invamt5)
+                                        $('#tm6').html(total6);
+
+                                        
+                                        
+                                        
+
+                                        
+                                    </script>
+                                    
+                                    
+
+                                    
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    
+
+
+
+                </div>
+            </div>
+
+        </body>
+    {% endif %}
+
+
+    <!-- <script>
+        $(document).ready(function(){
+          $("#in1,#in1,").ready(function(){
+
+            var total = 0;
+            var x = Number($("#igst").val());
+            var y = Number($("#cgst").val());
+            var z = Number($("#sgst").val());
+            var w = Number($("#tcs").val());
+            var total = x + y + z + w ;
+            $("#tax").val(total);
+          });
+        });
+      </script> -->
+{% endblock %}

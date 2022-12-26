@@ -1,0 +1,764 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">ADD EMPLOYEE</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">
+                        <center>Employee Information</center>
+                    </h4>
+                </div>
+                <hr/>
+                <form action="employees" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-">
+                            <img src="{% static 'assets/img/emp.png' %}">
+                        </div>
+                        <div class="col">
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Name</label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="name" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Joining Date</label>
+                                    <input type="date" class="form-control" id="validationCustom02" name="joiningdate"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Employee No</label>
+                                    <input type="text" class="form-control" id="validationCustom02"
+                                           name="employeenumber" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Designation </label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="designation"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Department</label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="department"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Branch</label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="branch"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Location </label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="location"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Gender </label>
+                                    <select class="custom-select" name="gender" required
+                                            style="background-color: #2f516f; color: white;">
+                                        <option selected disabled value="">Choose...</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        <option>Others</option>
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Age</label>
+                                    <select class="custom-select" name="age" id="age" required
+                                            style="background-color: #2f516f; color: white;" onchange="paycal()">
+                                        <option selected disabled value="">Choose...</option>
+                                        <option>18</option>
+                                        <option>19</option>
+                                        <option>20</option>
+                                        <option>21</option>
+                                        <option>22</option>
+                                        <option>23</option>
+                                        <option>24</option>
+                                        <option>25</option>
+                                        <option>26</option>
+                                        <option>27</option>
+                                        <option>28</option>
+                                        <option>29</option>
+                                        <option>30</option>
+                                        <option>31</option>
+                                        <option>32</option>
+                                        <option>33</option>
+                                        <option>34</option>
+                                        <option>35</option>
+                                        <option>36</option>
+                                        <option>37</option>
+                                        <option>38</option>
+                                        <option>39</option>
+                                        <option>40</option>
+                                        <option>41</option>
+                                        <option>42</option>
+                                        <option>43</option>
+                                        <option>44</option>
+                                        <option>45</option>
+                                        <option>46</option>
+                                        <option>47</option>
+                                        <option>48</option>
+                                        <option>49</option>
+                                        <option>50</option>
+                                        <option>51</option>
+                                        <option>52</option>
+                                        <option>53</option>
+                                        <option>54</option>
+                                        <option>55</option>
+                                        <option>56</option>
+                                        <option>57</option>
+                                        <option>58</option>
+                                        <option>59</option>
+                                        <option>60</option>
+                                        <option>61</option>
+                                        <option>62</option>
+                                        <option>63</option>
+                                        <option>64</option>
+                                        <option>65</option>
+                                        <option>66</option>
+                                        <option>67</option>
+                                        <option>68</option>
+                                        <option>69</option>
+                                        <option>70</option>
+                                        <option>71</option>
+                                        <option>72</option>
+                                        <option>73</option>
+                                        <option>74</option>
+                                        <option>75</option>
+                                        <option>76</option>
+                                        <option>77</option>
+                                        <option>78</option>
+                                        <option>79</option>
+                                        <option>80</option>
+                                        <option>81</option>
+                                        <option>82</option>
+                                        <option>83</option>
+                                        <option>84</option>
+                                        <option>85</option>
+                                        <option>86</option>
+                                        <option>87</option>
+                                        <option>88</option>
+                                        <option>89</option>
+                                        <option>90</option>
+                                        <option>91</option>
+                                        <option>92</option>
+                                        <option>93</option>
+                                        <option>94</option>
+                                        <option>95</option>
+                                        <option>96</option>
+                                        <option>97</option>
+                                        <option>98</option>
+                                        <option>99</option>
+                                        <option>100</option>
+                                        <option>101</option>
+                                        <option>102</option>
+                                        <option>103</option>
+                                        <option>104</option>
+                                        <option>105</option>
+                                        <option>106</option>
+                                        <option>107</option>
+                                        <option>108</option>
+                                        <option>109</option>
+                                        <option>110</option>
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Mobile</label>
+                                    <input type="tel" class="form-control" id="validationCustom02" name="mobile"
+                                           size="20" minlength="10" maxlength="12" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+
+                                <!-- {% for message in messages %}
+                                {% if message %}
+                                    <div class="alert">
+                                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                        {{ message }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %} -->
+
+                                <div class="col">
+                                    <label for="validationCustom02">Gmail</label>
+                                    <input type="email" class="form-control" id="gmail" name="gmail"
+                                           required style="background-color: #2f516f;color: white;" pattern="[^@\s]+@[^@\s]+\.[^@\s]+">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Address</label>
+                                    <label for="validationCustom01"></label><textarea class="form-control"
+                                                                                      id="validationCustom01"
+                                                                                      name="address" required
+                                                                                      style="background-color: #2f516f;color: white;"></textarea>
+                                    <div class="invalid-feedback">Please provide a valid Address</div>
+                                </div>
+                            </div>
+                            &nbsp;<br>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <center><h4>Bank Details</h4></center>
+                                    <hr>
+                                </div>
+                            </div>
+                            &nbsp;
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Provide Bank Details :</label>&nbsp;&nbsp;
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="yes" name="providebankdetails"
+                                               onchange="show(this.value)" value="Yes">
+                                        <label class="form-check-label">Yes</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="no" name="providebankdetails"
+                                               onchange="show2()" value="No">
+                                        <label class="form-check-label">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div id="bank_det" class="desc" style="display: none;">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="validationCustom02">Bank Account Number</label>
+                                        <input type="text" class="form-control" id="validationCustom02"
+                                               name="bankaccountnumber" style="background-color: #2f516f;color: white;">
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="validationCustom02">IFSC Code</label>
+                                        <input type="text" class="form-control" id="validationCustom02" name="ifsccode"
+                                               style="background-color: #2f516f;color: white;">
+                                    </div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <center><h4>HRA Declaration</h4></center>
+                            <hr>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Actual Rent Paid </label>
+                                    <input type="number" class="form-control" id="totalrentpaid" name="totalrentpaid"
+                                           onkeyup="paycal()" required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">HRA Received </label>
+                                    <input type="number" class="form-control" id="hrareceived" name="hrareceived"
+                                           onkeyup="paycal()" required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+
+                                <div class="col">
+                                    <label for="validationCustom02">Do you live in metro cities?</label>&nbsp;&nbsp;
+                                    <select class="custom-select" name="livein" id="livein" required
+                                            style="background-color: #2f516f; color: white;" onchange="paycal()">
+                                        <option selected disabled value="">Choose...</option>
+                                        <option>Yes</option>
+                                        <option>No</option>
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            &nbsp;
+                            &nbsp;<br>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <center><h4>Statutory Details</h4></center>
+                                    <hr>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Applicable Tax Regime </label>
+                                    <input type="text" class="form-control" id="validationCustom02"
+                                           name="applicabletaxregime" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">PAN Number </label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="pannumber"
+                                           placeholder="ABCDE1234A" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Aadhaar Number </label>
+                                    <input type="text" class="form-control pan" id="validationCustom02"
+                                           name="aadhaarnumber" size=20" placeholder="1234 1234 1234"
+                                           pattern="[0-9]{4} [0-9]{4} [0-9]{4}" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Universal Account Number </label>
+                                    <input type="text" class="form-control" id="validationCustom02"
+                                           name="universalaccountnumber"
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">PF Account Number</label>
+                                    <input type="text" class="form-control" id="validationCustom02"
+                                           name="pfaccountnumber"
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div> 
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">EPS Account Number </label>
+                                    <input type="text" class="form-control" id="validationCustom02"
+                                           name="epsaccountnumber"
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">PR Account Number</label>
+                                    <input type="text" class="form-control" id="validationCustom02"
+                                           name="praccountnumber"
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">ESI Number </label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="esinumber"
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">ESI dispensary name </label>
+                                    <input type="text" class="form-control" id="validationCustom02"
+                                           name="esidispensaryname"
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <center><h4 style="padding-top:10px;padding-bottom: 10px;">Salary Details</h4></center>
+                            <hr>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <center><h5>Income</h5></center>
+                        </div>
+                        <div class="col">
+                            <center><h5>Deductions</h5></center>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <table border=0 class="table o">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <center><h6>Earnings For Employee</h6></center>
+                                    </th>
+                                    <th><h6 style="margin-left: 15%;">Amount</h6></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td><h6>Basic salary</h6></td>
+                                    <td><input type="number" class="form-control" id="basic" name="basic" required
+                                               onkeyup="paycal()" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+
+                                </tbody>
+                             <tbody>
+                                <tr>
+                                    <td><h6> Dearance Allowance </h6></td>
+                                    <td><input type="number" class="form-control" id="da" name="da" readonly
+                                               style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                </tbody>
+                                   <tbody>
+                                <tr>
+                                    <td><input class="form-control" name="othrincome1" id="othrincome1" value="HRA"
+                                               readonly type="text" style="background-color: #2f516f;color: white;">
+                                    </td>
+                                    <td><input type="number" class="form-control" id="othramount1" name="othramount1"
+                                               readonly style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+
+                                </tbody>
+                                <tbody>
+
+                                <tr>
+                                    <td>
+                                        <input class="form-control" list="hosting-plan" name="othrincome2"
+                                               placeholder="Choose or Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                        <datalist id="hosting-plan">
+                                            <option>Conveyance</option>
+                                            <option>Child Education Allowance</option>
+                                            <option>Medical Allowance</option>
+                                            <option>Special Allowance</option>
+                                        </datalist>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="othramount2" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" list="hosting-plan" name="othrincome3"
+                                               placeholder="Choose or Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                        <datalist id="hosting-plan">
+                                            <option>Conveyance</option>
+                                            <option>Child Education Allowance</option>
+                                            <option>Medical Allowance</option>
+                                            <option>Special Allowance</option>
+                                        </datalist>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="othramount3" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" list="hosting-plan" name="othrincome4"
+                                               placeholder="Choose or Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                        <datalist id="hosting-plan">
+                                            <option>Conveyance</option>
+                                            <option>Child Education Allowance</option>
+                                            <option>Medical Allowance</option>
+                                            <option>Special Allowance</option>
+                                        </datalist>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="othramount4" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" list="hosting-plan" name="othrincome5"
+                                               placeholder="Choose or Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                        <datalist id="hosting-plan">
+                                            <option>Conveyance</option>
+                                            <option>Child Education Allowance</option>
+                                            <option>Medical Allowance</option>
+                                            <option>Special Allowance</option>
+                                        </datalist>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="othramount5" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+                            </body>
+                        </div>
+                        <div class="col">
+                            <table border=0 class="table">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <center><h6>Deductions For Employee</h6></center>
+                                    </th>
+                                    <th><h6 style="margin-left: 15%;">Amount</h6></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td><h6>Provident Fund</h6></td>
+                                    <td><input type="number" class="form-control" id="provifund" required
+                                               name="provifund" style="background-color: #2f516f;color: white;"
+                                               readonly></td>
+                                </tr>
+                                </tbody>
+                                <tbody>
+                                <tr>
+                                    <td><h6>Profession Tax</h6></td>
+                                    <td><input type="number" class="form-control" id="proftax" required name="proftax"
+                                               style="background-color: #2f516f;color: white;" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td><h6>ESI</h6></td>
+                                    <td><input type="number" class="form-control" id="esi" name="esi" required
+                                               style="background-color: #2f516f;color: white;" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" name="deduc1" placeholder="Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="deducamt1" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" name="deduc2" placeholder="Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="deducamt2" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" name="deduc3" placeholder="Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="deducamt3" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" name="deduc4" placeholder="Add" type="text"
+                                               style="background-color: #2f516f;color: white;"/>
+                                    </td>
+                                    <td><input type="number" class="form-control" id="validationCustom02"
+                                               name="deducamt4" style="background-color: #2f516f;color: white;"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+
+                    <div class="row mt-4 mb-4">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                                <button class="btn btn-outline-info text-light rounded-pill w-100" type="submit">Submit form</button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </form>
+
+                <script>
+                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                    (function () {
+                        'use strict';
+                        window.addEventListener('load', function () {
+                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                            var forms = document.getElementsByClassName('needs-validation');
+                            // Loop over them and prevent submission
+                            var validation = Array.prototype.filter.call(forms, function (form) {
+                                form.addEventListener('submit', function (event) {
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                }, false);
+                            });
+                        }, false);
+                    })();
+                </script>
+
+
+                <script>
+                    function paycal() {
+                        var basic = document.getElementById('basic').value;
+                        var age = document.getElementById('age').value;
+                        var totalrentpaid = document.getElementById('totalrentpaid').value;
+                        var hrareceived = document.getElementById('hrareceived').value;
+                        var livein = document.getElementById('livein').value;
+
+
+                        var da = (parseFloat(basic) * 10) / 100;
+                        var basicda = parseFloat(basic) + parseFloat(da);
+
+
+                        var pf;
+                        if (basic <= 15000) {
+                            pf = (parseFloat(basicda) * 12) / 100;
+                        } else {
+                            pf = 0;
+                        }
+
+
+                        var esi;
+                        if (basic <= 21000) {
+                            esi = (parseFloat(basicda) * 0.75) / 100;
+                        } else {
+                            esi = 0;
+                        }
+
+
+                        var hra;
+                        var hra1;
+                        var hra2 = parseFloat(hrareceived);
+                        var hra3 = (parseFloat(totalrentpaid)) - ((parseFloat(basicda) * 10) / 100);
+                        if (livein == "Yes") {
+                            hra1 = (parseFloat(basicda) * 50) / 100;
+                        }
+                        if (livein == "No") {
+                            hra1 = (parseFloat(basicda) * 40) / 100;
+                        }
+                        hra = Math.min(hra1, hra2, hra3);
+
+                        var pt;
+                        if (age < 60) {
+                            if (basicda <= (250000 / 12)) {
+                                pt = 0;
+                            } else if (basicda <= (500000 / 12) && basicda > (250000 / 12)) {
+                                pt = (parseFloat(basicda) * 5) / 100;
+                            } else if (basicda <= (1000000 / 12) && basicda > (500000 / 12)) {
+                                pt = (parseFloat(basicda) * 20) / 100;
+                            } else {
+                                pt = (parseFloat(basicda) * 30) / 100;
+                            }
+                        } else if (age < 80 && age >= 60) {
+                            if (basicda <= (300000 / 12)) {
+                                pt = 0;
+                            } else if (basicda <= (500000 / 12) && basicda > (300000 / 12)) {
+                                pt = (parseFloat(basicda) * 5) / 100;
+                            } else if (basicda <= (1000000 / 12) && basicda > (500000 / 12)) {
+                                pt = (parseFloat(basicda) * 20) / 100;
+                            } else {
+                                pt = (parseFloat(basicda) * 30) / 100;
+                            }
+                        } else {
+                            if (basicda <= (500000 / 12)) {
+                                pt = 0;
+                            } else if (basicda <= (1000000 / 12) && basicda > (500000 / 12)) {
+                                pt = (parseFloat(basicda) * 20) / 100;
+                            } else {
+                                pt = (parseFloat(basicda) * 30) / 100;
+                            }
+                        }
+
+
+                        document.getElementById('da').value = da;
+                        document.getElementById('othramount1').value = hra;
+                        document.getElementById('provifund').value = pf;
+                        document.getElementById('esi').value = esi;
+                        document.getElementById('proftax').value = pt;
+
+
+                    }
+
+                </script>
+
+
+                <script type="text/javascript">
+                    function show(str) {
+                        document.getElementById('bank_det').style.display = 'none';
+                        document.getElementById('bank_det').style.display = 'block';
+                    }
+
+                    function show2(sign) {
+                        document.getElementById('bank_det').style.display = 'block';
+                        document.getElementById('bank_det').style.display = 'none';
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+<script>
+      //static/js/script.js
+$(document).ready(function(){
+    $("#gmail").change(function () {
+      var gmail = $(this).val();
+ 
+      $.ajax({
+        url: 'Employee_gmailval',
+        data: {
+          'gmail': gmail
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data.is_taken) {
+            alert("Email already exists.");
+          }
+        }
+      });
+ 
+    });
+});
+
+ </script>
+
+    <script>
+        const sign_in_btn = document.querySelector("#sign-in-btn");
+        const sign_up_btn = document.querySelector("#sign-up-btn");
+        const container = document.querySelector(".container");
+    
+        sign_up_btn.addEventListener("click", () => {
+            container.classList.add("sign-up-mode");
+        });
+    
+        sign_in_btn.addEventListener("click", () => {
+            container.classList.remove("sign-up-mode");
+        });
+    
+    </script>
+    <script>
+        function validate() {
+            var pwd = document.getElementById("pwd").value;
+            var cnfpwd = document.getElementById("cnfpwd").value;
+            var usnm = document.getElementById("user").value;
+    
+            if (pwd.length < 8 || pwd.length > 18) {
+                alert("Password length is invalid");
+                return false;
+            }
+            if (pwd != cnfpwd) {
+                alert("password and conform password does not match");
+                return false;
+            }
+            return true;
+        }
+    </script> -->
+
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+
+        <style>
+            tr:hover{
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        </style>
+        
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h2 class="mb-0">ALL VENDORS</h2></center>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="d-flex">
+                                <input type="text" id="search" class="form-control" placeholder="Search.." autocomplete="off">
+                                <center><i class="fa fa-search form-control" style="width: 60px;"></i></center>
+                            </div>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-3"></div>
+                        <div class="btn-group col-md-2">
+                            <a class="btn btn-outline-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                role="button">Filter By
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'govendor' %}">All</a>
+                                <a class="dropdown-item" href="{% url 'vendor_active' %}">Active</a>
+                                <a class="dropdown-item" href="{% url 'vendor_inactive' %}">Inactive</a>
+                            </div>
+                            <a href="{% url 'addvendor' %}" class="btn btn-outline-info fa fa-plus" role="button">&nbsp;New</a>   
+                        </div>
+                    </div>
+
+                    <div class="container-fluid">
+                        <table class="table table-responsive-md mt-4" id="table">
+                            <thead>
+                            <tr>
+                                <th>NAME</th>
+                                <th>COMPANY NAME</th>
+                                <th>EMAIL ID</th>
+                                <th>MOBILE NO</th>
+                                <th>GST TYPE</th>
+                                <th>GSTIN</th>
+                                <th>PAN NO</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for v in vndr %}
+                            <tr onclick="window.location='viewvendor/{{ v.vendorid }} ';">
+                                <td>{{ v.firstname }} {{ v.lastname }}</td>
+                                <td>{{ v.companyname }}</td>
+                                <td>{{ v.email }}</td>
+                                <td>{{ v.mobile }}</td>
+                                <td>{{ v.gsttype }}</td>
+                                <td>{{ v.gstin }}</td>
+                                <td>{{ v.panno }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="porderno">
+            <div class="modal-dialog">
+                <div class="modal-content" style="background-color: #213b52;">
+                    <div class="modal-header">
+                        <h3 class="m-3">Prchase Order#</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Your Purchase Order number are set on auto-generate to save your time Are you shure about changing the setting ?</p>
+                    
+                        <div>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" value="Taxable" name="taxpref">
+                                <label class="form-check-label">Continue auto generated purchase order number</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" value="Tax Exempt" name="taxpref">
+                                <label class="form-check-label">I will add them manually each time</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+
+        <script>
+            var $rows = $('#table tr');
+            $('#search').keyup(function() {
+                var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+                
+                $rows.show().filter(function() {
+                    var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                    return !~text.indexOf(val);
+                }).hide();
+            });
+        </script>
+
+    
+    {% endif %}
+{% endblock %}

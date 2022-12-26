@@ -1,0 +1,854 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tab_logic tbody').on('keyup change', function () {
+                calc();
+            });
+
+            $('#tax').on('keyup change', function () {
+                calc_total();
+            });
+        });
+        function calc() {
+            $('#tab_logic tbody tr').each(function () {
+                var html = $(this).html();
+                if (html != '') {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    var tax = $(this).find('.tax').val();
+                    $(this).find('.total').val(parseFloat(qty * price));
+                    $(this).find('.taxamount').val(parseFloat((qty * price) * (parseFloat(tax) / 100)));
+                    calc_total();
+                }
+            });
+        }
+        function calc_total() {
+            total = 0;
+            $('.total').each(function () {
+                total += parseFloat($(this).val());
+            });
+            taxamount = 0.0;
+            $('.taxamount').each(function () {
+                taxamount += parseFloat($(this).val());
+            });
+            $('#subtotal').val(parseFloat(total.toFixed(2)));
+            $('#tax_amount').val(parseFloat(taxamount.toFixed(2)));
+            $('#grandtotal').val(parseFloat((taxamount + total).toFixed(2)));
+            $('#baldue').val(parseFloat((taxamount + total).toFixed(2)));
+        }
+    </script>
+
+    <style type="text/css">
+        #grad1 {
+            background-color: #9C27B0;
+        }
+
+        #msform {
+            text-align: center;
+            position: relative;
+            margin-top: 20px
+        }
+
+        #msform fieldset .form-card {
+            background: white;
+            border: 0 none;
+            border-radius: 0px;
+            box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+            padding: 20px 40px 30px 40px;
+            box-sizing: border-box;
+            width: 94%;
+            margin: 0 3% 20px 3%;
+            position: relative
+        }
+
+        #msform fieldset {
+            background: #243e54;
+            border: 0 none;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            width: 100%;
+            margin: 0;
+            padding-bottom: 20px;
+            position: relative
+        }
+
+        #msform fieldset:not(:first-of-type) {
+            display: none
+        }
+
+        #msform fieldset .form-card {
+            background-color: #243e54;
+            text-align: left;
+            color: #9E9E9E;
+            box-shadow: none !important;
+        }
+
+        #msform input,
+        #msform textarea {
+            padding: 0px 8px 4px 8px;
+            border: none;
+            background-color: #2f516f;
+            border-bottom: 1px solid #ccc;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            color: black;
+            font-size: 16px;
+            letter-spacing: 1px
+        }
+
+        #msform input:focus,
+        #msform textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: none;
+            font-weight: bold;
+            border-bottom: 2px solid skyblue;
+            outline-width: 0
+        }
+
+        #msform .action-button {
+            width: 100px;
+            background: skyblue;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px
+        }
+
+        #msform .action-button:hover,
+        #msform .action-button:focus {
+            box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue
+        }
+
+        #msform .action-button-previous {
+            width: 100px;
+            background: #616161;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px
+        }
+
+        #msform .action-button-previous:hover,
+        #msform .action-button-previous:focus {
+            box-shadow: 0 0 0 2px white, 0 0 0 3px #616161
+        }
+
+        select.list-dt {
+            border: none;
+            outline: 0;
+            border-bottom: 1px solid #ccc;
+            padding: 2px 5px 3px 5px;
+            margin: 2px
+        }
+
+        select.list-dt:focus {
+            border-bottom: 2px solid skyblue
+        }
+
+        .card {
+            z-index: 0;
+            border: none;
+            border-radius: 0.5rem;
+            position: relative
+        }
+
+        .fs-title {
+            font-size: 25px;
+            color: #2C3E50;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: left
+        }
+
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            color: lightgrey
+        }
+
+        #progressbar .active {
+            color: #2107ff;
+        }
+
+        #progressbar li {
+            list-style-type: none;
+            font-size: 12px;
+            width: 25%;
+            float: left;
+            position: relative
+        }
+
+        #progressbar #account:before {
+            font-family: FontAwesome;
+            content: "\f023"
+        }
+
+        #progressbar #personal:before {
+            font-family: FontAwesome;
+            content: "\f007"
+        }
+
+        #progressbar #payment:before {
+            font-family: FontAwesome;
+            content: "\f09d"
+        }
+
+        #progressbar #confirm:before {
+            font-family: FontAwesome;
+            content: "\f00c"
+        }
+
+        #progressbar li:before {
+            width: 50px;
+            height: 50px;
+            line-height: 45px;
+            display: block;
+            font-size: 18px;
+            color: #ffffff;
+            background: lightgray;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            padding: 2px
+        }
+
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background: lightgray;
+            position: absolute;
+            left: 0;
+            top: 25px;
+            z-index: -1
+        }
+
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #0b29ff;
+        }
+
+        .radio-group {
+            position: relative;
+            margin-bottom: 25px
+        }
+
+        .radio {
+            display: inline-block;
+            width: 204;
+            height: 104;
+            border-radius: 0;
+            background: lightblue;
+            box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            cursor: pointer;
+            margin: 8px 2px
+        }
+
+        .radio:hover {
+            box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3)
+        }
+
+        .radio.selected {
+            box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1)
+        }
+
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+
+    </style>
+    <style>
+        .form-input {
+            width: 300px;
+            padding: 20px;
+            background: #6c7394;;
+        }
+
+        .form-input input {
+            display: none;
+        }
+
+        .form-input label {
+            display: block;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            background: #333;
+            color: #fff;
+            font-size: 15px;
+            font-family: "Open Sans", sans-serif;
+            text-transform: Uppercase;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .form-input img {
+            width: 100%;
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+
+
+    <div class="page-content">
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">PRODUCT / SERVICE INFORMATION</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15 p-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-lg-12 col-xl-12">
+                        <div class="card" style="background-color: #2a4964;">
+                            <div class="row no-gutters">
+                                <div class="col-md-3">
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card-body" style="margin-top: 10px;">
+                                        <center>
+                                            <h5 class="card-title"><h3>BUNDLE</h3></h5>
+                                        </center>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="{% url 'goselpan' %}">
+                                        <button class="btn btn-outline-secondary text-light" type="button"
+                                                style="margin-top: 12%;">Choose Type
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form action="addbun" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <center>
+                                <div class="form-input" style="background-color: #243e54;">
+                                    <div class="preview">
+                                        <img id="file-ip-1-preview">
+                                    </div>
+                                    <label for="file-ip-1">Upload Image</label>
+                                    <input type="file" id="file-ip-1" name="image" accept="image/*"
+                                           onchange="showPreview(event);">
+                                </div>
+                            </center>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mt-3">
+                            <label for="validationCustom01" style="color: white;">Name</label>
+                            <textarea class="form-control" name="name" rows="1" id="validationCustom01" required
+                                      style="background-color: #2f516f;"></textarea>
+                            <div class="invalid-feedback">
+                                <li>Please provide name</li>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label for="validationCustom01" style="color: white;">SKU</label>
+                            <input type="text" name="sku" class="form-control" id="validationCustom01"
+                                   placeholder="Eg;N41554" pattern="^[a-zA-Z0-9]{6,}$" placeholder="" required
+                                   style="background-color: #2f516f;">
+                            <div class="invalid-feedback">
+                                <li>Must have atleast 6 characters (combination of alphabets and numbers)</li>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <label for="validationCustom01" style="color: white;">Description</label>
+                            <textarea class="form-control" name="description" id="validationCustom01" required
+                                      style="background-color: #2f516f;"></textarea>
+                            <div class="invalid-feedback">
+                                <li>Please provide description</li>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <label for="validationCustom01" style="color: white;">Products/services included in
+                                the bundle</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <div class="table-responsive-md">
+                                <table class="table table-bordered" id="tab_logic">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">PRODUCT/SERVICE</th>
+                                        <th class="text-center">HSN</th>
+                                        <th class="text-center">DESCRIPTION</th>
+                                        <th class="text-center">QTY</th>
+                                        <th class="text-center">PRICE</th>
+                                        <th class="text-center">TOTAL</th>
+                                        <th class="text-center">TAX</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <select name="product1" id="product1" class="custom-select"
+                                                    style="background-color: #2f516f;">
+                                                <option value=" ">Choose</option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="hsn1" id="hsn1"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="description1"
+                                                   id="description1"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control qty" name="qty1" id="qty1"
+                                                   style="background-color: #2f516f;" step="any" value=0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control price" name="price1"
+                                                   id="price1"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control total" name="total1"
+                                                   id="total1"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control tax" name="tax1" id="tax1"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select name="product2" id="product2" class="custom-select"
+                                                    style="background-color: #2f516f;">
+                                                <option value=" ">Choose</option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="hsn2" id="hsn2"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="description2"
+                                                   id="description2"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control qty" name="qty2" id="qty2"
+                                                   style="background-color: #2f516f;" step="any" value=0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control price" name="price2"
+                                                   id="price2"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control total" name="total2"
+                                                   id="total2"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control tax" name="tax2" id="tax2"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select name="product3" id="product3" class="custom-select"
+                                                    style="background-color: #2f516f;">
+                                                <option value=" ">Choose</option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="hsn3" id="hsn3"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="description3"
+                                                   id="description3"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control qty" name="qty3" id="qty3"
+                                                   style="background-color: #2f516f;" step="any" value=0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control price" name="price3"
+                                                   id="price3"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control total" name="total3"
+                                                   id="total3"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control tax" name="tax3" id="tax3"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select name="product4" id="product4" class="custom-select"
+                                                    style="background-color: #2f516f;">
+                                                <option value=" ">Choose</option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="hsn4" id="hsn4"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="description4"
+                                                   id="description4"
+                                                   style="background-color: #2f516f;">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control qty" name="qty4" id="qty4"
+                                                   style="background-color: #2f516f;" step="any" value=0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control price" name="price4"
+                                                   id="price4"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control total" name="total4"
+                                                   id="total4"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control tax" name="tax4" id="tax4"
+                                                   style="background-color: #2f516f;" value=0.0>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="number" name='grandtotal' id="grandtotal" value=0 step="any" class="form-control"
+                           hidden/>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 mt-4 mb-4">
+                            <button class="btn btn-outline-info rounded-pill w-100 text-light" type="submit">SUBMIT
+                            </button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </form>
+                <script>
+                    (function () {
+                        'use strict';
+                        window.addEventListener('load', function () {
+                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                            var forms = document.getElementsByClassName('needs-validation');
+                            // Loop over them and prevent submission
+                            var validation = Array.prototype.filter.call(forms, function (form) {
+                                form.addEventListener('submit', function (event) {
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                }, false);
+                            });
+                        }, false);
+                    })();
+                </script>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+    <script>
+        $('.single-select').select2({
+            theme: 'bootstrap4',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            allowClear: Boolean($(this).data('allow-clear')),
+        });
+        $('.multiple-select').select2({
+            theme: 'bootstrap4',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            allowClear: Boolean($(this).data('allow-clear')),
+        });
+
+        document.getElementById("foo").onchange = function () {
+            if (this.selectedIndex !== 0) {
+                window.location.href = this.value;
+            }
+        };
+    </script>
+    <script>
+        function insertValue() {
+            var select = document.getElementById("select"),
+                txtVal = document.getElementById("val").value,
+                newOption = document.createElement("OPTION"),
+                newOptionval = document.createTextNode(txtVal);
+
+            newOption.appendChild(newOptionval);
+            select.insertBefore(newOption, select.lastChild);
+        }
+    </script>
+    <script>
+        $('.datepicker').pickadate({
+            selectMonths: true,
+            selectYears: true
+        }),
+            $('.timepicker').pickatime()
+    </script>
+    <script>
+        $(function () {
+            $('#date-time').bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
+            $('#date').bootstrapMaterialDatePicker({
+                time: false
+            });
+            $('#time').bootstrapMaterialDatePicker({
+                date: false,
+                format: 'HH:mm'
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var current_fs, next_fs, previous_fs; //fieldsets
+            var opacity;
+
+            $(".next").click(function () {
+
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+
+//Add Class Active
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+//show the next fieldset
+                next_fs.show();
+//hide the current fieldset with style
+                current_fs.animate({opacity: 0}, {
+                    step: function (now) {
+// for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                    },
+                    duration: 600
+                });
+            });
+
+            $(".previous").click(function () {
+
+                current_fs = $(this).parent();
+                previous_fs = $(this).parent().prev();
+
+//Remove class active
+                $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+//show the previous fieldset
+                previous_fs.show();
+
+//hide the current fieldset with style
+                current_fs.animate({opacity: 0}, {
+                    step: function (now) {
+// for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        previous_fs.css({'opacity': opacity});
+                    },
+                    duration: 600
+                });
+            });
+
+            $('.radio-group .radio').click(function () {
+                $(this).parent().find('.radio').removeClass('selected');
+                $(this).addClass('selected');
+            });
+
+            $(".submit").click(function () {
+                return false;
+            })
+
+        });
+    </script>
+
+    <script>
+        function showPreview(event) {
+            if (event.target.files.length > 0) {
+                var src = URL.createObjectURL(event.target.files[0]);
+                var preview = document.getElementById("file-ip-1-preview");
+                preview.src = src;
+                preview.style.display = "block";
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#product1').on('change', function () {
+                select = $('#product1').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getitems' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                        document.getElementById('hsn1').value = json_data[key]['hsn'];
+                        document.getElementById('description1').value = json_data[key]['description'];
+                        document.getElementById('qty1').value = 0;
+                        document.getElementById('price1').value = json_data[key]['salesprice'];
+                        document.getElementById('tax1').value = json_data[key]['tax'];
+                    }
+                });
+            });
+            $('#product2').on('change', function () {
+                select = $('#product2').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getitems' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                        document.getElementById('hsn2').value = json_data[key]['hsn'];
+                        document.getElementById('description2').value = json_data[key]['description'];
+                        document.getElementById('qty2').value = 0;
+                        document.getElementById('price2').value = json_data[key]['salesprice'];
+                        document.getElementById('tax2').value = json_data[key]['tax'];
+                    }
+                });
+            });
+            $('#product3').on('change', function () {
+                select = $('#product3').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getitems' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                        document.getElementById('hsn3').value = json_data[key]['hsn'];
+                        document.getElementById('description3').value = json_data[key]['description'];
+                        document.getElementById('qty3').value = 0;
+                        document.getElementById('price3').value = json_data[key]['salesprice'];
+                        document.getElementById('tax3').value = json_data[key]['tax'];
+                    }
+                });
+            });
+            $('#product4').on('change', function () {
+                select = $('#product4').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getitems' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                        document.getElementById('hsn4').value = json_data[key]['hsn'];
+                        document.getElementById('description4').value = json_data[key]['description'];
+                        document.getElementById('qty4').value = 0;
+                        document.getElementById('price4').value = json_data[key]['salesprice'];
+                        document.getElementById('tax4').value = json_data[key]['tax'];
+
+                    }
+                });
+            });
+        })
+    </script>
+
+
+{% endblock %}

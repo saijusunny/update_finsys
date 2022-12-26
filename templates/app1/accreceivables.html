@@ -1,0 +1,400 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'assets/css/estimate.css' %}"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
+    {%endif%}
+<style>
+    .table-row{
+        cursor:pointer;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>  
+<script>
+$(document).ready(function () {  
+    var form = $('#whatToPrint'),  
+    cache_width = form.width(),  
+    a4 = [595.28, 841.89]; // for a4 size paper width and height  
+
+    $('#downloadButton').on('click', function () {  
+        $('#whatToPrint').scrollTop(0);  
+        createPDF();  
+    });  
+    
+    function createPDF() {  
+        getCanvas().then(function (canvas) {  
+            var  
+             img = canvas.toDataURL("image/png"),  
+             doc = new jsPDF({  
+                 unit: 'px',  
+                 format: 'a4'  
+             });  
+            doc.addImage(img, 'JPEG', -20, -10);  
+            doc.save('Account Receivables Report.pdf');  
+            form.width(cache_width);  
+        });  
+    }  
+      
+    function getCanvas() {  
+        form.width((a4[0] * 1.33333) - 80).css('max-width', 'none');  
+        return html2canvas(form, {  
+            imageTimeout: 2000,  
+            removeContainer: true  
+        });  
+    }
+});
+</script>
+
+<script>
+
+
+    // async function generatePDF() {
+    //     // document.getElementById("downloadButton").innerHTML = "Currently downloading, please wait";
+
+    //     //Downloading
+    //     var downloading = document.getElementById("whatToPrint");
+    //     var doc = new jsPDF('l', 'pt');
+
+    //     await html2canvas(downloading, {
+    //         //allowTaint: true,
+    //         //useCORS: true,
+    //         // width: 600
+            
+    //     }).then((canvas) => {
+    //         //Canvas (convert to PNG)
+    //         doc.addImage(canvas.toDataURL("image/png"), 'PNG', 15, 10, 820, 1200);
+    //     })
+
+        
+
+    //     doc.save("Document.pdf");
+
+
+    //     //End of downloading
+
+    //     // document.getElementById("downloadButton").innerHTML = "Click to download";
+    // }
+
+    
+</script>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" ></script>
+
+ 
+
+    <script type="text/javascript">
+    $(document).ready(function($) 
+    { 
+
+        $(document).on('click', '.btn_print', function(event) 
+        {
+            event.preventDefault();
+
+            //credit : https://ekoopmans.github.io/html2pdf.js
+            
+            var element = document.getElementById('whatToPrint'); 
+            var id_num=document.getElementById('nub_pay').value
+            
+
+
+            //easy
+            //html2pdf().from(element).save();
+
+            //custom file name
+            //html2pdf().set({filename: 'code_with_mark_'+js.AutoCode()+'.pdf'}).from(element).save();
+
+
+            //more custom settings
+            var opt = 
+            { 
+              margin:       0.5,
+              filename:     'Account Receivables Report.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2 },
+              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // New Promise-based usage:
+            html2pdf().set(opt).from(element).save();
+
+             
+        });
+
+ 
+ 
+
+    });
+    // create excel file   
+    function ExportToExcel(type, fn, dl) {
+       var elt = document.getElementById('account_table');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('Account Receivables Report.' + (type || 'xlsx')));
+    } 
+                                                                                                         
+
+    
+        
+  
+    </script>
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">A/R AGEING SUMMARY REPORT</h2></center>
+                </div><hr/>
+                <div style="text-align: right;"><a class="fa fa-print" style="padding: 10px; cursor: pointer;"  href="javascript:generatePDF()" id="downloadButton" > PDF</a>&nbsp;<a class="fa fa-file-excel-o    " style="padding: 10px; cursor: pointer;"  onclick="ExportToExcel('xlsx')" id="excel" > EXCEL</a> </div>
+                
+            </div>
+        </div>
+
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <form action="accreceivables1" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label style="text-align:left ">Report period</label><br>
+                            <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                    list="hosting-plan"
+                                    name="reportperiod" type="text">
+                                <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                <!-- <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>This month</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>This financial year</option> -->
+                            </select>
+                        </div>
+                        <div class="col-sm-4" id="frdate" style="display: none;">
+                            <label for="from">From</label>
+                            <input type="date" class="form-control" name="fper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-sm-4" id="todate" style="display: none;">
+                            <label for="from">To</label>
+                            <input type="date" class="form-control" name="tper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2">
+                            
+                        </div>
+                        <div class="col-md-2">
+
+                        </div>
+                        <div class="col-md-2">
+
+                            <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Run report</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card radius-15 p-5" >
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="rectangle" id="whatToPrint"
+                             style="background-color: white;width: 1100px;height:1500px;border: 3px white;padding: 50px;margin: 20px">
+                            <div class="rectangle"
+                                 style="background-image: linear-gradient(dodgerblue, black); width: 1000px; height: 200px; margin-top: 20px;">
+                                <div class="img-container"
+                                     style="width: 140px; height: 140px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); border-radius: 50%; background-color: white; transform: translate(23%, 90%);">
+                                    <img src="{{ cmp1.cimg.url }}"
+                                         style="width: 140px; height: 140px; border-radius: 50%;">
+                                </div>
+                                <h2 style="margin-left: 200px;">{{ cmp1.cname }}</h2>
+                            </div>
+
+                            <div class="table-responsive" style="margin-top: 100px;">
+
+                                <table class="table table-hover " id="account_table">
+                                    <thead>
+                                    <tr>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">CUSTOMER
+                                            NAME
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                            TRANSACTION TYPE
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                            CURRENT
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">0-30</th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">30-60</th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">60-90
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">90 AND
+                                            OVER
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">TOTAL
+                                        </th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr  class="table-row ">
+                                            <td class="center text-dark" ></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">"***Operning Balance***"</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">{{prev_amount}}
+
+                                        </tr>
+                                    {% for i in cust %}
+                                        <tr  class="table-row " data-href="{% url 'account_transactions' i.customerid  %}">
+                                            <td class="center text-dark" ><a style="color: blue;" href="{% url 'customer_profile' i.customerid %}">{{i.firstname}} {{i.lastname}}</a></td>
+                                            <td class="center text-dark">Balance Due</td>
+                                            <td class="center text-dark">{{i.receivables}}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">{{i.receivables}}
+
+                                        </tr>
+                                    {% endfor %}
+                                    {% for cres in cre %}
+
+                                        <tr>
+                                            <td class="center text-dark">{{ cres.customer }}</td>
+                                            <td class="center text-dark">Credit Note</td>
+                                            <td class="center text-dark">{{ cres.t1 }}</td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark"></td>
+                                            <td class="center text-dark">{{ cres.t1 }}
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                    <thead>
+                                    <tr>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">TOTAL</th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;"
+                                            >{{sum}}</th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;"></th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                        </th>
+
+                                        <th class="center font-weight-dark border-dark" style="color: black;" >{{sum}}
+                                        </th>
+
+
+                                    </tr>
+                                    </thead>
+
+                                    <script>
+                                        $(document).ready(function () {
+
+
+                                            var t1 = parseFloat('{{ tot.t2 }}');
+
+
+                                            var t2 = parseFloat('{{ tot1.t2 }}');
+
+
+                                            if (Number.isNaN(t1)) {
+                                                t1 = 0;
+                                            }
+
+
+                                            if (Number.isNaN(t2)) {
+                                                t2 = 0;
+                                            }
+
+                                            var t = (t1 - t2);
+
+                                            document.getElementById('t1').innerHTML = "&#8377;" + t
+                                            document.getElementById('t2').innerHTML = "&#8377;" + t
+
+                                        });
+                                    </script>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg"
+         viewBox="0 0 16 16">
+        <path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/>
+    </svg>
+
+    <!-- Modal -->
+    
+
+    <script>
+        document.getElementById("nb").style.display = "none"
+
+        function showbox() {
+            var x = document.getElementById("nb");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+        }
+
+        function hidebox() {
+            var x = document.getElementById("nb");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            }
+        }
+
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+            integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+            integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+            crossorigin="anonymous"></script>
+
+            <script>
+                $(document).ready(function($) {
+                    $(".table-row").dblclick(function() {
+                        window.document.location = $(this).data("href");
+                    });
+                });
+            </script>         
+{% endblock %}

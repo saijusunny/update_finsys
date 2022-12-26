@@ -1,0 +1,1230 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .hide{
+			display: none;
+    	}
+        input:read-only {
+            background-color: rgba(0,0,0,.4) !important;
+            color: #fff;
+        }
+    </style>
+    <script>
+        $(':input[readonly]').css({'background-color':'rgba(0,0,0,.4)'});
+    </script>
+    <script>
+        $(document).ready(function(){
+            var roinc = 0
+            $('#addrow').click(function(){
+                roinc++
+                $('#items-table-body').append(
+                    `
+                        <tr id='addr0${roinc}'>
+                            <td>${roinc+1}</td>
+                            <td style="width: 20%;">
+                                <div class="d-flex">
+                                    <select name='items1[]' id="product${roinc}" class="form-control">
+                                        <option value=" " selected>Select Item</option>
+                                        {% for i in item %}
+                                            <option value="{{ i.name }}">{{ i.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <a href="#">
+                                        <button type="button" class="btn btn-outline-secondary ml-1" data-target="#newitem" data-toggle="modal">+</button>
+                                    </a>                    
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" name='hsn[]' id="hsn1${roinc}" placeholder='Enter HSN Code' class="form-control"/>
+                            </td>                
+                            <td><input type="number" name='quantity[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
+                            </td>                
+                            <td>
+                                <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Rate' class="form-control price" step="0.00" min="0">
+                            </td>                                            
+                            <td>
+                                <select name="tax[]" id="tax${roinc+1}" class="form-control tax">
+                                    <option id="ta1${roinc}" value=0 text={{ cmp1.state }}>Choose</option>
+                                    <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                                    <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                                    <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                                    <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                                    <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                                    <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                                    <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                                    <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                                    <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                                    <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                                    <option id="ta5${roinc}" value=0 text=" ">Choose</option>
+                                    <option value=28 text=" ">28.0% IGST(28%)</option>
+                                    <option value=18 text=" ">18.0% IGST(18%)</option>
+                                    <option value=12 text=" ">12.0% IGST(12%)</option>
+                                    <option value=6 text=" ">06.0% IGST(06%)</option>
+                                    <option value=5 text=" ">05.0% IGST(05%)</option>
+                                    <option value=3 text=" ">03.0% IGST(03%)</option>
+                                    <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                                    <option value=0 text=" ">0.0% IGST(0%)</option>
+                                    <option value=0 text=" ">Exempt IGST(0%)</option>
+                                    <option value=0 text=" ">Out of Scope(0%)</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" step="any" readonly>
+                            </td>                    
+                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"></td>
+                            <td><button type="button" id="${roinc}" class="btn btn-outline-secondary ml-1 remove_row">-</button></td>
+                        </tr>
+                                                    
+                    `
+                );
+            });
+    
+            $(document).on('click','.remove_row',function(){
+                var row_id = $(this).attr("id");
+                $('#addr0'+row_id+'').remove();
+            });
+    
+            var place = document.getElementById('plosu').value;
+            $(document).on('click','#product',function(){
+                select = $('#product').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn1').value = data
+                        document.getElementById('unit1').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta1').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta1').value=data4
+                        } 
+                        document.getElementById('ta5').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta5').value=data5
+                    }
+                });
+            });     
+                
+            $(document).on('click','#product1',function(){
+                select = $('#product1').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn11').value = data
+                        document.getElementById('unit11').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta11').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta11').value=data4
+                        }
+                        document.getElementById('ta51').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta51').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product2',function(){
+                select = $('#product2').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data2 = response.price
+                        data3 = response.gst
+                        data4 = response.sgst
+                        document.getElementById('hsn12').value = data
+                        document.getElementById('unit12').value = data2            
+                        if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta12').innerHTML = data3 + ' % GST';
+                                document.getElementById('ta12').value=data3
+                            } 
+                            document.getElementById('ta52').innerHTML  = data4 + ' % IGST';
+                            document.getElementById('ta52').value=data4
+                    }
+                });
+            });
+    
+            $(document).on('click','#product3',function(){
+                select = $('#product3').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data2 = response.price
+                        data3 = response.gst
+                        data4 = response.sgst
+                        document.getElementById('hsn13').value = data
+                        document.getElementById('unit13').value = data2
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta13').innerHTML = data3 + ' % GST';
+                            document.getElementById('ta13').value=data3
+                        }          
+                        document.getElementById('ta53').innerHTML  = data4 + ' % IGST';
+                        document.getElementById('ta53').value=data4
+                    }
+                });
+            });
+            
+            $(document).on('click','#product4',function(){
+                select = $('#product4').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn14').value = data
+                        document.getElementById('unit14').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                             document.getElementById('ta14').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta14').value=data4
+                        } 
+                        document.getElementById('ta54').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta54').value=data5       
+                    }
+                });          
+            });
+    
+            $(document).on('click','#product5',function(){
+                select = $('#product5').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn15').value = data
+                        document.getElementById('unit15').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta15').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta15').value=data4
+                        }    
+                        document.getElementById('ta55').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta55').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product6',function(){
+                select = $('#product6').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn16').value = data
+                        document.getElementById('unit16').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta16').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta16').value=data4
+                        } 
+                        document.getElementById('ta56').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta56').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product7',function(){
+                select = $('#product7').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn  
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn17').value = data 
+                        document.getElementById('unit17').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta17').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta17').value=data4
+                        } 
+                        document.getElementById('ta57').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta57').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product8',function(){
+                select = $('#product8').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst        
+                        document.getElementById('hsn18').value = data        
+                        document.getElementById('unit18').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta18').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta18').value=data4
+                        }         
+                        document.getElementById('ta58').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta58').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product9',function(){
+                select = $('#product9').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn19').value = data   
+                        document.getElementById('unit19').value = data3        
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta19').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta19').value=data4
+                        }         
+                        document.getElementById('ta59').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta59').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product10',function(){
+                select = $('#product10').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn110').value = data
+                        document.getElementById('unit110').value = data3        
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta110').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta110').value=data4    
+                        }         
+                        document.getElementById('ta510').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta510').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product11',function(){
+                select = $('#product11').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst                      
+                        document.getElementById('hsn111').value = data
+                        document.getElementById('unit111').value = data3        
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta111').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta111').value=data4
+                        }         
+                        document.getElementById('ta511').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta511').value=data5        
+                    }
+                });
+            });
+    
+            $(document).on('click','#product12',function(){
+                select = $('#product12').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn112').value = data
+                        document.getElementById('unit112').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta112').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta112').value=data4
+                        } 
+                        document.getElementById('ta512').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta512').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product13',function(){
+                select = $('#product13').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn113').value = data
+                        document.getElementById('unit113').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta113').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta113').value=data4
+                        }        
+                        document.getElementById('ta513').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta513').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product14',function(){
+                select = $('#product14').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn114').value = data
+                        document.getElementById('unit114').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta114').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta114').value=data4
+                        }        
+                        document.getElementById('ta514').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta514').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product15',function(){
+                select = $('#product15').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn115').value = data
+                        document.getElementById('unit115').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta115').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta115').value=data4
+                        } 
+                        document.getElementById('ta515').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta515').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product16',function(){
+                select = $('#product16').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst        
+                        document.getElementById('hsn116').value = data
+                        document.getElementById('unit116').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta116').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta116').value=data4
+                        }        
+                        document.getElementById('ta516').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta516').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product17',function(){
+                select = $('#product17').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn117').value = data
+                        document.getElementById('unit117').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta117').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta117').value=data4
+    
+                        } 
+                        document.getElementById('ta517').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta517').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product18',function(){
+                select = $('#product18').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst        
+                        document.getElementById('hsn118').value = data
+                        document.getElementById('unit118').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta118').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta118').value=data4
+                        }         
+                        document.getElementById('ta518').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta518').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product19',function(){
+                select = $('#product19').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                            console.log(response)
+                            data = response.hsn
+                            data3 = response.price
+                            data4 = response.gst
+                            data5 = response.sgst   
+                            document.getElementById('hsn119').value = data
+                            document.getElementById('unit119').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta119').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta119').value=data4
+                        }         
+                        document.getElementById('ta519').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta519').value=data5
+                    }
+                });
+            });
+    
+            $(document).on('click','#product120',function(){
+                select = $('#product120').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.hsn
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn120').value = data
+                        document.getElementById('unit120').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta120').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta120').value=data4
+                        } 
+                        document.getElementById('ta520').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta520').value=data5
+                    }
+                });
+            });
+        });
+    </script>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">EDIT BILL</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">Vendor Details</h4>
+                </div>
+                <hr/>
+                <form action="{% url 'editpurchasebill' pbill.billid %}" method="post" enctype="multipart/form-data" autocomplete="off">
+                    {% csrf_token %}
+                    
+                    {% if user.is_authenticated %}
+
+                        <div class="row">
+                            <div class="col-md-4 mt-2">
+                                <label for="validationCustom01">Select Vendor</label>
+                                <input type="text" value="{{ pbill.vendor_name }}" name="vendor_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="">Billing Address</label>
+                                <div class="form-row">
+                                    <textarea class="form-control" id="billingaddress" value="" name="billing_address"
+                                    rows="5">{{ pbill.billing_address }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <br><br>
+                        <div class="row">
+                            <div class="col-md-3 mt-2"><h5>Bill Details</h5></div>
+                            <div class="col-md-3 mt-2"></div>
+                            <div class="col-md-3 mt-2">
+                                <label>Bill Number</label>
+                                <div class="d-flex">
+                                    <input name="bill_no" value="{{ pbill.bill_no }}" type="number" class="form-control" placeholder="1000">
+                                    <a class="form-control" data-target="#porderno" data-toggle="modal" style="width: 60px; cursor: pointer;"><center><i class="fa fa-gear"></i></center></i></a>
+                                </div>    
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-3 mt-2">
+                                <label for="">Source of Supply</label>
+                                <select name="sourceofsupply" id="plosu" class="form-control" onchange="state(this)">
+                                    <!-- <option value="{{ cmp1.state }}" selected> {{ cmp1.state }}</option> -->
+                                    <option value="{{ pbill.sourceofsupply }}">{{ pbill.sourceofsupply }}</option>
+                                    <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
+                                    <option value="[AD] Andhra Predhesh">[AD] Andhra Predhesh</option>
+                                    <option value="[AR] Arunachal Predesh">[AR] Arunachal Predesh</option>
+                                    <option value="[AS] Assam">[AS] Assam</option>
+                                    <option value="[BR] Bihar">[BR] Bihar</option>
+                                    <option value="[CH] Chandigarh">[CH] Chandigarh</option>
+                                    <option value="[CG] Chhattisgarh">[CG] Chhattisgarh</option>
+                                    <option value="[DNH] Dadra and Nagar Haveli">[DNH] Dadra and Nagar Haveli</option>
+                                    <option value="[DD] Damn anad Diu">[DD] Damn anad Diu</option>
+                                    <option value="[DL] Delhi">[DL] Delhi</option>
+                                    <option value="[GA] Goa">[GA] Goa</option>
+                                    <option value="[GJ] Gujarat">[GJ] Gujarat</option>
+                                    <option value="[HR] Haryana">[HR] Haryana</option>
+                                    <option value="[HP] Himachal Predesh">[HP] Himachal Predesh</option>
+                                    <option value="[JK] Jammu and Kashmir">[JK] Jammu and Kashmir</option>
+                                    <option value="[JH] Jharkhand">[JH] Jharkhand</option>
+                                    <option value="[KA] Karnataka">[KA] Karnataka</option>
+                                    <option value="Kerala">[KL] Kerala</option>
+                                    <option value="[LA] Ladakh">[LA] Ladakh</option>
+                                    <option value="[LD] Lakshadweep">[LD] Lakshadweep</option>
+                                    <option value="[MP] Madhya Predesh">[MP] Madhya Predesh</option>
+                                    <option value="[MH] Maharashtra">[MH] Maharashtra</option>
+                                    <option value="[MN] Manipur">[MN] Manipur</option>
+                                    <option value="[ML] Meghalaya">[ML] Meghalaya</option>
+                                    <option value="[MZ] Mizoram">[MZ] Mizoram</option>
+                                    <option value="[NL] Nagaland">[NL] Nagaland</option>
+                                    <option value="[OD] Odisha">[OD] Odisha</option>
+                                    <option value="[PY] Puducherry">[PY] Puducherry</option>
+                                    <option value="[PB] Punjab">[PB] Punjab</option>
+                                    <option value="[RJ] Rajasthan">[RJ] Rajasthan</option>
+                                    <option value="[SK] Sikkim">[SK] Sikkim</option>
+                                    <option value="[TN] Tamil Nadu">[TN] Tamil Nadu</option>
+                                    <option value="[TS] Telangana">[TS] Telangana</option>
+                                    <option value="[TR] Tripura">[TR] Tripura</option>
+                                    <option value="[UP] Uttar Predesh">[UP] Uttar Predesh</option>
+                                    <option value="[UK] Uttarakhand">[UK] Uttarakhand</option>
+                                    <option value="[WB] West Bengal">[WB] West Bengal</option>
+                                    <option value="[OT] Other Territory">[OT] Other Territory</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="">Destination of Supply</label>
+                                <select name="destiofsupply" id="" class="form-control">
+                                    <option value="{{ pbill.destiofsupply }}">{{ pbill.destiofsupply }}</option>
+                                    <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
+                                    <option value="[AD] Andhra Predhesh">[AD] Andhra Predhesh</option>
+                                    <option value="[AR] Arunachal Predesh">[AR] Arunachal Predesh</option>
+                                    <option value="[AS] Assam">[AS] Assam</option>
+                                    <option value="[BR] Bihar">[BR] Bihar</option>
+                                    <option value="[CH] Chandigarh">[CH] Chandigarh</option>
+                                    <option value="[CG] Chhattisgarh">[CG] Chhattisgarh</option>
+                                    <option value="[DNH] Dadra and Nagar Haveli">[DNH] Dadra and Nagar Haveli</option>
+                                    <option value="[DD] Damn anad Diu">[DD] Damn anad Diu</option>
+                                    <option value="[DL] Delhi">[DL] Delhi</option>
+                                    <option value="[GA] Goa">[GA] Goa</option>
+                                    <option value="[GJ] Gujarat">[GJ] Gujarat</option>
+                                    <option value="[HR] Haryana">[HR] Haryana</option>
+                                    <option value="[HP] Himachal Predesh">[HP] Himachal Predesh</option>
+                                    <option value="[JK] Jammu and Kashmir">[JK] Jammu and Kashmir</option>
+                                    <option value="[JH] Jharkhand">[JH] Jharkhand</option>
+                                    <option value="[KA] Karnataka">[KA] Karnataka</option>
+                                    <option value="[KL] Kerala">[KL] Kerala</option>
+                                    <option value="[LA] Ladakh">[LA] Ladakh</option>
+                                    <option value="[LD] Lakshadweep">[LD] Lakshadweep</option>
+                                    <option value="[MP] Madhya Predesh">[MP] Madhya Predesh</option>
+                                    <option value="[MH] Maharashtra">[MH] Maharashtra</option>
+                                    <option value="[MN] Manipur">[MN] Manipur</option>
+                                    <option value="[ML] Meghalaya">[ML] Meghalaya</option>
+                                    <option value="[MZ] Mizoram">[MZ] Mizoram</option>
+                                    <option value="[NL] Nagaland">[NL] Nagaland</option>
+                                    <option value="[OD] Odisha">[OD] Odisha</option>
+                                    <option value="[PY] Puducherry">[PY] Puducherry</option>
+                                    <option value="[PB] Punjab">[PB] Punjab</option>
+                                    <option value="[RJ] Rajasthan">[RJ] Rajasthan</option>
+                                    <option value="[SK] Sikkim">[SK] Sikkim</option>
+                                    <option value="[TN] Tamil Nadu">[TN] Tamil Nadu</option>
+                                    <option value="[TS] Telangana">[TS] Telangana</option>
+                                    <option value="[TR] Tripura">[TR] Tripura</option>
+                                    <option value="[UP] Uttar Predesh">[UP] Uttar Predesh</option>
+                                    <option value="[UK] Uttarakhand">[UK] Uttarakhand</option>
+                                    <option value="[WB] West Bengal">[WB] West Bengal</option>
+                                    <option value="[OT] Other Territory">[OT] Other Territory</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="">Branch</label>
+                                <input type="text" class="form-control" value="{{ pbill.branch }}" name="branch" placeholder="">
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="">Reference</label>
+                                <input type="text" class="form-control" value="{{ pbill.reference }}" name="reference" placeholder="">   
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-3 mt-2"><h5>Deliver to Details</h5></div>
+                            <div class="col-md-3 mt-2">
+                                <input type="text" value="{{ pbill.contact_name }}" name="contact_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-2">
+                                <div class="form-row">
+                                    <textarea class="form-control" id="deliverto" value="" name="deliverto"
+                                    rows="5">{{ pbill.deliverto }}</textarea>
+                                </div>
+                            </div>
+                        </div><hr>
+                        
+                        <div class="row">
+                            <div class="col-md-3 mt-2">
+                                <label for="">Date</label>
+                                <input type="date" class="form-control" value="{{ pbill.date | date:'Y-m-d' }}" name="date">
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="">Expected Deliver Date</label>
+                                <input type="date" class="form-control" value="{{ pbill.deliver_date | date:'Y-m-d' }}" name="deliver_date">
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="">Credit Period</label>
+                                <select class="custom-select" name="credit_period" id="termadd" onclick="showinp('newtrm', this)">
+                                    <option value="{{ pbill.credit_period }}">{{ pbill.credit_period }}</option>
+                                    <option value="0">Due on Receipt</option>
+                                    <option value="15">NET15</option>
+                                    <option value="30">NET30</option>
+                                    <option value="60">NET60</option>
+                                  </select>
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label>Due Date</label>
+                                <input type="text" id="duedat" value="{{ pbill.due_date }}" class="form-control" name="due_date">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row clearfix">
+                            <div class="col-md-12 table-responsive-md mt-3">
+                                <table class="table table-bordered table-hover mt-3" id="tab_logic">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Sl.No</th>
+                                            <th class="text-center">Item</th>
+                                            <th class="text-center">HSN</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-center">Rate</th>
+                                            <th class="text-center">Tax (%)</th>
+                                            <th class="text-center">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="items-table-body">
+                                        {% for p in bitem %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}
+                                                <input type="text" name="id[]" value="{{p.id}}" hidden>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <select name="items[]" id="itmlst" class="form-control">
+                                                    <option value="{{ p.items }}">{{ p.items }}</option>
+                                                    {% for i in itm %}
+                                                        <option value="{{ i.name }}">
+                                                            {{ i.name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <td>
+                                                    <input type="number" value="{{ p.hsn }}" name='hsn[]' placeholder='Enter HSN'
+                                                id="hsn1" class="form-control hsn">
+                                                </td>
+                                            <td>
+                                                <input type="number" value="{{ p.quantity }}" name='quantity[]'  onchange="qtychange1(this)" placeholder='Enter Qty'
+                                                id="qty1" class="form-control qty" step=0 min=0>
+                                                <span id="qtyspan" class='text-muted'></span>
+                                            </td> 
+                                            <td><input type="number" value="{{ p.rate }}" name='rate[]' id="unit1" placeholder='Enter Rate' 
+                                                class="form-control price" step="0.00" min="0">
+                                            </td> 
+                                            <td>
+                                                <select name="tax[]" id="tax1" class="form-control tax" onchange="filtertax()">
+                                                    <option id="ta1" value={{ p.tax }} text={{ cmp1.state }}>{{ p.tax }} % GST</option>
+                                                    <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                                                    <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                                                    <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                                                    <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                                                    <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                                                    <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                                                    <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                                                    <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                                                    <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                                                    <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                                                    <option id="ta5" value={{ p.tax }} text=" ">{{ p.tax }} % IGST</option>
+                                                    <option value=28 text=" ">28.0% IGST(28%)</option>
+                                                    <option value=18 text=" ">18.0% IGST(18%)</option>
+                                                    <option value=12 text=" ">12.0% IGST(12%)</option>
+                                                    <option value=6 text=" ">06.0% IGST(06%)</option>
+                                                    <option value=5 text=" ">05.0% IGST(05%)</option>
+                                                    <option value=3 text=" ">03.0% IGST(03%)</option>
+                                                    <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                                                    <option value=0 text=" ">0.0% IGST(0%)</option>
+                                                    <option value=0 text=" ">Exempt IGST(0%)</option>
+                                                    <option value=0 text=" ">Out of Scope(0%)</option>
+                                              </select>
+                                            </td> 
+                                            <td><input type="number" value="{{ p.amount }}" name='amount[]' id="total1" class="form-control total" 
+                                                placeholder="0" step="any" readonly>
+                                            </td> 
+                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>   
+                                        </tr> 
+                                        {% endfor %}   
+                                    </tbody>
+                                    <tr>
+                                        <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="add_item_row()">+</a></td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="add_item_row()">+</a></td>
+                                    </tr> -->
+                                </table>
+                                <div class="row mt-3">
+                                    <div class="col-md-1">
+                                        
+                                    </div>
+                                </div> 
+                            </div>
+
+                            <div id="product_search_bar"></div>
+                            
+                            
+                        </div>  
+                        
+                        <div class="row clearfix" style="margin-top:20px">
+                            <div class="col-md-6 mt-3">
+                                <label for="">Note</label>
+                                <div class="form-row">
+                                    <textarea class="form-control" name="note" rows="3">{{ pbill.note }}</textarea>
+                                </div><br>
+                                <div>
+                                    <input type="file" class="form-control" name="file" value="{{ pbill.file }}">
+                                </div>
+                            </div>
+                            <div class="col-md-1 mt-3"></div>
+                            <div class="col-md-5 table-responsive-md mt-3" id="tab_logic_total" style="background-color:rgba(0,0,0,.4); border: 1px solid rgba(128, 128, 128, 0.6);"><br>
+                                <div class="p-3">
+                                    <div class="row container-fluid p-2 m-0">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">Sub Total</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" step="any" name='sub_total' placeholder=0 
+                                            class="form-control" id="subtotal" value="{{ pbill.sub_total }}">
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid p-2 m-0">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">Discount</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='discount' step="any" id="disc1" placeholder=0 
+                                            class="form-control disc" value="{{ pbill.discount }}"/>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid  p-2 m-0" id="igst1">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">IGST</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='igst' step="any" id="igst" placeholder=0 
+                                            class="form-control" value="{{ pbill.igst }}"/>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid p-2 m-0" id="cgst1">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">CGST</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='cgst' step="any" id="cgst" placeholder=0 
+                                            class="form-control" value="{{ pbill.cgst }}"/>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid p-2 m-0" id="sgst1">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">SGST</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='sgst' step="any" id="sgst" placeholder=0 
+                                            class="form-control" value="{{ pbill.sgst }}"/>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid  p-2 m-0">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">Tax Amount</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='tax_amount' step="any" id="tax_amount" placeholder=0 
+                                            class="form-control" value="{{ pbill.tax_amount }}"/>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid p-2 m-0">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">TCS</label></div>
+                                        <div class="col-sm-4 mt-2">
+                                            <select name="tcs" class="form-control" id="tcs1" onchange="calc_tcs()">
+                                                <option value="{{ pbill.tcs }}">{{ pbill.tcs }}</option>
+                                                <option value="1">Cess 1%</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4 mt-2">
+                                            <input type="text" value="{{ pbill.tcs_amount }}" id="tcs_amount" name='tcs_amount' placeholder='0' class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row container-fluid p-2 m-0">
+                                        <div class="col-sm-4 mt-2"><a class="text-center" onclick="calc_roundoff()">Round Off</a></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='round_off' step="any" id="round_off" placeholder=0 
+                                            class="form-control" value="{{ pbill.round_off }}"/>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div><hr>
+                                    <div class="row container-fluid  p-2 m-0" style="display: none;">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">Balance Due</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='balance_due' id="due" placeholder="0" step="any" 
+                                            class="form-control" value="{{ pbill.balance_due }}" readonly>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid  p-2 m-0" style="display: none;">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">Amount Received</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='amtrecvd' id="" value="0" step="any" 
+                                            class="form-control" value="{{ pbill.amtrecvd }}" readonly>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                    <div class="row container-fluid  p-2 m-0">
+                                        <div class="col-sm-4 mt-2"><label for="a" class="text-center">Grand Total</label></div>
+                                        <div class="col-sm-8 mt-2"><input type="number" name='grand_total' id="grandtotal" placeholder="0" step="any" 
+                                            class="form-control" value="{{ pbill.grand_total }}" readonly>
+                                        </div>
+                                        <div class="col-sm-4 m-0 p-0"></div>
+                                    </div>
+                                </div>   
+                            </div>
+                        </div>
+                        <div class="notices mt-3">
+                            <div class="text-muted">NOTICE:</div>
+                            <div class="text-muted">
+                              Fin sYs Terms and Conditions Apply
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                        type="submit">
+                                    Save
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        function qtychange1(element) {
+            var tx = parseInt(element.value);
+            document.getElementById('qty11').value = parseInt(document.getElementById('qty111').value) * tx;
+            document.getElementById('qty12').value = parseInt(document.getElementById('qty121').value) * tx;
+            document.getElementById('qty13').value = parseInt(document.getElementById('qty131').value) * tx;
+            document.getElementById('qty14').value = parseInt(document.getElementById('qty141').value) * tx;
+        }
+
+        $(document).ready(function() {
+
+            $('#termadd').on('change', function() {
+                select = $('#termadd').val();
+                $.ajax({
+                        type: "GET",
+                        url: "{% url 'getperiod' %}",
+                        data: {
+                        id: select
+                    }
+                }).done(function(response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                    document.getElementById('duedat').value = json_data[key]['newdate'];
+                    }
+                }).fail(function() { });
+            });
+
+            var $select1 = $('#plosu'),
+            $select2 = $('#tax1'),
+            $select3 = $('#tax2'),
+            $select4 = $('#tax3'),
+            $select5 = $('#tax4'),
+            $options = $select2.find('option'),
+            $options1 = $select3.find('option'),
+            $options2 = $select4.find('option'),
+            $options3 = $select5.find('option');
+            if ($options1.value == '{{ cmp1.state }}') {
+                $options1.text = "{{ cmp1.state }}"
+            }
+            $select1.on('change', function() {
+                if (this.value == "{{ cmp1.state }}") {
+                    $select2.html($options.filter('[text="' + this.value + '"]'));
+                    $select3.html($options1.filter('[text="' + this.value + '"]'));
+                    $select4.html($options2.filter('[text="' + this.value + '"]'));
+                    $select5.html($options3.filter('[text="' + this.value + '"]'));
+                } 
+                else {
+                    $select2.html($options.filter('[text="' + " " + '"]'));
+                    $select3.html($options1.filter('[text="' + " " + '"]'));
+                    $select4.html($options2.filter('[text="' + " " + '"]'));
+                    $select5.html($options3.filter('[text="' + " " + '"]'));
+                }
+            }).trigger('change');
+        });
+    </script>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var i = 1;
+            $("#add_row").click(function() {
+                b = i - 1;
+                $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+                $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+                i++;
+            });
+            $("#delete_row").click(function() {
+                if (i > 1) {
+                    $("#addr" + (i - 1)).html('');
+                    i--;
+                }
+                calc();
+            });
+            $('#tab_logic tbody').on('keyup change', function() {
+                calc();
+            });
+            $('#tax').on('keyup change', function() {
+                calc_total();
+            });
+            $('#tcs').on('keyup change', function () {
+                calc_total();
+            });
+            $('#disc1').on('keyup change', function () {
+                calc_total();
+            });
+        });
+
+        function calc() {
+            $('#tab_logic tbody tr').each(function() {
+                var html = $(this).html();
+                if (html != '') {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    var tax = $(this).find('.tax').val();
+                
+                    $(this).find('.total').val(parseFloat(qty * price));
+                    $(this).find('.taxamount').val(parseFloat((qty * price) * (parseFloat(tax) / 100)));
+                    
+                    calc_total();
+                }
+            });
+        }
+
+        function calc_total() {
+            total = 0;
+            $('.total').each(function() {
+                total += parseFloat($(this).val());
+            });
+
+            taxamount = 0.0;
+            $('.taxamount').each(function() {
+                taxamount += parseFloat($(this).val());
+            });
+
+            $('#subtotal').val(parseFloat(total.toFixed(2)));
+            $('#tax_amount').val(parseFloat(taxamount.toFixed(2)));
+            calc_tcs();
+        }
+        function calc_tcs() {
+            tcsamount = 0;
+            var a = document.getElementById("tcs1").value
+            var discount = document.getElementById("disc1").value
+            tcs=0
+            tcs =a/100 * total
+            let z=Math.round(tcs)
+            disc0=discount
+            
+            var amount =taxamount + total - tcs 
+            let x =Math.round(amount)
+            let y =Math.round(x-disc0)
+            var gt = amount-disc0
+            
+            $('#tcs_amount').val(parseFloat(tcs.toFixed(2)));
+            // $('#grandtotal').val((y).toFixed(2));
+            // $('#due').val((y).toFixed(2));
+            // $('#round_off').val((y).toFixed(2));   
+            $('#grandtotal').val(parseFloat(gt.toFixed(2)));
+            $('#due').val(parseFloat(y.toFixed(2)));
+            $('#round_off').val(parseFloat(y.toFixed(2)));
+
+            test()
+        }
+
+        function test(){
+            var bc = document.getElementById("plosu").value
+            d=0
+            if (bc == "{{ cmp1.state }}"  ) {
+                gst = taxamount/2
+                $('#cgst').val(parseFloat(gst.toFixed(2)));
+                $('#sgst').val(parseFloat(gst.toFixed(2)));
+                $('#igst').val(parseFloat(d.toFixed(2)));
+            }
+                
+            if (bc != "{{ cmp1.state }}"  ) {
+                $('#igst').val(taxamount.toFixed(2));
+                $('#cgst').val(d.toFixed(2));
+                $('#sgst').val(d.toFixed(2));
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        function state(element) {
+            if (element.value == "Kerala" ) {
+                document.getElementById('cgst1').style.display = 'flex';
+                document.getElementById('sgst1').style.display = 'flex';
+                document.getElementById('igst1').style.display = 'none'; 
+            } else {
+                document.getElementById('cgst1').style.display = 'none';
+                document.getElementById('sgst1').style.display = 'none';
+                document.getElementById('igst1').style.display = 'flex';
+            }
+        }
+    </script>
+    
+{% endblock %}

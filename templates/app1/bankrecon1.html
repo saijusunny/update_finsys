@@ -1,0 +1,289 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+
+        </head>
+        <style>
+            container-1 {
+                font-size: 12px;
+                margin-left: 12px;
+            }
+        </style>
+        <body>
+
+        <!-- Trigger/Open The Modal -->
+
+
+        <div class="page-content">
+
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <br>
+                        <center><h3 class="mb-0">Reconcile
+                            {% if re1.cid_id == cmp1.cid %}
+                                {{ re1.accounttype }}</h3>
+                            {% endif %}
+                            <br><h6 class="mb-0">Statement ending date </h6>
+                            {% if re1.cid_id == cmp1.cid %}
+                                <h6 class="text-grey"> {{ re1.endingdate }}</h6>
+                            {% endif %}</center>
+
+                        <hr/>
+
+
+                        <div class="row">
+
+                            <div class="col"
+                                 style="border-right:solid 1px gray; margin-top: 20px; margin-bottom: 20px;">
+
+                                <div class="row">
+
+
+                                    <div class="col">
+                                        {% if re1.cid_id == cmp1.cid %}
+                                            <center><label style="padding-top: 25px;font-size: 30px; "
+                                                           id="endingbalance">&#8377; {{ re1.endingbalance }}</label>
+                                            </center>
+
+
+                                        {% endif %}
+                                        <center><label style="font-size: 15px;">STATEMENT ENDING BALANCE</label>
+                                        </center>
+
+                                    </div>
+
+                                    <div class="col">
+                                        <center><label style="padding-top: 35px;font-size: 30px;">-</label></center>
+
+                                    </div>
+
+                                    <div class="col">
+                                        {% if re1.cid_id == cmp1.cid %}
+                                            <center><span style="font-size: 30px;">&#8377;  </span><label
+                                                    style="padding-top: 25px;font-size: 30px; "
+                                                    id="cleared">&#8377; </label></center>
+
+
+                                        {% endif %}
+
+                                        <center><label style="font-size: 15px;">CLEARED BALANCE</label></center>
+                                        <center><label style="font-size:25px;">|</label></center>
+                                    </div>
+
+
+                                </div>
+
+                                &nbsp;
+                                <div class="row" style="border-top: solid 1px gray;margin-left:30px;margin-right:30px;">
+                                    <div class="col">
+
+                                        {% if re1.cid_id == cmp1.cid %}
+                                            <center><label style="padding-top: 25px;font-size: 30px; "
+                                                           id="beginningbalance">&#8377; {{ re1.beginningbalance }}</label>
+                                            </center>
+
+
+                                        {% endif %}
+                                        <center><label style="font-size: 15px;">BEGINNING BALANCE</label></center>
+
+                                    </div>
+
+                                    <div class="col">
+                                        <center><label style="padding-top: 35px;font-size: 30px;">-</label></center>
+
+                                    </div>
+
+                                    <div class="col">
+                                        {% if re1.cid_id == cmp1.cid %}
+                                            <center><label style="padding-top: 25px;font-size: 30px; " id="serchar">&#8377; {{ re1.serchar }}</label>
+                                            </center>
+
+
+                                        {% endif %}
+                                        <center><label style="font-size: 15px;">PAYMENTS</label></center>
+                                    </div>
+
+                                    <div class="col">
+                                        <center><label style="padding-top: 35px;font-size: 30px;">+</label></center>
+                                    </div>
+
+
+                                    <div class="col">
+                                        {% if re1.cid_id == cmp1.cid %}
+                                            <center><label style="padding-top: 25px;font-size: 30px; " id="intear">&#8377; {{ re1.intear }}</label>
+                                            </center>
+
+
+                                        {% endif %}
+                                        <center><label style="font-size: 15px;">DEPOSITS</label></center>
+                                    </div>
+                                </div>
+                                &nbsp;
+                            </div>
+
+                            <div class="col-4">
+
+                                <div class="row" style="margin-top: 130px;">
+
+
+                                    <div class="col">
+                                        {% if re1.cid_id == cmp1.cid %}
+                                            <center><span style="font-size: 30px;">&#8377;  </span><label
+                                                    style="font-size: 30px;" id="difference"></label></center>
+                                            <center><label style="font-size: 15px;">DIFFERENCES</label></center>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            &nbsp;
+
+
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row mt-3 mb-3">
+                        <div class="col-md-1 pt-2 pb-2">
+
+                        </div>
+                        <div class="col-md-2 pt-3">
+                        </div>
+                        <div class="col-md-2 pt-3">
+                        </div>
+                        <div class="col-md-4 justify-content-center">
+                            <div class="btn-group col-md-3 w-100 mb-3">
+                                <button type="button" class="btn btn-outline-light">Payments</button>
+                                <button type="button" class="btn btn-outline-light">Deposits</button>
+                                <button type="button" class="btn btn-outline-light">All</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-end">
+                        </div>
+                        <table class="table table-responsive-md">
+                            <thead>
+                            <tr>
+                                <th scope="col">DATE</th>
+                                <th scope="col">TYPE</th>
+                                <th scope="col">REF NO.</th>
+                                <th scope="col">ACCOUNT</th>
+                                <th scope="col">PAYEE</th>
+                                <th scope="col">MEMO</th>
+                                <th scope="col"></th>
+                                <th scope="col">DEPOSIT(INR)</th>
+                                <th scope="col">PAYMENT(INR)</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% if re1.cid_id == cmp1.cid %}
+                                <tr>
+                                    <td>{{ re1.edat }}</td>
+                                    <td>Journal</td>
+                                    <td>{{ re1.recon1id }}</td>
+                                    <td>{{ re1.expacc }}</td>
+                                    <td></td>
+                                    <td>Service Charge</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ re1.serchar }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endif %}
+
+
+                            {% if re1.cid_id == cmp1.cid %}
+                                <tr>
+                                    <td>{{ re1.idat1 }}</td>
+                                    <td>Deposit</td>
+                                    <td>{{ re1.recon1id }}</td>
+                                    <td>{{ re1.incacc }}</td>
+                                    <td></td>
+                                    <td>Interest Earned</td>
+                                    <td></td>
+                                    <td>{{ re1.intear }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            {% endif %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--<td><div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        value=""
+        id="flexCheckChecked"
+        checked
+      />
+      <label class="form-check-label" for="flexCheckChecked">
+
+      </label>
+      </div></td>-->
+
+
+        <script>
+            // Get the modal
+            var modal = document.getElementById("myModal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+        </div>
+        </div>
+
+        </body>
+        <script src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.js"></script>
+        <script>
+            $(document).ready(function () {
+                var deposit = parseFloat('{{ re1.intear }}');
+                var payment = parseFloat('{{ re1.serchar }}');
+                var begbal = parseFloat('{{ re1.beginningbalance }}');
+                var endbal = parseFloat('{{ re1.endingbalance }}');
+                var cleared = begbal - payment + deposit
+                var difference = endbal - cleared
+                document.getElementById('difference').innerHTML = difference
+                document.getElementById('cleared').innerHTML = cleared
+                if (difference == 0 && payment == 0 && deposit == 0) {
+                    document.getElementById('reconc').innerHTML = ''
+                } else if (difference == 0 && payment != 0 && deposit != 0) {
+                    document.getElementById('reconc').innerHTML = 'Reconciled'
+                }
+            });
+        </script>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,274 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <!-- Trigger/Open The Modal -->
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">SALES RECORDS</h2></center>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class="col-md-2">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                    data-toggle="dropdown">New
+                                Transaction
+                            </button>
+                            <div class="dropdown-menu" style="background-color: black;">
+                                <a class="dropdown-item" href="goaddinvoices"
+                                   style="height: 40px; font-size: 15px; color: white;">Invoice</a>
+                                <a class="dropdown-item" href="paymentindex"
+                                   style="height: 40px; font-size: 15px; color: white;">Payment</a>
+                                <a class="dropdown-item" href="addsalesrecipts"
+                                   style="height: 40px; font-size: 15px; color: white;">Sales Receipt</a>
+                                <a class="dropdown-item" href="creditindex"
+                                   style="height: 40px; font-size: 15px; color: white;">Credit note</a>
+                                <a class="dropdown-item" href="estindex"
+                                   style="height: 40px; font-size: 15px; color: white;">Estimate</a>
+                                <a class="dropdown-item" href="delayed"
+                                   style="height: 40px; font-size: 15px; color: white;">Delayed Charge</a>
+                                <a class="dropdown-item" href="gosaletimeactivity"
+                                   style="height: 40px; font-size: 15px; color: white;">Time Activity</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-responsive-md table-hover mt-4">
+                        <thead>
+                        <tr>
+                            <th>DATE</th>
+                            <th>TYPE</th>
+                            <th>NO.</th>
+                            <th>CUSTOMER</th>
+                            <th>DUE DATE</th>
+                            <th>BALANCE</th>
+                            <th>TOTAL BEFORE</th>
+                            <th>TAX</th>
+                            <th>TOTAL</th>
+                            <th>ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for payment in pay %}
+                            {% if payment.cid_id == cmp1.cid %}
+                                <tr>
+                                    <td>{{ payment.paymdate }}</td>
+                                    <td>{{ "Payment" }}</td>
+                                    <td>{{ payment.refno }}</td>
+                                    <td>{{ payment.customer }}</td>
+                                    <td>{{ payment.paymdate }}</td>
+                                    <td>{{ payment.openbal }}</td>
+                                    <td>{{ payment.orgamt }}</td>
+                                    <td>{{ '0' }}</td>
+                                    <td>{{ payment.orgamt }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        {% for sale in sale %}
+                            {% if sale.cid_id == cmp1.cid %}
+                                <tr>
+                                    <td>{{ sale.saledate }}</td>
+                                    <td>{{ "Sales reciept" }}</td>
+                                    <td>{{ sale.saleno }}</td>
+                                    <td>{{ sale.salename }}</td>
+                                    <td></td>
+                                    <td>{{ '0.00' }}</td>
+                                    <td>{{ sale.salesubtotal }}</td>
+                                    <td>{{ sale.saletaxamount }}</td>
+                                    <td>{{ sale.salegrandtotal }}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                    data-toggle="dropdown">Actions
+                                            </button>
+                                            <div class="dropdown-menu" style="background-color: white;">
+                                                <a href="editsale/{{ sale.salesrecptsid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;">
+                                                    <i class="bx bx-edit"><b>EDIT</b></i>
+                                                </a>
+                                                <a href="showsales/{{ sale.salesrecptsid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;">
+                                                    <i class="bx bx-edit"><b>VIEW</b></i>
+                                                </a>
+                                                <a href="deletesale/{{ sale.salesrecptsid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;">
+                                                    <i class="bx bx-trash"><b>DELETE</b></i>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        {% for credit in crd %}
+                            {% if credit.cid_id == cmp1.cid %}
+                                <tr>
+                                    <th>{{ credit.creditdate }}</th>
+                                    <td>{{ "Credit Note" }}</td>
+                                    <td>{{ credit.creditno }}</td>
+                                    <td>{{ credit.customer }}</td>
+                                    <td>{{ credit.creditdate }}</td>
+                                    <td>{{ credit.grndtot }}</td>
+                                    <td>{{ credit.subtot }}</td>
+                                    <td>{{ credit.taxamnt }}</td>
+                                    <td>{{ credit.grndtot }}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                    data-toggle="dropdown">Actions
+                                            </button>
+                                            <div class="dropdown-menu" style="background-color: white;">
+                                                <a href="editcredit/{{ credit.creditnoteid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;"><i
+                                                        class="bx bx-edit"><b>EDIT</b></i></a>
+                                                <a href="showcredit/{{ credit.creditnoteid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;"><i
+                                                        class="bx bx-edit"><b>VIEW</b></i></a>
+                                                <a href="deletecredit/{{ credit.creditnoteid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;"><i
+                                                        class="bx bx-trash"><b>DELETE</b></i></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        {% for estimate in est %}
+                            {% if estimate.cid_id == cmp1.cid %}
+                                <tr>
+                                    <th>{{ estimate.estimatedate }}</th>
+                                    <td>{{ "Estimate" }}</td>
+                                    <td>{{ estimate.estimateno }}</td>
+                                    <td>{{ estimate.customer }}</td>
+                                    <td>{{ estimate.estimatedate }}</td>
+                                    <td>{{ '0.00' }}</td>
+                                    <td>{{ estimate.subtotal }}</td>
+                                    <td>{{ estimate.taxamount }}</td>
+                                    <td>{{ estimate.estimatetotal }}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                    data-toggle="dropdown">Actions
+                                            </button>
+                                            <div class="dropdown-menu" style="background-color: white;">
+                                                <a href="editestimate/{{ estimate.estimateid }}" class="dropdown-item"
+                                                   style="color:black; font-size: 15px;"><i
+                                                        class="bx bx-edit"><b>EDIT</b></i></a>
+                                                <a href="deleteestimate/{{ estimate.estimateid }}" class="dropdown-item"
+                                                   style="color:black; font-size: 15px;"><i
+                                                        class="bx bx-trash"><b>DELETE</b></i></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        {% for delayedcharge in delayed %}
+                            {% if delayedcharge.cid_id == cmp1.cid %}
+                                <tr>
+                                    <th>{{ delayedcharge.delayedchargedate }}</th>
+                                    <td>{{ "Delayed Charge" }}</td>
+                                    <td>{{ delayedcharge.delayedchargeno }}</td>
+                                    <td>{{ delayedcharge.customer }}</td>
+                                    <td>{{ delayedcharge.delayedchargedate }}</td>
+                                    <td>{{ '0.00' }}</td>
+                                    <td>{{ delayedcharge.subtotal }}</td>
+                                    <td>{{ delayedcharge.taxamount }}</td>
+                                    <td>{{ delayedcharge.grandtotal }}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                    data-toggle="dropdown">Actions
+                                            </button>
+                                            <div class="dropdown-menu" style="background-color: white;">
+                                                <a href="editdelayed/{{ delayedcharge.delayedchargeid }}"
+                                                   class="dropdown-item"
+                                                   style="color:black; font-size: 15px;"><i
+                                                        class="bx bx-edit"><b>EDIT</b></i></a>
+                                                <a href="deletedelay/{{ delayedcharge.delayedchargeid }}"
+                                                   class="dropdown-item"
+                                                   style="color:black; font-size: 15px;"><i
+                                                        class="bx bx-trash"><b>DELETE</b></i></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        {% for tim in tisa %}
+                            {% if tim.cid_id == cmp1.cid %}
+                                <tr>
+                                    <td>{{ tim.timdatesale }}</td>
+                                    <td>{{ "Time Activity" }}</td>
+                                    <td></td>
+                                    <td>{{ tim.timecustsale }}</td>
+                                    <td>{{ tim.timdatesale }}</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>0.00</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                    data-toggle="dropdown">Actions
+                                            </button>
+                                            <div class="dropdown-menu" style="background-color: white;">
+                                                <a href="edittimesale/{{ tim.timeactsaleid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;"><i
+                                                        class="bx bx-edit"><b>EDIT</b></i></a>
+                                                <a href="deletetimesale/{{ tim.timeactsaleid }}" class="dropdown-item"
+                                                   style="color: black; font-size: 15px;"><i
+                                                        class="bx bx-trash"><b>DELETE</b></i></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+{% endblock %}
+

@@ -1,0 +1,368 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">ADD CUSTOMER</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">Customer Information</h4>
+                </div>
+                <hr/>
+                <form action="customersestimate" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom01">Title</label>
+                                <select name="title" id="title" class="form-control" id="validationCustom01">
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Miss">Miss</option>
+                                    <option value="Ms">Ms</option>
+                                </select>
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom02">First name</label>
+                                <input type="text" class="form-control" id="validationCustom02" name="firstname"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom02">Last name</label>
+                                <input type="text" class="form-control" id="validationCustom02" name="lastname"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom03">Company</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="company"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom03">Location</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="location"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                            <div class="col-md-3 mt-3"></div>
+                            <div class="col-md-3 mt-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom04">GST type</label>
+                                <select class="custom-select" id="validationCustom04" name="gsttype"
+                                        onclick="hidinput('hello', this)" required
+                                        style="background-color: #243e54; color: white;">
+                                    <option selected disabled value="">Choose...</option>
+                                    <option>GST registered- Regular</option>
+                                    <option>GST registered- Composition</option>
+                                    <option>GST unregistered</option>
+                                    <option>Consumer</option>
+                                    <option>Overseas</option>
+                                    <option>SEZ</option>
+                                    <option>Deemed exports - EOU's STP's EHTP's etc</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a valid registration type.</div>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <div id="hello">
+                                    <label for="validationCustom05">GSTIN</label>
+                                    <input type="text" class="form-control" onchange="checkgst(this)"
+                                           id="validationCustom05" name="gstin"
+                                           style="background-color: #2f516f;color: white;"
+                                           placeholder="29APPCK7465F1Z1">
+                                    <div class="text-danger m-2" id="warngst"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom03">PAN NO</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="panno"
+                                       required style="background-color: #2f516f;color: white;"
+                                       onchange="checkpan(this)" placeholder="APPCK7465F">
+                                <div class="text-danger m-2" id="warnpan"></div>
+                            </div>
+                            <div class="col-md-3 mt-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom03">Email</label>
+                                <input type="email" class="form-control" id="validationCustom03" name="email"
+                                       required style="background-color: #2f516f;color: white;"
+                                       placeholder="finsys@mail.com">
+                                <div class="invalid-feedback">Please provide a valid Email</div>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom03">Website</label>
+                                <input type="text" class="form-control" id="validationCustom03"
+                                       placeholder="www.finsys.com" onchange="checkweb(this)" name="website"
+                                       style="background-color: #2f516f;color: white;">
+                                <div id="warnweb" class="text-danger"></div>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom01">Mobile</label>
+                                <input type="text" class="form-control" id="validationCustom01"
+                                       onchange="checkphone(this)" name="mobile"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="text-danger m-2" id="warnphone"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                                <div class="row">
+                                    <div class="col-md-12 card-title">
+                                        <h5 class="mb-0">Billing Address</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-row">
+                                            <label for="street">Street</label>
+                                            <textarea class="form-control street" id="street" name="street"
+                                                      required
+                                                      style="background-color: #2f516f;color: white;"></textarea>
+                                            <div class="invalid-feedback">Please provide a valid Street</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="city">City</label>
+                                            <input type="text" class="form-control" id="city"
+                                                   name="city"
+                                                   required
+                                                   style="background-color: #2f516f;color: white;" placeholder="City">
+                                            <div class="invalid-feedback">Please provide a valid City</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="state">State</label>
+                                            <input type="text" class="form-control" id="state"
+                                                   name="state"
+                                                   required style="background-color: #2f516f;color: white;"
+                                                   placeholder="State">
+                                            <div class="invalid-feedback">Please provide a valid State</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="pinco">Pin Code</label>
+                                            <input type="text" class="form-control" id="pinco"
+                                                   name="pincode"
+                                                   required style="background-color: #2f516f;color: white;"
+                                                   placeholder="PIN code">
+                                            <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="country">Country</label>
+                                            <input type="text" class="form-control" id="country"
+                                                   name="country"
+                                                   required style="background-color: #2f516f;color: white;"
+                                                   placeholder="Country">
+                                            <div class="invalid-feedback">Please provide a valid Country</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <div class="row">
+                                    <div class="col-md-12 d-flex">
+                                        <h5>Shipping Address</h5>
+                                        <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                               name="okay">
+                                        <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstreet">Street</label>
+                                            <textarea class="form-control" id="shipstreet"
+                                                      name="shipstreet"
+                                                      required
+                                                      style="background-color: #2f516f;color: white;"></textarea>
+                                            <div class="invalid-feedback">Please provide a valid Street</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipcity">City</label>
+                                            <input type="text" class="form-control" id="shipcity"
+                                                   name="shipcity"
+                                                   required
+                                                   style="background-color: #2f516f;color: white;" placeholder="City">
+                                            <div class="invalid-feedback">Please provide a valid City</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstate">State</label>
+                                            <input type="text" class="form-control" id="shipstate"
+                                                   name="shipstate"
+                                                   required style="background-color: #2f516f;color: white;"
+                                                   placeholder="State">
+                                            <div class="invalid-feedback">Please provide a valid State</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shippinco">Pin Code</label>
+                                            <input type="text" class="form-control" id="shippinco"
+                                                   name="shippincode"
+                                                   required style="background-color: #2f516f;color: white;"
+                                                   placeholder="PIN code">
+                                            <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipcountry">Country</label>
+                                            <input type="text" class="form-control" id="shipcountry"
+                                                   name="shipcountry"
+                                                   required style="background-color: #2f516f;color: white;"
+                                                   placeholder="Country">
+                                            <div class="invalid-feedback">Please provide a valid Country</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required
+                                           style="background-color: #2f516f;">
+                                    <label>Agree to terms and conditions</label>
+                                    <div class="invalid-feedback">You must agree before submitting.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                        type="submit">
+                                    Submit form
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function poppins() {
+            var chkbtn = document.getElementById('okay');
+            if (chkbtn.checked == true) {
+                document.getElementById('shipstreet').value = document.getElementById('street').value;
+                document.getElementById('shipcity').value = document.getElementById('city').value;
+                document.getElementById('shipstate').value = document.getElementById('state').value;
+                document.getElementById('shippinco').value = document.getElementById('pinco').value;
+                document.getElementById('shipcountry').value = document.getElementById('country').value;
+            } else {
+                document.getElementById('shipstreet').value = '';
+                document.getElementById('shipcity').value = '';
+                document.getElementById('shipstate').value = '';
+                document.getElementById('shippinco').value = '';
+                document.getElementById('shipcountry').value = '';
+            }
+        }
+    </script>
+    <script>
+        function hidinput(divId, element) {
+            if (element.value == 'GST unregistered' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+        }
+
+        function checkgst(element) {
+            var gstinput = element.value;
+            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+            if (gstinput.match(gstregexp)) {
+                document.getElementById('warngst').innerHTML = '';
+            } else {
+                document.getElementById('warngst').innerHTML = 'Please provide a valid GST Number';
+                alert('Please provide a valid GST Number');
+            }
+        }
+
+        function checkpan(element) {
+            var paninput = element.value;
+            var panregexp = ["[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}"]
+            if (paninput.match(panregexp)) {
+                document.getElementById('warnpan').innerHTML = '';
+            } else {
+                document.getElementById('warnpan').innerHTML = 'Please provide a valid PAN Number';
+                alert('Please provide a valid PAN Number')
+            }
+        }
+
+        function checkweb(element) {
+            var webinput = element.value;
+            var webregexp = "www."
+            if (webinput.startsWith(webregexp)) {
+                document.getElementById('warnweb').innerHTML = '';
+            } else {
+                document.getElementById('warnweb').innerHTML = 'Please provide a valid Website Address';
+                alert('Please provide a valid Website Address')
+            }
+        }
+
+        function checkphone(element) {
+            var phoneinput = element.value;
+            var phoneregexp = "[0-9]{10}";
+            if (phoneinput.match(phoneregexp)) {
+                document.getElementById('warnphone').innerHTML = '';
+            } else {
+                document.getElementById('warnphone').innerHTML = 'Please provide a valid Phone Number';
+                alert('Please provide a valid Phone Number')
+            }
+        }
+    </script>
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+{% endblock %}

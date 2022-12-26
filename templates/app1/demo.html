@@ -1,0 +1,250 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+
+    {% load static %}
+    {% if user.is_authenticated %}
+   
+    <!DOCTYPE html>
+    <html>
+    
+    <head>
+        <style>
+
+
+            
+            </style>
+
+<script
+            
+    var tableSum = (function($){
+  
+  var moduleName = 'tableSum';
+  
+  var containerId = "default",
+      tableId = "defaultTable",
+      sumContainerId = containerId;
+  
+  
+  function log(msg) {
+    console.log(moduleName + ': ' + msg);
+  }
+  function warn(msg) {
+    console.warn(moduleName + ': ' + msg);
+  }
+  function error(msg) {
+    console.error(moduleName + ': ' + msg);
+  }
+  
+  function setContainerId(newId) {
+     containerId = newId;
+     sumContainerId = newId,
+     log('containerId set = ' + containerId);
+     if(document.getElementById(containerId) == null){
+       warn('cannot getElementById with variable containerId = ' + containerId);
+     }
+  }
+  
+  function setTableId(newId) {
+     tableId = newId;
+     log('table id set = ' + tableId);
+     if(document.getElementById(tableId) == null){
+       warn('cannot getElementById with variable tableId = ' + tableId);
+     }
+  }
+  
+  function begin() {
+    log('begin module!');
+    buildSumTable();
+    setKeyHandler();
+  }
+  
+  //--end api functions
+  
+  
+  //== Internal Functions
+  //#  The modules internal functions, none of these are visible to the outside world.
+  
+  function getSumTableId() {
+    return tableId + "--sum-";
+  }
+  
+  function get$Table(){ // returns jquery
+    return $(document.getElementById(tableId));
+  }
+  
+  function get$Container(){ // returns jquery
+    return $(document.getElementById(containerId));
+  }
+  
+  function get$SumTableContainer() {
+    return $(document.getElementById(sumContainerId));
+  }
+  
+  
+    
+  function buildSumTable() {
+  // build our sum table, automatically count the columns in our existing table
+  // auto-generate new table of same size.
+  // note: the *first* row in the orignal table is used to calculate the number of columns.
+    
+    log('auto-generating sum table..');
+    
+    var $table = get$Table();
+    if($table && $table !== null && $table !== undefined){
+      
+      var $firstRow = $('tbody tr:first-child', $table);
+      if($firstRow && $firstRow !== null && $firstRow !== undefined){
+         
+          if($('td:not(.category)', $firstRow).length > 0){
+            
+            var sumTableId = getSumTableId(),
+                sumRowId = sumTableId + 'tr';
+            
+            // Build empty sum table
+            $('<table>', {
+              'id': sumTableId,
+              'class': 'Table Table--sum',
+              'html': [
+                $('<tbody>', {
+                  'id' : sumTableId + 'tbody',
+                  'html' : [
+                    $('<tr>', {
+                      'id' : sumRowId,
+                    })
+                  ]
+                })
+              ]
+            }).appendTo(get$SumTableContainer());
+            
+            // Add label column
+            $('<td>', {
+              'class' : 'category',
+              'text' : 'Totals'
+            }).appendTo($(document.getElementById(sumRowId)));
+            
+            // Now loop through each value column from first row and build corresponding sum value
+            $('td:not(.category)', $firstRow).each(function(index, elem){
+              
+              var columnName = $(elem).children('input').data('column-name');
+              
+              // Add a sum column
+              $('<td>', {
+                'id': sumTableId + columnName
+              }).appendTo($(document.getElementById(sumRowId)));
+              
+              // Auto calculate current sum
+              calculateSumForColumn(columnName);
+              
+            });
+            
+          }
+          else {
+            warn('table td length is 0, cannnot build sum table');
+          }
+       }
+      
+    }
+    else {
+      error('error. cannot find original table, unable to build sum table. tableId = ' + tableId);
+    }
+    
+  }
+  
+  function setKeyHandler() {
+    
+    $('#' + tableId).on('keyup', 'input.amount', function(){
+       calculateSumForColumn($(this).data('column-name'));
+    });
+    
+  }
+  
+  function calculateSumForColumn(columnName){
+    var sum = 0;
+    $('input[data-column-name=' + columnName +  ']', get$Table).each(function(index,elem){
+         if(elem.value.length > 0){
+            sum += parseInt(elem.value, 10);
+         }
+         else {
+            sum += 0;
+         }
+       
+    });
+    
+    $('#' + getSumTableId() + columnName).text(sum);
+    
+  }
+ 
+  
+  
+  //--end internal
+  
+  
+  //== API
+  //#  Our accessible functions, call these from other files to interact with the module.
+  return {
+    begin: begin,
+    setContainerId: setContainerId,
+    setTableId: setTableId
+    
+  }
+  
+})(jQuery);
+
+
+
+
+//== Document Ready
+//#  Our jumping off point for our modules
+$(document).ready(function() {
+  
+  //== TableSum JS Module
+  tableSum.setContainerId('contents');
+  tableSum.setTableId('contentsTable');
+  tableSum.begin();
+  
+  
+});
+</script>
+<div class="nav" style="display:none;">
+    <button class="sum_button">
+      Sum Them Fruits
+    </button>
+  </div>
+  
+  <!-- TABLE TO EDIT -->
+  <div id="contents">
+    <table id="contentsTable" class="Table Table--desktop">
+      <thead>
+        <tr>
+          <th></th>
+          <th>June</th>
+          <th>July</th>
+          <th>August</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="category">Apples</td>
+          <td><input type="number" data-column-name="jun" class="amount amount--Jun" value="6"></td>
+          <td><input type="number" data-column-name="july" class="amount amount--July" value="4"></td>
+          <td><input type="number" data-column-name="aug" class="amount amount--Aug" value="7"></td>
+        </tr>
+        <tr>
+          <td class="category">Bananas</td>
+          <td><input type="number" data-column-name="jun" class="amount amount--Jun" value="23"></td>
+          <td><input type="number" data-column-name="july" class="amount amount--July" value="124"></td>
+          <td><input type="number" data-column-name="aug" class="amount amount--Aug" value="89"></td>
+        </tr>
+        <tr>
+          <td class="category">Oranges</td>
+          <td><input type="number" data-column-name="jun" class="amount amount--Jun" value="52"></td>
+          <td><input type="number" data-column-name="july" class="amount amount--July" value="31"></td>
+          <td><input type="number" data-column-name="aug" type="number" class="amount amount--Aug" value="22"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+    
+
+    {% endif %}
+{% endblock %}

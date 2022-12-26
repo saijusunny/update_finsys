@@ -1,0 +1,353 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+
+
+    {% load static %}
+    {% if user.is_authenticated %}
+
+  
+      <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body{
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #7690da;
+  border-right: none;
+  padding: 5px;
+  height: 36px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9DBFAF;
+  
+}
+
+.searchTerm:focus{
+  color:#7690da;
+}
+
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #7690da;
+  background:#7690da;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.table-row{
+        cursor:pointer;
+}
+/* .table-row:hover{
+    background-color: rgb(217, 232, 51);
+} */
+
+/*Resize the wrap to see the search bar change!*/
+.wrap{
+  width: 40%;
+  /* position: absolute;
+  top: 50%;
+  left: 50%; */
+  /* transform: translate(-50%, -50%); */
+}
+      </style>
+
+      
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h2 class="mb-0" style="text-transform: uppercase;">payment received</h2></center>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row">
+
+                        
+                        
+                        
+                        <div class="col-md-4">
+                            <div class="wrap" style="width: 60%; margin-top: 8px;">
+                                <!-- <form action="search_estimate" method="POST">{% csrf_token %} -->
+                                <div class="search">
+                                    
+                                   <input type="text" id="searchfild" class="searchTerm" name="search">
+                                   <button type="submit" class="searchButton">
+                                     <i class="fa fa-search"></i>
+                                  </button>
+                                </div>
+                                
+                              
+                             </div>
+                             
+                        </div>
+                        <div class="col-md-3">
+                          
+                            <!-- <select class="form-control btn btn-outline-info dropdown-toggle text-grey" aria-label=".form-select-lg example" style="width: 40%; margin-top: 8px;" name="type">
+                                
+                                <option value="1" selected>All</option>
+                                <option value="2" >Coustomer Name</option>
+                                <option value="3" >Estimate No</option>
+                                
+                                
+                                
+                              </select> -->
+
+                              
+
+
+                            <!-- </form> -->
+                            </div>
+                            <!-- <div class="col-md-5" style="width: 40%; margin-top: 8px;">
+
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                            data-toggle="dropdown">filter by
+                                    </button>
+                                    <div class="dropdown-menu" style="background-color: black;">
+                                        <a class="dropdown-item" href="{% url 'goestimate' %}"
+                                           style="height: 40px; font-size: 15px; color: white; text-align: center;" >All</a>
+                                        <a class="dropdown-item" href="{% url 'estmate_filter1' %}"
+                                           style="height: 40px; font-size: 15px; color: white; text-align: center;" >Draft</a>
+                                        <a class="dropdown-item" href="{% url 'estmate_filter2' %}"
+                                           style="height: 40px; font-size: 15px; color: white; text-align: center;">Approved</a>
+                                        <a class="dropdown-item" href="{% url 'estmate_filter3' %}"
+                                           style="height: 40px; font-size: 15px; color: white; text-align: center;">Invoice</a>
+                                        
+                                </div> 
+                              </div>
+                            </div> -->
+                            
+                            
+
+                            
+                       
+
+                        <div class="col-md-5" >
+                            <a href="{% url 'payment_received' %}" >
+                                <button id="myBtn" class="btn btn-outline-info text-grey" style="margin-top: 8px;">New </button>
+                            </a>
+                        </div>
+
+                    </div>
+                    <div class="container-fluid ">
+                       <div class="app_table">
+                        <table class="table table-responsive-md mt-4 table-hover">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: center;">Payment No</th>
+                                <th style="text-align: center;">Reference Number</th>
+                                <th style="text-align: center;">Coustomer Name</th>
+                                <th style="text-align: center;">Applied Amount</th>
+                                <th style="text-align: center;">Amount</th>
+                                <!-- <th style="text-align: center;">ACTION</th> -->
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in pay %}
+                                {% if i.cid_id == cmp1.cid %}
+                                    <tr  class="table-row " data-href="{% url 'payment_view' i.paymentid %}" >
+                                        <th style="text-align: center;">{{ i.paymdate  | date:'d-m-Y' }}</th>
+                                        <td style="text-align: center;">{{ i.refno }}</td>
+                                        <td style="text-align: center;"> {{ i.referno }}</td>
+                                        <td style="text-align: center;">{{ i.customer }}</td>
+                                        <td style="text-align: center;"> {{ i.amtapply }}</td>
+                                        <td style="text-align: center;">{{ i.amtcredit }}</td>
+                                        
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                       </div>
+
+                        <div class="table_output">
+
+                            <table class="table table-responsive-md mt-4 table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="text-align: center;">Date</th>
+                                    <th style="text-align: center;">Payment No</th>
+                                    <th style="text-align: center;">Reference Number</th>
+                                    <th style="text-align: center;">Coustomer Name</th>
+                                    <th style="text-align: center;">Applied Amount</th>
+                                    <th style="text-align: center;">Amount</th>
+                                   
+                                </tr>
+                                </thead>
+                                <tbody class="table_body">
+                                   
+                                </tbody>
+                            </table>
+
+
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            const seacrchFild = document.querySelector("#searchfild");
+            
+            const tableOutput = document.querySelector('.table_output');
+            const app_Table = document.querySelector('.app_table');
+            tableOutput.style.display="none";
+            const tbody = document.querySelector('.table_body')
+
+
+            
+
+            seacrchFild.addEventListener('keyup',(e)=>{
+                const searchvalue = e.target.value;
+
+                if (searchvalue.trim().length>0){
+                    tbody.innerHTML="";
+                    console.log("searchvalue",searchvalue);
+                    fetch("search_payment_received",{
+                    body:JSON.stringify({searchText: searchvalue }),
+                    method:"POST",
+                    
+                   })
+                   .then((res) => res.json())
+                   .then((data)=>{
+                    console.log("data",data);
+
+                    app_Table.style.display ="none";
+                    tableOutput.style.display ="block";
+
+                    if (data.length===0){
+                        tableOutput.innerHTML = "No results found"
+
+                    }else{
+                        data.forEach(item=>{
+
+                            tbody.innerHTML+=
+                        `<tr  class="table-row " data-href="" >
+                                        <th style="text-align: center;"> ${item.paymdate} </th>
+                                        <td style="text-align: center;">  ${item.refno}</td>
+                                        <td style="text-align: center;"> ${item.referno}</td>
+                                        <td style="text-align: center;">  ${item.customer} </td>
+                                        <td style="text-align: center;"> ${item.amtapply}</td>
+                                        <td style="text-align: center;">  ${item.amtcredit}</td>
+                                        
+                                    </tr>`
+
+                        })
+                        
+
+                    }
+
+
+
+                   });
+               
+                }else{  
+                        tableOutput.style.display="none"
+                        app_Table.style.display ="block";
+                    }
+            });
+
+
+        </script>
+
+
+        <script>
+            // Get the modal
+            var modal = document.getElementById("myModal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+
+
+
+
+    <script>
+        $(document).ready(function($) {
+            $(".table-row").dblclick(function() {
+                window.document.location = $(this).data("href");
+            });
+        });
+    </script>
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+
+$('.delete').click(function(event) {
+    var form =  $(this).closest("form");
+    var name = $(this).data("name");
+    event.preventDefault();
+    swal({
+        title: `Are you sure you want to delete this record?`,
+        text: "If you delete this, it will be gone forever.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            swal("Poof! Your imaginary file has been deleted!", {
+            icon: "success" ,
+      
+            });
+            form.submit();
+
+            
+            
+            
+            }
+    });
+});
+
+    </script>
+
+        
+        
+       
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <div class="page-content">
+        <div class="page-content">
+
+            <div class="card radius-15">
+                <div class="card-body p-5">
+                    <form method="post" action="{% url 'addtoaccounts' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12 mt-3">
+                                <label for="">Payee</label>
+                                <input type="text" class="form-control" name="payee" id="payee">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mt-3">
+                                <label for="">Category*</label>
+                                <select class="form-control" name="category" id="category">
+                                    <option id="expen" value=""></option>
+                                    {% for acc in accoun %}
+                                        <option value="{{ acc.name }}">{{ acc.name }}</option>
+                                    {% endfor %}
+                                    <option>Deferred CGST</option>
+                                    <option>Deferred GST Input Credit</option>
+                                    <option>Deferred IGST</option>
+                                    <option>Deferred Krishi Kalyan Cess Input Credit</option>
+                                    <option>Deferred Service Tax Input Credit</option>
+                                    <option>Deferred SGST</option>
+                                    <option>Deferred VAT Input Credit</option>
+                                    <option>GST Refund</option>
+                                    <option>Inventory Asset</option>
+                                    <option>Krishi Kalyan Cess Refund</option>
+                                    <option>Prepaid Insurance</option>
+                                    <option>Service Tax Refund</option>
+                                    <option>TDS Receivable</option>
+                                    <option>Uncategorised Asset</option>
+                                    <option>Undeposited Fund</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mt-3">
+                                <label id="crde">Amount</label>
+                                <input type="number" step="any" class="form-control" id="amount" name="amount">
+                                <input type="text" class="form-control" id="crdecheck" name="hiden" hidden>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4 mt-5">
+                                <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-light">Add
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var debit = '{{ bstat.debit }}'
+            var credit = '{{ bstat.credit }}'
+            console.log(credit)
+            console.log(debit)
+            if (debit == 0.0) {
+                document.getElementById('amount').value = credit;
+                document.getElementById('crdecheck').value = 'credit';
+                document.getElementById('crde').innerHTML = 'Amount credited';
+            } else if (credit == 0.0) {
+                document.getElementById('amount').value = debit;
+                document.getElementById('crdecheck').value = 'debit';
+                document.getElementById('crde').innerHTML = 'Amount debited';
+            }
+        })
+        $('#payee').on('change', function () {
+                select = $('#payee').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getsuppcustdata' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                        document.getElementById('expen').value = json_data[key]['defaultexpenceaccount'];
+                        document.getElementById('expen').innerHTML = json_data[key]['defaultexpenceaccount'];
+                    }
+                });
+            });
+    </script>
+{% endblock %}

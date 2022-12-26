@@ -1,0 +1,250 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+            font-size: 1rem;
+            line-height: 2.15;
+            padding-left: .75em;
+            padding-right: .75em;
+        }
+        .card-registration .select-arrow {
+            top: 13px;
+        }
+        .bg-grey {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        @media (min-width: 992px) {
+            .card-registration-2 .bg-grey {
+                border-top-right-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        @media (max-width: 991px) {
+            .card-registration-2 .bg-grey {
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        .vl {
+            border-left: 6px solid gray;
+        }
+        .hr {
+            border: 0;
+            clear:both;
+            display:block;
+            width: 96%;               
+            background-color:#000000;
+            height: 1px;
+        }
+        .in{
+            border: none;
+            color: #fff;
+            text-align: end;
+            font-size: large;
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+        .calc{
+            border: none;
+            color: #fff;
+            text-align: left;
+            font-size: 40px;
+            background-color: rgba(0, 0, 0, 0.001);
+        }
+        .tx{
+            border: none;
+            width: 21px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+    </style>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">EXPENSE VIEW</h2></center>
+                    <hr class="hr">
+                    <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgba(0,0,0,.01);">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarScroll">
+                            <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link text-light btn" role="button" href="{% url 'goeditexpense' expnce.expenseid %}"><i class=" fa fa-pencil">&nbsp;Edit</i></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light btn" role="button" href="{% url 'deleteexpense' expnce.expenseid %}"><i class="fa fa-trash-o delete">&nbsp;Delete</i></a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-light btn" id="navbarDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-file">&nbsp;File</i>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#file"><i class="fa fa-paperclip">&nbsp;Attach File</i></a>
+                                        {% if expnce.file != "default.png" %}
+                                            <a class="dropdown-item" download  href="{{expnce.file.url }}"><i class="fa fa-download">&nbsp;Download File</i></a>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card-body p-0">
+                <div class="row g-0">
+                    <div class="col-lg-8">
+                        <div class="p-5">
+                            <p class="text-muted">Expense Amount</p>
+                            <div class="d-flex justify-content-between align-items-center mb-5">
+                                <b><span class="text-muted" style="font-size: 30px;">₹<input type="text" value="" class="calc_1 calc"></span></b>
+                                <h6 class="mb-0 text-muted">{{ cmp1.cname }}</h6>
+                            </div>
+                            <hr class="my-4">
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-8 mt-3">
+                                    <h6 class="mb-0" style="font-size: 20px;"><b>{{ expnce.expenseaccount }}</b></h6>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-3 mt-3">
+                                    <h6 class="mb-0">Date</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ expnce.date |date:'d-m-Y' }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Hsn/Sac</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ expnce.hsn_sac }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-3 mt-3">
+                                    <h6 class="mb-0">Expense Type</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ expnce.expensetype }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Tax</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <span>GST</span>&nbsp;<input type="text" value="{{ expnce.tax }}" class="tax 1 tx"><span>%</span>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-3 mt-3">
+                                    <h6 class="mb-0">Reference</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ expnce.reference }}</p>
+                                </div>
+                                <div class="col-md-3 mt-3 vl">
+                                    <h6 class="mb-0">Paid Through</h6>
+                                </div>
+                                <div class="col-md-3 mt-3">
+                                    <p class="mb-0">{{ expnce.paidthrough }}</p>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 bg-grey">
+                        <div class="p-5">
+                            <div class="d-flex justify-content-between mb-5">
+                                <h5 class="">Vendor</h5>
+                                <h6>{{ expnce.vendor }}</h6>
+                            </div>
+                            
+                            <hr class="my-4">
+                            <div class="d-flex justify-content-between mb-5">
+                                <h6 class="">Amount</h5>
+                                <input type="text" value="{{ expnce.amount }} INR" class="amount 1 in" readonly>   
+                            </div>
+                            <div class="d-flex justify-content-between mb-5">
+                                <h6 class="">Sorce Of Supply</h6>
+                                <h6>{{ expnce.sourceofsupply }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-5">
+                                <h6 class="">Customer</h6>
+                                <h6>{{ expnce.customer }}</h6>
+                            </div> 
+                            <div class="d-flex justify-content-between mb-5">
+                                <h6 class="">Note</h6>
+                                <h6>{{ expnce.note }}</h6>
+                            </div>     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="file" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="background-color: #213b52;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add File</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'expense_add_file' expnce.expenseid  %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="modal-body">
+                        <input type="file" class="form-control" name="file">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-info">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        calculateResult();
+        function calculateResult(){
+            var sameArr = [];
+            for(var i=1; i<= 3 ;i++)
+            {
+                var arrEle = document.getElementsByClassName("amount "+i);
+                sameArr.push(arrEle);
+                console.log(sameArr);
+            }
+            for(var j=0;j< sameArr.length; j++)
+            {
+                var sumElement = $(".calc_" + (j+1));
+                var multyEleVal= document.getElementsByClassName("tax "+(j+1))[0].value;
+                var sum=multyEleVal;
+               
+                for(var z=0;z<sameArr[j].length; z++)
+                {
+                    sum *= parseInt(sameArr[j][z].value) 
+                    console.log("calc :"+sum)
+                }
+                sumElement.val(sum);
+            }
+        }
+    </script>
+
+    <!-- <script>
+       $('#amount, #tax').keyup(function(){
+            var amount = parseFloat($('#amount').val()) || 0;
+            var tax = parseFloat($('#tax').val()) || 0;
+
+            $('#calc').val(amount * tax);    
+        });
+    </script> -->
+
+{% endblock %}

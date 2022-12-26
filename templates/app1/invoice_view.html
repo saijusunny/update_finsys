@@ -1,0 +1,818 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load social_share %}
+
+    {% load static %}
+    {% if user.is_authenticated %}
+
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'assets/css/estimate.css' %}"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
+   
+    <style>
+
+      @page {
+        bleed: 1cm;
+        size: A4 portrait;
+        size:  auto;   /* auto is the initial value */
+        margin-bottom: 50pt;
+        margin-top: 0cm;
+        font-size: 12pt;
+      }
+      
+        #content, #page {
+        width: 100%;
+        margin: 0;
+        float: none;
+        }
+      
+      
+      
+      @media print {
+        .page {
+          border: initial;
+          border-radius: initial;
+          width: initial;
+          min-height: initial;
+          box-shadow: initial;
+          background: initial;
+          page-break-after: always;
+        }
+      
+       
+      
+      }
+      
+      .gray{
+        color: #333;
+      }
+      
+      .gray-ish{
+        color: #000;
+      }
+      
+      .almost-gray{
+        color: #000;
+      }
+      
+      body{
+        background-color: #eee;
+        padding-top: 25px;
+        -webkit-print-color-adjust: exact !important;
+        height: 100%;
+        margin-top: 40px;
+      }
+      
+      div.tempinv{
+        background-color: white;
+        border-radius: 10px;
+        height: 100%;
+        position: relative;
+        margin-top: 50px;
+      }
+      
+      div.invoice-header{
+        background-color: #444;
+        color: white;
+        border-bottom: 3px solid rgb(255, 77, 77);
+      }
+      
+      div.invoice-header > div > p{
+        font-size: 10px;
+        font-weight: 350;
+      }
+      
+      div.invoice-content > div > h1{
+        font-size: 14px;
+      }
+      
+      div.invoice-content{
+        background-color: #fff;
+        color: white;
+      }
+      
+      div.invoice-content > div > p{
+        font-size: 10px;
+      }
+      
+      
+      div.invoice-header > div > h1{
+        font-size: 14px;
+      }
+      
+     
+      
+      div.total-field{
+        position: relative;
+      }
+      
+      h5.due-date{
+        position: absolute;
+        bottom: 10px;
+        right: 15px;
+      }
+      
+      div.sub-table{
+        border-left: 3px solid rgb(255, 77, 77);
+        padding-left: 0;
+      }
+      
+      div.sub-table > table{
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+      
+      tr.last-row{
+        margin-top: 25px;
+        background-color: #555;
+        color: white;
+        border-top: 3px solid rgb(255, 77, 77);
+      }
+      
+      p.footer{
+          bottom: 0;
+          width: 100%;
+          background-color: #333;
+          color: white;
+          padding-top: 15px;
+          border-top: 3px solid red;
+      }
+      div.invoice-header{
+        font-size: 10px;
+        color:white;
+      }
+      
+      div.invoice-table > div > h1{
+        font-size: 14px;
+        color:black;
+      }
+      div.invoice-table{
+        background-color: #fff;
+        color: black;
+        border-bottom: 1px solid rgb(255, 77, 77);
+      }
+      
+      div.invoice-table > div > p{
+        font-size: 10px;
+        font-weight: 350;
+      }
+      div.invoice-table >th{
+        font-size:5px;
+      }
+      div.amount{
+        background-color: #fff;
+        color: black;
+        font-size:10px;
+      }
+      div.tax-table{
+        background-color: #fff;
+        color: black;
+        border-bottom: 1px solid rgb(255, 77, 77);
+      }
+      
+      div.tax-table > div > p{
+        font-size: 10px;
+        font-weight: 350;
+      }
+      div.tax-table >th>td{
+        font-size:5px;
+      }
+      p.terms{
+        font-size:10px;
+      }
+      .table1{
+        color:black;font-size:7px;
+      }
+      .table2{
+        color:black;
+        font-size:12px;
+        width:100% 
+      }
+      .table3{
+        color:black;
+        font-size:12px;
+        width:100% 
+      }
+    
+      /*modal */
+      @media screen {
+        #printSection {
+            display: none;
+        }
+      }
+      
+      @media print {
+        body * {
+          visibility:hidden;
+        }
+        #printSection, #printSection * {
+          visibility:visible;
+        }
+        #printSection {
+          position:absolute;
+          left:0;
+          top:0;
+        }
+      }
+      
+    
+      div.minvoice-header{
+        background-color: #444;
+        color: white;
+        border-bottom: 3px solid rgb(255, 77, 77);
+      }
+      
+      div.minvoice-header > div > p{
+        font-size: 12px;
+        font-weight: 350;
+      }
+      
+      div.minvoice-content > div > h1{
+        font-size: 16px;
+      }
+      
+      div.minvoice-content{
+        background-color: #fff;
+        color: white;
+      }
+      
+      div.minvoice-content > div > p{
+        font-size: 12px;
+      }
+      
+      
+      div.minvoice-header > div > h1{
+        font-size: 16px;
+      }
+      
+     
+      
+     
+      
+      p.footer{
+          bottom: 0;
+          width: 100%;
+          background-color: #333;
+          color: white;
+          padding-top: 15px;
+          border-top: 3px solid red;
+      }
+      div.minvoice-header{
+        font-size: 12px;
+        color:white;
+      }
+      
+      div.minvoice-table > div > h1{
+        font-size: 16px;
+        color:black;
+      }
+      div.minvoice-table{
+        background-color: #fff;
+        color: black;
+        border-bottom: 1px solid rgb(255, 77, 77);
+      }
+      
+      div.minvoice-table > div > p{
+        font-size: 12px;
+        font-weight: 350;
+      }
+      div.minvoice-table >th{
+        font-size:7px;
+      }
+      div.mamount{
+        background-color: #fff;
+        color: black;
+        font-size:12px;
+      }
+      div.mtax-table{
+        background-color: #fff;
+        color: black;
+        border-bottom: 1px solid rgb(255, 77, 77);
+      }
+      
+      div.mtax-table > div > p{
+        font-size: 12px;
+        font-weight: 350;
+      }
+      div.mtax-table >th>td{
+        font-size:7px;
+      }
+      p.mterms{
+        font-size:12px;
+      }
+      .mtable1{
+        color:black;font-size:9px;
+      }
+      .mtable2{
+        color:black;
+        font-size:10px;
+        width:100% 
+      }
+      .mtable3{
+        color:black;
+        font-size:10px;
+        width:100% 
+      
+      }
+
+
+      .column {
+        float: left;
+        width: 50%;
+      }
+      
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    
+    </style>
+    
+
+<script>
+
+
+    async function generatePDF() {
+        // document.getElementById("downloadButton").innerHTML = "Currently downloading, please wait";
+
+        //Downloading
+        var downloading = document.getElementById("whatToPrint");
+        var doc = new jsPDF('l', 'pt');
+
+        await html2canvas(downloading, {
+            //allowTaint: true,
+            //useCORS: true,
+            // width: 600
+            
+        }).then((canvas) => {
+            //Canvas (convert to PNG)
+            doc.addImage(canvas.toDataURL("image/png"), 'PNG', 15, 10, 700, 850);
+        })
+
+        doc.save("Document.pdf");
+
+        //End of downloading
+
+        // document.getElementById("downloadButton").innerHTML = "Click to download";
+    }
+
+    
+</script>
+
+
+	
+	   <!-- modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add File</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{% url 'invoice_add_file' invoice.invoiceid  %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+      <div class="modal-body">
+        <input type="file" class="form-control" name="file">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+  </form>
+    </div>
+  </div>
+</div>
+    
+
+    
+
+    <div class="page-content" >
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">INVOICES VIEW</h2> <h4></h4></center>
+                    <hr>
+                </div>
+                <div class="btn-group" style="float: right; ">
+
+                  <a   data-target="#newreason" data-toggle="modal" class="fa"  style="padding: 10px; cursor: pointer;"> Add e-Way Bill</a>
+
+
+                   
+                <a href="{% url 'editinvoice' invoice.invoiceid %}" class=" fa fa-pencil" style="padding: 10px; cursor: pointer;"> Edit</a>
+
+                
+                <a   style="padding: 10px; margin-top: -5px; cursor: pointer;" > 
+
+                 <form  action="{% url 'deleteinvoice' invoice.invoiceid %}"   > 
+                    <i class="fa fa-trash-o delete"> Delete</i>
+                    <input name="_method" type="hidden" value="DELETE">
+                    
+                    </form> </a>
+                
+                    <div class="dropdown  " style="padding: 10px; cursor: pointer; margin-top: -10px;">
+                        <li  class=" dropdown-toggle fa fa-share-alt "data-toggle="dropdown"> &nbsp;Share
+                    </li>
+                        <ul class="dropdown-menu" style="background-color: black;">
+                            <!-- <a class="dropdown-item fa fa-facebook" target="_blank" 
+                           > &nbsp;</a>{% post_to_facebook object_or_url "<p style='color: green;'>facebook</p>" %}
+                           
+                            <a class="dropdown-item fa fa-whatsapp" href=""> &nbsp;Whatsapp</a>
+                            <a class="dropdown-item fa fa-envelope-o" href=""> &nbsp;Email</a> -->
+
+                            <li style="margin-left: 50px;"  ></i>{% post_to_facebook object_or_url "Facebook!" %}</li>
+                            <li style="margin-left: 50px;" > {% post_to_whatsapp object_or_url "WhatsApp" %}</li>
+                            <li style="margin-left: 50px;" >{% send_email object.title "New Song: {{object.title}}. Check it out!" object_or_url "Email" %}</li>
+                            
+                           
+                          
+                        </ul>
+                        
+                </div>
+                    
+                
+                <a class="fa fa-print" style="padding: 10px; cursor: pointer;"  href="{% url 'render_pdfinvoice_view' invoice.invoiceid %}" id="downloadButton" > PDF</a>
+
+                  <div class="dropdown  " style="padding: 10px; cursor: pointer; margin-top: -14px;">
+
+                    <li  class=" dropdown-toggle  "data-toggle="dropdown"> &nbsp;Convert
+                </li>
+                {% if invoice.status == "Draft"  %}
+                    <ul class="dropdown-menu" style="background-color: black;">
+                        
+                        <a class="dropdown-item " href="{% url 'invoice_status' invoice.invoiceid  %}"> &nbsp;Approved </a>
+                        <!-- <a class="dropdown-item " href=""> &nbsp;Sales</a> -->
+                        
+                        
+                    </ul>
+                    {% endif %}
+            </div>
+            <div class="dropdown  " style="padding: 10px; cursor: pointer; margin-top: -8px;">
+              <li  class=" dropdown-toggle fa fa-download  "data-toggle="dropdown"> &nbsp;Attach file
+          </li>
+              <ul class="dropdown-menu" style="background-color: black;">
+                  <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
+              {% if invoice.file != "default.jpg" %}
+              <a class="dropdown-item fa fa-download" style="cursor: pointer;"download  href="{{invoice.file.url }}" >Download file</a>
+              {% endif %}
+                  
+              </ul>
+      </div> 
+           
+            </div>    
+            </div>
+        </div>
+        
+
+        
+        <div  id="whatToPrint">
+
+
+          <div class="py-5" >
+            <div class="container"   >
+              <div class="row hidden-md-up">
+                <div class="col-md-8 " style="margin: auto; ">
+                  <div class="card"  >
+                    <div class="card-block"   >
+                      <div class="card-body" >
+                        
+                        <div class="tempinv" size="A4" id="whatToPrint">
+                          <div class="row invoice-header px-0 py-0">
+                            <div class="col-12">
+                              <img src="/media/images/default.png" width="30px">
+                            </div>
+        
+                              <div class="col-12" style="text-align: right; font-size: 16px;">
+                              <p class="text-center" style="font-size: 14px;">TAX INVOICE<br>
+                               
+                              <span style="text-transform: uppercase; ">{{cmp1.cname}}</span><br>
+                             {{cmp1.caddress }}<br>
+                          email id :  {{cmp1.cemail}} ,<br>
+                          GSTIN/UIN : </p>
+                            </div>
+                            
+                          </div>
+                        
+                          <div class="invoice-content row ">
+                            <div class="col-4">
+                              <p  style="color:black; font-size:14px">Buyer/Client Name : {{invoice.customername}}<br>
+                              
+                              {{invoice.bname}}<br>
+                             GSTIN/UIN: <br>
+                             state: <br>
+                              place of supply : {{invoice.placosupply}}</p>
+                            </div>
+                            <div class="col-8">
+                             <table width="100%" style="font-size:14px" class="table1" border="1">
+                              <tr>
+                                <td id="number">Invoice No: {{invoice.invoiceno}}</td>
+                                <td>Dated:{{invoice.invoicedate }}</td>
+        
+                              
+                              </tr>
+                              <tr>
+                                <td>Delivery note :{{invoice.note}} </td>
+                                <td>Mode/Terms of payment</td>
+        
+                              
+                              </tr>
+                              <tr>
+                                <td>Reference no & date</td>
+                                <td>Other refernces</td>
+        
+                              
+                              </tr>
+                              <tr>
+                                <td>Buyer;s order no. {{invoice.invoice_orderno}}</td>
+                                <td>Dated:</td>
+        
+                              
+                              </tr>
+                              <tr>
+                                <td>Dispatch Doc No.</td>
+                                <td>Delivery note date</td>
+        
+                              
+                              </tr>
+                              <tr>
+                                <td>Dispatch through</td>
+                                <td>Destination</td>
+        
+                              
+                              </tr>
+                              <tr>
+                                <td colspan="2">Terms of delivery</td>
+                                
+        
+                              
+                              </tr>
+        
+                             </table>
+                            </div>
+                              
+                            </div>
+                            
+                        
+                          <div class="row ">
+                            <div class=" col-md-12 invoice-table ">
+                              <table border="1" width="100%" class="table2" style="font-size:14px">
+                                    <thead class="thead splitForPrint">
+                                      <tr style="width:100%;">
+                                        <th >Sl no.</th>
+                                        <th >description of goods</th>
+                                        <th >Batch name</th>
+                                        <th >Expiry date</th>
+                                        <th >HSN/SAC</th>
+                                        
+                                        <th>Qty</th>
+                                        <th>rate</th>
+                                        <!-- <th>per</th> -->
+                                        <th>GST rate</th>
+                                        <th>Disc %</th>
+                                        <th>Amount</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+
+                                      {% for j in invitem %}
+                                      <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{j.product}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{j.hsn}}</td>
+                                        <td>{{j.qty}}</td>
+                                        <td>{{j.price}}</td>
+                                        <!-- <td></td> -->
+                                        <td>{{j.tax}} %</td>
+                                        
+                                        <td></td>
+                                        <td> {{j.total}}</td>
+                                       
+                                      </tr>
+                                      {% endfor %}
+
+                                  
+                                      
+                                     
+                                      <tr>
+                                        <th colspan="9"   ><span style="float: right;margin-right: 14px;">Sub Total</span></th>
+                                        
+                                        <td> {{invoice.subtotal}}</td>
+                                      </tr>
+                                      {% if invoice.IGST %}
+                                      <tr>
+                                        <th colspan="9"  ><span style="float: right;margin-right: 14px;">IGST</span></th>
+                                        
+                                        <td> {{invoice.IGST}}</td>
+                                      </tr>
+                                      {% endif %}
+                                      {% if invoice.CGST != '0.00' %}
+                                      <tr>
+                                        <th colspan="9"  ><span style="float: right;margin-right: 14px;">CGST</span></th>
+                                        
+                                        <td> {{invoice.CGST}}</td>
+                                      </tr>
+                                      {% endif %}
+                                      {% if invoice.SGST %}
+                                      <tr>
+                                        <th colspan="9"  ><span style="float: right;margin-right: 14px;">SGST</span></th>
+                                        
+                                        <td> {{invoice.SGST}}</td>
+                                      </tr>
+                                      {% endif %}
+                                      
+                                      {% if invoice.TCS != '0' %}
+                                      <tr>
+                                        <th colspan="9"  ><span style="float: right;margin-right: 14px;">TCS</span></th>
+                                        
+                                        <td> {{invoice.TCS}}</td>
+                                      </tr>
+                                      {% endif %}
+                                      <tr>
+                                        <th colspan="9"  ><span style="float: right;margin-right: 14px;">Grand Total</span></th>
+                                        
+                                        <td> {{invoice.grandtotal}}</td>
+                                      </tr>
+                                      
+                                      
+                                   
+                                     
+                                    </tbody>
+                                  </table>
+                            </div>
+                          </div>
+                          <div class="row amount" style="font-size: 14px; padding-left: 2%;">
+                            <p>Amount in words:<br>
+                            {{words_total}}</p>
+                          </div>
+                          <div class="row ">
+                            <div class=" col-md-12 tax-table ">
+                              <!-- <table border="1" width="100%" class="table3">
+                                    <thead class="thead splitForPrint" >
+                                      <tr style="width:100%;">
+                                        <th >HSN/SAC</th>
+                                        <th >Taxable Value</th>
+                                        <th >Central Tax</th>
+                                        <th >State Tax</th>
+                                        <th >Total</th>
+                                        <th >Discount</th>
+                                        <th class="text-right" >Amount</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>&nbsp</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        
+                                      </tr>
+                                      <tr>
+                                        <td>&nbsp</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        
+                                      </tr>
+                                      <tr>
+                                        <td>&nbsp</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        
+                                      </tr>
+                                      
+                                      <tr>
+                                        <th colspan="6">Total</th>
+                                        
+                                        <td class="text-right">28,75 <span class="currency">&euro;</span> </td>
+                                      </tr>
+                                   
+                                     
+                                    </tbody>
+                                  </table> -->
+                        <div class="row invoice_details">
+                           <!-- invoiced to details -->
+                           
+                           <!-- Invoice assets and total -->
+                              
+                           
+        
+                              <div class="col-md-12" >
+                                <p class="gray-ish terms" style="text-align: right; font-size: 14px;"><b>COMPANY NAME</b><br>
+                                  <br>
+                        
+                                  Authorised Signatory</p>
+                                </div>
+        
+                              
+                        
+                        </div>
+                      </a>
+                      </div>
+                    </div>
+                  </div>
+                      
+                     
+                    </div>
+                  </div>
+                </div>
+               
+              </div>
+            
+            
+                
+
+            </div>
+            
+    
+              <!------------------------------------------------E-Way Bill---------------------------------------->
+              <div class="modal fade" id="newreason">
+                <div class="modal-dialog">
+               
+                    <div class="modal-content" style="background-color: #213b52;">
+                       
+                        <div class="modal-header">
+                            <h3 class="m-3">Add e-Way Bill Details</h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="row">
+                            <div class="column"
+                            style="text-transform:uppercase;text-align:center;">
+                            <a href="{% url 'addewaybill' invoice.invoiceid %}">
+                            <i style="font-size:90px;" class='bx bxs-file-plus ' ></i>
+                              <h6>Create New e-Way Bill</h6>
+                            </a>
+                            </div>
+                            
+                            <div class="column"
+                            style="text-transform:uppercase;text-align:center;">
+                            <a>
+                            <i style="font-size:90px;" class='bx bxs-pointer ' ></i>
+                              <h6>Associate e-Way Bill Number<h6>
+                              </a>
+  
+                              </div>
+                          </div>
+                         
+                        </div>
+                      
+                    </div>
+             
+                </div>
+            </div>    
+       
+  
+
+
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+        
+        $('.delete').click(function(event) {
+            var form =  $(this).closest("form");
+            var name = $(this).data("name");
+            event.preventDefault();
+            swal({
+                title: `Are you sure you want to delete this record?`,
+                text: "If you delete this, it will be gone forever.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Your imaginary file has been deleted!", {
+                    icon: "success" ,
+              
+                    });
+                    form.submit();
+ 
+                    
+                    }
+            });
+        });
+        
+            </script> 
+
+
+
+    {% endif %}
+    {% endblock %}    

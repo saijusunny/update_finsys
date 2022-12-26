@@ -1,0 +1,110 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+
+    {% load static %}
+    {% if user.is_authenticated %}
+    <div class="page-content">
+        <div class="card radius-15 p-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                       <h5>Today 1.50B Eur</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mt-3">
+                        <h2 class="mb-0">CASH POSITION</h2>
+                    </div>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-2 p-3">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                    data-toggle="dropdown">
+                                Chart Type
+                            </button>
+                            <div class="dropdown-menu" style="background-color: black;">
+                                <li class="dropdown-item" onclick="changeChart('bar')"
+                                   style="height: 40px; font-size: 15px; color: white;">
+                                    <i class="bx bx-bar-chart"></i>
+                                    Bar</li>
+                                <li class="dropdown-item" onclick="changeChart('pie')"
+                                   style="height: 40px; font-size: 15px; color: white;">
+                                    <i class="bx bx-pie-chart-alt"></i>
+                                    Pie</li>
+                                <li class="dropdown-item" onclick="changeChart('line')"
+                                   style="height: 40px; font-size: 15px; color: white;">
+                                    <i class="bx bx-line-chart"></i>
+                                    Line</li>
+                                <li class="dropdown-item" onclick="changeChart('doughnut')"
+                                   style="height: 40px; font-size: 15px; color: white;">
+                                    <i class="bx bx-doughnut-chart"></i>
+                                    Doughnut</li>
+                                <li class="dropdown-item" onclick="changeChart('bubble')"
+                                   style="height: 40px; font-size: 15px; color:white;">
+                                    <i class="bx bx-bible"></i>Bubble </li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card radius-15" style="height:500px;" id="card1" >
+                <div style="position: relative" class="container">
+                    <canvas class="col-md-12" id="pie-chart" style="position: absolute; width: 1100px; height: 280px;"></canvas>
+                </div>
+        </div>
+    </div>
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <script>
+
+        const ctx1 = document.getElementById('pie-chart').getContext('2d');
+        const myChart1 = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: {{ label_1|safe }},
+                color:[
+                    '#d6e3fc',
+                ],
+                datasets: [{
+                    label: 'Amount In Display Currency',
+                    labelColor:[
+                        '#d6e3fc',
+                        ],
+                    data: {{ data_1|safe }},
+                    backgroundColor: [
+                        '#0191fa',
+                        '#0183fa',
+                        '#0175fa',
+                        '#0167fa',
+                        '#0159fa',
+                        '#0140fa',
+                    ],
+                    borderColor:[
+                        '#cfdcf8',
+                    ],
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        console.log(labels,data)
+    </script>
+    <script>
+        function changeChart(type) {
+            myChart1.config.type = type;
+            myChart1.update();
+        }
+    </script>
+{% endblock %}

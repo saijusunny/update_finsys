@@ -1,0 +1,236 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <style>
+    .nav-tabs .nav-link.active {
+                                    background: #143250;
+                                    color: white;
+                                }
+
+                                .nav-tabs .nav-link {
+                                    background: #243e54;
+                                    font-size: 24px;
+                                }
+    </style>
+
+    <div class="page-content">
+        <div class="card p-5">
+            <div class="card-body">
+                <div class="card-title">
+<div class="box" style="text-align: center;font-size: 24px;">
+
+<button type="button" class="btn btn-outline-info h-75"><a href="#" data-target="#newaccmodel" data-toggle="modal" style="font-size: 30px;">ACCOUNTS AND SETTINGS</a>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-info h-75 dropdown-toggle dropdown-toggle-split"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 30px;">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button> <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'gobillingandsub' %}">BILLING AND SUBCRIPTION</a>
+     <a class="dropdown-item" href="{% url 'goaccountsales' %}">SALES</a>
+
+     <a class="dropdown-item" href="{% url 'goaccountexpense' %}">EXPENSE</a>
+                            </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <hr>
+                    <form method="post" action="{% url 'updateaccounts' %}" enctype="multipart/form-data"
+                          class="needs-validation mb-5" novalidate>
+                        {% csrf_token %}
+
+
+
+
+                       <h4 class="m-4">Personal Info</h4>
+                        <div class="row m-6">
+
+                            <div class="col-md-6">
+                                <label for="first_name">First Name</label>
+                                <input type="text" name="first_name" id="first_name" value="{{ users.first_name }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" name="last_name" id="last_name" value="{{ users.last_name }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="email">E-mail</label>
+                                <input type="email" name="email" id="email" value="{{ users.email }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label for="username">Username</label>
+                                <input type="text" name="username" id="username" value="{{ users.username }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="password">Enter your Current Password</label>
+                                <input type="password" name="password" id="password"
+                                       class="form-control">
+                            </div>
+                            <br>
+
+                            <div class="col-md-6">
+                                <label for="newpassword">Enter New Password</label>
+                                <input type="password" name="newpassword" id="newpassword"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="newpassword1">Re-type new Password</label>
+                                <input type="password" name="newpassword1" id="newpassword1"
+                                       class="form-control">
+                            </div>
+
+                        </div>
+
+
+                        {% csrf_token %}
+                        <h4 class="m-4">Company Info</h4>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="cname">Company Name</label>
+                                <input type="text" name="cname" id="cname" value="{{ cmp1.cname }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label for="caddress">Company Address</label>
+                                <input type="text" name="caddress" id="caddress" value="{{ cmp1.caddress }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="city">City</label>
+                                <input type="text" name="city" id="city" value="{{ cmp1.city }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label for="state">State</label>
+                                <input type="text" name="state" id="state" value="{{ cmp1.state }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="pincode">Pincode</label>
+                                <input type="text" name="pincode" id="pincode" value="{{ cmp1.pincode }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label for="cemail">Email</label>
+                                <input type="email" name="cemail" id="cemail" value="{{ cmp1.cemail }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="phone">Phone Number</label>
+                                <input type="text" name="phone" id="phone" pattern="^\d{10}$" value="{{ cmp1.phone }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label for="bname">Legal Business Name</label>
+                                <input type="text" name="bname" id="bname" value="{{ cmp1.bname }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label for="industry">Your Industry</label>
+                                {#                                <input type="text" name="industry" id="industry" value="{{ cmp1.industry }}"#}
+                                {#                                       class="form-control">#}
+                                <select name="industry" id="industry" class="form-control">
+                                    <option>{{ cmp1.industry }}</option>
+                                    <option value="Accounting Services">Accounting Services</option>
+                                    <option value="Consultants, doctors, Lawyers and similar">Consultants, doctors,
+                                        Lawyers and
+                                        similar
+                                    </option>
+                                    <option value="Information Tecnology">Information Tecnology</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Professional Scientific and Technical Services">Professional,
+                                        Scientific and
+                                        Technical Services
+                                    </option>
+                                    <option value="Restaurant/Bar and similar">Restaurant/Bar and similar</option>
+                                    <option value="Retail and Smilar">Retail and Smilar</option>
+                                    <option value="Other Finanacial Services">Other Finanacial Services</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label for="ctype">Company Type</label>
+                                {#                                <input type="text" name="ctype" id="ctype" value="{{ cmp1.ctype }}"#}
+                                {#                                       class="form-control">#}
+                                <select name="ctype" id="ctype" class="form-control">
+                                    <option>{{ cmp1.ctype }}</option>
+                                    <option value="Private Limited Company">Private Limited Company</option>
+                                    <option value="Public Limited Company">Public Limited Company</option>
+                                    <option value="Joint-Venture Company">Joint-Venture Company</option>
+                                    <option value="Partnership Firm Company">Partnership Firm Company</option>
+                                    <option value="One Person Company">One Person Company</option>
+                                    <option value="Branch Office Company">Branch Office Company</option>
+                                    <option value="Non Government Organization">Non Government Organization</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-md-6">
+                                <label>Do you want to change Company Image ? <i>Browse here</i><i
+                                        class="bx bx-arrow-to-bottom"></i> </label>
+                                <input type="file" name="img1" value="upload">
+                                <input type="hidden" value="{{ cmp1.cimg }}" name="img2">
+                            </div>
+                        </div>
+                       <br>
+                        <div class="row mt-5">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info rounded-pill w-100 text-light" type="submit">UPDATE
+                                    PROFILE
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

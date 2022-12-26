@@ -1,0 +1,116 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+
+<div class="page-content">
+					<!--breadcrumb-->
+					<div class="card radius-15">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <center><h3 class="mb-0">MY ACCOUNTANT</h3></center>
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
+					<!--end breadcrumb-->
+                    <form action="updatemyac/{{ addac.id }}" method="post"  class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="card radius-15" style="background-color: #243e54;">
+                            <div class="card-body">
+                                <div class="card-title">
+
+                                </div>
+
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <img src="{% static 'assets/img/clipart2412551.png' %}" width="100%" }>
+                                        </div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="validationCustom02">Name</label>
+                                                    <input type="text" class="form-control" id="validationCustom02" name="acname" value="{{ addac.acname }}" required style="background-color: #2f516f;color: white;">
+                                                </div>
+
+                                                <div class="col">
+                                                    <label for="validationCustom02">Email</label>
+                                                    <input type="email" class="form-control" id="validationCustom02" name="email" value="{{ addac.email }}" required style="background-color: #2f516f;color: white;">
+                                                </div>
+                                            </div>
+                                            &nbsp;
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label  for="validationCustom02">User Type</label>
+                                                    <select class="custom-select" name="usertype"  required style="background-color: #2f516f; color: white;">
+                                                        <option >{{ addac.usertype }}</option>
+                                                        <option>Standard user</option>
+                                                        <option>Company admin</option>
+
+
+                                                    </select>
+
+                                                </div>
+
+                                                <div class="col">
+                                                    <label for="validationCustom02">Date</label>
+                                                    <input type="date" class="form-control" id="validationCustom02" name="dateadded" value="{{ addac.dateadded }}" value="{%  now 'd-M-Y' %}" required style="background-color: #2f516f;color: white;">
+                                                </div>
+                                            </div>
+                                            &nbsp;
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="validationCustom02">Username</label>
+                                                    <input type="text" class="form-control" id="validationCustom02" name="username" value="{{ addac.username }}" required style="background-color: #2f516f;color: white;">
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label for="validationCustom02">Password</label>
+                                                    <input type="password" class="form-control" id="validationCustom02" name="password" value="{{ addac.password }}" required style="background-color: #2f516f;color: white;">
+                                                </div>
+                                            </div>
+                                            &nbsp;
+                                            <br>
+                                            &nbsp;
+
+
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-row">
+                                                        <button class="btn btn-primary" type="submit" style="width: 100%;">Submit form</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </form>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                                <script>
+                                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                                    (function () {
+                                        'use strict';
+                                        window.addEventListener('load', function () {
+                                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                            var forms = document.getElementsByClassName('needs-validation');
+                                            // Loop over them and prevent submission
+                                            var validation = Array.prototype.filter.call(forms, function (form) {
+                                                form.addEventListener('submit', function (event) {
+                                                    if (form.checkValidity() === false) {
+                                                        event.preventDefault();
+                                                        event.stopPropagation();
+                                                    }
+                                                    form.classList.add('was-validated');
+                                                }, false);
+                                            });
+                                        }, false);
+                                    })();
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+{% endblock %}

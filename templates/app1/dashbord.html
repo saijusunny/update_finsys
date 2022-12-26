@@ -1,0 +1,440 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% if user.is_authenticated %}
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col">
+                                {% csrf_token %}
+
+                                    <center><label
+                                            style="text-align: center; font-size: 30px;">{{ cmp1.cname }}</label>
+                                    </center>
+
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="card-body">
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">A simple primary alert with <a
+                    href="#" class="alert-link">an example link</a>. Give it a click if you like.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">A simple primary alert with <a
+                    href="#" class="alert-link">an example link</a>. Give it a click if you like.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div> -->
+        <div class="card-deck flex-column flex-lg-row">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5 class="mb-0">PROFIT AND LOSS </h5>
+                    </div>
+                    <hr/>
+                    <br>
+                    <h6 id="pf"></h6>
+                    <BR>
+                       <canvas  id="pie-chart"
+                               ></canvas>
+
+                </div>
+            </div>
+
+
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5 class="mb-0">EXPENSES: &#8377 {{ exp }} </h5>
+                    </div>
+                    <hr/>
+                        <div id="chartexp"></div>
+
+                </div>
+            </div>
+
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5 class="mb-0">BANK ACCOUNTS </h5>
+                    </div>
+                    <hr/>
+                    <!-- <div class="row-cols-md">
+                        <div class="col-md">
+                            <h6><b>Bank Account</b></h6>
+                            <label>Bank balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label><br>
+                            <label>In Finsys&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label>
+
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row-md">
+                        <div class="col-md">
+                            <h6><b>Bank Account</b></h6>
+                            <label>Bank balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label><br>
+                            <label>In Finsys&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label>
+
+
+                        </div>
+                    </div>
+                    <hr> -->
+                </div>
+                </div>
+        </div>
+
+        <div class="card-deck flex-column flex-lg-row">
+             <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5 class="mb-0">INCOME: &#8377 {{ inc }} </h5>
+                    </div>
+                    <hr/>
+                        <div id="chartinc"></div>
+
+                </div>
+            </div>
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5 class="mb-0">INVOICE </h5>
+                    </div>
+                    <hr/>
+                    <br>
+                    <h6>UNPAID:&#8377 {{ up }}</h6>
+                    <h6>PAID:&#8377 {{ p }}</h6>
+
+                    <BR>
+                       <canvas  id="pie-chart5"
+                               ></canvas>
+
+                </div>
+            </div>
+
+
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5 class="mb-0">SALES: &#8377 {{ s }} </h5>
+                    </div>
+                    <hr/>
+
+                               <canvas  id="pie-chart12"
+                               ></canvas>
+
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+    $(function () {
+	"use strict";
+
+	// chart expense
+
+	var options = {
+		series: {{ data_1|safe }},
+		chart: {
+		    foreColor: 'rgba(255, 255, 255, 0.65)',
+			height: 360,
+			type: 'donut',
+		},
+		legend: {
+			position: 'bottom',
+			show: true,
+		},
+		plotOptions: {
+			pie: {
+				// customScale: 0.8,
+				donut: {
+					size: '80%'
+				}
+			}
+		},
+		colors: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.10)", "rgba(255, 255, 255, 0.22)","rgb(105,105,105)","rgb(192,192,192)","rgb(32,178,170)"],
+
+		dataLabels: {
+			enabled: false,
+		},
+		tooltip: {
+			enabled: true,
+			theme: 'dark',
+		},
+		stroke:{
+         colors:['rgba(255, 255, 255, 0.0)']
+        },
+		labels: {{ label_1|safe }},
+		responsive: [{
+			breakpoint: 480,
+			options: {
+				chart: {
+					height: 200
+				},
+				legend: {
+					position: 'bottom'
+				}
+			}
+		}]
+	};
+	var chart = new ApexCharts(document.querySelector("#chartexp"), options);
+	chart.render();
+
+//income
+	var options = {
+		series: {{ data_2|safe }},
+		chart: {
+		    foreColor: 'rgba(255, 255, 255, 0.65)',
+			height: 360,
+			type: 'pie',
+		},
+		legend: {
+			position: 'bottom',
+			show: true,
+		},
+		plotOptions: {
+			pie: {
+				// customScale: 0.8,
+				donut: {
+					size: '80%'
+				}
+			}
+		},
+		colors: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.10)", "rgba(255, 255, 255, 0.22)","rgb(105,105,105)","rgb(192,192,192)","rgb(32,178,170)"],
+
+		dataLabels: {
+			enabled: false,
+		},
+		tooltip: {
+			enabled: true,
+			theme: 'dark',
+		},
+		stroke:{
+         colors:['rgba(255, 255, 255, 0.0)']
+        },
+		labels: {{ label_2|safe }},
+		responsive: [{
+			breakpoint: 480,
+			options: {
+				chart: {
+					height: 200
+				},
+				legend: {
+					position: 'bottom'
+				}
+			}
+		}]
+	};
+	var chart = new ApexCharts(document.querySelector("#chartinc"), options);
+	chart.render();
+
+
+	jQuery('#geographic-map').vectorMap({
+		map: 'world_mill_en',
+		backgroundColor: 'transparent',
+		borderColor: '#818181',
+		borderOpacity: 0.25,
+		borderWidth: 1,
+		zoomOnScroll: false,
+		color: '#009efb',
+		regionStyle: {
+			initial: {
+				fill: '#fff'
+			}
+		},
+		markerStyle: {
+			initial: {
+				r: 9,
+				'fill': '#fff',
+				'fill-opacity': 1,
+				'stroke': '#000',
+				'stroke-width': 5,
+				'stroke-opacity': 0.4
+			},
+		},
+		enableZoom: true,
+		hoverColor: '#009efb',
+		markers: [{
+			latLng: [21.00, 78.00],
+			name: 'I Love My India'
+		}],
+		hoverOpacity: null,
+		normalizeFunction: 'linear',
+		scaleColors: ['#b6d6ff', '#005ace'],
+		selectedColor: '#c9dfaf',
+		selectedRegions: [],
+		showTooltip: true,
+		onRegionClick: function (element, code, region) {
+			var message = 'You clicked "' + region + '" which has the code: ' + code.toUpperCase();
+			alert(message);
+		}
+	});
+});
+
+</script>
+
+
+  <script>
+      //profit and loss
+        const ctx = document.getElementById('pie-chart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type:'bar',
+            data: {
+               labels:  ['Income', 'Expense'],
+                colors: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+
+
+                datasets: [{
+
+
+
+                    data: [{{inc}},{{exp}}],
+                    backgroundColor: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+                    borderColor:["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+
+                }]
+            },
+            options: {
+                dataLabels: {
+                  font:{
+                      size:10,
+                      color: ['#000000'],
+                  }
+                },
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        console.log(labels,data)
+    </script>
+
+<script>
+    $(document).ready(function () {
+        var t1 = parseFloat('{{ exp}}');
+        var t2 = parseFloat('{{ inc }}');
+
+        if (Number.isNaN(t1))
+        {
+            t1 = 0;
+        }
+        if (Number.isNaN(t2))
+        {
+            t2 = 0;
+        }
+        if (t1 <= t2)
+        {
+            var t=t2-t1;
+            document.getElementById('pf').innerHTML = "NET INCOME: &#8377; " + t
+        }
+        if (t2 < t1)
+        {
+        var t=t1-t2;
+        document.getElementById('pf').innerHTML = "NET LOSS: &#8377; " + t
+        }
+
+                                        });
+
+
+</script>
+
+
+<script>
+//invoice
+        const ctx1 = document.getElementById('pie-chart5').getContext('2d');
+        const myChart1 = new Chart(ctx1, {
+            type:'bar',
+            data: {
+               labels:  ['Unpaid', 'Paid'],
+                colors: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+
+
+                datasets: [{
+
+
+
+                    data: [{{up}},{{p}}],
+                    backgroundColor: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+                    borderColor:["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+
+                }]
+            },
+            options: {
+                dataLabels: {
+                  font:{
+                      size:10,
+                      color: ['#000000'],
+                  }
+                },
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        console.log(labels,data)
+    </script>
+
+<script>
+//sales
+        const ctx12 = document.getElementById('pie-chart12').getContext('2d');
+        const myChart12 = new Chart(ctx12, {
+            type:'line',
+            data: {
+               labels:  {{ label_3|safe }},
+                colors: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+
+
+                datasets: [{
+
+
+
+                    data: {{ data_3|safe }},
+                    backgroundColor: ["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+                    borderColor:["rgba(255, 255, 255, 0.52)", "rgba(255, 255, 255, 0.22)"],
+
+                }]
+            },
+            options: {
+                dataLabels: {
+                  font:{
+                      size:10,
+                      color: ['#000000'],
+                  }
+                },
+                indexAxis: 'y',
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        console.log(labels,data)
+    </script>
+
+ {% endif %}
+{% endblock %}

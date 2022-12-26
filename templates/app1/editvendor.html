@@ -1,0 +1,576 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .hide{
+			display: none;
+    	}
+    </style>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">EDIT VENDOR</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">Vendor Details</h4>
+                </div>
+                <hr/>
+                <form action="editvendor/{{ vndr.vendorid }}" method="post" class="needs-validation" novalidate autocomplete="off">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom01">Title</label>
+                                <select name="title" id="title" class="form-control">
+                                    <option value="{{ vndr.title }}">{{ vndr.title }}</option>
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Miss">Miss</option>
+                                    <option value="Ms">Ms</option>
+                                </select>
+                                
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom02">First name</label>
+                                <input type="text" class="form-control" id="validationCustom02" name="firstname"
+                                    value="{{ vndr.firstname }}"   required>
+                                
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom02">Last name</label>
+                                <input type="text" class="form-control" id="validationCustom02" name="lastname"
+                                    value="{{ vndr.lastname }}">
+                                
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom03">Company</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="company_name"
+                                    value="{{ vndr.companyname }}">
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">Email</label>
+                                <input type="email" class="form-control" id="validationCustom03" name="email"
+                                    placeholder="finsys@mail.com" value="{{ vndr.email }}">
+                                
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">Website</label>
+                                <input type="text" class="form-control" id="validationCustom03" value="{{ vndr.website }}"
+                                    placeholder="www.finsys.com" name="website">
+                                
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom01">Mobile</label>
+                                <input type="text" class="form-control" id="validationCustom01"
+                                    placeholder="Mobile number" maxlength="10" value="{{ vndr.mobile }}"
+                                    name="mobile">
+                                
+                            </div>
+                        </div>
+                        <hr>
+                        <center><h4><b>Other Options</b></h4></center>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom04">GST Treatment</label>
+                                <select class="form-control" id="gsttyp" name="gsttype" onchange="showgsttyp()"
+                                    onclick="hidinput('hello', this)" required>
+                        
+                                    <option value="{{ vndr.gsttype }}">{{ vndr.gsttype }}</option>
+
+                                    <option value="Registered Business - Regular">Registered Business - Regular</option>
+                                    <option value="Registered Business - Composition">Registered Business - Composition</option>
+                                    <option value="unregistered Business">unregistered Business</option>
+                                    <option value="Overseas">Overseas</option>
+                                    <option value="Special Economic Zone (SEZ)">Special Economic Zone (SEZ)</option>
+                                    <option value="Demed Exports">Demed Exports</option>
+                                    <option value="Tax Deductor">Tax Deductor</option>
+                                    <option value="SEZ Developer">SEZ Developer</option>
+                                </select>
+                                <!-- <div class="invalid-feedback">Please select a valid registration type.</div>
+                                <div class="hide" id="regular"><label><i>(Business that is registered under gst)</i></label></div>
+                                <div class="hide" id="comp"><label>&nbsp;<i>(Business that is registered under composition scheme in gst)</i></label></div>
+                                <div class="hide" id="unreg"><label>&nbsp;&nbsp;&nbsp;<i>(Business that has not been registered under gst)</i></label></div>
+                                <div class="hide" id="overseas"><label>&nbsp;&nbsp;&nbsp;<i>(Import/Export of supply outside india)</i></label></div>
+                                <div class="hide" id="sez"><label>&nbsp;&nbsp;&nbsp;<i>(Business that is located in a special economic zone of india or a SEZ developer)</i></label></div>
+                                <div class="hide" id="demed"><label>&nbsp;&nbsp;&nbsp;<i>(Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</i></label></div>
+                                <div class="hide" id="taxdud"><label>&nbsp;&nbsp;<i>(State of central gov,government agencies or local authority)</i></label></div>
+                                <div class="hide" id="sezdev"><label>&nbsp;&nbsp;<i>(A person or organization who owns atleast 26% eqaulity in creating business units in special economic zone)</i></label></div> -->
+                            </div>
+                              
+                            <div class="col-md-4 mt-3">
+                                <div id="hello">
+                                    <label for="validationCustom05">GSTIN</label>
+                                    <input type="text" class="form-control" onchange="checkgst(this)"
+                                        id="validationCustom05" name="gstin" value="{{ vndr.gstin }}"
+                                        placeholder="29APPCK7465F1Z1">
+                                    <a href="https://services.gst.gov.in/services/searchtp"
+                                        target="_blank" style="color:#3dd5f3">Get Taxpayer details ?</a>
+                                    <div class="text-danger m-2" id="warngst"></div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4 mt-3 hide" id="legal">
+                                <label for="">Business Legal Name</label>
+                                <input type="text" class="form-control" name="">
+                            </div>
+                            <div class="col-md-4 mt-3 hide" id="trade">
+                                <label for="">Business Trade Name</label>
+                                 <input type="text" class="form-control" name="">
+                             </div>-->
+
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">PAN NO</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="panno"
+                                    onchange="checkpan(this)" placeholder="APPCK7465F" value="{{vndr.panno }}">
+                               
+                            </div> 
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mt-2">
+                               <label for="">Place of Supply</label>
+                                <input type="text" class="form-control" value="{{ vndr.sourceofsupply }}" name="sourceofsupply">
+                            </div>
+                            <!-- <div class="col-md-3 mt-2 hide" id="tax">
+                                <label for="">Tax Preference</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" value="Taxable" name="taxpref">
+                                    <label class="form-check-label">Taxable</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" value="Tax Exempt" name="taxpref">
+                                    <label class="form-check-label">Tax Exempt</label>
+                                </div>
+                            </div> -->
+                            
+                            <div class="col-md-3 mt-2">
+                                <label for="">Currency</label>
+                                <div class="d-flex">
+                                    <input type="text" class="form-control" id="" name="currency" placeholder="INR - Indian Rupee"
+                                        id="validationCustom02" value="{{ vndr.currency }}">
+                                    <a href="#">
+                                        <button type="button" class="btn btn-outline-secondary ml-1">+</button>
+                                    </a>
+                                    
+                                </div>   
+                            </div>
+                            
+                            <div class="col-md-3 mt-2">
+                               <label for="">Opening Balance</label>
+                                <input type="number" class="form-control" name="openingbalance" placeholder="INR"
+                                value="{{ vndr.openingbalance }}">
+                            </div>
+                            <div class="col-md-3 mt-2">
+                               <label for="">Payment Terms</label>
+                               <select class=" form-control" id="validationCustom02" name="paymentterms">
+                                    <option value="{{ vndr.paymentterms }}">{{ vndr.paymentterms }}</option>
+                                    <option value="Due on Receipt">Due on Receipt</option>
+                                    <option value="Net 15">NET15</option>
+                                    <option value="Net 30">NET30</option>
+                                    <option value="Net 60">NET60</option>
+                                </select>
+                                
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 mt-5">
+                                <div class="row">
+                                    <div class="col-md-12 card-title">
+                                        <h5 class="mb-0">Billing Address</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-row">
+                                            <label for="street">Street</label>
+                                            <input type="text" class="form-control" id="street" value="{{ vndr.street }}" name="street">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="city">City</label>
+                                            <input type="text" class="form-control" id="city"
+                                                name="city" value="{{ vndr.city }}"
+                                                placeholder="City">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="state">State</label>
+                                            <select type="text" class="form-control" id="state" name="state">
+                                                <option value="{{ vndr.state }}">{{ vndr.state }}</option>
+
+                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                                </option>
+                                                <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                                <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                <option value="Damn anad Diu">Damn anad Diu</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Predesh">Himachal Predesh</option>
+                                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Ladakh">Ladakh</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Madhya Predesh">Madhya Predesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Puducherry">Puducherry</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Predesh">Uttar Predesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                                <option value="Other Territory">Other Territory</option>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="pinco">Pin Code</label>
+                                            <input type="text" class="form-control" id="pinco"
+                                                name="pincode" maxlength="6" value="{{ vndr.pincode }}"
+                                                placeholder="PIN code">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="country">Country</label>
+                                            <input type="text" class="form-control" id="country" value="{{ vndr.country }}"
+                                                name="country" 
+                                                placeholder="Country">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-5">
+                                <div class="row">
+                                    <div class="col-md-12 d-flex">
+                                        <h5>Shipping Address</h5>
+                                        <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                               name="okay">
+                                        <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstreet">Street</label>
+                                            <input type="text" class="form-control" id="shipstreet" name="shipstreet"
+                                            value="{{ vndr.shipstreet }}" >
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipcity">City</label>
+                                            <input type="text" class="form-control" id="shipcity" value="{{ vndr.shipcity }}"
+                                                name="shipcity" placeholder="City">
+                                           
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstate">State</label>
+                                            <select type="text" class="form-control" id="plosu" name="shipstate">
+                                                <option value="{{ vndr.shipstate }}">{{ vndr.shipstate }}</option>
+
+                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                                </option>
+                                                <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                                <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                <option value="Damn anad Diu">Damn anad Diu</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Predesh">Himachal Predesh</option>
+                                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Ladakh">Ladakh</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Madhya Predesh">Madhya Predesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Puducherry">Puducherry</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Predesh">Uttar Predesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                                <option value="Other Territory">Other Territory</option>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shippinco">Pin Code</label>
+                                            <input type="text" class="form-control" id="shippinco"
+                                                name="shippincode" value="{{ vndr.shippincode }}"
+                                                placeholder="PIN code">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipcountry">Country</label>
+                                            <input type="text" class="form-control" id="shipcountry"
+                                                name="shipcountry" value="{{ vndr.shipcountry }}"
+                                                placeholder="Country">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><hr>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                        type="submit">
+                                    Submit form
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function poppins() {
+            var chkbtn = document.getElementById('okay');
+            if (chkbtn.checked == true) {
+                document.getElementById('shipstreet').value = document.getElementById('street').value;
+                document.getElementById('shipcity').value = document.getElementById('city').value;
+                document.getElementById('shippinco').value = document.getElementById('pinco').value;
+                document.getElementById('shipcountry').value = document.getElementById('country').value;
+                document.getElementById('shipst').value = document.getElementById('state').value;
+                document.getElementById('shipst').innerHTML = document.getElementById('state').value;
+            } else {
+                document.getElementById('shipstreet').value = '';
+                document.getElementById('shipcity').value = '';
+                document.getElementById('shipstate').value = '';
+                document.getElementById('shippinco').value = '';
+                document.getElementById('shipcountry').value = '';
+            }
+        }
+    </script>
+
+    <script>
+        function showgsttyp(){
+            var status = document.getElementById("gsttyp");
+            var a = status.value
+            console.log(a);
+            if( a == "Registered Business - Regular" ){
+                console.log(a);
+
+                document.getElementById('regular').style.display = "flex";
+                document.getElementById('trade').style.display = "block";
+                document.getElementById('legal').style.display = "block";
+                document.getElementById('tax').style.display = "block";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            if( a == "Registered Business - Composition" ){
+                document.getElementById('comp').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            if( a == "unregistered Business" ){
+                document.getElementById('unreg').style.display = "flex";
+                document.getElementById('tax').style.display = "block";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            if( a == "Overseas" ){
+                document.getElementById('overseas').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            if( a == "Special Economic Zone (SEZ)" ){
+                document.getElementById('sez').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            if( a == "Demed Exports" ){
+                document.getElementById('demed').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            if( a == "Tax Deductor" ){
+                document.getElementById('taxdud').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            if( a == "SEZ Developer" ){
+                document.getElementById('sezdev').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+            }
+        }
+
+    </script>
+
+    <script>
+        function hidinput(divId, element) {
+            if (element.value == 'unregistered Business' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+        }
+
+        function checkgst(element) {
+            var gstinput = element.value;
+            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+            if (gstinput.match(gstregexp)) {
+                document.getElementById('warngst').innerHTML = '';
+            } else {
+                document.getElementById('warngst').innerHTML = 'Please provide a valid GSTIN';
+                alert('Please provide a valid GSTIN');
+            }
+        }
+    </script>
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+{% endblock %}

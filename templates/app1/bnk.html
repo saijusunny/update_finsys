@@ -1,0 +1,708 @@
+
+    {% extends 'app1/base.html' %}
+    {% block body %}
+        {% load static %}
+        <style>
+            *{
+                padding: 0;
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                box-sizing: border-box;
+            }
+          
+            .form1{
+                background-color: white;
+                box-shadow: 2px 2px 2px rgba(200,200,200,);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                width:100%;
+                position: absolute;
+            }
+            
+            form{
+            
+                width: 100%;
+                /* display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center; */
+                height:auto;
+                background-color: rgba(0,0,0,0.0);
+            }
+    
+            input,select,textarea{
+               padding: 10px 20px;
+                width: 100%;
+                border: none;
+                background-color: rgba(255, 255, 255, 0.4);
+               
+            }
+            .top input{
+                padding: 10px 20px;
+                width: 90%;
+                border: none;
+                background-color: rgba(255, 255, 255, 0.4);
+    
+            }
+           
+    
+            form div{
+                width: 100%;
+            }
+            button{
+                padding: 6px 30px;
+                border-radius: 10px;
+                border: 4px solid rgb(0, 0, 0,0);
+                color: white;
+                background-color: rgb(103, 175, 220);
+            }
+            button:hover{
+                
+                
+                color: white;
+                background-color: rgb(26, 102, 153);
+            }
+            .top{
+                display: flex; 
+            }
+            .top .left1{
+                width:33.333%;
+               
+                border-bottom: 1px solid rgba(128, 128, 128, 0.6);
+                display: flex;
+                flex-direction: column;
+                
+                padding: 30px;
+                
+    
+            }
+            .top .right1{
+                width: 20%;
+                display: flex;
+                flex-direction: column;
+                align-items:center;
+                background-color: rgba(128, 128, 128, 0.09);
+                
+                padding: 25px;
+                
+                
+            }
+            .left1 div{
+                width: 100%;
+                
+                padding: 3px 0;
+            }
+            
+            .bottom{
+                display: flex;
+            }
+            .bottom .left2{
+                width: 33.333%;
+                padding: 30px;
+                
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+               
+            }
+            .bottom .right3{
+                width: 30%;
+                padding: 30px;
+                
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                
+            }
+            
+            .bottom .right2{
+                width: 33.333%;
+                padding: 30px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                
+                
+                
+                
+            }
+            .bottom .center{
+                width: 33.333%;
+                padding: 30px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                
+                
+                
+                
+            }
+            .left2 div,.right2 div,.center div{
+                width: 100%;
+                padding: 3px 0;
+            }
+            
+    p{
+        font-size: 13px;
+    }
+    .flexy{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .close {
+        position: absolute;
+        top: 3px;
+        right: 8px;
+        font-size: 25px;
+        color: rgb(255, 255, 255);
+        transform: rotate(45deg);
+        cursor: pointer;
+        text-decoration: none;
+        
+    }
+    .close:hover{
+        color: yellow;
+    }
+    .hidden{
+        display: none;
+          }
+       .show{
+        display: block;
+           }
+            .hi{
+                display: none;
+            }
+            .od{
+                display: none;
+            }
+            .assets{
+                display: none;
+            }
+            .gst{
+                display: none;
+            }
+            .bo{
+                display: none;
+            }
+            .goo{
+                display: none;
+            }
+            .ser{
+                display: none;
+            }
+            .dirx{
+                display: none;
+            }
+            .stdet{
+                display: none;
+            }
+            .appli{
+                display: none;
+            }
+            .notapp{
+                display: none;
+            }
+            .gd{
+                display: none;
+            }
+            .form-popup {
+        visibility: hidden;       
+        position: fixed;
+        top: 150px;
+        right: 27px;
+        background-color: rgb(216, 232, 238); 
+        border: 1px solid #f1f1f1;
+        z-index: 9;
+        width: 190px;
+        overflow-y: auto;
+        
+       
+      
+      }
+      .rw:hover{
+        background-color: rgb(192, 192, 25);
+       
+      }
+      a:hover{
+        color: black;
+      }
+      .bnk{
+        display: none;
+      }
+      .fx{
+        display: none;
+      }
+      .nca{
+        display: none;
+      }
+      .apy{
+        display: none;
+      }
+      .cd{
+        display: none;
+      }
+      .ncl{
+        display: none;
+      }
+      .eq{
+        display: none;
+      }
+      .inc{
+        display: none;
+      }
+      .oi{
+        display: none;
+      }
+      .cg{
+        display: none;
+      }
+      .ex{
+        display: none
+          }
+        </style>
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+         <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+        
+<div class="row container-fluid p-0 mx-0 "  >
+    <div class="col-sm-2 m-0 p-0"></div>
+  
+<!--        <a href="javascript:history.go(-1);" class="close">+</a> -->
+   
+    <div class="container card radius-15" >
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">BANKING</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        
+
+<form class="" autocomplete="off" action="" method="post" >
+    {% csrf_token %}
+    
+   
+<div class="bottom ">
+   
+    <div class="table table-responsive" id="pDetails">
+        <div>
+            <table class="table ">
+                <tbody>
+                    <tr>
+                        <th  style="text-align: center;">Account detail</th>
+                        <th  style="text-align: center;">Account Type</th>
+                        <th  style="text-align: center;">Amount</th>
+                        
+                    </tr>
+                    <tr>
+                        <tr>
+                            <td  style="text-align: center;">
+                             
+                            </td>
+                            <td  style="text-align: center;">
+                               
+                            </td>
+                            <td  style="text-align: center;">
+                             
+                            </td>
+                            
+                        </tr>
+
+                    </tr>
+
+                    <!-- display data -->
+                    {% for h in h %}
+                    {% if h.cid_id == cmp1.cid %}
+                    <tr class="rw">
+                       
+                        <td  style="text-align: center;">
+                            <a href="{% url 'bnk1' h.accounts1id   %}">{{ h.name }}</a> 
+                        </td>
+                        <td  style="text-align: center;">
+                           {{ h.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                           {{ h.balance }}
+                        </td>
+                       
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for c in c %}
+                    {% if c.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' c.accounts1id %}">{{ c.name }}</a>
+                        </td>
+                        <td style="text-align: center;">
+                        {{ c.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ c.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for i in i %}
+                    {% if i.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td  style="text-align: center;">
+                        <a href="{% url 'bnk1' i.accounts1id   %}">{{ i.name }}</a> 
+                        
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ i.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                            {{ i.balance }}
+                        
+                        </td>
+                    
+                        
+                    </tr>
+
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for bnk in bnk %}
+                    {% if bnk.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' bnk.accounts1id   %}">{{ bnk.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ bnk.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ bnk.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for fx in fx %}
+                    {% if fx.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' fx.accounts1id   %}">{{ fx.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ fx.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ fx.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for nca in nca %}
+                    {% if nca.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' nca.accounts1id   %}">{{ nca.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ nca.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ nca.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for u in u %}
+                    {% if u.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' u.accounts1id   %}">{{ u.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ u.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ u.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for cd in cd %}
+                    {% if cd.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' cd.accounts1id   %}">{{ cd.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ cd.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ cd.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% for ncl in ncl1 %}
+                    {% if ncl.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' ncl.accounts1id   %}">{{ ncl.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ ncl.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ ncl.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% for eq in eq %}
+                    {% if eq.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' eq.accounts1id   %}">{{ eq.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ eq.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ eq.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% for inc in inc %}
+                    {% if inc.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' inc.accounts1id   %}">{{ inc.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ inc.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ inc.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% for oi in oi %}
+                    {% if oi.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' oi.accounts1id   %}">{{ oi.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ oi.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ oi.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for j in j %}
+                    {% if j.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' j.accounts1id   %}">{{ j.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ j.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ j.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for ex in ex %}
+                    {% if ex.cid_id == cmp1.cid %}
+                    <tr class="rw" >
+                        <td name="name" id="name"  style="text-align: center;">
+                            
+                            <a href="{% url 'bnk1' ex.accounts1id   %}">{{ ex.name }}</a> 
+                        </td>
+                        <td style="text-align: center;">
+                        {{ ex.acctype }}
+                        </td>
+                        <td  style="text-align: center;">
+                        {{ ex.balance }}
+                        </td>
+                        
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+
+    
+            </table>
+        
+
+</div></div>  
+</div>
+</div>    
+</div>
+
+ 
+
+    <!-- <script>
+
+$('.under').change(function(){
+            var responseID = $(this).val();
+            if(responseID =="Account Receivable"){
+                $('#pDetails').removeClass("hidden");
+                $('#pDetails').addClass("show");
+           }else{
+                $('#pDetails').removeClass("show");
+                $('#pDetails').addClass("hidden");
+            }
+            if(responseID =="Cash"){
+                $('#pDetail').removeClass("hi");
+                $('#pDetail').addClass("show");
+           }else{
+                $('#pDetail').removeClass("show");
+                $('#pDetail').addClass("hi");
+            }
+            if(responseID =="Bank"){
+                $('#odac').removeClass("od");
+                $('#odac').addClass("show");
+           }else{
+                $('#odac').removeClass("show");
+                $('#odac').addClass("od");
+            }
+            if(responseID ==""){
+                $('#bnk1').removeClass("bnk");
+                $('#bnk1').addClass("show");
+           }else{
+                $('#bnk1').removeClass("show");
+                $('#bnk1').addClass("bnk");
+            }
+            if(responseID =="Non-Current Assets"){
+                $('#fx1').removeClass("fx");
+                $('#fx1').addClass("show");
+           }else{
+                $('#fx1').removeClass("show");
+                $('#fx1').addClass("fx");
+            }
+            if(responseID ==""){
+                $('#nca1').removeClass("nca");
+                $('#nca1').addClass("show");
+           }else{
+                $('#nca1').removeClass("show");
+                $('#nca1').addClass("nca");
+            }
+            if(responseID =="Undepposited Funds"){
+                $('#apy1').removeClass("apy");
+                $('#apy1').addClass("show");
+           }else{
+                $('#apy1').removeClass("show");
+                $('#apy1').addClass("apy");
+            }
+            if(responseID =="Credit Card"){
+                $('#cd1').removeClass("cd");
+                $('#cd1').addClass("show");
+           }else{
+                $('#cd1').removeClass("show");
+                $('#cd1').addClass("cd");
+            }
+            if(responseID =="Non-Current Liabilities"){
+                $('#ncl1').removeClass("ncl");
+                $('#ncl1').addClass("show");
+           }else{
+                $('#ncl1').removeClass("show");
+                $('#ncl1').addClass("ncl");
+            }
+            if(responseID =="Cost Of Goods Sold"){
+                $('#eq1').removeClass("eq");
+                $('#eq1').addClass("show");
+           }else{
+                $('#eq1').removeClass("show");
+                $('#eq1').addClass("eq");
+            }
+            if(responseID =="Income"){
+                $('#inc1').removeClass("inc");
+                $('#inc1').addClass("show");
+           }else{
+                $('#inc1').removeClass("show");
+                $('#inc1').addClass("inc");
+            }
+            if(responseID =="Other Incomes"){
+                $('#oi1').removeClass("oi");
+                $('#oi1').addClass("show");
+           }else{
+                $('#oi1').removeClass("show");
+                $('#oi1').addClass("oi");
+            }
+            if(responseID =="Current Assets"){
+                $('#cg1').removeClass("cg");
+                $('#cg1').addClass("show");
+           }else{
+                $('#cg1').removeClass("show");
+                $('#cg1').addClass("cg");
+            }
+            if(responseID =="Expenses"){
+                $('#ex1').removeClass("ex");
+                $('#ex1').addClass("show");
+           }else{
+                $('#ex1').removeClass("show");
+                $('#ex1').addClass("ex");
+            }
+           
+           
+            
+            
+        });
+
+
+      
+
+
+
+       
+    </script> -->
+
+    
+    
+
+   
+    {% endblock %}

@@ -1,0 +1,1159 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+            font-size: 1rem;
+            line-height: 2.15;
+            padding-left: .75em;
+            padding-right: .75em;
+        }
+        .card-registration .select-arrow {
+            top: 13px;
+        }
+        .bg-grey {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        @media (min-width: 992px) {
+            .card-registration-2 .bg-grey {
+                border-top-right-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        @media (max-width: 991px) {
+            .card-registration-2 .bg-grey {
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        .vl {
+            border-left: 6px solid gray;
+        }
+        .table-row{
+        cursor:pointer;
+}
+/* hr {
+        border: 0;
+        clear:both;
+        display:block;
+        width: 96%;               
+        background-color:#000000;
+        height: 1px;
+      } */
+    .spaced>li {
+        color:black;
+        font-size:10px;
+    }
+
+    .table1{
+        font-size:10px;
+        width:100% ;
+        color:black;
+
+    }
+    .label-lg {
+            padding: .3em .6em .4em;
+            font-size: 12px;
+            color:black;
+            line-height: 1.1;
+            height: 24px
+    }
+    .widget-header{
+        background-color:#444;
+        color:white;
+        font-size:14px;
+    }
+    .widget-header:after,
+    .widget-header:before {
+            content: "";
+            display: table;
+            line-height: 0
+    }
+    .widget-header:after {
+            clear: right
+    }
+    .widget-box.collapsed>.widget-header {
+            border-bottom-width: 0
+        }
+        
+        .collapsed.fullscreen>.widget-header {
+            border-bottom-width: 1px
+        }
+        
+        .collapsed>.widget-body {
+            display: none
+        }
+        
+        .widget-header-flat {
+            background: #F7F7F7
+        }
+        
+        .widget-header-large {
+            min-height: 49px;
+            padding-left: 18px
+        }
+        
+
+        
+        .widget-header-small {
+            min-height: 31px;
+            padding-left: 10px
+        }
+        
+        .widget-header>.widget-title {
+            line-height: 36px;
+            padding: 0;
+            margin: 0;
+            display: inline;
+            font-size:13px;
+        }
+        
+        
+        
+        .widget-toolbar {
+            display: inline-block;
+            padding: 0 10px;
+            line-height: 37px;
+            float: right;
+            position: relative
+        }
+        
+        
+        
+        
+        
+       
+        
+        .widget-body {
+            background-color: #FFF
+        }
+        
+        .widget-main {
+            padding: 12px
+        }
+        
+       
+    </style>
+<script>
+    
+    function Overview() {
+            
+                document.getElementById('overview').style.display = 'block';
+                document.getElementById('details').style.display = 'none';
+                document.getElementById('statment').style.display = 'none';
+                document.getElementById('transation').style.display = 'none';
+                document.getElementById('form1').style.display = 'none';
+                
+        }
+        function Details() {
+            document.getElementById('overview').style.display = 'none';
+            document.getElementById('details').style.display = 'block';
+            document.getElementById('statment').style.display = 'none';
+            document.getElementById('transation').style.display = 'none';
+            document.getElementById('form1').style.display = 'none';
+        }
+        function Statment() {
+            document.getElementById('overview').style.display = 'none';
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('statment').style.display = 'block';
+            document.getElementById('transation').style.display = 'none';
+            document.getElementById('form1').style.display = 'block';
+                  
+        }
+        function transaction() {
+            document.getElementById('overview').style.display = 'none';
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('statment').style.display = 'none';
+            document.getElementById('transation').style.display = 'block';
+            document.getElementById('form1').style.display = 'none';
+
+            
+                  
+        }
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
+   
+<script>
+
+
+    async function generatePDF() {
+        // document.getElementById("downloadButton").innerHTML = "Currently downloading, please wait";
+
+        //Downloading
+        var downloading = document.getElementById("whatToPrint");
+        var doc = new jsPDF('l', 'pt');
+
+        await html2canvas(downloading, {
+            //allowTaint: true,
+            //useCORS: true,
+            // width: 600
+            
+        }).then((canvas) => {
+            //Canvas (convert to PNG)
+            doc.addImage(canvas.toDataURL("image/png"), 'PNG', 100, 20, 600, 550);
+        })
+
+        doc.save("Document.pdf");
+
+        //End of downloading
+
+        // document.getElementById("downloadButton").innerHTML = "Click to download";
+    }
+
+    
+</script>
+
+
+
+<!-- modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{% url 'cust_add_file' customer.customerid %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <div class="modal-body">
+          <input type="file" class="form-control" name="file">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<!-- /modal-->
+
+
+
+
+
+
+    <div class="page-content " >
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">{{ customer.title }}. {{ customer.firstname }} {{ customer.lastname }}</h2></center>
+                    <hr>
+                    <div class="btn-group" style="float: left; ">
+
+                        <a style="padding: 10px; cursor: pointer;" onclick="Details()" >Details</a>
+                        <a style="padding: 10px; cursor: pointer;" onclick="Overview()"> Overview</a>
+                        <a style="padding: 10px; cursor: pointer;" onclick="transaction()"> Transactions</a>
+                        <a style="padding: 10px; cursor: pointer;" onclick="Statment()"> Statment</a>
+                    </div> 
+                    <div class="btn-group" style="float: right; ">
+                       
+                            
+                            <button type="button"
+                                    class="btn btn-outline-info  dropdown-toggle dropdown-toggle-split fa fa-paperclip"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 8px;">
+                                <span class="sr-only ">Toggle Dropdown</span>
+                                Attach file
+                            </button>
+                            <div class="dropdown-menu" style="margin-top: 8px;">
+                                <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
+                                {% if customer.file != "default.jpg" %}
+                                <a class="dropdown-item fa fa-download" style="cursor: pointer;"download  href="{{customer.file.url }}" >Download file</a>
+                                {% endif %}
+                           
+                        </div>
+                        
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+        <!-- <form id="form_post" >
+            <label>From</label><input type="date" id="fdate" name="fdate"  > 
+            <label>To</label><input type="date" id="ldate" name="ldate" >
+            <button class="btn" type="submit"> Search</button>
+            </form> -->
+        <div class="card radius-15" id="form1" style="display: none;">
+            <div class="card-body">
+                
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label style="text-align:left ">Report period</label><br>
+                            <form id="form_post"  class="needs-validation" novalidate>
+                            <select class="form-control" id="filterstyle" onclick="filterDate(this)"
+                                    list="hosting-plan"
+                                    type="text">
+                                    
+                                <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-sm-4" id="frdate" style="display: none;">
+                            <label for="from">From</label>
+                            <input type="date" class="form-control" id="fdate" name="fdate"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-sm-4" id="todate" style="display: none;">
+                            <label for="from">To</label>
+                            <input type="date" class="form-control" id="ldate" name="ldate"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2">
+
+                        </div>
+                        
+                        <div class="col-md-2">
+
+                            <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Search</button>
+                        </div>
+                        <div class="col-md-2">
+                            <a class="fa fa-print" style="padding: 10px; cursor: pointer; float: right; "  href="javascript:generatePDF()" id="downloadButton" > PDF</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="card card-registration card-registration-2" style="border-radius: 15px;"  >
+            <div class="card-body p-0" >
+               
+                <div id="details">
+                <div class="row g-0" >
+                   
+                    <div class="col-lg-8">
+                        <div class="p-5">
+                            <div class="d-flex justify-content-between align-items-center mb-5">
+                                <h1 class="fw-bold mb-0 text-black">{{ customer.title }}. {{ customer.firstname }} {{ customer.lastname }}</h1>
+                                <h6 class="mb-0 text-muted">{{ cmp1.cname }}</h6>
+                            </div>
+                            <hr class="my-4">
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 mt-3">
+                                    <h6 class="mb-0">Company</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.companyname }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Email</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.email }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 mt-3">
+                                    <h6 class="mb-0">Mobile</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.mobile }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Website</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.website }}</p>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-4 mt-3">
+                                    <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Billing Address</h5>
+                                </div>
+                                <div class="col-md-4 mt-3"></div>
+                                <div class="col-md-4 mt-3"></div>
+
+                                <div class="col-md-2 mt-3">
+                                    <h6 class="mb-0">Street</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.street }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">City</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.city }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 mt-3">
+                                    <h6 class="mb-0">State</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ customer.state }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Pincode</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ customer.pincode }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Country</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ customer.country }}</p>
+                                </div>
+                            </div><hr>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-4 mt-3">
+                                    <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Shipping Address</h5>
+                                </div>
+                                <div class="col-md-4 mt-3"></div>
+                                <div class="col-md-4 mt-3"></div>
+
+                                <div class="col-md-2 mt-3">
+                                    <h6 class="mb-0">Street</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.shipstreet }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">City</h6>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ customer.shipcity }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 mt-3">
+                                    <h6 class="mb-0">State</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ customer.shipstate }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Pincode</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ customer.shippincode }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h6 class="mb-0">Country</h6>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <p class="mb-0">{{ customer.shipcountry }}</p>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 bg-grey">
+                        <div class="p-5">
+                          
+                            <h3 class="fw-bold mb-5 mt-2 pt-1">GST</h3>
+                            <hr class="my-4">
+                            <div class="d-flex justify-content-between mb-4">
+                                <h5 class="">GSTIN</h5>
+                                <h6>{{ customer.gstin }}</h6>
+                            </div>
+                            <h5 class="mb-3">GST Type</h5>
+                            <div class="mb-4 pb-2">
+                                {{customer.gsttype }}
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h5 class="">PAN Number</h5>
+                                <h6>{{ customer.panno }}</h6>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-4">
+                                <h5 class="">Opening Balance</h5>
+                                <h6>{{ customer.opening_balance }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h5 class="">status</h5>
+                                <h6>{{ customer.status }}</h6>
+                            </div>
+                            <hr class="my-4">
+                            
+                            <div>
+                                <center>
+                                    <a href="{% url 'editcustomer' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">
+                                        Edit
+                                    </a>&nbsp;&nbsp;&nbsp;
+                                    {% if customer.status == act%}
+                                    <a href="{% url 'active_cust' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Inactivate</a> &nbsp;&nbsp;&nbsp;
+                                    {% else %}
+                                    <a href="{% url 'inactive_cust' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Activate</a> &nbsp;&nbsp;&nbsp;
+                                    {% endif %}
+                                   
+                                    <a   class="btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button"> 
+
+                                        <form  action="{% url 'deletecustomer' customer.customerid %}"   > 
+                                           <i class="fa fa-trash-o delete"> Delete</i>
+                                           <input name="_method" type="hidden" value="DELETE">
+                                           
+                                           </form> </a>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+
+                <div id="overview" style="display: none;">
+                    <div class="container-fluid" >
+                        <!-- <div class="row"><div class="col-lg-3"><div class="text-muted">Payment due period</div> 
+                        <div>Due on Receipt</div></div>
+                         </div> -->
+                         <div class="row ml-0 mt-6"><p class="" style="margin-top: 50px; font-size: 20px;">Receivables</p></div>
+                        <table class="table table-responsive-md mt-4 table-hover">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center;">CURRENCY</th>
+                                <th style="text-align: center;">OUTSTANDING RECEIVABLES</th>
+                                <th style="text-align: center;">UNUSED CREDITS</th>
+                               
+                                
+                            </tr>
+                            </thead>
+                            <tbody>
+                                
+                                <tr class="table-row " data-href="{% url 'goinvoices' %}">
+                                <td style="text-align: center;">INR- Indian Rupee</td>
+                                <td style="text-align: center;">{{customer.receivables}}</td>
+                                <td style="text-align: center;">{{sum2}}</td>
+                                </tr>
+                               
+                            
+                                </tbody>
+
+                            </table>
+
+
+                            <div class="row ml-0 mt-6"><a data-toggle="modal" data-target="#openmodal" style="margin-top: 15px; margin-bottom: 10px; margin-left: 20px; cursor: pointer;  font-size: 16px;">View Opening Balance</a></div>
+                </div>
+
+                </div>
+
+                <!-- openbalance modal -->
+                <div class="modal fade" id="openmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Edit Opening Balance</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <form method="POST" action="{% url 'update_opening_balance' customer.customerid %}">{% csrf_token %}
+                        <div class="modal-body">
+                          <input type="number" class="form-control" value="{{customer.opening_balance}}" name="openbalance">
+
+                        </div>
+                        <div class="modal-footer">
+                          
+                          <button type="submit" class="btn btn-primary">Edit</button>
+                        </div>
+                    </form>
+                      </div>
+                    </div>
+                  </div>
+                 <!-- openbalance modal -->
+            
+
+
+
+
+
+                <div id="statment" style="display: none;">
+
+                    
+
+                    <div class="container-fluid" >
+                       
+
+                        
+                        <div class="py-5">
+                            
+                            
+                              <div class="row hidden-md-up" style="margin-top: 15px;">
+                                <div class="col-md-7" style="margin: auto;">
+                                  <div class="card">
+                                    <div id="whatToPrint">
+                                    <div class="card-block">
+                                      <div class="card-body">
+                                        <div class="container bootdey"  >
+                                            <div class="row">
+                                                    <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
+                                                        <div class="widget-box">
+                                                            <div class="widget-header widget-header-large" >
+                                                                <h6 class="widget-title ">
+                                                                    Statement of Accounts<br>
+                                                                    <input  id="df" value="{{tod}}" style="border: none; background-color:#444; width: 13%;"  >to
+                                                                    <input type="text" id="dl" value="{{tod}}" style="border: none; background-color: none; background-color:#444;">
+                                                                </h6>
+                                            
+                                                              
+                                                            </div>
+                                            
+                                                            <div class="widget-body">
+                                                                <div class="widget-main padding-24">
+                                                                    <div class="row"  style="padding:20px;" >
+                                                                        <div class="col-sm-12">
+                                                                            <div class="col-6">
+                                                                                <div style="width:30px;">
+                                                                                    <img src="/media/images/default.png">
+                                                                                  </div>
+                                                              
+                                                                            </div>
+                                            
+                                                                            <div class="col-6">
+                                                                                <p style="font-size:10px;color:black;"> {{cmp1.city}} <br>
+                                                                                    {{cmp1.pincode}}<br>
+                                                                                    {{cmp1.state}},India <br>
+                                                                                    {{cmp1.cemail}}
+                                                                                    <br>
+                                                                                    {{cmp1.pincode}}<br></p>
+                                                                               
+                                                                            </div>
+                                                                             <hr>
+                                                                        </div><!-- /.col -->
+                                                                       
+                                                                      
+                                                                    </div><!-- /.row -->
+                                           
+                                                                    <div class="row col-12">
+                                                                        <div class="col-6">
+                                                                            <p style="font-size:10px;color:black;">To,<br>{{customer.firstname}} {{customer.lastname}}<br>
+                                                                                {{customer.street}},{{customer.city}}<br>
+                                                                                {{customer.state}},{{customer.country}}<br>
+                                                                                {{customer.pincode }}<br>
+                                                                                {{customer.email}}
+                                                                                <br>
+                                                                                {{customer.phone}}<br></p>
+                                                                        </div>
+                                                                        <div class="col-6" >
+                                                                            <table style="font-size:10px;color:black;">
+                                                                                <tr>
+                                                                                    <td>Account Summary</td>
+                                                                                </tr>
+                                                                                
+                                                                                <tr>
+                                                                                    <td>Opening balance</td>
+                                                                                    <td> <input type="text" id="open"  value="{{bal_amount}}" style="border: none;"></td>
+                                                                                </tr>
+                                                                                
+                                                                                <tr>
+                                                                                    <td>Invoiced Amount</td>
+                                                                                    <td>  <input type="text" id="invamount" value="{{invoiced}}" style="border: none;"></td>
+                                                                                </tr>
+                                                                                <tr style="border-bottom: 1px solid black; width:100%;">
+                                                                                    <td>Amount received</td>
+                                                                                    <td>  <input type="text" id="received"  value="{{re}}" style="border: none;"></td>
+                                                                                </tr>
+                                                                                <tr >
+                                                                                    <td>Balance Due</td>
+                                                                                    <td>  <input type="text" id="due" value="{{baldue}}" style="border: none;"></td>
+                                                                                </tr>
+                        
+                                                                            </table>
+                                                                       
+                                                                    </div>
+                                                                </div><br>
+                                                                <div class="col-md-12">
+                                                                    <table border="0" id="logic" class=" table-striped" width="100%" style="font-size:10px;color:black;">
+                                                                    <thead class="thead-dark">
+                                                                        <tr >
+                                                                           <th>Date</th>
+                                                                           <th>Transactions</th>
+                                                                           <th>Details</th>
+                                                                           <th>Amount</th>
+                                                                           <th>Payments</th>
+                                                                           <th>Balance</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody >
+
+                                                                        <tr >
+                                                                            <td>{{tod }}</td>
+                                                                            <td>***Opening Balance***</td>
+                                                                            <td></td>
+                                                                            <td>{{bal_amount}}</td>
+                                                                            <td></td>
+                                                                            <td>{{bal_amount}}</td>
+                                                                         </tr>
+
+
+                                                                        {% for i in statment %}
+                                                                        <tr>
+                                                                            <td>{{i.Date | date:'d-m-Y'}}</td>
+                                                                            <td>{{i.Transactions}}</td>
+                                                                            
+                                                                            <td>{% if i.inv != null  %}
+                                                                                 INV-{{i.inv.invoiceno}} due on {{i.inv.duedate}}
+                                                                                 {% endif %} 
+                                                                                 {% if i.pay != null  %}
+                                                                                 ₹{{i.Payments}} 
+                                                                                 {% endif %} 
+                                                                                </td>
+                                                                            
+                                                                            
+                                                                            <td>
+                                                                                {% if i.Amount %}
+                                                                                {{i.Amount}}
+                                                                                {% endif %}
+                                                                            </td>
+                                                                            <td>{% if i.Payments %}
+                                                                                {{i.Payments}}
+                                                                                {% endif %}
+                                                                                </td>
+                                                                            <td>{% if i.Balance %}
+                                                                                {{i.Balance}}
+                                                                                {% endif %} </td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                        
+                                                                        <br>
+                                                                        <tr>
+                                                                            <td colspan="5">Balance Due</td>
+                                                                            <td>{{baldue}}</td>
+                        
+                                                                        </tr>
+                                                                        </tbody >
+                                                                        <tbody>
+                                                                            
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="col-md-12 tab_logic">
+                                                                    <table border="0" id="tab_logic" class=" table-striped" width="100%" style="font-size:10px;color:black;">
+                                                                    <thead class="thead-dark">
+                                                                        <tr >
+                                                                           <th>Date</th>
+                                                                           <th>Transactions</th>
+                                                                           <th>Details</th>
+                                                                           <th>Amount</th>
+                                                                           <th>Payments</th>
+                                                                           <th>Balance</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody >
+                                                                            
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                   
+                                                                
+                                                                   
+                                            
+                                                                    <div class="hr hr8 hr-double hr-dotted"></div>
+                                            
+                                                                    
+                                                            
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>    
+                                    
+                                      
+                                     
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                               
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </div>  
+
+
+                </div>
+            </div>
+
+
+                <div id="transation" style="display: none;" >
+
+                    <div style=" margin-top: 20px;">
+
+                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dispinv()" >Invoice</a>
+                        <a href="{% url 'goaddinvoices' %}" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a>
+                        
+                    </div> 
+                    <div id="invtable" style="display:none;">
+                        
+                        <table class="table table-responsive-md mt-3 table-hover" >
+                            <thead>
+                            <tr>
+                                
+                                <th style="text-align: center;">INVOICE DATE</th>
+                                <th style="text-align: center;">INVOICE NO</th>
+                                <th style="text-align: center;">ORDER NO</th>
+                              
+                                <th style="text-align: center;">STATUS</th>
+                                <th style="text-align: center;">DUE DATE</th>
+                                <th style="text-align: center;">GRAND TOTAL</th>
+                                <th style="text-align: center;">BALANCE DUE</th>
+                                
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for invoices in invs %}
+                                {% if invoices.cid_id == cmp1.cid %}
+        
+                                    <tr tr class="table-row " data-href="{% url 'invoice_view' invoices.invoiceid %}">
+                                        <td style="text-align: center;">{{ invoices.invoicedate }}</td>
+                                        <th style="text-align: center;">{{ invoices.invoiceno }}</th>
+                                        <td style="text-align: center;">{{ invoices.invoice_orderno }}</td>
+                                        
+                                        <td style="text-align: center;">{{ invoices.status }}</td>
+                                        <td style="text-align: center;">{{ invoices.duedate }}</td>
+                                        <td style="text-align: center;">{{ invoices.grandtotal }}</td>
+                                        <td style="text-align: center;">{{ invoices.baldue }}</td>
+                                        
+        
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                            </table>
+                        
+
+                    </div>
+                    <br>
+                    <div style=" margin-top: 20px;">
+
+                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dispay()" >Customer Payment</a>
+                        <a href="{% url 'payment_received' %}" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a>
+                        
+                    </div> 
+                    <div id="paytable" style="display:none;">
+                        
+                        <table class="table table-responsive-md mt-4 table-hover">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: center;">Payment No</th>
+                                <th style="text-align: center;">Reference Number</th>
+                                
+                                <th style="text-align: center;">Applied Amount</th>
+                                <th style="text-align: center;">Amount</th>
+                               
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in payme %}
+                                {% if i.cid_id == cmp1.cid %}
+                                    <tr  class="table-row " data-href="{% url 'payment_view' i.paymentid %}" >
+                                        <th style="text-align: center;">{{ i.paymdate  | date:'d-m-Y' }}</th>
+                                        <td style="text-align: center;">{{ i.refno }}</td>
+                                        <td style="text-align: center;"> {{ i.referno }}</td>
+                                       
+                                        <td style="text-align: center;"> {{ i.amtapply }}</td>
+                                        <td style="text-align: center;">{{ i.amtcredit }}</td>
+                                        
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <br>
+                    <div style=" margin-top: 20px;">
+
+                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="disest()" >Estimate</a>
+                        <a href="{% url 'estindex2' %}" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a>
+                        
+                    </div> 
+                    <div id="esttable" style="display:none;">
+                        
+                        <table class="table table-responsive-md mt-4 table-hover">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: center;">Estimate No</th>
+                                <th style="text-align: center;">Reference Number</th>
+                                
+                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center;">Amount</th>
+                               
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for estimate in est1 %}
+                                {% if estimate.cid_id == cmp1.cid %}
+                                    <tr  class="table-row " data-href="{% url 'estimate_view' estimate.estimateid %}" >
+                                        <th style="text-align: center;">{{ estimate.estimatedate | date:'d-m-Y' }}</th>
+                                        <td style="text-align: center;">{{ estimate.estimateno }}</td>
+                                        <td style="text-align: center;"> {{ estimate.reference_number }}</td>
+                                       
+                                        <td style="text-align: center;"> {{ estimate.status }}</td>
+                                        <td style="text-align: center;">{{ estimate.estimatetotal }}</td>
+                                        
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <br>
+                    <div style=" margin-top: 20px;">
+
+                        <a style="padding: 10px; cursor: pointer; font-size: 20px;" onclick="dissale()" >Sales Order</a>
+                        <a href="{% url 'newsalesorder' %}" class="fa fa-plus" style="float: right; margin-right: 20px;">Add new</a>
+                        
+                    </div> 
+                    <div id="saletable" style="display:none;">
+                        
+                        <table class="table table-responsive-md mt-4 table-hover">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: center;">Sales Order No</th>
+                                <th style="text-align: center;">Reference Number</th>
+                                <th style="text-align: center;">Coustomer Name</th>
+                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center;">Amount</th>
+                                <!-- <th style="text-align: center;">ACTION</th> -->
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for sale in sel1 %}
+                                {% if sale.cid_id == cmp1.cid %}
+                                    <tr tr class="table-row " data-href="{% url 'sales_order_view' sale.id %}" >
+                                        <th style="text-align: center;">{{ sale.saledate | date:'d-m-Y' }}</th>
+                                        <td style="text-align: center;">{{ sale.shipmentdate }}</td>
+                                        <td style="text-align: center;"> {{ sale.reference_number }}</td>
+                                        <td style="text-align: center;">{{ sale.salename }}</td>
+                                        <td style="text-align: center;"> {{ sale.status }}</td>
+                                        <td style="text-align: center;">{{ sale.salestotal }}</td>
+                                        
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+                </div>
+
+                
+
+               
+
+                </div>
+
+                </div>
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+<script>
+    function dispinv(){
+
+        document.getElementById('invtable').style.display = 'block';
+
+    }
+    function dispay(){
+
+    document.getElementById('paytable').style.display = 'block';
+
+}
+function disest(){
+
+document.getElementById('esttable').style.display = 'block';
+
+}
+function dissale(){
+
+document.getElementById('saletable').style.display = 'block';
+
+}
+
+</script>
+    <script>
+
+        const tbl1 = document.querySelector('#logic');
+        const tbl2 = document.querySelector(".tab_logic");
+        tbl2.style.display="none";
+            
+        
+        $(document).on('submit','#form_post',function(e){
+            e.preventDefault();
+            $.ajax({                      
+                type: "POST",
+                url: "{% url 'search_resept' customer.customerid %}",
+                data: {
+                    
+                    fd :$('#fdate').val(),
+                    ld :$('#ldate').val(),    
+                    'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                },
+        
+                success:function(response){
+                    console.log(response)
+                    data = response.ct
+                    data2 = response.invoiced
+                    data3 = response.re
+                    data4 =response.sum
+                    data5 = response.df
+                    data6 = response.dl
+                    data7 = response.invitem
+                    data8 = response.st
+                    data9 = response.baldue
+                    data10 = response.opening
+
+                    data11 = response.fst
+
+
+                    $('#tab_logic tbody').append(
+
+                    `<tr>
+                    <td>${data11}</td>
+                    <td>***Opening Balance***</td>
+                    <td></td>
+                    <td>${data10}</td>
+                    <td></td>
+                    <td>${data10}</td>
+                    </tr> `
+
+
+                    )
+                    
+                    
+                    for (i=0;i<data8.length;i++){
+                        
+                        $('#tab_logic tbody').append(
+
+                                `
+                              
+                                <tr>
+                                <td>${data8[i].Date}</td>
+                                <td>${data8[i].Transactions}</td>
+                                                                            
+                                <td>
+                                    
+                                    ${data8[i].Details2} 
+                                    
+                                    </td>
+                                                                            
+                                                                            
+                                <td>
+                                
+                                ${data8[i].Amount}
+                                </td>
+                                <td>
+
+                                    ${data8[i].Payments} 
+                               
+                                
+                                </td>
+                                <td>${data8[i].Balance} 
+                                
+                                 </td>
+                                </tr>
+                                 
+                                    `
+                                
+                            )
+                            
+
+
+                    }
+
+                   
+                    
+                    
+                    $('#tab_logic tbody').append( `<tr>
+                        <td colspan="5">Balance Due</td>
+                        <td>${data9} </td>
+                        
+                        </tr>`)
+                        tbl1.style.display="none";
+                        tbl2.style.display="block";
+                    document.getElementById('invamount').value = data2
+                    document.getElementById('received').value = data3
+                    document.getElementById('due').value = data9
+                    document.getElementById('df').value = data5 
+                    document.getElementById('dl').value = data6
+                    document.getElementById('open').value = data10
+
+                    
+                    
+                  
+                }
+              
+            });
+        });
+        </script>
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function($) {
+            $(".table-row").dblclick(function() {
+                window.document.location = $(this).data("href");
+            });
+        });
+    </script>
+    <script>
+
+$('.delete').click(function(event) {
+    var form =  $(this).closest("form");
+    var name = $(this).data("name");
+    event.preventDefault();
+    swal({
+        title: `Are you sure you want to delete this record?`,
+        text: "If you delete this, it will be gone forever.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            swal("Poof! Your imaginary file has been deleted!", {
+            icon: "success" ,
+      
+            });
+            form.submit();
+
+            
+            
+            
+            }
+    });
+});
+
+    </script> 
+
+{% endblock %}

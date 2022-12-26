@@ -1,0 +1,252 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+
+
+    {% load static %}
+    {% if user.is_authenticated %}
+<!-- 
+    <link rel="stylesheet" href="{% static 'assets/css/search.css' %}"/> -->
+  
+      <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body{
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #7690da;
+  border-right: none;
+  padding: 5px;
+  height: 36px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9DBFAF;
+}
+
+.searchTerm:focus{
+  color:#7690da;
+}
+
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #7690da;
+  background:#7690da;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/*Resize the wrap to see the search bar change!*/
+.wrap{
+  width: 40%;
+  /* position: absolute;
+  top: 50%;
+  left: 50%; */
+  /* transform: translate(-50%, -50%); */
+}
+.table-row{
+        cursor:pointer;
+}
+
+
+
+      </style>
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h2 class="mb-0">CUSTOMERS</h2></center>
+                        <hr>
+                        <div class="btn-group col-md-2" style="float: right;">
+                            
+                                <a class="btn btn-outline-info text-grey" onclick="ExportToExcel('xlsx')">Export To Excel</a>
+                            </div>
+
+                            
+                           
+                    </div>
+                </div>
+            </div>
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row">
+
+                        
+                        <!-- <div class="col-md-4">
+                            <div class="wrap" style="width: 60%; margin-top: 8px;">
+                               
+                                <div class="search">
+                                    
+                                   <input type="text" id="searchfild" class="searchTerm" name="search">
+                                   <button type="submit" class="searchButton">
+                                     <i class="fa fa-search"></i>
+                                  </button>
+                                </div>
+                                
+                              
+                             </div>
+                             
+                        </div> -->
+                        
+                        <div class="col-md-4">
+                            <div class="wrap" style="width: 60%; margin-top: 8px;">
+                                <form action="{% url 'gosearch' %}" method="POST">{% csrf_token %}
+                                <div class="search">
+                                    
+                                   <input type="text" class="searchTerm" name="search">
+                                   <button type="submit" class="searchButton">
+                                     <i class="fa fa-search"></i>
+                                  </button>
+                                </div>
+                                
+                              
+                             </div>
+                             
+                        </div>
+                        <div class="col-md-4">
+                          
+                            <select class="form-control btn btn-outline-info dropdown-toggle text-grey" aria-label=".form-select-lg example" style="width: 40%; margin-top: 8px;" name="type">
+                                
+                                <option value="1" selected>All</option>
+                                <option value="2" >Name</option>
+                                <option value="3" >Active</option>
+                                <option value="4" >Inactive</option>
+                                
+                                
+                              </select>
+
+                              
+
+
+                            </form>
+                            </div>
+                            <div class="col-md-2" style="width: 40%; margin-top: 8px;">
+
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                            data-toggle="dropdown">filter by
+                                    </button>
+                                    <div class="dropdown-menu" style="background-color: black;">
+                                        <a class="dropdown-item" href="{% url 'gocustomers' %}"
+                                           style="height: 40px; font-size: 15px; color: white; text-align: center;" >All</a>
+                                        <a class="dropdown-item" href="{% url 'gocustomers1' %}"
+                                           style="height: 40px; font-size: 15px; color: white; text-align: center;" >Active</a>
+                                        <a class="dropdown-item" href="{% url 'gocustomers2' %}"
+                                           style="height: 40px; font-size: 15px; color: white; text-align: center;">Inactive</a>
+                                        
+                                        
+                                </div> 
+                              </div>
+                            </div>
+                            
+                            
+
+                            
+                       
+
+                        <!-- <div class="col-md-2">
+                            <a href="{% url 'goaddcust' %}" >
+                                <button >Add Customer</button>
+                            </a>
+                        </div> -->
+
+                        <div class="btn-group col-md-2">
+                            <a href="{% url 'goaddcust' %}" id="myBtn" class="btn btn-outline-info text-grey" style="margin-top: 8px;" role="button">New</a>
+                            
+                        </div>
+
+                    </div>
+                    <div class="container-fluid">
+                        
+                        <table class="table table-responsive-md mt-4" id="tbl_exporttable_to_xls">
+                            <thead>
+                            <tr>
+                                <th>CUSTOMER</th>
+                                <th>GST TYPE</th>
+                                <th>GSTIN</th>
+                                <th>PAN NO</th>
+                                <th>EMAIL ID</th>
+                                <th>MOBILE NO</th>
+                                <th style="text-transform: uppercase;">receivables</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for customer in customers %}
+                                {% if customer.cid_id == cmp1.cid %}
+                                    <tr  class="table-row " data-href="{% url 'customer_profile' customer.customerid %}">
+                                        <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+                                        <td>{{ customer.gsttype }}</td>
+                                        <td>{{ customer.gstin }}</td>
+                                        <td>{{ customer.panno }}</td>
+                                        <td>{{ customer.email }}</td>
+                                        <td>{{ customer.mobile }}</td>
+                                        <td>{{customer.receivables}}</td>
+                                        
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // Get the modal
+            var modal = document.getElementById("myModal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+        
+        <script>
+            $(document).ready(function($) {
+                $(".table-row").dblclick(function() {
+                    window.document.location = $(this).data("href");
+                });
+            });
+        </script>
+        <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
+        <script type="text/javascript">function ExportToExcel(type, fn, dl) {
+               var elt = document.getElementById('tbl_exporttable_to_xls');
+               var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+               return dl ?
+                 XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+                 XLSX.writeFile(wb, fn || ('Customers.' + (type || 'xlsx')));
+            }
+            </script>
+    {% endif %}
+{% endblock %}

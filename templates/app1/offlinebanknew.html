@@ -1,0 +1,104 @@
+
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<style type="text/css">
+		.form-group {
+  			width:100%;
+  			background:#243e54;
+  			border-radius: 10px;
+  			margin-bottom: 50px;
+		}
+		.form-group input {
+  			display:none;
+
+		}
+
+		.form-group label {
+			margin-bottom: 40px;
+  			display:block;
+  			width:60%;
+  			height:50px;
+  			margin-left: 20%;
+  			line-height:50px;
+  			text-align:center;
+  			background:#ff8080;
+  			color:black;
+  			font-size:15px;
+  			font-family:"Open Sans",sans-serif;
+  			text-transform:Uppercase;
+  			font-weight:600;
+  			border-radius:10px;
+  			cursor:pointer;
+		}
+
+		.form-group img {
+  			width:100%;
+  			display:none;
+  			margin-top:10px;
+		}
+
+	</style>
+
+<div class="page-content">
+					<div class="card radius-15">
+						<div class="card-body">
+							<div class="card-title">
+								<center><h2 class="mb-0">ADD TRANSACTIONS</h2></center>
+							</div>
+							<hr/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12 col-lg-12 col-xl-12">
+							<div class="card">
+								<div class="row no-gutters">
+									<div class="col-md-6">
+										<img src="{% static 'assets/img/trans.png' %}" class="card-img" alt="...">
+									</div>
+									<div class="col-md-6">
+										<p class="card-body">
+											<h2 class="card-title"style="margin-left:20px;margin-right:20px;">Upload your bank Transactions</h2>
+											<p class="card-text" style="margin-top: 20px;margin-left:20px;margin-right:20px;">
+												<span style="font-size: 25px;">
+												1.sign in to your bank account<br>
+												</span>
+											</p>
+											<p class="card-text" style="margin-top: 20px;margin-left:20px;margin-right:20px;">
+												<span style="font-size: 25px;">
+												2.Download transactions<br>
+												</span>
+											</p>
+                                        <p class="card-text" style="margin-top: 20px;margin-left:20px;margin-right:20px;">
+												<span style="font-size: 25px;">
+												3.Download Excel Sheet<br>
+												</span>
+											</p>
+                                                 <p style="margin-left:20px;margin-right:20px;">
+
+                                <a href="{% static 'assets/Excel/Transaxtions.xlsx' %}" target="_blank">
+                                    <button class="btn btn-outline-info text-light rounded-pill w-100">DOWLOAD EXCEL SHEET
+                                </button>
+                                </a>
+                                            </p>
+											<p class="card-text" style="margin-left:20px;margin-right:20px;margin-top: 20px;">
+												<span style="font-size: 25px;">
+												4.Upload the Excel file to Fin sYs
+												</span>
+											</p>
+                                        <p style="margin-left:20px;margin-right:20px;">
+
+                               <a href="{% url 'goofflinebank2' %}">
+                                    <button class="btn btn-outline-info text-light rounded-pill w-100">UPLOAD EXCEL SHEET
+                                </button>
+                                </a>
+                                            </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+</div>
+
+
+{% endblock %}

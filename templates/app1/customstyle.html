@@ -1,0 +1,94 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<div class="page-content">
+  <div class="card radius-15">
+    <div class="card-body">
+      <div class="card-title">
+        <center>
+          <h2 class="mb-0">CUSTOM FORM STYLES</h2>
+        </center>
+        <hr>
+      </div>
+    </div>
+  </div>
+  <div class="card radius-15">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-10"></div>
+        <div class="col-md-2">
+          <a href="{% url 'newstyle' %}">
+            <button type='button' id="myBtn" class="btn btn-outline-info text-grey">
+              New Style
+            </button>
+          </a>
+        </div>
+      </div>
+      <table class="table table-responsive-md mt-3">
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>FORM-TYPE</th>
+            <th>LAST EDITED</th>
+            <th>APPLIED</th>
+            <th style='width:200px;'>ACTION</th </tr>
+        </thead>
+        <tbody>
+          {% for i in newstyle %}
+          <tr>
+            <th>{{ i.name }}</th>
+            <td>{{ i.template }}</td>
+            <td>{{ i.lastedited }}</td>
+            {% if i.selected == 'selected' %}
+            <td style="color: #00ff4c;">APPLIED</td>
+            {% endif %}
+            {% if i.selected == ' ' %}
+            <td>NOT APPLIED</td>
+            {% endif %}
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn btn-outline-info dropdown-toggle text-grey" data-toggle="dropdown">Actions
+                </button>
+                <div class="dropdown-menu" style="background-color: white;">
+                  <a href="editstyle/{{ i.customizeid }}" class="dropdown-item" style="color: black; font-size: 15px;"><i class="bx bx-edit"><b>EDIT</b></i></a>
+                  <a href="deletestyle/{{ i.customizeid }}" class="dropdown-item" style="color: black; font-size: 15px;"><i class="bx bx-edit"><b>DELETE</b></i></a>
+                </div>
+              </div>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      // Get the modal
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    </script>
+  </div>
+</div>
+{% endblock %}

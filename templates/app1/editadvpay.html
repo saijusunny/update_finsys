@@ -1,0 +1,206 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#tab_logic tbody').on('keyup change', function () {
+                calc();
+            });
+            $('#tax').on('keyup change', function () {
+                calc_total();
+            });
+
+
+        });
+
+        function calc() {
+            $('#tab_logic tbody tr').each(function (i, element) {
+                var html = $(this).html();
+                if (html != '') {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    $(this).find('.total').val(qty * price);
+
+                    calc_total();
+                }
+            });
+        }
+
+        function calc_total() {
+            total = 0;
+            $('.total').each(function () {
+                total += parseInt($(this).val());
+            });
+            $('#sub_total').val(total.toFixed(2));
+            tax_sum = total / 100 * $('#tax').val();
+            $('#tax_amount').val(tax_sum.toFixed(2));
+            $('#total_amount').val((tax_sum + total).toFixed(2));
+            $('#totalamount').val((tax_sum + total).toFixed(2));
+        }
+    </script>
+
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">UPDATE ADVANCE PAYMENT</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <form action="updateadvpay/{{ advancepayment.advancepaymentid }}" method="post" class="needs-validation"
+                      novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-7">
+                                    <label for="validationCustom02">Payee</label>
+                                    {#                                                <input type="text" class="form-control" value="{{ advancepayment.payee }}" name="payee" id="validationCustom02" required style="background-color: #2f516f;color: white;">#}
+                                    <select name="payee" class="form-control" id="validationCustom02">
+                                        <option value="{{ advancepayment.payee }}">{{ advancepayment.payee }}</option>
+                                        {% for cust in customers %}
+                                            {% if cust.cid_id == cmp1.cid %}
+                                                <option value="{{ cust.firstname }}">{{ cust.firstname }} {{ cust.lastname }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    Customer
+                                                </option>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {#                                              <option value="NIL" selected>Select Supplier</option>#}
+                                        {% for sup in suppliers %}
+                                            {% if sup.cid_id == cmp1.cid %}
+                                                <option value="{{ sup.firstname }}">{{ sup.firstname }} {{ sup.lastname }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    Supplier
+                                                </option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col-5">
+                                    <label for="validationCustom02">Bank/Credit account</label>
+                                    <select class="custom-select" name="account" id="validationCustom04" required
+                                            style="background-color: #2f516f; color: white;">
+                                        <option selected i>{{ advancepayment.account }}</option>
+                                        <option>Cash and cash equivalents</option>
+                                        <option>Advance Payment Asset</option>
+                                        <option>Deferred CGST</option>
+                                        <option>Deferred GST Input Credit</option>
+                                        <option>Deferred IGST</option>
+                                        <option>Deferred Krishi Kalyan Cess Input Credit</option>
+                                        <option>Deferred Service Tax Input Credit</option>
+                                        <option>Deferred SGST</option>
+                                        <option>Deferred VAT Input Credit</option>
+                                        <option>GST Refund</option>
+                                        <option>Inventory Asset</option>
+                                        <option>Krishi Kalyan Cess Refund</option>
+                                        <option>Prepaid Insurance</option>
+                                        <option>Service Tax Refund</option>
+                                        <option>TDS Receivable</option>
+                                        <option>Uncategorised Asset</option>
+                                        <option>Undeposited Funds</option>
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col-7">
+                                    <label for="validationCustom02">Mailing address </label>
+                                    <textarea class="form-control" rows="7" name="address" id="validationCustom01"
+                                              required
+                                              style="background-color: #2f516f;color: white;">{{ advancepayment.address }}</textarea>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Amount </label>
+                                    <input type="number" name="amount" value="{{ advancepayment.amount }}"
+                                           class="form-control" id="validationCustom02" required
+                                           style="background-color: #2f516f;color: white; ">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Payment Date </label>
+                                    <input type="date" name="paymentdate" value="{{ advancepayment.paymentdate }}"
+                                           class="form-control" id="validationCustom02" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Ref No:</label>
+                                    <input type="number" value="{{ advancepayment.refno }}" name="refno"
+                                           class="form-control" id="validationCustom02" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Memo </label>
+                                    <textarea class="form-control" name="memo" id="validationCustom01" required
+                                              style="background-color: #2f516f;color: white; height: 100px;">{{ advancepayment.memo }}</textarea>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <img src="{% static 'assets/img/advance.png' %}" width="100%">
+                        </div>
+                    </div>
+                    &nbsp;
+                    <hr>
+                    <div class="row mt-4 mb-4">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-info rounded-pill w-100 text-light" type="submit">Submit form</button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </form>
+                <script>
+                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                    (function () {
+                        'use strict';
+                        window.addEventListener('load', function () {
+                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                            var forms = document.getElementsByClassName('needs-validation');
+                            // Loop over them and prevent submission
+                            var validation = Array.prototype.filter.call(forms, function (form) {
+                                form.addEventListener('submit', function (event) {
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                }, false);
+                            });
+                        }, false);
+                    })();
+                </script>
+            </div>
+        </div>
+    </div>
+    <script>
+        function myFunction() {
+            var checkBox = document.getElementById("myCheck");
+            var text = document.getElementById("bill");
+            if (checkBox.checked == true) {
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+    </script>
+{% endblock %}

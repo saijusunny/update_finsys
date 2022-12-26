@@ -1,0 +1,205 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+    {% load static %}
+
+
+    <style>
+        #modal1 {
+            margin-left: 660px;
+            margin-top: -30px;
+            /* margin-top: 392px; */
+        }
+    </style>
+
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">STOCK VALUATION REPORT</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <form action="stockvaluation1" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label style="text-align:left ">Report period</label><br>
+                            <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                    list="hosting-plan"
+                                    name="reportperiod" type="text">
+                                <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                                <!-- <option><span class="bx bx-right-arrow-alt"></span>This month</option> -->
+                                <option><span class="bx bx-right-arrow-alt"></span>This financial year</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4" id="frdate" style="display: none;">
+                            <label for="from">From</label>
+                            <input type="date" class="form-control" name="fper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-sm-4" id="todate" style="display: none;">
+                            <label for="from">To</label>
+                            <input type="date" class="form-control" name="tper"
+                                   style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Run report</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card radius-15 p-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="rectangle"
+                             style="background-color: white;width: 1100px;height:1500px;border: 3px white;padding: 50px;margin: 20px">
+                            <div class="rectangle"
+                                 style="background-image: linear-gradient(dodgerblue, black); width: 1000px; height: 200px; margin-top: 20px;">
+                                <div class="img-container"
+                                     style="width: 140px; height: 140px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); border-radius: 50%; background-color: white; transform: translate(23%, 90%);">
+                                    <img src="{{ cmp1.cimg.url }}"
+                                         style="width: 140px; height: 140px; border-radius: 50%;">
+                                </div>
+                                <h2 style="margin-left: 200px;">{{ cmp1.cname }}</h2>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 100px;">
+                                <table class="table table-hover ">
+                                    <thead>
+                                    <tr>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">ITEM
+                                            NAME
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                            STOCK ON HAND
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                            ASSET VALUE
+                                        </th>
+                                        
+
+
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    {% for a in item %}
+
+
+
+                                        <tr>
+
+                                            <td class="center text-dark">{{ a.name }}</td>
+                                            <td id="stock" class="center text-dark">{{ a.stock }}.00</td>
+                                            
+                                            <td  class="center text-dark">{{ a.total }}.00</td>
+                                            
+
+
+                                        </tr>
+
+                                    {% endfor %}
+
+<thead>
+                                    <tr>
+                                        <th class="center font-weight-dark border-dark" style="color: black;">TOTAL</th>
+                                       
+                                       
+                                        <th class="center font-weight-dark border-dark" style="color: black;">
+                                        </th>
+                                        <th class="center font-weight-dark border-dark" style="color: black;" id="t1">
+                                        </th>
+
+
+                                    </tr>
+                                    </thead>
+                                  
+
+                                    
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg"
+         viewBox="0 0 16 16">
+        <path d="M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z"/>
+    </svg>
+
+
+
+
+    <script>
+        document.getElementById("nb").style.display = "none"
+
+        function showbox() {
+            var x = document.getElementById("nb");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            }
+        }
+
+        function hidebox() {
+            var x = document.getElementById("nb");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            }
+        }
+
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+            integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+            integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+            crossorigin="anonymous"></script>
+
+            <script>
+                $(document).ready(function(){
+                    var empsalary;
+                    var total = 0;
+                    $('td:nth-child(3)').each(function()
+                    {
+                        salary = $(this).html();
+                        total +=parseInt(salary);
+                        $('#t1').text(total)
+                    });
+                });
+            </script>
+
+{% endblock %}

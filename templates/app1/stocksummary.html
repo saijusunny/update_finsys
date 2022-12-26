@@ -1,0 +1,165 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+    {% load static %}
+
+
+    <style>
+        .tr{
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">STOCK SUMMARY REPORT</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <form action="stocksummary1" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label style="text-align:left ">Report period</label><br>
+                            <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                    list="hosting-plan"
+                                    name="reportperiod" type="text">
+                                <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                <!-- <option><span class="bx bx-right-arrow-alt"></span>Today</option> -->
+                                <option><span class="bx bx-right-arrow-alt"></span>This month</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>This financial year</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4" id="frdate" style="display: none;">
+                            <label for="from">From</label>
+                            <input type="date" class="form-control" name="fper">
+                        </div>
+                        <div class="col-sm-4" id="todate" style="display: none;">
+                            <label for="from">To</label>
+                            <input type="date" class="form-control" name="tper">
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Run report</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card radius-15 p-5">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="rectangle"
+                             style="background-color: white;width: 1100px;height:1500px;border: 3px white;padding: 50px;margin: 20px">
+                            <div class="rectangle"
+                                 style="background-image: linear-gradient(dodgerblue, black); width: 1000px; height: 200px; margin-top: 20px;">
+                                <div class="img-container"
+                                     style="width: 140px; height: 140px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); border-radius: 50%; background-color: white; transform: translate(23%, 90%);">
+                                    <img src="{{ cmp1.cimg.url }}"
+                                         style="width: 140px; height: 140px; border-radius: 50%;">
+                                </div>
+                                <h2 style="margin-left: 200px;">{{ cmp1.cname }}</h2>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 100px;">
+                                <table class="table table-hover ">
+                                    <thead>
+                                        <tr>
+                                            <th class="center font-weight-dark border-dark" style="color: black;">
+                                                ITEM NAME
+                                            </th>
+                                            <th class="center font-weight-dark border-dark" style="color: black;">
+                                                QUANDITY IN
+                                            </th>
+                                            <th class="center font-weight-dark border-dark" style="color: black;">
+                                                QUANDITY OUT
+                                            </th>
+                                            <th class="center font-weight-dark border-dark" style="color: black;">
+                                                AVAILABLE FOR SALE
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tb">
+                                        {% for i in item %}
+                                            <tr class="tr" onclick="window.location='streport/{{ i.name }} ';">
+                                                <td class="center text-dark">{{ i.name }}</td>
+                                                <td class="center text-dark 1st">{{ i.stockin }}</td>  
+                                                <td class="center text-dark">{{ i.stockout }}</td>         
+                                                <td class="center text-dark">{{i.stock}}</td>       
+                                            </tr>
+                                        {% endfor %}
+                                        <thead>
+                                            <tr>
+                                                <th class="center font-weight-dark border-dark" style="color: black;">TOTAL</th>
+                                                <th class="center font-weight-dark border-dark" style="color: black;" id="t3"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: black;" id="t2"></th>
+                                                <th class="center font-weight-dark border-dark" style="color: black;" id="t1"></th>
+                                            </tr>
+                                        </thead>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            var empsalary;
+            var total = 0;
+            $('td:nth-child(4)').each(function()
+            {
+                salary = $(this).html();
+                total +=parseInt(salary);
+                $('#t1').text(total)
+            });
+            var empsalary1;
+            var total1 = 0;
+            $('td:nth-child(3)').each(function()
+            {
+                salary1 = $(this).html();
+                total1 +=parseInt(salary1);
+                $('#t2').text(total1)
+            });
+            var empsalary2;
+            var total2 = 0;
+            $('td:nth-child(2)').each(function()
+            {
+                salary2 = $(this).html();
+                total2 +=parseInt(salary2);
+                $('#t3').text(total2)
+            });
+        });
+    </script>
+
+    <script>
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}

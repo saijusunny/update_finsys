@@ -1,0 +1,588 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <script>
+        function changegst() {
+            var status = document.getElementById("selgst");
+            if (status.value == "GST unregistered") {
+                document.getElementById("aa").style.visibility = "hidden";
+            } else if (status.value == "Overseas") {
+                document.getElementById("aa").style.visibility = "hidden";
+            } else {
+                document.getElementById("aa").style.visibility = "visible";
+            }
+        }
+    </script>
+    <script>
+        function changeterms() {
+            var status = document.getElementById("selterms");
+            if (status.value == "Due on Receipt") {
+                document.getElementById("newterm").style.visibility = "hidden";
+            } else if (status.value == "NET15") {
+                document.getElementById("newterm").style.visibility = "hidden";
+            } else if (status.value == "NET30") {
+                document.getElementById("newterm").style.visibility = "hidden";
+            } else if (status.value == "NET60") {
+                document.getElementById("newterm").style.visibility = "hidden";
+
+            } else if (status.value == "addnew") {
+                document.getElementById("newterm").style.visibility = "visible";
+            }
+
+        }
+    </script>
+
+
+
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">Add Supplier</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">Supplier Information</h4>
+                </div>
+                <hr/>
+                <form action="{% url 'suppacttime' %}" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <div class="col-md-12 mb-12">
+                                    <label for="validationCustom01">Title</label>
+                                    <select name="title" id="title" class="form-control" id="validationCustom01">
+                                        <option value="mr">Mr</option>
+                                        <option value="mrs">Mrs</option>
+                                        <option value="miss">Miss</option>
+                                        <option value="ms">Ms</option>
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <div class="col-md-12 mb-12">
+                                    <label for="validationCustom02">First name</label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="firstname"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <div class="col-md-12 mb-12">
+                                    <label for="validationCustom02">Last name</label>
+                                    <input type="text" class="form-control" id="validationCustom02" name="lastname"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Company</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="company" required
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Email</label>
+                                <input type="email" class="form-control" id="validationCustom03" name="email"
+                                       placeholder="example@gmail.com" required
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Mobile</label>
+                                <input type="number" name="mobile" class="form-control" id="number"
+                                       placeholder="Phone Number"
+                                       onkeyup="validation()" required
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="invalid-feedback">Please provide a valid Phone</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Website</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="website"
+                                       placeholder="Eg: https://www.example.com"
+                                       pattern="^(http(s)?:\/\/)+[\w\-\._~:\/?#[\]@!\$&'\(\)\*\+,;=.]+$" required
+                                       style="background-color: #2f516f;color: white;">
+                                {#                                <input type="text"  class="form-control" name="url" id="url"/>#}
+                                {#                                <input type="submit"  value="Check" onclick="validate();"/>#}
+                                <div class="invalid-feedback">Please provide a valid Website</div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Billing Rate</label>
+                                <input type="number" class="form-control" id="validationCustom03" name="billingrate"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Terms</label>
+                                {#                                <input type="text" class="form-control" id="validationCustom03" name="terms" required#}
+                                {#                                       style="background-color: #2f516f;color: white;">#}
+                                <select id="selterms" onchange="changeterms()" class="custom-select" name="terms"
+                                        required
+                                        style="background-color: #2f516f; color: white;">
+                                    <option value="addnew"> ADD NEW TERMS</option>
+                                    <option value="Due on Receipt"> Due on Receipt</option>
+                                    <option value="NET15">NET15</option>
+                                    <option value="NET30">NET30</option>
+                                    <option value="NET60">NET60</option>
+
+
+                                </select>
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+
+                        </div>
+                        <div class="col" id="newterm">
+                            <div class="form-row">
+                                <label for="validationCustom03">ADD NEW TERMS</label>
+                                <input type="text" for="validationCustom03" class="form-control"
+                                       name="addterms"
+                                       style="background-color: #2f516f;color: white;">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Opening Balance</label>
+                                <input type="number" class="form-control" id="validationCustom03" name="openingbalance"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Account No</label>
+                                <input type="number" class="form-control" id="validationCustom03" name="accountno"
+                                       pattern="/^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/"
+                                       required style="background-color: #2f516f;color: white;">
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">GST Type</label>
+                                <select id="selgst" onchange="changegst()" class="custom-select" name="gsttype" required
+                                        style="background-color: #243e54; color: white;">
+                                    <option selected disabled value="">Choose...</option>
+                                    <option>GST registered- Regular</option>
+                                    <option>GST registered- Composition</option>
+                                    <option>GST unregistered</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col" id="aa">
+                            <div class="form-row">
+                                <label for="validationCustom03">GSTIN</label>
+                                <input type="text" ID="txtGST" class="gst form-control" id="validationCustom05"
+                                       name="gstin"
+                                       style="background-color: #2f516f;color: white;">
+                                <a href="https://gstportalindia.in/types-of-gst-registration-for-indian-taxpayer/"
+                                   target="_blank" style="color:#3dd5f3">What is a GST registration type?</a>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom05">Tax Registration No</label>
+                                <input type="text" class="form-control" id="validationCustom05" name="taxregistrationno"
+                                       required style="background-color: #2f516f;color: white;">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom05">Effective Date</label>
+                                <input type=date class="form-control" id="validationCustom05" name="effectivedate"
+                                       value="{{ tod }}"
+                                       required style="background-color: #2f516f;color: white;">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom05">Default Expence Account</label>
+                                {#                                <input type="text" class="form-control" id="validationCustom05"#}
+                                {#                                       name="defaultexpenceaccount" required#}
+                                {#                                       style="background-color: #2f516f;color: white;">#}
+                                <select class="custom-select" id="validationCustom05" name="defaultexpenceaccount"
+                                        required
+                                        style="background-color: #2f516f; color: white;">
+                                    <option selected disabled value="">Choose Account</option>
+                                    <option>Advertising /Promotional</option>
+                                    <option>Bank Charges</option>
+                                    <option>Business Licenses and Permits</option>
+                                    <option>Charitable Contributions</option>
+                                    <option>Computer and Internet Expense</option>
+                                    <option>Continuing Education</option>
+                                    <option>Depreciation Expense</option>
+                                    <option>Dues and Subscriptions</option>
+                                    <option>Housekeeping Charges</option>
+                                    <option>Insurance Expense</option>
+                                    <option>Insurance Expense-General Liability Insurance</option>
+                                    <option>Insurance Expense-Health Insurance</option>
+                                    <option>Insurance Expense-Life and disability Insurance</option>
+                                    <option>Insurance Expense-Professional Liability</option>
+                                    <option>Internet Expense</option>
+                                    <option>Meals and Entertainment</option>
+                                    <option>Office Supplies</option>
+                                    <option>Postage and delivery</option>
+                                    <option>Printing and Reproduction</option>
+                                    <option>Professional Fees</option>
+                                    <option>Purchases</option>
+                                    <option>Rent Expense</option>
+                                    <option>Repair and Maintenance</option>
+                                    <option>Small Tools and Equipment</option>
+                                    <option>Swachh Bharat Cess Expense</option>
+                                    <option>Taxes-Property</option>
+                                    <option>Telephone Expense</option>
+                                    <option>Travel Expense</option>
+                                    <option>Uncategorised Expense</option>
+                                    <option>Utilities</option>
+                                    <option>Ask My Accountant</option>
+                                    <option>CGST write-off</option>
+                                    <option>GST write-off</option>
+                                    <option>IGST write-off</option>
+                                    <option>Miscellaneous Expense</option>
+                                    <option>Political Contributions</option>
+                                    <option>Reconciliation Discrepancies</option>
+                                    <option>SGST write-off</option>
+                                    <option>Tax Write-off</option>
+                                    <option>Vehicle Expenses</option>
+                                    <option>Cost of sales</option>
+                                    <option>Equipment Rental for Jobs</option>
+                                    <option>Freight and shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases - Hardware For Resale</option>
+                                    <option>Purchases - Software For Resale</option>
+                                    <option>SubContracted Services</option>
+                                    <option>Tools and Craft Supplies</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom03">Apply TDS For Supplier</label>
+                                <select class="custom-select" name="tds" required
+                                        style="background-color: #243e54; color: white;">
+                                    <option selected disabled value="">Choose...</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <hr>
+                    <div class="row">
+                        <div class="card-title">
+                            <h5 class="mb-0">&nbsp;&nbsp;Address</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom01">Street</label>
+                                <textarea class="form-control" id="validationCustom01" name="street" required
+                                          style="background-color: #2f516f;color: white;"></textarea>
+                                <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom01">City</label>
+                                <input type="text" class="form-control" id="validationCustom01" name="city" required
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="invalid-feedback">Please provide a valid City</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom02">State</label>
+                                <input type="text" class="form-control" id="validationCustom02" name="state" required
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="invalid-feedback">Please provide a valid State</div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom01">Pin Code</label>
+                                <input type="text" class="form-control" id="validationCustom01" name="pincode" required
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom02">Country</label>
+                                {#                                <input type="text" class="form-control" id="validationCustom02" name="country" required#}
+                                {#                                       style="background-color: #2f516f;color: white;">#}
+                                <select class="custom-select" id="validationCustom02" name="country"
+                                        style="background-color: #2f516f;">
+                                    <option selected disabled value="">Choose...</option>
+
+                                    <option value="Afganistan">Afghanistan</option>
+                                    <option value="Albania">Albania</option>
+                                    <option value="Algeria">Algeria</option>
+                                    <option value="American Samoa">American Samoa</option>
+                                    <option value="Andorra">Andorra</option>
+                                    <option value="Angola">Angola</option>
+                                    <option value="Anguilla">Anguilla</option>
+                                    <option value="Antigua & Barbuda">Antigua & Barbuda</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="Armenia">Armenia</option>
+                                    <option value="Aruba">Aruba</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="Austria">Austria</option>
+                                    <option value="Azerbaijan">Azerbaijan</option>
+                                    <option value="Bahamas">Bahamas</option>
+                                    <option value="Bahrain">Bahrain</option>
+                                    <option value="Bangladesh">Bangladesh</option>
+                                    <option value="Barbados">Barbados</option>
+                                    <option value="Belarus">Belarus</option>
+                                    <option value="Belgium">Belgium</option>
+                                    <option value="Belize">Belize</option>
+                                    <option value="Benin">Benin</option>
+                                    <option value="Bermuda">Bermuda</option>
+                                    <option value="Bhutan">Bhutan</option>
+                                    <option value="Bolivia">Bolivia</option>
+                                    <option value="Bonaire">Bonaire</option>
+                                    <option value="Bosnia & Herzegovina">Bosnia & Herzegovina</option>
+                                    <option value="Botswana">Botswana</option>
+                                    <option value="Brazil">Brazil</option>
+                                    <option value="British Indian Ocean Ter">British Indian Ocean Ter</option>
+                                    <option value="Brunei">Brunei</option>
+                                    <option value="Bulgaria">Bulgaria</option>
+                                    <option value="Burkina Faso">Burkina Faso</option>
+                                    <option value="Burundi">Burundi</option>
+                                    <option value="Cambodia">Cambodia</option>
+                                    <option value="Cameroon">Cameroon</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Canary Islands">Canary Islands</option>
+                                    <option value="Cape Verde">Cape Verde</option>
+                                    <option value="Cayman Islands">Cayman Islands</option>
+                                    <option value="Central African Republic">Central African Republic</option>
+                                    <option value="Chad">Chad</option>
+                                    <option value="Channel Islands">Channel Islands</option>
+                                    <option value="Chile">Chile</option>
+                                    <option value="China">China</option>
+                                    <option value="Christmas Island">Christmas Island</option>
+                                    <option value="Cocos Island">Cocos Island</option>
+                                    <option value="Colombia">Colombia</option>
+                                    <option value="Comoros">Comoros</option>
+                                    <option value="Congo">Congo</option>
+                                    <option value="Cook Islands">Cook Islands</option>
+                                    <option value="Costa Rica">Costa Rica</option>
+                                    <option value="Cote DIvoire">Cote DIvoire</option>
+                                    <option value="Croatia">Croatia</option>
+                                    <option value="Cuba">Cuba</option>
+                                    <option value="Curaco">Curacao</option>
+                                    <option value="Cyprus">Cyprus</option>
+                                    <option value="Czech Republic">Czech Republic</option>
+                                    <option value="Denmark">Denmark</option>
+                                    <option value="Djibouti">Djibouti</option>
+                                    <option value="Dominica">Dominica</option>
+                                    <option value="Dominican Republic">Dominican Republic</option>
+                                    <option value="East Timor">East Timor</option>
+                                    <option value="Ecuador">Ecuador</option>
+                                    <option value="Egypt">Egypt</option>
+                                    <option value="El Salvador">El Salvador</option>
+                                    <option value="Equatorial Guinea">Equatorial Guinea</option>
+                                    <option value="Eritrea">Eritrea</option>
+                                    <option value="Estonia">Estonia</option>
+                                    <option value="Ethiopia">Ethiopia</option>
+                                    <option value="Falkland Islands">Falkland Islands</option>
+                                    <option value="Faroe Islands">Faroe Islands</option>
+                                    <option value="Fiji">Fiji</option>
+                                    <option value="Finland">Finland</option>
+                                    <option value="France">France</option>
+                                    <option value="French Guiana">French Guiana</option>
+                                    <option value="French Polynesia">French Polynesia</option>
+                                    <option value="French Southern Ter">French Southern Ter</option>
+                                    <option value="Gabon">Gabon</option>
+                                    <option value="Gambia">Gambia</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Ghana">Ghana</option>
+                                    <option value="Gibraltar">Gibraltar</option>
+                                    <option value="Great Britain">Great Britain</option>
+                                    <option value="Greece">Greece</option>
+                                    <option value="Greenland">Greenland</option>
+                                    <option value="Grenada">Grenada</option>
+                                    <option value="Guadeloupe">Guadeloupe</option>
+                                    <option value="Guam">Guam</option>
+                                    <option value="Guatemala">Guatemala</option>
+                                    <option value="Guinea">Guinea</option>
+                                    <option value="Guyana">Guyana</option>
+                                    <option value="Haiti">Haiti</option>
+                                    <option value="Hawaii">Hawaii</option>
+                                    <option value="Honduras">Honduras</option>
+                                    <option value="Hong Kong">Hong Kong</option>
+                                    <option value="Hungary">Hungary</option>
+                                    <option value="Iceland">Iceland</option>
+                                    <option value="Indonesia">Indonesia</option>
+                                    <option value="India">India</option>
+                                    <option value="Iran">Iran</option>
+                                    <option value="Iraq">Iraq</option>
+                                    <option value="Ireland">Ireland</option>
+                                    <option value="Isle of Man">Isle of Man</option>
+                                    <option value="Israel">Israel</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="Jamaica">Jamaica</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="Jordan">Jordan</option>
+                                    <option value="Kazakhstan">Kazakhstan</option>
+                                    <option value="Kenya">Kenya</option>
+                                    <option value="Kiribati">Kiribati</option>
+                                    <option value="Korea North">Korea North</option>
+                                    <option value="Korea Sout">Korea South</option>
+                                    <option value="Kuwait">Kuwait</option>
+                                    <option value="Kyrgyzstan">Kyrgyzstan</option>
+                                    <option value="Laos">Laos</option>
+                                    <option value="Latvia">Latvia</option>
+                                    <option value="Lebanon">Lebanon</option>
+                                    <option value="Lesotho">Lesotho</option>
+                                    <option value="Liberia">Liberia</option>
+                                    <option value="Libya">Libya</option>
+                                    <option value="Liechtenstein">Liechtenstein</option>
+                                    <option value="Lithuania">Lithuania</option>
+                                    <option value="Luxembourg">Luxembourg</option>
+                                    <option value="Macau">Macau</option>
+                                    <option value="Macedonia">Macedonia</option>
+                                    <option value="Madagascar">Madagascar</option>
+                                    <option value="Malaysia">Malaysia</option>
+                                    <option value="Malawi">Malawi</option>
+                                    <option value="Maldives">Maldives</option>
+                                    <option value="Mali">Mali</option>
+                                    <option value="Malta">Malta</option>
+                                    <option value="Marshall Islands">Marshall Islands</option>
+                                    <option value="Martinique">Martinique</option>
+                                    <option value="Mauritania">Mauritania</option>
+                                    <option value="Mauritius">Mauritius</option>
+                                    <option value="Mayotte">Mayotte</option>
+                                </select>
+                                <div class="invalid-feedback">Please provide a valid Country</div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <label for="validationCustom01">Notes</label>
+                                <textarea class="form-control" id="validationCustom01" name="notes" required
+                                          style="background-color: #2f516f;color: white;"></textarea>
+                                <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required
+                                       style="background-color: #2f516f;">
+                                <label>Agree to terms and conditions</label>
+                                <div class="invalid-feedback">You must agree before submitting.</div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-row">
+                                <button class="btn btn-primary" type="submit" style="width: 100%;">Submit form</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <script>
+                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                    (function () {
+                        'use strict';
+                        window.addEventListener('load', function () {
+                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                            var forms = document.getElementsByClassName('needs-validation');
+                            // Loop over them and prevent submission
+                            var validation = Array.prototype.filter.call(forms, function (form) {
+                                form.addEventListener('submit', function (event) {
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                }, false);
+                            });
+                        }, false);
+                    })();
+                </script>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $(".gst").change(function () {
+                            var inputvalues = $(this).val();
+                            var gstinformat = new RegExp('^([0][1-9]|[1-2][0-9]|[3][0-7])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$');
+                            if (gstinformat.test(inputvalues)) {
+                                return true;
+                            } else {
+                                alert('Please Enter Valid GSTIN Number');
+                                $(".gst").val('');
+                                $(".gst").focus();
+                            }
+                        });
+                    });
+                </script>
+                <script type="text/javascript">
+                    function validation() {
+                        var number = document.getElementById("number").value;///get id with value
+                        var numberpattern = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;////Regular expression
+                        if (numberpattern.test(number)) {
+                            document.getElementById("number").style.backgroundColor = 'green';
+                        } else {
+                            document.getElementById("number").style.backgroundColor = 'red';
+                        }
+                    }
+                </script>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

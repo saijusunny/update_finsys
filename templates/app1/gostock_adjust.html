@@ -1,0 +1,178 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+
+
+
+
+<div class="page-content">
+    <div class="card radius-15 h-20">
+        <div class="row">
+            <div class="col-md-12">
+                <center><h2 class="mt-3">ALL STOCK ADJUSTMENTS</h2></center>
+                
+                <hr style="width:95%">
+            </div>
+        </div>
+    </div>
+
+   
+   
+<div class="card radius-15">
+    <div class="card-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                <div class="search-bar">
+                    <div class="input-group">
+                        <div class="input-group-prepend search-arrow-back">
+                            <button class="btn btn-search-back" type="button"><i class="bx bx-arrow-back"></i></button>
+                        </div>
+                        <input type="text" autocomplete="off" id="searchInput" onkeyup="filter(this);" onclick="myFunction1()" class="form-control" placeholder="search" />
+                        <div class="input-group-append">
+                            <button class="btn btn-search" type="button"><i class="lni lni-search-alt"></i></button>
+                        </div>
+                        <div class=" mt-5" id="myDIV" style="z-index:1;position:absolute; 
+                              background-color: #213b52;width:400px;height:1px;">
+                              
+                                 <ul id="searchList" class="one radius-15" style="background-color: #213b52;">
+                                    {% for a in stock %}
+                                    <a href="view_stockadjust/{{ a.id }}"><li>{{ a.ref_no }}</li></a>
+                                  {% endfor %}
+                             
+                                 </ul>
+                                 </div>
+                
+                            </div>
+                        </div>
+                      </div>
+                  <div class="col-md-2">
+                    
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                data-toggle="dropdown">filter by
+                        </button>
+                        <div class="dropdown-menu" style="background-color: black;">
+                            <a class="dropdown-item" href="{% url 'gostock_adjust' %}"
+                               style="height: 40px; font-size: 15px; color: white;" >All</a>
+                            <a class="dropdown-item" href="{% url 'saf_quandity' %}"
+                               style="height: 40px; font-size: 15px; color: white;">Quandity</a>
+                            <a class="dropdown-item" href="{% url 'saf_value' %}"
+                               style="height: 40px; font-size: 15px; color: white;">Value</a>
+                           
+                        </div>
+                    </div> 
+                  </div>
+                 
+                  <div class="col-md-2">
+                    <div class="dropdown">
+                        <div class="datepicker1" id="datepicker">
+                             </div>
+                        <div class="dropdown-menu" style="background-color: black;">
+                            
+                        </div>
+                </div>
+            </div>
+                <div class="col">
+                            <div class="dropdown">
+                                <a href="{% url 'stock_adjustpage' %}">     <button type="button" class="btn btn-outline-info  text-grey"
+                                        >Add Adjustment
+                                </button></a>
+                               
+                            </div>
+                </div>
+
+                  </div>
+                </div>
+              </div>
+            <div class="table-responsive">
+                <table class="table table-responsive-md table-hover mt-4" id="tabletobe">
+                    <thead>
+                    <tr id="table-header">
+                        <th>Date</th>
+                        <th>Reason</th>
+                        <th>Description</th>
+                        <th>Reference No</th>
+                        <th>Type</th>
+                        <th>Created By</th>
+                        <th>Created Time</th>
+                    </tr>
+                    </thead>
+                    <tbody id="">
+                    {% for a in stock %}
+                <tr  class='clickable-row' data-href="view_stockadjust/{{ a.id }}" >
+                                <td>{{ a.date }}</td>
+                                <td>{{ a.reason }}</td>
+                                <td>{{ a.description }}</td>
+                                <td>{{ a.ref_no }}</td>
+                                <td>{{ a.mode }}</td>
+                                <td>{{ user.first_name }}</td>
+                                <!-- <td>{{ a.tax_rate }}</td> -->
+                                
+                                        
+                                    <!--<div class="dropdown">
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                data-toggle="dropdown">Actions
+                                        </button>
+                                        <div class="dropdown-menu" style="background-color: white;">
+                                            <a href="itemedit_page/{{ a.id }}" class="dropdown-item"
+                                               style="color: black; font-size: 15px;">
+                                                <i class="bx bx-edit"><b>EDIT</b></i>
+                                            </a>
+                                            <a href="view_item/{{ a.id }}" class="dropdown-item"
+                                               style="color: black; font-size: 15px;">
+                                                <i class="bx bx-edit"><b>VIEW</b></i>
+                                            </a>
+                                            
+                                        </div>
+                                    </div>-->
+
+                                </td></a>
+                            </tr>
+                     
+                    {% endfor %}
+                  
+
+                  
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+                  
+                
+<script>
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+
+
+<script>
+
+    $(document).ready(function(){
+      $("#searchList li").hide();
+    
+      $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        if (value !== '' ) {
+        $("#searchList li").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });   
+        } else {
+          $("#searchList li").hide();   
+        }    
+      });
+    });
+    
+       
+       
+     </script>
+
+
+
+{% endblock %}

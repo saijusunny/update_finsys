@@ -1,0 +1,631 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .hide{
+			display: none;
+    	}
+    </style>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">ADD VENDORS</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">Vendor Details</h4>
+                </div>
+                <hr/>
+                <form action="createvendor" method="post" class="needs-validation" novalidate autocomplete="off">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom01">Title</label>
+                                <select name="title" id="title" class="form-control">
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Miss">Miss</option>
+                                    <option value="Ms">Ms</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom02">First name</label>
+                                <input type="text" class="form-control" id="validationCustom02" name="firstname"
+                                       required>
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom02">Last name</label>
+                                <input type="text" class="form-control" id="validationCustom02" name="lastname">
+                            </div>
+                            <div class="col-md-3 mt-2">
+                                <label for="validationCustom03">Company</label>
+                                <input type="text" class="form-control" id="validationCustom03" name="company_name">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">Email</label>
+                                <input type="email" class="form-control" id="validationCustom03" name="email"
+                                    placeholder="finsys@mail.com">
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">Website</label>
+                                <input type="text" class="form-control" id="validationCustom03"
+                                    placeholder="www.finsys.com" name="website">
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom01">Mobile</label>
+                                <input type="text" class="form-control" id="validationCustom01"
+                                    placeholder="Mobile number" maxlength="10"
+                                    name="mobile">
+                            </div>
+                        </div>
+                        <hr>
+                        <center><h4><b>Other Options</b></h4></center>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom04">GST Treatment</label>
+                                <select class="form-control" id="gsttyp" name="gsttype" onchange="showgsttyp()"
+                                    onclick="hidinput('hello', this)" required>
+                                    <option selected disabled value="">Choose..</option>
+                                    <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
+                                    <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
+                                    <option value="unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
+                                    <option value="Overseas">Overseas (Import/Export of supply outside india)</option>
+                                    <option value="Special Economic Zone (SEZ)">Special Economic Zone (SEZ) (Business that is located in a special economic zone of india or a SEZ developer)</option>
+                                    <option value="Demed Exports">Demed Exports (Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</option>
+                                    <option value="Tax Deductor">Tax Deductor (State of central gov,government agencies or local authority)</option>
+                                    <option value="SEZ Developer">SEZ Developer (A person or organization who owns atleast 26% eqaulity in creating business units in special economic zone)</option>
+                                </select>
+                                <!-- <div class="hide" id="regular"><label><i>(Business that is registered under gst)</i></label></div>
+                                <div class="hide" id="comp"><label>&nbsp;<i>(Business that is registered under composition scheme in gst)</i></label></div>
+                                <div class="hide" id="unreg"><label>&nbsp;&nbsp;&nbsp;<i>(Business that has not been registered under gst)</i></label></div>
+                                <div class="hide" id="overseas"><label>&nbsp;&nbsp;&nbsp;<i>(Import/Export of supply outside india)</i></label></div>
+                                <div class="hide" id="sez"><label>&nbsp;&nbsp;&nbsp;<i>(Business that is located in a special economic zone of india or a SEZ developer)</i></label></div>
+                                <div class="hide" id="demed"><label>&nbsp;&nbsp;&nbsp;<i>(Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</i></label></div>
+                                <div class="hide" id="taxdud"><label>&nbsp;&nbsp;<i>(State of central gov,government agencies or local authority)</i></label></div>
+                                <div class="hide" id="sezdev"><label>&nbsp;&nbsp;<i>(A person or organization who owns atleast 26% eqaulity in creating business units in special economic zone)</i></label></div> -->
+                            </div>
+                              
+                            <div class="col-md-4 mt-3">
+                                <div id="hello">
+                                    <label for="validationCustom05">GSTIN</label>
+                                    <input type="text" class="form-control" onchange="checkgst(this)"
+                                        id="validationCustom05" name="gstin"
+                                        placeholder="29APPCK7465F1Z1">
+                                    <a href="https://services.gst.gov.in/services/searchtp"
+                                        target="_blank" style="color:#3dd5f3">Get Taxpayer details ?</a>
+                                    <div class="text-danger m-2" id="warngst"></div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-4 mt-3 hide" id="legal">
+                                <label for="">Business Legal Name</label>
+                                <input type="text" class="form-control" name="">
+                            </div>
+                            <div class="col-md-4 mt-3 hide" id="trade">
+                                <label for="">Business Trade Name</label>
+                                 <input type="text" class="form-control" name="">
+                             </div> -->
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">PAN NO</label>
+                                <input type="text" class="form-control" id="" name="panno"
+                                placeholder="APPCK7465F">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-3 mt-2">
+                               <label for="">Place of Supply</label>
+                                <select class="form-control" id="" name="sourceofsupply">
+                                    <option value="[AN] Andaman and Nicobar Islads">[AN] Andaman and Nicobar Islads</option>
+                                    <option value="[AD] Andhra Predhesh">[AD] Andhra Predhesh</option>
+                                    <option value="[AR] Arunachal Predesh">[AR] Arunachal Predesh</option>
+                                    <option value="[AS] Assam">[AS] Assam</option>
+                                    <option value="[BR] Bihar">[BR] Bihar</option>
+                                    <option value="[CH] Chandigarh">[CH] Chandigarh</option>
+                                    <option value="[CG] Chhattisgarh">[CG] Chhattisgarh</option>
+                                    <option value="[DNH] Dadra and Nagar Haveli">[DNH] Dadra and Nagar Haveli</option>
+                                    <option value="[DD] Damn anad Diu">[DD] Damn anad Diu</option>
+                                    <option value="[DL] Delhi">[DL] Delhi</option>
+                                    <option value="[GA] Goa">[GA] Goa</option>
+                                    <option value="[GJ] Gujarat">[GJ] Gujarat</option>
+                                    <option value="[HR] Haryana">[HR] Haryana</option>
+                                    <option value="[HP] Himachal Predesh">[HP] Himachal Predesh</option>
+                                    <option value="[JK] Jammu and Kashmir">[JK] Jammu and Kashmir</option>
+                                    <option value="[JH] Jharkhand">[JH] Jharkhand</option>
+                                    <option value="[KA] Karnataka">[KA] Karnataka</option>
+                                    <option value="[KL] Kerala" selected>[KL] Kerala</option>
+                                    <option value="[LA] Ladakh">[LA] Ladakh</option>
+                                    <option value="[LD] Lakshadweep">[LD] Lakshadweep</option>
+                                    <option value="[MP] Madhya Predesh">[MP] Madhya Predesh</option>
+                                    <option value="[MH] Maharashtra">[MH] Maharashtra</option>
+                                    <option value="[MN] Manipur">[MN] Manipur</option>
+                                    <option value="[ML] Meghalaya">[ML] Meghalaya</option>
+                                    <option value="[MZ] Mizoram">[MZ] Mizoram</option>
+                                    <option value="[NL] Nagaland">[NL] Nagaland</option>
+                                    <option value="[OD] Odisha">[OD] Odisha</option>
+                                    <option value="[PY] Puducherry">[PY] Puducherry</option>
+                                    <option value="[PB] Punjab">[PB] Punjab</option>
+                                    <option value="[RJ] Rajasthan">[RJ] Rajasthan</option>
+                                    <option value="[SK] Sikkim">[SK] Sikkim</option>
+                                    <option value="[TN] Tamil Nadu">[TN] Tamil Nadu</option>
+                                    <option value="[TS] Telangana">[TS] Telangana</option>
+                                    <option value="[TR] Tripura">[TR] Tripura</option>
+                                    <option value="[UP] Uttar Predesh">[UP] Uttar Predesh</option>
+                                    <option value="[UK] Uttarakhand">[UK] Uttarakhand</option>
+                                    <option value="[WB] West Bengal">[WB] West Bengal</option>
+                                    <option value="[OT] Other Territory">[OT] Other Territory</option>
+                                </select>
+                            </div>
+                            <!-- <div class="col-md-3 mt-2 hide" id="tax">
+                                <label for="">Tax Preference</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" value="Taxable" name="taxpref">
+                                    <label class="form-check-label">Taxable</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" value="Tax Exempt" name="taxpref">
+                                    <label class="form-check-label">Tax Exempt</label>
+                                </div>
+                            </div> -->
+                            
+                            <div class="col-md-3 mt-2">
+                                <label for="">Currency</label>
+                                <div class="d-flex">
+                                    <select name="currency" id="" class="form-control">
+                                        <option value="INR - Indian Rupee">INR - Indian Rupee</option>
+                                        {% for c in cr %}
+                                            <option value="{{ c.code }} - {{ c.name }}">{{ c.code }} - {{ c.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <a href="#">
+                                        <button type="button" class="btn btn-outline-secondary ml-1">+</button>
+                                    </a> 
+                                </div>   
+                            </div>
+                            
+                            <div class="col-md-3 mt-2">
+                                <label for="">Opening Balance</label>
+                                <div class="d-flex">
+                                    <p class="form-control" style="width: 60px;">INR</p>
+                                    <input type="number" class="form-control" name="openingbalance">
+                               </div>
+                            </div>
+                            
+                            <div class="col-md-3 mt-2">
+                               <label for="">Payment Terms</label>
+                               <div class="d-flex">
+                                <select class="form-control" name="paymentterms">
+                                    <option value="Due on Receipt">Due on Receipt</option>
+                                    <option value="Net 15">NET 15</option>
+                                    <option value="Net 30">NET 30</option>
+                                    <option value="Net 60">NET 60</option>
+                                    {% for pd in cpd %}
+                                        <option value="{{ pd.newperiod }}">NET {{ pd.newperiod }}</option>
+                                    {% endfor %}
+                                </select>
+                                <a class="btn btn-outline-secondary ml-1" data-target="#crperiod" data-toggle="modal">+</a>
+                            </div> 
+                            </div>
+                        </div>
+                        <div class="row" style="display: none;">
+                            <div class="col-md-3 mt-2" >
+                                <label for="">Date</label>
+                                <input type="date" id="date" class="form-control" name="date">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 mt-5">
+                                <div class="row">
+                                    <div class="col-md-12 card-title">
+                                        <h5 class="mb-0">Billing Address</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-row">
+                                            <label for="street">Street</label>
+                                            <textarea class="form-control street" id="street" name="street"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="city">City</label>
+                                            <input type="text" class="form-control" id="city"
+                                                name="city"
+                                                placeholder="City">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="state">State</label>
+                                            <select type="text" class="form-control" id="state" name="state">
+                                                <option value="" selected>Choose</option>
+                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                                </option>
+                                                <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                                <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                <option value="Damn anad Diu">Damn anad Diu</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Predesh">Himachal Predesh</option>
+                                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Ladakh">Ladakh</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Madhya Predesh">Madhya Predesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Puducherry">Puducherry</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Predesh">Uttar Predesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                                <option value="Other Territory">Other Territory</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="pinco">Pin Code</label>
+                                            <input type="text" class="form-control" id="pinco"
+                                                name="pincode" maxlength="6"
+                                                placeholder="PIN Code">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="country">Country</label>
+                                            <input type="text" class="form-control" id="country"
+                                                name="country"
+                                                placeholder="Country">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-5">
+                                <div class="row">
+                                    <div class="col-md-12 d-flex">
+                                        <h5>Shipping Address</h5>
+                                        <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                               name="okay">
+                                        <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstreet">Street</label>
+                                            <textarea class="form-control" id="shipstreet"
+                                                name="shipstreet"
+                                                ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipcity">City</label>
+                                            <input type="text" class="form-control" id="shipcity"
+                                                name="shipcity" placeholder="City">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipstate">State</label>
+                                            <select type="text" class="form-control" id="plosu" name="shipstate">
+                                                <option id="shipst" selected>Choose</option>
+                                                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                                </option>
+                                                <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                                <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                <option value="Damn anad Diu">Damn anad Diu</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Predesh">Himachal Predesh</option>
+                                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Ladakh">Ladakh</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Madhya Predesh">Madhya Predesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Puducherry">Puducherry</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Predesh">Uttar Predesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                                <option value="Other Territory">Other Territory</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shippinco">Pin Code</label>
+                                            <input type="text" class="form-control" id="shippinco"
+                                                name="shippincode"
+                                                placeholder="PIN Code">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <div class="form-row">
+                                            <label for="shipcountry">Country</label>
+                                            <input type="text" class="form-control" id="shipcountry"
+                                                name="shipcountry"
+                                                placeholder="Country">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                                    <label>Agree to terms and conditions</label>
+                                    <div class="invalid-feedback">You must agree before submitting.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                        type="submit">
+                                    Submit form
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    {% endif %}
+                </form>
+
+                <div class="modal fade" id="crperiod">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: #213b52;">
+                            <div class="modal-header">
+                                <h5 class="m-3">New Payment Terms</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card p-3 m-3">
+                                    <form action="{% url 'credit_period1' %}" method="post" autocomplete="off">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-2 mt-2"></div>
+                                            <div class="col-md-5 mt-2">
+                                                <input type="number" name="newperiod" class="form-control">
+                                            </div>
+                                            <div class="col-md-2 mt-2">
+                                                <button class="btn btn-outline-info text-grey mb-3" type="submit">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>  
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $('#date').val(new Date().toJSON().slice(0,10));
+    </script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function poppins() {
+            var chkbtn = document.getElementById('okay');
+            if (chkbtn.checked == true) {
+                document.getElementById('shipstreet').value = document.getElementById('street').value;
+                document.getElementById('shipcity').value = document.getElementById('city').value;
+                document.getElementById('shippinco').value = document.getElementById('pinco').value;
+                document.getElementById('shipcountry').value = document.getElementById('country').value;
+                document.getElementById('shipst').value = document.getElementById('state').value;
+                document.getElementById('shipst').innerHTML = document.getElementById('state').value;
+            } else {
+                document.getElementById('shipstreet').value = '';
+                document.getElementById('shipcity').value = '';
+                document.getElementById('shipstate').value = '';
+                document.getElementById('shippinco').value = '';
+                document.getElementById('shipcountry').value = '';
+            }
+        }
+    </script>
+
+    <script>
+        function showgsttyp(){
+            var status = document.getElementById("gsttyp");
+            var a = status.value
+            console.log(a);
+            if( a == "Registered Business - Regular" ){
+                console.log(a);
+
+                document.getElementById('regular').style.display = "flex";
+                // document.getElementById('trade').style.display = "block";
+                // document.getElementById('legal').style.display = "block";
+                // document.getElementById('tax').style.display = "block";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Registered Business - Composition" ){
+                document.getElementById('comp').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "unregistered Business" ){
+                document.getElementById('unreg').style.display = "flex";
+                // document.getElementById('tax').style.display = "block";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Overseas" ){
+                document.getElementById('overseas').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Special Economic Zone (SEZ)" ){
+                document.getElementById('sez').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Demed Exports" ){
+                document.getElementById('demed').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Tax Deductor" ){
+                document.getElementById('taxdud').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "SEZ Developer" ){
+                document.getElementById('sezdev').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+            }
+        }
+
+    </script>
+
+    <script>
+        function hidinput(divId, element) {
+            if (element.value == 'unregistered Business' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+        }
+
+        function checkgst(element) {
+            var gstinput = element.value;
+            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+            if (gstinput.match(gstregexp)) {
+                document.getElementById('warngst').innerHTML = '';
+            } else {
+                document.getElementById('warngst').innerHTML = 'Please provide a valid GSTIN';
+                alert('Please provide a valid GSTIN');
+            }
+        }
+    </script>
+
+{% endblock %}

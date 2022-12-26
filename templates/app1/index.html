@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link href="{% static 'assets/css/pace.min.css' %}" rel="stylesheet" />
+  <script src="{% static 'assets/js/pace.min.js' %}"></script>
+
+  <title>Finsys</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link rel="icon" href="{% static 'assets/images/favicon-32x32.png' %}" type="image/png" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+
+<style>
+    body {
+  font-family: "Open Sans", sans-serif;
+  color: #444444;
+}
+
+a {
+  color: #fdc134;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #fdd067;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Raleway", sans-serif;
+}
+
+/*--------------------------------------------------------------
+# Back to top button
+--------------------------------------------------------------*/
+.back-to-top {
+  position: fixed;
+  visibility: hidden;
+  opacity: 0;
+  right: 15px;
+  bottom: 15px;
+  z-index: 99999;
+  background: #213b52;
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  transition: all 0.4s;
+}
+
+.back-to-top i {
+  font-size: 24px;
+  color: #fff;
+  line-height: 0;
+}
+
+.back-to-top:hover {
+  background: #fdc134;
+  color: #fff;
+}
+
+.back-to-top.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+/*--------------------------------------------------------------
+# Disable aos animation delay on mobile devices
+--------------------------------------------------------------*/
+@media screen and (max-width: 768px) {
+  [data-aos-delay] {
+    transition-delay: 0 !important;
+  }
+}
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+#header {
+  z-index: 997;
+  transition: all 0.5s;
+  padding: 16px 0;
+  background: #213b52;
+}
+
+#header .logo h1 {
+  font-size: 24px;
+  margin: 0;
+  padding: 10px 0;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-family: "Poppins", sans-serif;
+}
+
+#header .logo h1 a, #header .logo h1 a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+#header .logo h1 a span, #header .logo h1 a:hover span {
+  color: #fdc134;
+}
+
+#header .logo img {
+  padding: 0;
+  margin: 0;
+  max-height: 40px;
+}
+
+/*--------------------------------------------------------------
+# Navigation Menu
+--------------------------------------------------------------*/
+/**
+* Desktop Navigation 
+*/
+.navbar {
+  padding: 0;
+}
+
+.navbar ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+.navbar li {
+  position: relative;
+}
+
+.navbar a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 10px 30px;
+  font-size: 14px;
+  color: #adc7de;
+  white-space: nowrap;
+  transition: 0.3s;
+}
+
+.navbar a i {
+  font-size: 12px;
+  line-height: 0;
+  margin-left: 5px;
+}
+
+.navbar a:hover, .navbar .active, .navbar li:hover > a {
+  color: #fff;
+}
+
+.navbar .getstarted {
+  background: #213b52;
+  color: #fff;
+  padding: 4px 25px 6px 25px;
+  margin-left: 30px;
+  border-radius: 50px;
+  border: 2px solid #fdc134;
+}
+
+.navbar .getstarted:hover {
+  background: #fdc134;
+  color: #213b52;
+}
+
+.navbar .dropdown ul {
+  display: block;
+  position: absolute;
+  left: 14px;
+  top: calc(100% + 30px);
+  margin: 0;
+  padding: 10px 0;
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  background: #fff;
+  box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
+  transition: 0.3s;
+  border-radius: 4px;
+}
+
+.navbar .dropdown ul li {
+  min-width: 200px;
+}
+
+.navbar .dropdown ul a {
+  padding: 10px 20px;
+  font-size: 14px;
+  text-transform: none;
+  font-weight: 500;
+  color: #3e6f9b;
+}
+
+.navbar .dropdown ul a i {
+  font-size: 12px;
+}
+
+.navbar .dropdown ul a:hover, .navbar .dropdown ul .active:hover, .navbar .dropdown ul li:hover > a {
+  color: #fdc134;
+}
+
+.navbar .dropdown:hover > ul {
+  opacity: 1;
+  top: 100%;
+  visibility: visible;
+}
+
+.navbar .dropdown .dropdown ul {
+  top: 0;
+  left: calc(100% - 30px);
+  visibility: hidden;
+}
+
+.navbar .dropdown .dropdown:hover > ul {
+  opacity: 1;
+  top: 0;
+  left: 100%;
+  visibility: visible;
+}
+
+@media (max-width: 1366px) {
+  .navbar .dropdown .dropdown ul {
+    left: -90%;
+  }
+  .navbar .dropdown .dropdown:hover > ul {
+    left: -100%;
+  }
+}
+
+/**
+* Mobile Navigation 
+*/
+.mobile-nav-toggle {
+  color: #fdc134;
+  font-size: 28px;
+  cursor: pointer;
+  display: none;
+  line-height: 0;
+  transition: 0.5s;
+  position: fixed;
+  right: 15px;
+  top: 15px;
+  z-index: 9998;
+  border: 0;
+}
+
+@media (max-width: 991px) {
+  .mobile-nav-toggle {
+    display: block;
+  }
+  .navbar ul {
+    display: none;
+  }
+}
+
+.navbar-mobile {
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(18, 33, 46, 0.9);
+  transition: 0.3s;
+  z-index: 999;
+}
+
+.navbar-mobile .mobile-nav-toggle {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.navbar-mobile ul {
+  display: block;
+  position: absolute;
+  top: 55px;
+  right: 15px;
+  bottom: 15px;
+  left: 15px;
+  padding: 10px 0;
+  border-radius: 10px;
+  background-color: #fff;
+  overflow-y: auto;
+  transition: 0.3s;
+}
+
+.navbar-mobile a {
+  padding: 10px 20px;
+  font-size: 15px;
+  color: #213b52;
+}
+
+.navbar-mobile a:hover, .navbar-mobile .active, .navbar-mobile li:hover > a {
+  color: #fdc134;
+}
+
+.navbar-mobile .getstarted {
+  margin: 15px;
+  display: block;
+  border: 0;
+}
+
+.navbar-mobile .dropdown ul {
+  position: static;
+  display: none;
+  margin: 10px 20px;
+  padding: 10px 0;
+  z-index: 99;
+  opacity: 1;
+  visibility: visible;
+  background: #fff;
+  box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
+}
+
+.navbar-mobile .dropdown ul li {
+  min-width: 200px;
+}
+
+.navbar-mobile .dropdown ul a {
+  padding: 10px 20px;
+}
+
+.navbar-mobile .dropdown ul a i {
+  font-size: 12px;
+}
+
+.navbar-mobile .dropdown ul a:hover, .navbar-mobile .dropdown ul .active:hover, .navbar-mobile .dropdown ul li:hover > a {
+  color: #fdc134;
+}
+
+.navbar-mobile .dropdown > .dropdown-active {
+  display: block;
+}
+
+/*--------------------------------------------------------------
+# Hero Section
+--------------------------------------------------------------*/
+#hero {
+  width: 100%;
+  padding: 0 0 0 0;
+  background: #213b52;
+  background: linear-gradient(180deg, #213b52 0%, #213c54 35%, #204564 100%);
+}
+
+#hero h1 {
+  margin: 0 0 15px 0;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 56px;
+  color: #d2e0ed;
+  font-family: "Poppins", sans-serif;
+}
+
+#hero h2 {
+  color: #fff;
+  margin-bottom: 30px;
+  font-size: 22px;
+}
+
+#hero .btn-get-started {
+  color: #213b52;
+  border-radius: 50px;
+  padding: 8px 35px 10px 35px;
+  border: 2px solid #fdc134;
+  transition: all ease-in-out 0.3s;
+  display: inline-block;
+  background: #fdc134;
+}
+
+#hero .btn-get-started:hover {
+  background: transparent;
+  color: #fff;
+}
+
+@media (max-width: 991px) {
+  #hero .hero-img {
+    text-align: center;
+  }
+  #hero .hero-img img {
+    width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  #hero {
+    -moz-text-align-last: center;
+    text-align-last: center;
+  }
+  #hero h1 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  #hero h2 {
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: 30px;
+  }
+  #hero .hero-img img {
+    width: 70%;
+  }
+}
+
+@media (max-width: 575px) {
+  #hero .hero-img img {
+    width: 80%;
+  }
+}
+
+/*--------------------------------------------------------------
+# Sections General
+--------------------------------------------------------------*/
+section {
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.section-bg {
+  background: linear-gradient(180deg, #f2f6fa 0%, #fff 100%);
+}
+
+.section-title {
+  text-align: center;
+  padding-bottom: 30px;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  position: relative;
+  font-family: "Poppins", sans-serif;
+  color: #213b52;
+}
+
+.section-title h2::before {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 120px;
+  height: 1px;
+  background: #ddd;
+  bottom: 1px;
+  left: calc(50% - 60px);
+}
+
+.section-title h2::after {
+  content: '';
+  position: absolute;
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #fdc134;
+  bottom: 0;
+  left: calc(50% - 20px);
+}
+
+.section-title p {
+  margin-bottom: 0;
+}
+
+/*--------------------------------------------------------------
+# Breadcrumbs
+--------------------------------------------------------------*/
+.breadcrumbs {
+  padding: 15px 0;
+  background-color: #f6f9fb;
+  min-height: 40px;
+}
+
+.breadcrumbs h2 {
+  font-size: 24px;
+  font-weight: 300;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+.breadcrumbs ol li + li {
+  padding-left: 10px;
+}
+
+.breadcrumbs ol li + li::before {
+  display: inline-block;
+  padding-right: 10px;
+  color: #6c757d;
+  content: "/";
+}
+
+@media (max-width: 768px) {
+  .breadcrumbs .d-flex {
+    display: block !important;
+  }
+  .breadcrumbs ol {
+    display: block;
+  }
+  .breadcrumbs ol li {
+    display: inline-block;
+  }
+}
+/*--------------------------------------------------------------
+# About
+--------------------------------------------------------------*/
+.about .content {
+  padding: 30px 0;
+}
+
+.about .content h3 {
+  font-weight: 700;
+  font-size: 34px;
+  color: #213b52;
+}
+
+.about .content p {
+  margin-bottom: 0;
+}
+
+.about .content .icon-box {
+  margin-top: 25px;
+}
+
+.about .content .icon-box h4 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 5px 0 10px 60px;
+  color: #213b52;
+}
+
+.about .content .icon-box h4 a {
+  color: #213b52;
+  transition: 0.3s;
+}
+
+.about .content .icon-box h4 a:hover {
+  color: #fdc134;
+}
+
+.about .content .icon-box i {
+  font-size: 48px;
+  float: left;
+  color: #fdc134;
+}
+
+.about .content .icon-box p {
+  font-size: 15px;
+  color: #848484;
+  margin-left: 60px;
+}
+
+.about .image {
+  background: url("{% static 'assets/img/about.jpg' %}") center center no-repeat;
+  background-size: cover;
+  min-height: 400px;
+}
+
+@media (max-width: 667px) {
+  .about .image img {
+    max-width: 100%;
+  }
+}
+
+/*--------------------------------------------------------------
+# Services
+--------------------------------------------------------------*/
+.services {
+  padding-bottom: 40px;
+}
+
+.services .card {
+  border: 0;
+  padding: 0 30px;
+  margin-bottom: 60px;
+  position: relative;
+  background: transparent;
+}
+
+.services .card-img {
+  width: calc(100% + 60px);
+  margin-left: -30px;
+  overflow: hidden;
+  z-index: 9;
+  border-radius: 0;
+}
+
+.services .card-img img {
+  max-width: 100%;
+  transition: all 0.3s ease-in-out;
+}
+
+.services .card-body {
+  z-index: 10;
+  background: #fff;
+  border-top: 4px solid #fff;
+  padding: 30px;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+  margin-top: -60px;
+  transition: 0.3s;
+}
+
+.services .card-title {
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.services .card-title a {
+  color: #213b52;
+  transition: 0.3s;
+}
+
+.services .card-text {
+  color: #5e5e5e;
+}
+
+.services .read-more a {
+  color: #777777;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+.services .read-more a:hover {
+  color: #fdc134;
+}
+
+.services .card:hover img {
+  transform: scale(1.1);
+}
+
+.services .card:hover .card-body {
+  border-color: #fdc134;
+}
+
+.services .card:hover .card-body .card-title a {
+  color: #fdc134;
+}
+
+/*--------------------------------------------------------------
+# Features
+--------------------------------------------------------------*/
+.features .content + .content {
+  margin-top: 100px;
+}
+
+.features .content h3 {
+  font-weight: 700;
+  font-size: 26px;
+  color: #213b52;
+}
+
+.features .content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.features .content ul li {
+  padding-bottom: 10px;
+}
+
+.features .content ul i {
+  font-size: 20px;
+  padding-right: 4px;
+  color: #fdc134;
+}
+
+.features .content p:last-child {
+  margin-bottom: 0;
+}
+/*--------------------------------------------------------------
+# Contact
+--------------------------------------------------------------*/
+.contact .info-box {
+  color: #444444;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(214, 215, 216, 0.6);
+  padding: 20px 0 30px 0;
+  background: #fff;
+}
+
+.contact .info-box i {
+  font-size: 32px;
+  color: #fdc134;
+  border-radius: 50%;
+  padding: 8px;
+  border: 2px dotted #fff7e5;
+}
+
+.contact .info-box h3 {
+  font-size: 20px;
+  color: #777777;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.contact .info-box p {
+  padding: 0;
+  line-height: 24px;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.contact .php-email-form {
+  box-shadow: 0 0 30px rgba(214, 215, 216, 0.6);
+  padding: 30px;
+  background: #fff;
+}
+
+.contact .php-email-form .error-message {
+  display: none;
+  color: #fff;
+  background: #ed3c0d;
+  text-align: left;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.contact .php-email-form .error-message br + br {
+  margin-top: 25px;
+}
+
+.contact .php-email-form .sent-message {
+  display: none;
+  color: #fff;
+  background: #18d26e;
+  text-align: center;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.contact .php-email-form .loading {
+  display: none;
+  background: #fff;
+  text-align: center;
+  padding: 15px;
+}
+
+.contact .php-email-form .loading:before {
+  content: "";
+  display: inline-block;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  margin: 0 10px -6px 0;
+  border: 3px solid #18d26e;
+  border-top-color: #eee;
+  -webkit-animation: animate-loading 1s linear infinite;
+  animation: animate-loading 1s linear infinite;
+}
+
+.contact .php-email-form input, .contact .php-email-form textarea {
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 14px;
+}
+
+.contact .php-email-form input::focus, .contact .php-email-form textarea::focus {
+  background-color: #fdc134;
+}
+
+.contact .php-email-form input {
+  padding: 10px 15px;
+}
+
+.contact .php-email-form textarea {
+  padding: 12px 15px;
+}
+
+.contact .php-email-form button[type="submit"] {
+  background: #fdc134;
+  border: 0;
+  padding: 10px 24px;
+  color: #fff;
+  transition: 0.4s;
+}
+
+.contact .php-email-form button[type="submit"]:hover {
+  background: #fdd067;
+}
+
+@-webkit-keyframes animate-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animate-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+#footer {
+  color: #fff;
+  font-size: 14px;
+  position: relative;
+}
+
+#footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(26, 46, 64, 0.85);
+  z-index: -1;
+}
+
+#footer .footer-top {
+  position: relative;
+  z-index: -1;
+  text-align: center;
+  padding: 80px 0;
+}
+
+#footer .footer-top h3 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  position: relative;
+  font-family: "Poppins", sans-serif;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+#footer .footer-top p {
+  font-size: 15;
+  font-style: italic;
+  margin: 30px 0 0 0;
+  padding: 0;
+}
+
+#footer .footer-top .footer-newsletter {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 30px;
+}
+
+#footer .footer-top .footer-newsletter form {
+  background: #fff;
+  padding: 6px 10px;
+  position: relative;
+  border-radius: 50px;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+#footer .footer-top .footer-newsletter form input[type="email"] {
+  border: 0;
+  padding: 4px 8px;
+  width: calc(100% - 100px);
+}
+
+#footer .footer-top .footer-newsletter form input[type="submit"] {
+  position: absolute;
+  top: 0;
+  right: -1px;
+  bottom: 0;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  padding: 0 20px;
+  background: #fdc134;
+  color: #fff;
+  transition: 0.3s;
+  border-radius: 50px;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+#footer .footer-top .footer-newsletter form input[type="submit"]:hover {
+  background: #fcb102;
+}
+
+#footer .footer-top .social-links {
+  margin-top: 30px;
+}
+
+#footer .footer-top .social-links a {
+  font-size: 18px;
+  display: inline-block;
+  background: #284864;
+  color: #fff;
+  line-height: 1;
+  padding: 8px 0;
+  margin-right: 4px;
+  border-radius: 50%;
+  text-align: center;
+  width: 36px;
+  height: 36px;
+  transition: 0.3s;
+}
+
+#footer .footer-top .social-links a:hover {
+  background: #fcb102;
+  color: #fff;
+  text-decoration: none;
+}
+
+#footer .footer-bottom {
+  border-top: 1px solid #1a2e40;
+  z-index: 2;
+  position: relative;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+#footer .copyright {
+  text-align: center;
+  float: left;
+}
+
+#footer .credits {
+  float: right;
+  text-align: center;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  #footer .copyright, #footer .credits {
+    padding: 5px;
+    float: none;
+    text-align: ceneter;
+  }
+}
+</style>
+
+
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <div class="logo">
+        <h1><a href="#">FinsYs<span>.</span></a></h1>
+
+      </div>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about">About Us</a></li>
+          <li><a class="nav-link scrollto" href="#services">Services</a></li>
+          <li><a class="nav-link scrollto" href="#contact">Contact Us</a></li>
+          <li><a href="{% url 'go' %}">Sign In</a></li>
+          <li><a class="getstarted scrollto" href="#about">Get Started</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" style="padding-bottom: 50px; padding-top: 50px;">
+
+    <div class="container">
+      <div class="row d-flex align-items-center">
+      <div class=" col-lg-6 py-5 py-lg-0 order-2 order-lg-1" data-aos="fade-right">
+        <h1>Your new ERP experience with FinsYs</h1>
+        <h2>“The cost of control obviously should not exceed the cost of inaccuracies.” ERP: Making It Happen, </h2>
+        <a href="#about" class="btn-get-started scrollto">Get Started</a>
+      </div>
+      <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+        <img src="{% static 'assets/img/rrr.png' %}" class="img-fluid" alt="">
+      </div>
+    </div>
+    </div>
+
+  </section><!-- End Hero -->
+
+  <main id="main">
+
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about section-bg">
+      <div class="container">
+        <div class="section-title">
+          <h2 data-aos="fade-in">About Us</h2>
+        </div>
+        
+
+      </div>
+    </section><!-- End About Section -->
+
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services section-bg">
+      <div class="container">
+
+        <div class="section-title">
+          <h2 data-aos="fade-in">Services</h2>
+          <p data-aos="fade-in">Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 d-flex align-items-stretch" data-aos="fade-right">
+            <div class="card">
+              <div class="card-img">
+                <img src="{% static 'assets/img/services-1.jpg' %}" alt="...">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title"><a href="">Temporibus laudantium</a></h5>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur elit, sed do eiusmod tempor ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>
+                <div class="read-more"><a href="#"><i class="bi bi-arrow-right"></i> Read More</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 d-flex align-items-stretch" data-aos="fade-left">
+            <div class="card">
+              <div class="card-img">
+                <img src="{% static 'assets/img/services-2.jpg' %}" alt="...">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title"><a href="">Aperiores voluptates</a></h5>
+                <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo</p>
+                <div class="read-more"><a href="#"><i class="bi bi-arrow-right"></i> Read More</a></div>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-md-6 d-flex align-items-stretch" data-aos="fade-right">
+            <div class="card">
+              <div class="card-img">
+                <img src="{% static 'assets/img/services-3.jpg' %}" alt="...">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title"><a href="">Veritatis natus nisi</a></h5>
+                <p class="card-text">Nemo enim ipsam voluptatem quia voluptas sit aut odit aut fugit, sed quia magni dolores eos qui ratione voluptatem sequi nesciunt Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet</p>
+                <div class="read-more"><a href="#"><i class="bi bi-arrow-right"></i> Read More</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 d-flex align-items-stretch" data-aos="fade-left">
+            <div class="card">
+              <div class="card-img">
+                <img src="{% static 'assets/img/services-4.jpg' %}" alt="...">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title"><a href="">Aliquam veritatis</a></h5>
+                <p class="card-text">Nostrum eum sed et autem dolorum perspiciatis. Magni porro quisquam laudantium voluptatem. In molestiae earum ab sit esse voluptatem. Eos ipsam cumque ipsum officiis qui nihil aut incidunt aut</p>
+                <div class="read-more"><a href="#"><i class="bi bi-arrow-right"></i> Read More</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Services Section -->
+
+    <!-- ======= Features Section ======= -->
+    <section id="features" class="features section-bg">
+      <div class="container">
+
+        <div class="section-title">
+          <h2 data-aos="fade-in">Features</h2>
+          <p data-aos="fade-in">Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+        </div>
+
+        <div class="row content">
+          <div class="col-md-5" data-aos="fade-right">
+            <img src="{% static 'assets/img/features-1.svg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="col-md-7 pt-4" data-aos="fade-left">
+            <h3>Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.</h3>
+            <p class="font-italic">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+              magna aliqua.
+            </p>
+            <ul>
+              <li><i class="bi bi-check"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+              <li><i class="bi bi-check"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row content">
+          <div class="col-md-5 order-1 order-md-2" data-aos="fade-left">
+            <img src="{% static 'assets/img/features-2.svg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="col-md-7 pt-5 order-2 order-md-1" data-aos="fade-right">
+            <h3>Corporis temporibus maiores provident</h3>
+            <p class="font-italic">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+              magna aliqua.
+            </p>
+            <p>
+              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+              culpa qui officia deserunt mollit anim id est laborum
+            </p>
+          </div>
+        </div>
+
+        <div class="row content">
+          <div class="col-md-5" data-aos="fade-right">
+            <img src="{% static 'assets/img/features-3.svg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="col-md-7 pt-5" data-aos="fade-left">
+            <h3>Sunt consequatur ad ut est nulla consectetur reiciendis animi voluptas</h3>
+            <p>Cupiditate placeat cupiditate placeat est ipsam culpa. Delectus quia minima quod. Sunt saepe odit aut quia voluptatem hic voluptas dolor doloremque.</p>
+            <ul>
+              <li><i class="bi bi-check"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+              <li><i class="bi bi-check"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
+              <li><i class="bi bi-check"></i> Facilis ut et voluptatem aperiam. Autem soluta ad fugiat.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row content">
+          <div class="col-md-5 order-1 order-md-2" data-aos="fade-left">
+            <img src="{% static 'assets/img/features-4.svg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="col-md-7 pt-5 order-2 order-md-1" data-aos="fade-right">
+            <h3>Quas et necessitatibus eaque impedit ipsum animi consequatur incidunt in</h3>
+            <p class="font-italic">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+              magna aliqua.
+            </p>
+            <p>
+              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+              culpa qui officia deserunt mollit anim id est laborum
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Features Section -->    
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Contact Us</h2>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-6">
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="info-box" data-aos="fade-up">
+                  <i class="bx bx-map"></i>
+                  <h3>Our Address</h3>
+                  <p>Carnival 1, Infopark, Kakkanad</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-box mt-4" data-aos="fade-up" data-aos-delay="100">
+                  <i class="bx bx-envelope"></i>
+                  <h3>Email Us</h3>
+                  <p>finsys@gmail.com<br>infox@gmail.com</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="info-box mt-4" data-aos="fade-up" data-aos-delay="100">
+                  <i class="bx bx-phone-call"></i>
+                  <h3>Call Us</h3>
+                  <p>+91 9995805992<br>+91 9995805299</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-lg-6 mt-4 mt-lg-0">
+            <div class="mapouter" style="border: 1;">
+              <div class="gmap_canvas">
+                <iframe class="gmap_iframe" width="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=600&amp;height=400&amp;hl=en&amp;q=infox&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
+                <a href="https://www.embedmymap.com/">Embed My Map</a>
+              </div>
+              <style>.mapouter{position:relative;text-align:right;width:100%;height:400px;}.gmap_canvas {overflow:hidden;background:none!important;width:100%;height:400px;}.gmap_iframe {height:400px!important;}
+            </style>
+          </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <!--<footer id="footer">
+    <div class="container footer-bottom clearfix">
+      <div class="col">
+        <center>
+          &copy; Copyright <strong><span>FinsYS</span></strong>. All Rights Reserved
+        </center>
+      </div>
+    </div>
+  </footer>--><!-- End Footer -->
+   <footer id="footer">
+       <div class="container >
+           <!-- Footer Links -->
+           <div class="container text-center text-md-left ">
+               <!-- Grid row -->
+               <div class="row mt">
+                   <!-- Grid column -->
+                   <!--<div class="col-md-12 col-lg-8 col-xl-2 mx-auto mb-4" style="margin-top:5%;">
+                       
+                       <img srcset="{% static 'infox.png' %}" alt="responsive image" class="d-block img-fluid" style="align-content: center;margin: auto;">
+                    </div>-->
+                    <!-- Grid column -->
+                    <!-- Grid column -->
+                    <div class="col-md-12 col-lg-12 col-xl-12 mx-auto mb-4" style="margin-top:6%;">
+                        <h1  style="font-size: 150%;color: white;">Contact information</h1>
+                        <p style="color:white;">
+                        Indian Address:<br>
+                        Blue Mount Tower<br>
+                        1<sup>st</sup> floor
+                        Kakkanad Kochi<br>
+                        
+                        Kerala<br>
+                        Pin :6820481<br>
+                        phone: +91 9171181277
+                  
+                        </p>
+  
+                    </div>
+                    <!-- Grid column -->
+                    <!-- Grid column -->
+                   <!-- <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4" style="margin-top:10%;">
+                          <p style="color:white;font-size: 15px;">
+                            USA Address<br>
+                            INFOX Technologies
+                            615 ST George Square Court
+                            Winston-Salem, North Carolina
+                            United States Of America
+                            Phone:+001 336-5461805
+                          </p>
+  
+  
+                     </div>-->
+                      <!-- Grid column -->
+                  
+                      <!-- Grid column -->
+                      <!--<div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4" style="margin-top:16%;">
+                          <p style="color:white;">
+                               Email:hr@infoxtechnologies.com <br>
+                               Web:infoxtechnologies.com
+                              </p>
+                        </div>-->
+                        <!-- Grid column -->
+  
+                </div>
+                <!-- Grid row -->
+            </div>
+  <!-- Footer Links -->
+  
+  
+  
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script>
+    (function() {
+  "use strict";
+
+  /**
+   * Easy selector helper function
+   */
+  const select = (el, all = false) => {
+    el = el.trim()
+    if (all) {
+      return [...document.querySelectorAll(el)]
+    } else {
+      return document.querySelector(el)
+    }
+  }
+
+  /**
+   * Easy event listener function
+   */
+  const on = (type, el, listener, all = false) => {
+    let selectEl = select(el, all)
+    if (selectEl) {
+      if (all) {
+        selectEl.forEach(e => e.addEventListener(type, listener))
+      } else {
+        selectEl.addEventListener(type, listener)
+      }
+    }
+  }
+
+  /**
+   * Easy on scroll event listener 
+   */
+  const onscroll = (el, listener) => {
+    el.addEventListener('scroll', listener)
+  }
+
+  /**
+   * Navbar links active state on scroll
+   */
+  let navbarlinks = select('#navbar .scrollto', true)
+  const navbarlinksActive = () => {
+    let position = window.scrollY + 200
+    navbarlinks.forEach(navbarlink => {
+      if (!navbarlink.hash) return
+      let section = select(navbarlink.hash)
+      if (!section) return
+      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
+        navbarlink.classList.add('active')
+      } else {
+        navbarlink.classList.remove('active')
+      }
+    })
+  }
+  window.addEventListener('load', navbarlinksActive)
+  onscroll(document, navbarlinksActive)
+
+  /**
+   * Scrolls to an element with header offset
+   */
+  const scrollto = (el) => {
+    let elementPos = select(el).offsetTop
+    window.scrollTo({
+      top: elementPos,
+      behavior: 'smooth'
+    })
+  }
+
+  /**
+   * Back to top button
+   */
+  let backtotop = select('.back-to-top')
+  if (backtotop) {
+    const toggleBacktotop = () => {
+      if (window.scrollY > 100) {
+        backtotop.classList.add('active')
+      } else {
+        backtotop.classList.remove('active')
+      }
+    }
+    window.addEventListener('load', toggleBacktotop)
+    onscroll(document, toggleBacktotop)
+  }
+
+  /**
+   * Mobile nav toggle
+   */
+  on('click', '.mobile-nav-toggle', function(e) {
+    select('#navbar').classList.toggle('navbar-mobile')
+    this.classList.toggle('bi-list')
+    this.classList.toggle('bi-x')
+  })
+
+  /**
+   * Mobile nav dropdowns activate
+   */
+  on('click', '.navbar .dropdown > a', function(e) {
+    if (select('#navbar').classList.contains('navbar-mobile')) {
+      e.preventDefault()
+      this.nextElementSibling.classList.toggle('dropdown-active')
+    }
+  }, true)
+
+  /**
+   * Scrool with ofset on links with a class name .scrollto
+   */
+  on('click', '.scrollto', function(e) {
+    if (select(this.hash)) {
+      e.preventDefault()
+
+      let navbar = select('#navbar')
+      if (navbar.classList.contains('navbar-mobile')) {
+        navbar.classList.remove('navbar-mobile')
+        let navbarToggle = select('.mobile-nav-toggle')
+        navbarToggle.classList.toggle('bi-list')
+        navbarToggle.classList.toggle('bi-x')
+      }
+      scrollto(this.hash)
+    }
+  }, true)
+
+  /**
+   * Scroll with ofset on page load with hash links in the url
+   */
+  window.addEventListener('load', () => {
+    if (window.location.hash) {
+      if (select(window.location.hash)) {
+        scrollto(window.location.hash)
+      }
+    }
+  });
+
+  /**
+   * Porfolio isotope and filter
+   */
+  window.addEventListener('load', () => {
+    let portfolioContainer = select('.portfolio-container');
+    if (portfolioContainer) {
+      let portfolioIsotope = new Isotope(portfolioContainer, {
+        itemSelector: '.portfolio-item',
+        layoutMode: 'fitRows'
+      });
+
+      let portfolioFilters = select('#portfolio-flters li', true);
+
+      on('click', '#portfolio-flters li', function(e) {
+        e.preventDefault();
+        portfolioFilters.forEach(function(el) {
+          el.classList.remove('filter-active');
+        });
+        this.classList.add('filter-active');
+
+        portfolioIsotope.arrange({
+          filter: this.getAttribute('data-filter')
+        });
+        portfolioIsotope.on('arrangeComplete', function() {
+          AOS.refresh()
+        });
+      }, true);
+    }
+
+  });
+
+  /**
+   * Initiate portfolio lightbox 
+   */
+  const portfolioLightbox = GLightbox({
+    selector: '.portfolio-lightbox'
+  });
+
+  /**
+   * Portfolio details slider
+   */
+  new Swiper('.portfolio-details-slider', {
+    speed: 400,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      type: 'bullets',
+      clickable: true
+    }
+  });
+
+  /**
+   * Animation on scroll
+   */
+  window.addEventListener('load', () => {
+    AOS.init({
+      duration: 1000,
+      easing: "ease-in-out",
+      once: true,
+      mirror: false
+    });
+  });
+
+})()
+  </script>
+
+</body>
+
+</html>

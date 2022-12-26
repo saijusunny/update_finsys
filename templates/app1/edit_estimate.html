@@ -1,0 +1,2126 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    var i = 1;
+    $("#add_row").click(function() {
+      b = i - 1;
+      $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+      $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+      i++;
+    });
+    $("#delete_row").click(function() {
+      if (i > 1) {
+        $("#addr" + (i - 1)).html('');
+        i--;
+      }
+      calc();
+    });
+    $('#tab_logic tbody').on('keyup change', function() {
+      calc();
+    });
+
+    $('#tax').on('keyup change', function() {
+      calc_total();
+    });
+  });
+
+  function calc() {
+    $('#tab_logic tbody tr').each(function() {
+      var html = $(this).html();
+      if (html != '') {
+        var qty = $(this).find('.qty').val();
+        var price = $(this).find('.price').val();
+        var tax = $(this).find('.tax').val();
+        $(this).find('.total').val(parseFloat(qty * price));
+        $(this).find('.taxamount').val(parseFloat((qty * price) * (parseFloat(tax) / 100)));
+        calc_total();
+      }
+    });
+  }
+
+  function calc_total() {
+    total = 0;
+    $('.total').each(function() {
+      total += parseFloat($(this).val());
+    });
+    taxamount = 0.0;
+    $('.taxamount').each(function() {
+      taxamount += parseFloat($(this).val());
+    });
+    $('#subtotal').val(parseFloat(total.toFixed(2)));
+    
+    $('#grandtotal').val(parseFloat((taxamount + total).toFixed(2)));
+    $('#baldue').val(parseFloat((taxamount + total).toFixed(2)));
+
+    calc_tcs();
+  }
+
+  function calc_tcs() {
+            tcsamount = 0;
+            var a = document.getElementById("tcs1").value
+
+            tcs=0
+            tcs =a/100 * total
+
+           
+
+           
+            $('#tcs_amount').val(parseFloat((a/100) *total.toFixed(2)));
+           
+
+            $('#grandtotal').val(parseFloat((taxamount + total+tcs).toFixed(2)));
+
+            $('#baldue').val(parseFloat((taxamount + total+tcs) .toFixed(2)));
+
+
+            
+            test()
+        }
+
+
+
+  function test(){
+
+var bc = document.getElementById("plosu").value
+
+d=0
+if (bc == '{{ cmp1.state }}' ) {
+    gst = taxamount/2
+    $('#cgst').val(parseFloat(gst.toFixed(2)));
+    $('#sgst').val(parseFloat(gst.toFixed(2)));
+    $('#igst').val(parseFloat(d.toFixed(2)));
+  
+    }
+    
+if (bc != '{{ cmp1.state }}' ) {
+    $('#tax_amount').val(parseFloat(taxamount.toFixed(2)));
+    $('#cgst').val(d.toFixed(2));
+    $('#igst').val(d.toFixed(2));
+}
+
+}
+
+
+function calc_roundoff(){
+
+var amount =taxamount + total + tcs
+
+let x =Math.round(amount)
+
+$('#round_off').val(parseFloat(x.toFixed(2)));
+$('#grandtotal').val(parseFloat(x.toFixed(2)));
+$('#baldue').val(parseFloat(x .toFixed(2)));
+}
+
+  
+</script>
+
+<style>
+  input {
+    background-color: #2f516f;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+  }
+</style>
+<form action="{% url 'updateestimate2' estimate.estimateid %}" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  <div class="page-content">
+    <!--breadcrumb-->
+    <div class="card radius-15">
+      <div class="card-body">
+        <div class="card-title">
+          <center><h2 class="mb-0" id="estno">ESTIMATE NO.{{ estimate.estimateno }}</h2></center>
+      </div>
+        <hr />
+      </div>
+    </div>
+    <div class="card radius-15">
+      <div class="card-body">
+        <div id="invoice">
+
+          <div class="row mt-3">
+            <!-- <div class="col-md-3">
+                <label class="col-form-label">Customer</label>
+                <input name="customer" value="{{ estimate.customer }}" class="form-control">
+            </div> -->
+            <div class="col-md-3">
+              <label class="col-form-label">Customer</label>
+              <div class="d-flex">
+                  <select name="customer" id="select" class="form-control" style="width: 95%;">
+                      <option value="{{ estimate.customer }}" selected>{{ estimate.customer }}
+                      </option>
+                      {% for cust in customers %}
+                          {% if cust.cid_id == cmp1.cid %}
+                              <option text="{{ cust.customerid }}"
+                                      value="{{ cust.firstname }} {{ cust.lastname }}">{{ cust.firstname }} {{ cust.lastname }}</option>
+                          {% endif %}
+                      {% endfor %}
+                  </select>
+                  <a data-toggle="modal" href="#newcust">
+                      <button type="button" class="btn btn-outline-secondary ml-1">+</button>
+                  </a>
+              </div>
+
+          </div>
+            
+            <div class="col-md-3"></div>
+            <div class="col-md-3"></div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <label class="col-form-label">Billing Address</label>
+                <label for="billingaddress"></label>
+                <textarea class="form-control" rows="7" id="bname" value="{{estimate.billingaddress}}"
+                          name="billingaddress">{{ estimate.billingaddress }}</textarea>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <label class="col-form-label">Email</label>
+                <input type="text" class="form-control" id="email" value="{{ estimate.email }}" name="email"
+                       placeholder="Email">
+            </div>
+            
+            <div class="col-md-3">
+                <label class="col-form-label">Estimate Date</label>
+                <input type="date" class="form-control" value="{{ estimate.estimatedate | date:'Y-m-d'  }}"
+                       name="estimatedate"><br>
+            </div>
+            <div class="col-md-3">
+                <label class="col-form-label">Expiration Date</label>
+                <input type="date" class="form-control" value="{{ estimate.expirationdate | date:'Y-m-d'  }}"
+                       name="expirationdate"><br>
+            </div>
+            <div class="col-md-3">
+                <label class="col-form-label">Estimate no:</label>
+                <input type="text" class="form-control" value="{{ estimate.estimateno }}"
+                       onchange="showinnum('estno', this)"
+                       name="estimateno">
+            </div>
+            <div class="col-md-3">
+                <label class="col-form-label">Reference Number</label>
+                <input type="text" class="form-control" name="Ref_No" value="{{ estimate.reference_number }}"><br>
+            </div>
+            
+        </div>
+          <div class="row">
+            <div class="col-md-3 mt-3">
+              <label class="col-form-label">Place of supply</label>
+              <select type="text" class="form-control" id="plosu" name="placosupply" style="background-color: #2f516f; color: white;" onchange="state(this)">
+                <option value="{{ estimate.placeofsupply }}" selected> {{ estimate.placeofsupply }}</option>
+                <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                <option value="Andhra Predhesh">Andhra Predhesh</option>
+                <option value="Arunachal Predesh">Arunachal Predesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                <option value="Damn anad Diu">Damn anad Diu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Predesh">Himachal Predesh</option>
+                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Ladakh">Ladakh</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Madhya Predesh">Madhya Predesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Puducherry">Puducherry</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Predesh">Uttar Predesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Other Territory">Other Territory</option>
+              </select>
+            </div>
+            <div class="col-md-3 mt-3"></div>
+            <div class="col-md-3 mt-3"></div>
+            <div class="col-md-3 mt-3"></div>
+          </div>
+          <div class="row clearfix">
+            <div class="col-md-12 table-responsive-md mt-3">
+              <table class="table table-bordered table-hover mt-3" id="tab_logic">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">PRODUCT / SERVICE</th>
+                    <th class="text-center">HSN</th>
+                    <th class="text-center">DESCRIPTION</th>
+                    <th class="text-center">QTY</th>
+                    <th class="text-center">PRICE</th>
+                    <th class="text-center">TAX (%)</th>
+                    <th class="text-center">TOTAL</th>
+                    
+                  </tr>
+                </thead>
+                <tbody>
+
+                  {% for j in estimateitem %}
+                  <tr id='addr0'>
+                    <td>{{ forloop.counter }}
+                      <input type="text"  name="id[]" value="{{ j.id }}" hidden >
+                    </td>
+                    <td>
+                      <select name='product[]' id="product" class="form-control" style="background-color: #2f516f; color: white;">
+
+                        <option value="{{ j.item }}" selected>{{ j.item }}</option>
+                        {% for i in item %}
+                        {% if i.cid_id == cmp1.cid %}
+                            <option 
+                                    value="{{ i.name  }}">{{ i.name  }} </option>
+                        {% endif %}
+                    {% endfor %}
+                        <!-- {% for proinv in inv %}
+                        {% if proinv.cid_id == cmp1.cid %}
+                        <option text="{{ proinv.inventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                        {% endif %}
+                        {% endfor %}
+                        {% for proinv in noninv %}
+                        {% if proinv.cid_id == cmp1.cid %}
+                        <option text="{{ proinv.noninventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                        {% endif %}
+                        {% endfor %}
+                        {% for proinv in bun %}
+                        {% if proinv.cid_id == cmp1.cid %}
+                        <option text="{{ proinv.bundleid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                        {% endif %}
+                        {% endfor %} -->
+                      </select>
+                    </td>
+                    <td><input type="text" name='hsn[]'  value="{{ j.hsn }}" id="hsn1" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="text" name='description[]'  value="{{ j.description }}"  id="description" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="number" name='qty[]' value="{{ j.quantity }}" onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" />
+                      <span id="qtyspan" class='text-muted'></span>
+                    </td>
+                    <td><input type="number" name='price[]' value="{{ j.rate}}" id="unit1" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
+                    
+                    
+                   
+                    <td>
+                      <select name="tax[]" id="tax1" class="form-control tax" style="background-color: #2f516f; color: white;">
+                        <option id="ta1" value={{ j.tax }} text={{ cmp1.state }}>{{ j.tax }}
+                          % GST
+                        </option>
+                        <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                        <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                        <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                        <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                        <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                        <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                        <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                        <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                        <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                        <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                        <option id="ta5" text=" " value={{ j.tax }}>{{ j.tax }} %
+                          IGST
+                        </option>
+                        <option value=28 text=" ">28.0% IGST(28%)</option>
+                        <option value=18 text=" ">18.0% IGST(18%)</option>
+                        <option value=12 text=" ">12.0% IGST(12%)</option>
+                        <option value=6 text=" ">06.0% IGST(06%)</option>
+                        <option value=5 text=" ">05.0% IGST(05%)</option>
+                        <option value=3 text=" ">03.0% IGST(03%)</option>
+                        <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                        <option value=0 text=" ">0.0% IGST(0%)</option>
+                        <option value=0 text=" ">Exempt IGST(0%)</option>
+                        <option value=0 text=" ">Out of Scope(0%)</option>
+                      </select>
+                    </td>
+                    <td><input type="number" name='total[]' value="{{ j.total }}" id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
+                    <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount" />
+                    </td>
+                  </tr>
+                  {% endfor %}
+
+     </tbody>
+              </table>
+
+            </div>
+          </div>
+          <div class="row clearfix" style="margin-top:20px">
+            <div class="col-md-6">
+
+                <textarea class="form-control"  id="" name="Note" placeholder="Note" style="height: 190px;" value="{{ invoice.note }}">{{ invoice.note }}</textarea>
+
+                <input type="file" name="file"  style="margin-top: 10px; width: 70%;">
+            </div>
+
+           
+            <div class="col-md-6 table-responsive-md" style="margin-top: 8px; "  >
+                
+
+                <div>
+                    
+                    <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Sub Total</label>
+                    <input  type="number" step="any" name='subtotal' placeholder=0 class="form-control"  id="subtotal"  value="{{ estimate.subtotal}}"
+                    style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
+                </div>
+                <div id="IGST">  
+                    <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; " >IGST</label>
+                    <input type="number" value="{{ estimate.IGST}}"
+                    name='IGST'
+                    id="tax_amount"
+                    placeholder='0.00'
+                    class="form-control"
+                     style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
+
+                </div>
+                <div id="CGST" style="display: none;">
+                    <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">CGST</label>
+                    <input type="number" name='CGST' step="any" id="cgst" placeholder=0   value="{{ estimate.CGST}}"
+                    class="form-control"
+                     style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
+
+                </div>
+                <div id="SGST" style="display: none;">
+                    <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">SGST</label>
+                    <input type="number" name='SGST' step="any" id="sgst" placeholder=0 value="{{ estimate.SGST}}"   
+                    class="form-control"
+                     style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
+
+                </div>
+
+                <div>
+                    <label class="text-center  form-control " style=" width: 18%; font-weight: 10; background-color: #2f516f; color: white; ">TCS</label>
+                    <select class="form-control tcs" style="width: 35%; margin-top: -45px; margin-left:20%;
+                    background-color: #2f516f; color: white;" id="tcs1" onchange="calc_tcs()" >
+                        <option value="" selected>Select a Tax</option>
+                        <option value="1">Cess 1%</option>
+                    </select>
+                    <input type="number"     value="{{ estimate.TCS}}"                      
+                    id="tcs_amount"
+                    name='TCS'
+                    placeholder='0.00'
+                    class="form-control"
+                     style="width: 40%;  float: right; margin-right: 10px; margin-top: -38px; "   readonly/>
+
+                </div>
+
+                <div style="margin-top: 8px;">
+                    <a class=" btn text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; " onclick="calc_roundoff()">
+                        Round off</a>
+                    <input type="number"
+                    name=''
+                    id="round_off"
+                    placeholder='0.00'
+                    class="form-control"
+                     style="width: 40%; margin-top: px; float: right; margin-right: 10px;"   readonly/>
+
+                </div>
+
+                <div style="margin-top: 8px;">
+                    <label class="text-center  form-control" style=" width: 35%; font-weight: 10; background-color: #2f516f; color: white; ">Grand Total</label>
+                    <input type="number" name='grandtotal' id="grandtotal"  step="any" value="{{ estimate.estimatetotal}}"  
+                    class="form-control"
+                     style="width: 40%; margin-top: -45px; float: right; margin-right: 10px;"   readonly/>
+
+                </div>
+
+            
+           
+                
+                
+            </div>
+        </div>
+
+
+        
+          <div class="row">
+            <div class="col-md-10 mt-3"></div>
+            <div class="col-md-2 mt-3">
+              <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-grey pull-left">
+                Save To Draft
+              </button>
+            </div>
+          </div>
+          <div class="notices mt-3">
+            <div class="text-muted">NOTICE:</div>
+            <div class="text-muted">
+              Fin sYs Terms and Conditions Apply
+            </div>
+          </div>
+          <footer class="text-muted">Invoice was created on a computer and is valid without the
+            signature and seal.
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- 
+    modal -->
+
+    <div class="modal fade" id="newcust">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="background-color: #213b52;">
+                <div class="modal-header">
+                    <h3 class="m-3">ADD CUSTOMER</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <div class="modal-body">
+
+                <form action="{% url 'new_customers4'  estimate.estimateid %} " method="POST">{% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom01">Title</label>
+                            <select name="title" id="title" class="form-control" id="validationCustom01">
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                                <option value="Miss">Miss</option>
+                                <option value="Ms">Ms</option>
+                            </select>
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom02">First name</label>
+                            <input type="text" class="form-control" id="validationCustom02" name="firstname"
+                                   required style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom02">Last name</label>
+                            <input type="text" class="form-control" id="validationCustom02" name="lastname"
+                                   required style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Company</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="company"
+                                   required style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Location</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="location"
+                                   required style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom04">GST type</label>
+                            <select class="custom-select" id="validationCustom04" name="gsttype"
+                                    onclick="hidinput('hello1',this)   "
+                                    
+                                    required
+                                    style="background-color: #243e54; color: white;">
+                                <option selected disabled value="">Choose...</option>
+                                <option>GST registered- Regular</option>
+                                <option>GST registered- Composition</option>
+                                <option>GST unregistered</option>
+                                <option>Consumer</option>
+                                <option>Overseas</option>
+                                <option>SEZ</option>
+                                <option>Deemed exports - EOU's STP's EHTP's etc</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a valid registration type.</div>
+                        </div>
+
+                        <div class="col-md-4 mt-3" id="hello1" style="display: none;">
+                            <div >
+                                <label for="validationCustom05">GSTIN</label>
+                                <input type="text" class="form-control" onchange="checkgst(this)"
+                                       id="validationCustom05" name="gstin"
+                                       style="background-color: #2f516f;color: white;"
+                                       value=""
+                                       placeholder="29APPCK7465F1Z1">
+                                       <a data-toggle="modal" href="#exampleModal"
+                                style="color:#3dd5f3">Get Taxpayer Details</a>
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+
+                        
+                        <!-- <div class="col-md-4 mt-3" id="hai">
+                            <div >
+                                <label for="validationCustom05">BUSINESS LEGAL NAME</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;"
+                                       >
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mt-3" id="hai1">
+                            <div >
+                                <label for="validationCustom05">BUSINESS TRADE NAME</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;"
+                                       >
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div> -->
+                        
+                    
+
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">PAN NO</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="panno"
+                                   required style="background-color: #2f516f;color: white;"
+                                   onchange="checkpan(this)" placeholder="APPCK7465F">
+                            <div class="text-danger m-2" id="warnpan"></div>
+                        </div>
+
+                        <!-- <div class="col-md-4 mt-3" id="hai1">
+                            <div >
+                                <label for="validationCustom05">PLACE OF SUPPLY</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;"
+                                       >
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mt-3" id="hai1">
+                            <div >
+                                <label for="validationCustom05">TAX PERFERENCE</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-3" >
+                            <div>
+                                <label for="validationCustom05">TAX RETURNS</label><br>
+                                <input type="radio" name="Returns" 
+                                       
+                                       style="background-color: #2f516f;color: white;"> Taxable
+                                       <input type="radio" name="Returns"  
+                                       style="background-color: #2f516f;color: white;"> Non Taxable
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    
+
+                    
+
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Email</label>
+                            <input type="email" class="form-control" id="validationCustom03" name="email"
+                                   required style="background-color: #2f516f;color: white;"
+                                   placeholder="finsys@mail.com">
+                            <div class="invalid-feedback">Please provide a valid Email</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Website</label>
+                            <input type="text" class="form-control" id="validationCustom03"
+                                   placeholder="www.finsys.com" onchange="checkweb(this)" name="website"
+                                   style="background-color: #2f516f;color: white;">
+                            <div id="warnweb" class="text-danger"></div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom01">Mobile</label>
+                            <input type="text" class="form-control" id="validationCustom01"
+                                   onchange="checkphone(this)" name="mobile"
+                                   required style="background-color: #2f516f;color: white;">
+                            <div class="text-danger m-2" id="warnphone"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6 mt-5">
+                            <div class="row">
+                                <div class="col-md-12 card-title">
+                                    <h5 class="mb-0">Billing Address</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-row">
+                                        <label for="street">Street</label>
+                                        <textarea class="form-control street" id="street" name="street"
+                                                  required
+                                                  style="background-color: #2f516f;color: white;"></textarea>
+                                        <div class="invalid-feedback">Please provide a valid Street</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="city">City</label>
+                                        <input type="text" class="form-control" id="city"
+                                               name="city"
+                                               required
+                                               style="background-color: #2f516f;color: white;" placeholder="City">
+                                        <div class="invalid-feedback">Please provide a valid City</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="state">State</label>
+                                        <select type="text" class="form-control" id="state" name="state"
+                                                style="background-color: #2f516f; color: white;">
+                                            <option value="" disabled selected>Choose</option>
+                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                            </option>
+                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Chandigarh">Chandigarh</option>
+                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                            <option value="Damn anad Diu">Damn anad Diu</option>
+                                            <option value="Delhi">Delhi</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+                                            <option value="Himachal Predesh">Himachal Predesh</option>
+                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                            <option value="Jharkhand">Jharkhand</option>
+                                            <option value="Karnataka">Karnataka</option>
+                                            <option value="Kerala">Kerala</option>
+                                            <option value="Ladakh">Ladakh</option>
+                                            <option value="Lakshadweep">Lakshadweep</option>
+                                            <option value="Madhya Predesh">Madhya Predesh</option>
+                                            <option value="Maharashtra">Maharashtra</option>
+                                            <option value="Manipur">Manipur</option>
+                                            <option value="Meghalaya">Meghalaya</option>
+                                            <option value="Mizoram">Mizoram</option>
+                                            <option value="Nagaland">Nagaland</option>
+                                            <option value="Odisha">Odisha</option>
+                                            <option value="Puducherry">Puducherry</option>
+                                            <option value="Punjab">Punjab</option>
+                                            <option value="Rajasthan">Rajasthan</option>
+                                            <option value="Sikkim">Sikkim</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Telangana">Telangana</option>
+                                            <option value="Tripura">Tripura</option>
+                                            <option value="Uttar Predesh">Uttar Predesh</option>
+                                            <option value="Uttarakhand">Uttarakhand</option>
+                                            <option value="West Bengal">West Bengal</option>
+                                            <option value="Other Territory">Other Territory</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please provide a valid State</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="pinco">Pin Code</label>
+                                        <input type="text" class="form-control" id="pinco"
+                                               name="pincode"
+                                               required style="background-color: #2f516f;color: white;"
+                                               placeholder="PIN code">
+                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="country">Country</label>
+                                        <input type="text" class="form-control" id="country"
+                                               name="country"
+                                               required style="background-color: #2f516f;color: white;"
+                                               placeholder="Country">
+                                        <div class="invalid-feedback">Please provide a valid Country</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-5">
+                            <div class="row">
+                                <div class="col-md-12 d-flex">
+                                    <h5>Shipping Address</h5>
+                                    <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                           name="okay">
+                                    <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipstreet">Street</label>
+                                        <textarea class="form-control" id="shipstreet"
+                                                  name="shipstreet"
+                                                  required
+                                                  style="background-color: #2f516f;color: white;"></textarea>
+                                        <div class="invalid-feedback">Please provide a valid Street</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipcity">City</label>
+                                        <input type="text" class="form-control" id="shipcity"
+                                               name="shipcity"
+                                               required
+                                               style="background-color: #2f516f;color: white;" placeholder="City">
+                                        <div class="invalid-feedback">Please provide a valid City</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipstate">State</label>
+                                        <select type="text" class="form-control" id="plosu" name="shipstate"
+                                                style="background-color: #2f516f; color: white;">
+                                            <option id="shipst" selected>Choose</option>
+                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                            </option>
+                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Chandigarh">Chandigarh</option>
+                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                            <option value="Damn anad Diu">Damn anad Diu</option>
+                                            <option value="Delhi">Delhi</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+                                            <option value="Himachal Predesh">Himachal Predesh</option>
+                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                            <option value="Jharkhand">Jharkhand</option>
+                                            <option value="Karnataka">Karnataka</option>
+                                            <option value="Kerala">Kerala</option>
+                                            <option value="Ladakh">Ladakh</option>
+                                            <option value="Lakshadweep">Lakshadweep</option>
+                                            <option value="Madhya Predesh">Madhya Predesh</option>
+                                            <option value="Maharashtra">Maharashtra</option>
+                                            <option value="Manipur">Manipur</option>
+                                            <option value="Meghalaya">Meghalaya</option>
+                                            <option value="Mizoram">Mizoram</option>
+                                            <option value="Nagaland">Nagaland</option>
+                                            <option value="Odisha">Odisha</option>
+                                            <option value="Puducherry">Puducherry</option>
+                                            <option value="Punjab">Punjab</option>
+                                            <option value="Rajasthan">Rajasthan</option>
+                                            <option value="Sikkim">Sikkim</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Telangana">Telangana</option>
+                                            <option value="Tripura">Tripura</option>
+                                            <option value="Uttar Predesh">Uttar Predesh</option>
+                                            <option value="Uttarakhand">Uttarakhand</option>
+                                            <option value="West Bengal">West Bengal</option>
+                                            <option value="Other Territory">Other Territory</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please provide a valid State</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shippinco">Pin Code</label>
+                                        <input type="text" class="form-control" id="shippinco"
+                                               name="shippincode"
+                                               required style="background-color: #2f516f;color: white;"
+                                               placeholder="PIN code">
+                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipcountry">Country</label>
+                                        <input type="text" class="form-control" id="shipcountry"
+                                               name="shipcountry"
+                                               required style="background-color: #2f516f;color: white;"
+                                               placeholder="Country">
+                                        <div class="invalid-feedback">Please provide a valid Country</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required
+                                       style="background-color: #2f516f;">
+                                <label>Agree to terms and conditions</label>
+                                <div class="invalid-feedback">You must agree before submitting.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                    type="submit">
+                                Submit form
+                            </button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+
+                </form>
+
+
+              
+            </div>
+            
+          </div>
+        </div>
+
+
+        
+      </div>
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+
+<script>
+  function state(element) {
+      
+      if (element.value == 'Kerala' ) {
+          document.getElementById('CGST').style.display = 'block';
+          document.getElementById('SGST').style.display = 'block';
+          document.getElementById('IGST').style.display = 'none';
+          
+          
+      } else {
+          document.getElementById('CGST').style.display = 'none';
+          document.getElementById('SGST').style.display = 'none';
+          document.getElementById('IGST').style.display = 'block';
+      }
+  }
+</script>
+
+
+<script>
+  $(document).ready(function() {
+    var balandue = document.getElementById('baldue').value;
+    if (balandue == '0.0') {
+      document.getElementById('paid').innerHTML = 'PAID';
+    } else {
+      document.getElementById('paid').innerHTML = ' '
+    }
+    $('#select').on('change', function() {
+      select = $('#select').val();
+      $.ajax({
+        type: "GET",
+        url: "{% url 'getdata' %}",
+        data: {
+          id: select
+        }
+      }).done(function(response) {
+        var json_data = JSON.parse(response);
+        for (key in json_data) {
+          document.getElementById('email').value = json_data[key]['email']
+          
+          document.getElementById('bname').value = json_data[key]['firstname'] + ' ' + json_data[key]['lastname'] + '\n' + json_data[key]['company'] + '\n' + json_data[key]['street'] + '\n' + json_data[key]['city'] + '\n' + json_data[key]['state'] + '\n' + json_data[key]['pincode'] + '\n' + json_data[key]['country'];
+        }
+      })
+    });
+    select = $('#product').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn1').value = json_data[key]['hsn'];
+        document.getElementById('description').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit1').value = 0;
+          document.getElementById('unit1').style.display = 'none';
+          document.getElementById('tax1').style.display = 'none';
+          document.getElementById('total1').style.display = 'none';
+        } else {
+          document.getElementById('unit1').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta1').value = json_data[key]['tax'];
+            document.getElementById('ta1').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta5').value = json_data[key]['tax'];
+            document.getElementById('ta5').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+        }
+        if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+          document.getElementById('bun1').style.display = 'none';
+        } else {
+          document.getElementById('bun1').style.display = 'table-row';
+          document.getElementById('product11').value = json_data[key]['product1'];
+          document.getElementById('hsn11').value = json_data[key]['hsn1'];
+          document.getElementById('description11').value = json_data[key]['description1'];
+          document.getElementById('qty111').value = json_data[key]['qty1'];
+          document.getElementById('qty11').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('creqty11').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('unit11').value = json_data[key]['price1'];
+          document.getElementById('total11').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty11').value);
+          document.getElementById('ototal11').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty11').value);
+          document.getElementById('tax11').value = json_data[key]['tax1'];
+          document.getElementById('otax11').value = json_data[key]['tax1'];
+        }
+        if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+          document.getElementById('bun2').style.display = 'none';
+        } else {
+          document.getElementById('bun2').style.display = 'table-row';
+          document.getElementById('product12').value = json_data[key]['product2'];
+          document.getElementById('hsn12').value = json_data[key]['hsn2'];
+          document.getElementById('description12').value = json_data[key]['description2'];
+          document.getElementById('qty12').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('creqty12').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('qty121').value = json_data[key]['qty2'];
+          document.getElementById('unit12').value = json_data[key]['price2'];
+          console.log('{{ invoice.qty }}', typeof '{{ invoice.qty }}')
+          document.getElementById('total12').value = json_data[key]['price2'] * parseInt(document.getElementById('qty12').value);
+          document.getElementById('ototal12').value = json_data[key]['price2'] * parseInt(document.getElementById('qty12').value);
+          document.getElementById('tax12').value = json_data[key]['tax2'];
+          document.getElementById('otax12').value = json_data[key]['tax2'];
+        }
+        if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+          document.getElementById('bun3').style.display = 'none';
+        } else {
+          document.getElementById('bun3').style.display = 'table-row';
+          document.getElementById('product13').value = json_data[key]['product3'];
+          document.getElementById('hsn13').value = json_data[key]['hsn3'];
+          document.getElementById('description13').value = json_data[key]['description3'];
+          document.getElementById('qty13').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('creqty13').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('qty131').value = json_data[key]['qty3'];
+          document.getElementById('unit13').value = json_data[key]['price3'];
+          document.getElementById('total13').value = json_data[key]['price3'] * parseInt(document.getElementById('qty13').value);
+          document.getElementById('ototal13').value = json_data[key]['price3'] * parseInt(document.getElementById('qty13').value);
+          document.getElementById('tax13').value = json_data[key]['tax3'];
+          document.getElementById('otax13').value = json_data[key]['tax3'];
+        }
+        if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+          document.getElementById('bun4').style.display = 'none';
+        } else {
+          document.getElementById('bun4').style.display = 'table-row';
+          document.getElementById('product14').value = json_data[key]['product4'];
+          document.getElementById('hsn14').value = json_data[key]['hsn4'];
+          document.getElementById('description14').value = json_data[key]['description4'];
+          document.getElementById('qty14').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('creqty14').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty }}');
+          document.getElementById('qty141').value = json_data[key]['qty4'];
+          document.getElementById('unit14').value = json_data[key]['price4'];
+          document.getElementById('total14').value = json_data[key]['price4'] * parseInt(document.getElementById('qty14').value);
+          document.getElementById('ototal14').value = json_data[key]['price4'] * parseInt(document.getElementById('qty14').value);
+          document.getElementById('tax14').value = json_data[key]['tax4'];
+          document.getElementById('otax14').value = json_data[key]['tax4'];
+        }
+      }
+    });
+    select = $('#product2').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn2').value = json_data[key]['hsn'];
+        document.getElementById('description2').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan1').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan1').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit2').value = 0;
+          document.getElementById('unit2').style.display = 'none';
+          document.getElementById('tax2').style.display = 'none';
+          document.getElementById('total2').style.display = 'none';
+        } else {
+          document.getElementById('unit2').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta2').value = json_data[key]['tax'];
+            document.getElementById('ta2').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta6').value = json_data[key]['tax'];
+            document.getElementById('ta6').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+        }
+        if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+          document.getElementById('bun5').style.display = 'none';
+        } else {
+          document.getElementById('bun5').style.display = 'table-row';
+          document.getElementById('product21').value = json_data[key]['product1'];
+          document.getElementById('hsn21').value = json_data[key]['hsn1'];
+          document.getElementById('description21').value = json_data[key]['description1'];
+          document.getElementById('qty21').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('creqty21').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty211').value = json_data[key]['qty1'];
+          document.getElementById('unit21').value = json_data[key]['price1'];
+          document.getElementById('total21').value = json_data[key]['price1'] * parseInt(document.getElementById('qty21').value);
+          document.getElementById('ototal21').value = json_data[key]['price1'] * parseInt(document.getElementById('qty21').value);
+          document.getElementById('tax21').value = json_data[key]['tax1'];
+          document.getElementById('otax21').value = json_data[key]['tax1'];
+        }
+        if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+          document.getElementById('bun6').style.display = 'none';
+        } else {
+          document.getElementById('bun6').style.display = 'table-row';
+          document.getElementById('product22').value = json_data[key]['product2'];
+          document.getElementById('hsn22').value = json_data[key]['hsn2'];
+          document.getElementById('description22').value = json_data[key]['description2'];
+          document.getElementById('qty22').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('creqty22').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty221').value = json_data[key]['qty2'];
+          document.getElementById('unit22').value = json_data[key]['price2'];
+          document.getElementById('total22').value = json_data[key]['price2'] * parseInt(document.getElementById('qty22').value);
+          document.getElementById('ototal22').value = json_data[key]['price2'] * parseInt(document.getElementById('qty22').value);
+          document.getElementById('tax22').value = json_data[key]['tax2'];
+          document.getElementById('otax22').value = json_data[key]['tax2'];
+        }
+        if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+          document.getElementById('bun7').style.display = 'none';
+        } else {
+          document.getElementById('bun7').style.display = 'table-row';
+          document.getElementById('product23').value = json_data[key]['product3'];
+          document.getElementById('hsn23').value = json_data[key]['hsn3'];
+          document.getElementById('description23').value = json_data[key]['description3'];
+          document.getElementById('qty23').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('creqty23').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty231').value = json_data[key]['qty3'];
+          document.getElementById('unit23').value = json_data[key]['price3'];
+          document.getElementById('total23').value = json_data[key]['price3'] * parseInt(document.getElementById('qty23').value);
+          document.getElementById('ototal23').value = json_data[key]['price3'] * parseInt(document.getElementById('qty23').value);
+          document.getElementById('tax23').value = json_data[key]['tax3'];
+          document.getElementById('otax23').value = json_data[key]['tax3'];
+        }
+        if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+          document.getElementById('bun8').style.display = 'none';
+        } else {
+          document.getElementById('bun8').style.display = 'table-row';
+          document.getElementById('product24').value = json_data[key]['product4'];
+          document.getElementById('hsn24').value = json_data[key]['hsn4'];
+          document.getElementById('description24').value = json_data[key]['description4'];
+          document.getElementById('qty24').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('creqty24').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty241').value = json_data[key]['qty4'];
+          document.getElementById('unit24').value = json_data[key]['price4'];
+          document.getElementById('total24').value = json_data[key]['price4'] * parseInt(document.getElementById('qty24').value);
+          document.getElementById('ototal24').value = json_data[key]['price4'] * parseInt(document.getElementById('qty24').value);
+          document.getElementById('tax24').value = json_data[key]['tax4'];
+          document.getElementById('otax24').value = json_data[key]['tax4'];
+        }
+      }
+    });
+    select = $('#product3').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn3').value = json_data[key]['hsn'];
+        document.getElementById('description3').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan2').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan2').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit3').value = 0;
+          document.getElementById('unit3').style.display = 'none';
+          document.getElementById('tax3').style.display = 'none';
+          document.getElementById('total3').style.display = 'none';
+        } else {
+          document.getElementById('unit3').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta3').value = json_data[key]['tax'];
+            document.getElementById('ta3').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta7').value = json_data[key]['tax'];
+            document.getElementById('ta7').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+        }
+        if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+          document.getElementById('bun9').style.display = 'none';
+        } else {
+          document.getElementById('bun9').style.display = 'table-row';
+          document.getElementById('product31').value = json_data[key]['product1'];
+          document.getElementById('hsn31').value = json_data[key]['hsn1'];
+          document.getElementById('description31').value = json_data[key]['description1'];
+          document.getElementById('qty31').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('creqty31').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty311').value = json_data[key]['qty1'];
+          document.getElementById('unit31').value = json_data[key]['price1'];
+          document.getElementById('total31').value = json_data[key]['price1'] * parseInt(document.getElementById('qty31').value);
+          document.getElementById('ototal31').value = json_data[key]['price1'] * parseInt(document.getElementById('qty31').value);
+          document.getElementById('tax31').value = json_data[key]['tax1'];
+          document.getElementById('otax31').value = json_data[key]['tax1'];
+        }
+        if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+          document.getElementById('bun10').style.display = 'none';
+        } else {
+          document.getElementById('bun10').style.display = 'table-row';
+          document.getElementById('product32').value = json_data[key]['product2'];
+          document.getElementById('hsn32').value = json_data[key]['hsn2'];
+          document.getElementById('description32').value = json_data[key]['description2'];
+          document.getElementById('qty32').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('creqty32').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty321').value = json_data[key]['qty2'];
+          document.getElementById('unit32').value = json_data[key]['price2'];
+          document.getElementById('total32').value = json_data[key]['price2'] * parseInt(document.getElementById('qty32').value);
+          document.getElementById('ototal32').value = json_data[key]['price2'] * parseInt(document.getElementById('qty32').value);
+          document.getElementById('tax32').value = json_data[key]['tax2'];
+          document.getElementById('otax32').value = json_data[key]['tax2'];
+        }
+        if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+          document.getElementById('bun11').style.display = 'none';
+        } else {
+          document.getElementById('bun11').style.display = 'table-row';
+          document.getElementById('product33').value = json_data[key]['product3'];
+          document.getElementById('hsn33').value = json_data[key]['hsn3'];
+          document.getElementById('description33').value = json_data[key]['description3'];
+          document.getElementById('qty33').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('creqty33').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty331').value = json_data[key]['qty3'];
+          document.getElementById('unit33').value = json_data[key]['price3'];
+          document.getElementById('total33').value = json_data[key]['price3'] * parseInt(document.getElementById('qty33').value);
+          document.getElementById('ototal33').value = json_data[key]['price3'] * parseInt(document.getElementById('qty33').value);
+          document.getElementById('tax33').value = json_data[key]['tax3'];
+          document.getElementById('otax33').value = json_data[key]['tax3'];
+        }
+        if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+          document.getElementById('bun12').style.display = 'none';
+        } else {
+          document.getElementById('bun12').style.display = 'table-row';
+          document.getElementById('product34').value = json_data[key]['product4'];
+          document.getElementById('hsn34').value = json_data[key]['hsn4'];
+          document.getElementById('description34').value = json_data[key]['description4'];
+          document.getElementById('qty34').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('creqty34').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty341').value = json_data[key]['qty4'];
+          document.getElementById('unit34').value = json_data[key]['price4'];
+          document.getElementById('total34').value = json_data[key]['price4'] * parseInt(document.getElementById('qty34').value);
+          document.getElementById('ototal34').value = json_data[key]['price4'] * parseInt(document.getElementById('qty34').value);
+          document.getElementById('tax34').value = json_data[key]['tax4'];
+          document.getElementById('otax34').value = json_data[key]['tax4'];
+        }
+      }
+    })
+    select = $('#product4').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn4').value = json_data[key]['hsn'];
+        document.getElementById('description4').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan3').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan3').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit4').value = 0;
+          document.getElementById('unit4').style.display = 'none';
+          document.getElementById('tax4').style.display = 'none';
+          document.getElementById('total4').style.display = 'none';
+        } else {
+          document.getElementById('unit4').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax4').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta4').value = json_data[key]['tax'];
+            document.getElementById('ta4').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax4').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta8').value = json_data[key]['tax'];
+            document.getElementById('ta8').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+        }
+        if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+          document.getElementById('bun13').style.display = 'none';
+        } else {
+          document.getElementById('bun13').style.display = 'table-row';
+          document.getElementById('product41').value = json_data[key]['product1'];
+          document.getElementById('hsn41').value = json_data[key]['hsn1'];
+          document.getElementById('description41').value = json_data[key]['description1'];
+          document.getElementById('qty41').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('creqty41').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty411').value = json_data[key]['qty1'];
+          document.getElementById('unit41').value = json_data[key]['price1'];
+          document.getElementById('total41').value = json_data[key]['price1'] * parseInt(document.getElementById('qty41').value);
+          document.getElementById('ototal41').value = json_data[key]['price1'] * parseInt(document.getElementById('qty41').value);
+          document.getElementById('tax41').value = json_data[key]['tax1'];
+          document.getElementById('otax41').value = json_data[key]['tax1'];
+        }
+        if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+          document.getElementById('bun14').style.display = 'none';
+        } else {
+          document.getElementById('bun14').style.display = 'table-row';
+          document.getElementById('product42').value = json_data[key]['product2'];
+          document.getElementById('hsn42').value = json_data[key]['hsn2'];
+          document.getElementById('description42').value = json_data[key]['description2'];
+          document.getElementById('qty42').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('creqty42').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty421').value = json_data[key]['qty2'];
+          document.getElementById('unit42').value = json_data[key]['price2'];
+          document.getElementById('total42').value = json_data[key]['price2'] * parseInt(document.getElementById('qty42').value);
+          document.getElementById('ototal42').value = json_data[key]['price2'] * parseInt(document.getElementById('qty42').value);
+          document.getElementById('tax42').value = json_data[key]['tax2'];
+          document.getElementById('otax42').value = json_data[key]['tax2'];
+        }
+        if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+          document.getElementById('bun15').style.display = 'none';
+        } else {
+          document.getElementById('bun15').style.display = 'table-row';
+          document.getElementById('product43').value = json_data[key]['product3'];
+          document.getElementById('hsn43').value = json_data[key]['hsn3'];
+          document.getElementById('description43').value = json_data[key]['description3'];
+          document.getElementById('qty43').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('creqty43').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty431').value = json_data[key]['qty3'];
+          document.getElementById('unit43').value = json_data[key]['price3'];
+          document.getElementById('total43').value = json_data[key]['price3'] * parseInt(document.getElementById('qty43').value);
+          document.getElementById('ototal43').value = json_data[key]['price3'] * parseInt(document.getElementById('qty43').value);
+          document.getElementById('tax43').value = json_data[key]['tax3'];
+          document.getElementById('otax43').value = json_data[key]['tax3'];
+        }
+        if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+          document.getElementById('bun16').style.display = 'none';
+        } else {
+          document.getElementById('bun16').style.display = 'table-row';
+          document.getElementById('product44').value = json_data[key]['product4'];
+          document.getElementById('hsn44').value = json_data[key]['hsn4'];
+          document.getElementById('description44').value = json_data[key]['description4'];
+          document.getElementById('qty44').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('creqty44').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty441').value = json_data[key]['qty4'];
+          document.getElementById('unit44').value = json_data[key]['price4'];
+          document.getElementById('total44').value = json_data[key]['price4'] * parseInt(document.getElementById('qty44').value);
+          document.getElementById('ototal44').value = json_data[key]['price4'] * parseInt(document.getElementById('qty44').value);
+          document.getElementById('tax44').value = json_data[key]['tax4'];
+          document.getElementById('otax44').value = json_data[key]['tax4'];
+        }
+      }
+    });
+  });
+</script>
+<script>
+  function showinp(divId, element) {
+    if (element.value == 'Add New Term') {
+      document.getElementById(divId).style.display = 'block';
+    } else {
+      document.getElementById(divId).style.display = 'none';
+    }
+  }
+
+  function showinnum(divId, element) {
+    if (element.value) {
+      document.getElementById(divId).innerHTML = "INVOICE NO. " + element.value;
+    } else {
+      document.getElementById(divId).innerHTML = "INVOICE NO. ";
+    }
+  }
+
+  function addtemopt(element) {
+    var opt = document.getElementById('trmopt');
+
+    if (element.value) {
+      opt.value = element.value;
+      opt.innerHTML = element.value;
+    } else {
+      pass
+    }
+  }
+
+  function qtychange1(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty11').value = parseInt(document.getElementById('qty111').value) * tx;
+    document.getElementById('qty12').value = parseInt(document.getElementById('qty121').value) * tx;
+    document.getElementById('qty13').value = parseInt(document.getElementById('qty131').value) * tx;
+    document.getElementById('qty14').value = parseInt(document.getElementById('qty141').value) * tx;
+  }
+
+  function qtychange2(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty21').value = parseInt(document.getElementById('qty211').value) * tx;
+    document.getElementById('qty22').value = parseInt(document.getElementById('qty221').value) * tx;
+    document.getElementById('qty23').value = parseInt(document.getElementById('qty231').value) * tx;
+    document.getElementById('qty24').value = parseInt(document.getElementById('qty241').value) * tx;
+  }
+
+  function qtychange3(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty31').value = parseInt(document.getElementById('qty311').value) * tx;
+    document.getElementById('qty32').value = parseInt(document.getElementById('qty321').value) * tx;
+    document.getElementById('qty33').value = parseInt(document.getElementById('qty331').value) * tx;
+    document.getElementById('qty34').value = parseInt(document.getElementById('qty341').value) * tx;
+  }
+
+  function qtychange4(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty41').value = parseInt(document.getElementById('qty411').value) * tx;
+    document.getElementById('qty42').value = parseInt(document.getElementById('qty421').value) * tx;
+    document.getElementById('qty43').value = parseInt(document.getElementById('qty431').value) * tx;
+    document.getElementById('qty44').value = parseInt(document.getElementById('qty441').value) * tx;
+  }
+
+  $('#product').on('change', function() {
+    select = $('#product').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn1').value = json_data[key]['hsn'];
+        document.getElementById('description').value = json_data[key]['description'];
+        document.getElementById('qty1').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit1').value = 0;
+          document.getElementById('unit1').style.display = 'none';
+          document.getElementById('tax1').style.display = 'none';
+          document.getElementById('total1').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun1').style.display = 'none';
+          } else {
+            document.getElementById('bun1').style.display = 'table-row';
+            document.getElementById('product11').value = json_data[key]['product1'];
+            document.getElementById('hsn11').value = json_data[key]['hsn1'];
+            document.getElementById('description11').value = json_data[key]['description1'];
+            document.getElementById('qty11').value = json_data[key]['qty1'];
+            document.getElementById('qty111').value = json_data[key]['qty1'];
+            document.getElementById('unit11').value = json_data[key]['price1'];
+            document.getElementById('total11').value = json_data[key]['total1'];
+            document.getElementById('tax11').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun2').style.display = 'none';
+          } else {
+            document.getElementById('bun2').style.display = 'table-row';
+            document.getElementById('product12').value = json_data[key]['product2'];
+            document.getElementById('hsn12').value = json_data[key]['hsn2'];
+            document.getElementById('description12').value = json_data[key]['description2'];
+            document.getElementById('qty12').value = json_data[key]['qty2'];
+            document.getElementById('qty121').value = json_data[key]['qty2'];
+            document.getElementById('unit12').value = json_data[key]['price2'];
+            document.getElementById('total12').value = json_data[key]['total2'];
+            document.getElementById('tax12').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun3').style.display = 'none';
+          } else {
+            document.getElementById('bun3').style.display = 'table-row';
+            document.getElementById('product13').value = json_data[key]['product3'];
+            document.getElementById('hsn13').value = json_data[key]['hsn3'];
+            document.getElementById('description13').value = json_data[key]['description3'];
+            document.getElementById('qty13').value = json_data[key]['qty3'];
+            document.getElementById('qty131').value = json_data[key]['qty3'];
+            document.getElementById('unit13').value = json_data[key]['price3'];
+            document.getElementById('total13').value = json_data[key]['total3'];
+            document.getElementById('tax13').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun4').style.display = 'none';
+          } else {
+            document.getElementById('bun4').style.display = 'table-row';
+            document.getElementById('product14').value = json_data[key]['product4'];
+            document.getElementById('hsn14').value = json_data[key]['hsn4'];
+            document.getElementById('description14').value = json_data[key]['description4'];
+            document.getElementById('qty14').value = json_data[key]['qty4'];
+            document.getElementById('qty141').value = json_data[key]['qty4'];
+            document.getElementById('unit14').value = json_data[key]['price4'];
+            document.getElementById('total14').value = json_data[key]['total4'];
+            document.getElementById('tax14').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit1').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta1').value = json_data[key]['tax'];
+            document.getElementById('ta1').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta5').value = json_data[key]['tax'];
+            document.getElementById('ta5').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun1').style.display = 'none';
+          document.getElementById('product11').value = '';
+          document.getElementById('hsn11').value = '';
+          document.getElementById('description11').value = '';
+          document.getElementById('qty11').value = 0;
+          document.getElementById('qty111').value = 0;
+          document.getElementById('unit11').value = 0;
+          document.getElementById('total11').value = 0;
+          document.getElementById('tax11').value = 0;
+
+          document.getElementById('bun2').style.display = 'none';
+          document.getElementById('product12').value = '';
+          document.getElementById('hsn12').value = '';
+          document.getElementById('description12').value = '';
+          document.getElementById('qty12').value = 0;
+          document.getElementById('qty121').value = 0;
+          document.getElementById('unit12').value = 0;
+          document.getElementById('total12').value = 0;
+          document.getElementById('tax12').value = 0;
+
+          document.getElementById('bun3').style.display = 'none';
+          document.getElementById('product13').value = '';
+          document.getElementById('hsn13').value = '';
+          document.getElementById('description13').value = '';
+          document.getElementById('qty13').value = 0;
+          document.getElementById('qty131').value = 0;
+          document.getElementById('unit13').value = 0;
+          document.getElementById('total13').value = 0;
+          document.getElementById('tax13').value = 0;
+
+          document.getElementById('bun4').style.display = 'none';
+          document.getElementById('product14').value = '';
+          document.getElementById('hsn14').value = '';
+          document.getElementById('description14').value = '';
+          document.getElementById('qty14').value = 0;
+          document.getElementById('qty141').value = 0;
+          document.getElementById('unit14').value = 0;
+          document.getElementById('total14').value = 0;
+          document.getElementById('tax14').value = 0;
+        }
+      }
+    });
+  });
+  $('#product2').on('change', function() {
+    select = $('#product2').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn2').value = json_data[key]['hsn'];
+        document.getElementById('description2').value = json_data[key]['description'];
+        document.getElementById('qty2').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan1').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan1').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit2').value = 0;
+          document.getElementById('unit2').style.display = 'none';
+          document.getElementById('tax2').style.display = 'none';
+          document.getElementById('total2').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun5').style.display = 'none';
+          } else {
+            document.getElementById('bun5').style.display = 'table-row';
+            document.getElementById('product21').value = json_data[key]['product1'];
+            document.getElementById('hsn21').value = json_data[key]['hsn1'];
+            document.getElementById('description21').value = json_data[key]['description1'];
+            document.getElementById('qty21').value = json_data[key]['qty1'];
+            document.getElementById('qty211').value = json_data[key]['qty1'];
+            document.getElementById('unit21').value = json_data[key]['price1'];
+            document.getElementById('total21').value = json_data[key]['total1'];
+            document.getElementById('tax21').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun6').style.display = 'none';
+          } else {
+            document.getElementById('bun6').style.display = 'table-row';
+            document.getElementById('product22').value = json_data[key]['product2'];
+            document.getElementById('hsn22').value = json_data[key]['hsn2'];
+            document.getElementById('description22').value = json_data[key]['description2'];
+            document.getElementById('qty22').value = json_data[key]['qty2'];
+            document.getElementById('qty221').value = json_data[key]['qty2'];
+            document.getElementById('unit22').value = json_data[key]['price2'];
+            document.getElementById('total22').value = json_data[key]['total2'];
+            document.getElementById('tax22').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun7').style.display = 'none';
+          } else {
+            document.getElementById('bun7').style.display = 'table-row';
+            document.getElementById('product23').value = json_data[key]['product3'];
+            document.getElementById('hsn23').value = json_data[key]['hsn3'];
+            document.getElementById('description23').value = json_data[key]['description3'];
+            document.getElementById('qty23').value = json_data[key]['qty3'];
+            document.getElementById('qty231').value = json_data[key]['qty3'];
+            document.getElementById('unit23').value = json_data[key]['price3'];
+            document.getElementById('total23').value = json_data[key]['total3'];
+            document.getElementById('tax23').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun8').style.display = 'none';
+          } else {
+            document.getElementById('bun8').style.display = 'table-row';
+            document.getElementById('product24').value = json_data[key]['product4'];
+            document.getElementById('hsn24').value = json_data[key]['hsn4'];
+            document.getElementById('description24').value = json_data[key]['description4'];
+            document.getElementById('qty24').value = json_data[key]['qty4'];
+            document.getElementById('qty241').value = json_data[key]['qty4'];
+            document.getElementById('unit24').value = json_data[key]['price4'];
+            document.getElementById('total24').value = json_data[key]['total4'];
+            document.getElementById('tax24').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit2').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta2').value = json_data[key]['tax'];
+            document.getElementById('ta2').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta6').value = json_data[key]['tax'];
+            document.getElementById('ta6').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun5').style.display = 'none';
+          document.getElementById('product21').value = '';
+          document.getElementById('hsn21').value = '';
+          document.getElementById('description21').value = '';
+          document.getElementById('qty21').value = 0;
+          document.getElementById('qty211').value = 0;
+          document.getElementById('unit21').value = 0;
+          document.getElementById('total21').value = 0;
+          document.getElementById('tax21').value = 0;
+
+          document.getElementById('bun6').style.display = 'none';
+          document.getElementById('product22').value = '';
+          document.getElementById('hsn22').value = '';
+          document.getElementById('description22').value = '';
+          document.getElementById('qty22').value = 0;
+          document.getElementById('qty221').value = 0;
+          document.getElementById('unit22').value = 0;
+          document.getElementById('total22').value = 0;
+          document.getElementById('tax22').value = 0;
+
+          document.getElementById('bun7').style.display = 'none';
+          document.getElementById('product23').value = '';
+          document.getElementById('hsn23').value = '';
+          document.getElementById('description23').value = '';
+          document.getElementById('qty23').value = 0;
+          document.getElementById('qty231').value = 0;
+          document.getElementById('unit23').value = 0;
+          document.getElementById('total23').value = 0;
+          document.getElementById('tax23').value = 0;
+
+          document.getElementById('bun8').style.display = 'none';
+          document.getElementById('product24').value = '';
+          document.getElementById('hsn24').value = '';
+          document.getElementById('description24').value = '';
+          document.getElementById('qty24').value = 0;
+          document.getElementById('qty241').value = 0;
+          document.getElementById('unit24').value = 0;
+          document.getElementById('total24').value = 0;
+          document.getElementById('tax24').value = 0;
+        }
+      }
+    });
+  });
+  $('#product3').on('change', function() {
+    select = $('#product3').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn3').value = json_data[key]['hsn'];
+        document.getElementById('description3').value = json_data[key]['description'];
+        document.getElementById('qty3').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan2').innerHTML = '';
+
+        } else {
+          document.getElementById('qtyspan2').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit3').value = 0;
+          document.getElementById('unit3').style.display = 'none';
+          document.getElementById('tax3').style.display = 'none';
+          document.getElementById('total3').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun9').style.display = 'none';
+          } else {
+            document.getElementById('bun9').style.display = 'table-row';
+            document.getElementById('product31').value = json_data[key]['product1'];
+            document.getElementById('hsn31').value = json_data[key]['hsn1'];
+            document.getElementById('description31').value = json_data[key]['description1'];
+            document.getElementById('qty31').value = json_data[key]['qty1'];
+            document.getElementById('qty311').value = json_data[key]['qty1'];
+            document.getElementById('unit31').value = json_data[key]['price1'];
+            document.getElementById('total31').value = json_data[key]['total1'];
+            document.getElementById('tax31').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun10').style.display = 'none';
+          } else {
+            document.getElementById('bun10').style.display = 'table-row';
+            document.getElementById('product32').value = json_data[key]['product2'];
+            document.getElementById('hsn32').value = json_data[key]['hsn2'];
+            document.getElementById('description32').value = json_data[key]['description2'];
+            document.getElementById('qty32').value = json_data[key]['qty2'];
+            document.getElementById('qty321').value = json_data[key]['qty2'];
+            document.getElementById('unit32').value = json_data[key]['price2'];
+            document.getElementById('total32').value = json_data[key]['total2'];
+            document.getElementById('tax32').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun11').style.display = 'none';
+          } else {
+            document.getElementById('bun11').style.display = 'table-row';
+            document.getElementById('product33').value = json_data[key]['product3'];
+            document.getElementById('hsn33').value = json_data[key]['hsn3'];
+            document.getElementById('description33').value = json_data[key]['description3'];
+            document.getElementById('qty33').value = json_data[key]['qty3'];
+            document.getElementById('qty331').value = json_data[key]['qty3'];
+            document.getElementById('unit33').value = json_data[key]['price3'];
+            document.getElementById('total33').value = json_data[key]['total3'];
+            document.getElementById('tax33').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun12').style.display = 'none';
+          } else {
+            document.getElementById('bun12').style.display = 'table-row';
+            document.getElementById('product34').value = json_data[key]['product4'];
+            document.getElementById('hsn34').value = json_data[key]['hsn4'];
+            document.getElementById('description34').value = json_data[key]['description4'];
+            document.getElementById('qty34').value = json_data[key]['qty4'];
+            document.getElementById('qty341').value = json_data[key]['qty4'];
+            document.getElementById('unit34').value = json_data[key]['price4'];
+            document.getElementById('total34').value = json_data[key]['total4'];
+            document.getElementById('tax34').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit3').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta3').value = json_data[key]['tax'];
+            document.getElementById('ta3').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta7').value = json_data[key]['tax'];
+            document.getElementById('ta7').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun9').style.display = 'none';
+          document.getElementById('product31').value = '';
+          document.getElementById('hsn31').value = '';
+          document.getElementById('description31').value = '';
+          document.getElementById('qty31').value = 0;
+          document.getElementById('qty311').value = 0;
+          document.getElementById('unit31').value = 0;
+          document.getElementById('total31').value = 0;
+          document.getElementById('tax31').value = 0;
+
+          document.getElementById('bun10').style.display = 'none';
+          document.getElementById('product32').value = '';
+          document.getElementById('hsn32').value = '';
+          document.getElementById('description32').value = '';
+          document.getElementById('qty32').value = 0;
+          document.getElementById('qty321').value = 0;
+          document.getElementById('unit32').value = 0;
+          document.getElementById('total32').value = 0;
+          document.getElementById('tax32').value = 0;
+
+          document.getElementById('bun11').style.display = 'none';
+          document.getElementById('product33').value = '';
+          document.getElementById('hsn33').value = '';
+          document.getElementById('description33').value = '';
+          document.getElementById('qty33').value = 0;
+          document.getElementById('qty331').value = 0;
+          document.getElementById('unit33').value = 0;
+          document.getElementById('total33').value = 0;
+          document.getElementById('tax33').value = 0;
+
+          document.getElementById('bun12').style.display = 'none';
+          document.getElementById('product34').value = '';
+          document.getElementById('hsn34').value = '';
+          document.getElementById('description34').value = '';
+          document.getElementById('qty34').value = 0;
+          document.getElementById('qty341').value = 0;
+          document.getElementById('unit34').value = 0;
+          document.getElementById('total34').value = 0;
+          document.getElementById('tax34').value = 0;
+        }
+      }
+    })
+  });
+  $('#product4').on('change', function() {
+    select = $('#product4').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn4').value = json_data[key]['hsn'];
+        document.getElementById('description4').value = json_data[key]['description'];
+        document.getElementById('qty4').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan3').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan3').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit4').value = 0;
+          document.getElementById('unit4').style.display = 'none';
+          document.getElementById('tax4').style.display = 'none';
+          document.getElementById('total4').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun13').style.display = 'none';
+          } else {
+            document.getElementById('bun13').style.display = 'table-row';
+            document.getElementById('product41').value = json_data[key]['product1'];
+            document.getElementById('hsn41').value = json_data[key]['hsn1'];
+            document.getElementById('description41').value = json_data[key]['description1'];
+            document.getElementById('qty41').value = json_data[key]['qty1'];
+            document.getElementById('qty411').value = json_data[key]['qty1'];
+            document.getElementById('unit41').value = json_data[key]['price1'];
+            document.getElementById('total41').value = json_data[key]['total1'];
+            document.getElementById('tax41').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun14').style.display = 'none';
+          } else {
+            document.getElementById('bun14').style.display = 'table-row';
+            document.getElementById('product42').value = json_data[key]['product2'];
+            document.getElementById('hsn42').value = json_data[key]['hsn2'];
+            document.getElementById('description42').value = json_data[key]['description2'];
+            document.getElementById('qty42').value = json_data[key]['qty2'];
+            document.getElementById('qty421').value = json_data[key]['qty2'];
+            document.getElementById('unit42').value = json_data[key]['price2'];
+            document.getElementById('total42').value = json_data[key]['total2'];
+            document.getElementById('tax42').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun15').style.display = 'none';
+          } else {
+            document.getElementById('bun15').style.display = 'table-row';
+            document.getElementById('product43').value = json_data[key]['product3'];
+            document.getElementById('hsn43').value = json_data[key]['hsn3'];
+            document.getElementById('description43').value = json_data[key]['description3'];
+            document.getElementById('qty43').value = json_data[key]['qty3'];
+            document.getElementById('qty431').value = json_data[key]['qty3'];
+            document.getElementById('unit43').value = json_data[key]['price3'];
+            document.getElementById('total43').value = json_data[key]['total3'];
+            document.getElementById('tax43').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun16').style.display = 'none';
+          } else {
+            document.getElementById('bun16').style.display = 'table-row';
+            document.getElementById('product44').value = json_data[key]['product4'];
+            document.getElementById('hsn44').value = json_data[key]['hsn4'];
+            document.getElementById('description44').value = json_data[key]['description4'];
+            document.getElementById('qty44').value = json_data[key]['qty4'];
+            document.getElementById('qty441').value = json_data[key]['qty4'];
+            document.getElementById('unit44').value = json_data[key]['price4'];
+            document.getElementById('total44').value = json_data[key]['total4'];
+            document.getElementById('tax44').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit4').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax4').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta4').value = json_data[key]['tax'];
+            document.getElementById('ta4').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax4').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta8').value = json_data[key]['tax'];
+            document.getElementById('ta8').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun13').style.display = 'none';
+          document.getElementById('product41').value = '';
+          document.getElementById('hsn41').value = '';
+          document.getElementById('description41').value = '';
+          document.getElementById('qty41').value = 0;
+          document.getElementById('qty411').value = 0;
+          document.getElementById('unit41').value = 0;
+          document.getElementById('total41').value = 0;
+          document.getElementById('tax41').value = 0;
+
+          document.getElementById('bun14').style.display = 'none';
+          document.getElementById('product42').value = '';
+          document.getElementById('hsn42').value = '';
+          document.getElementById('description42').value = '';
+          document.getElementById('qty42').value = 0;
+          document.getElementById('qty421').value = 0;
+          document.getElementById('unit42').value = 0;
+          document.getElementById('total42').value = 0;
+          document.getElementById('tax42').value = 0;
+
+          document.getElementById('bun15').style.display = 'none';
+          document.getElementById('product43').value = '';
+          document.getElementById('hsn43').value = '';
+          document.getElementById('description43').value = '';
+          document.getElementById('qty43').value = 0;
+          document.getElementById('qty431').value = 0;
+          document.getElementById('unit43').value = 0;
+          document.getElementById('total43').value = 0;
+          document.getElementById('tax43').value = 0;
+
+          document.getElementById('bun16').style.display = 'none';
+          document.getElementById('product44').value = '';
+          document.getElementById('hsn44').value = '';
+          document.getElementById('description44').value = '';
+          document.getElementById('qty44').value = 0;
+          document.getElementById('qty441').value = 0;
+          document.getElementById('unit44').value = 0;
+          document.getElementById('total44').value = 0;
+          document.getElementById('tax44').value = 0;
+        }
+      }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    var $select1 = $('#plosu'),
+      $select2 = $('#tax1'),
+      $select3 = $('#tax2'),
+      $select4 = $('#tax3'),
+      $select5 = $('#tax4'),
+      $options = $select2.find('option'),
+      $options1 = $select3.find('option'),
+      $options2 = $select4.find('option'),
+      $options3 = $select5.find('option');
+    if ($options1.value == '{{ cmp1.state }}') {
+      $options1.text = "{{ cmp1.state }}"
+    }
+    $select1.on('change', function() {
+      if (this.value == "{{ cmp1.state }}") {
+        $select2.html($options.filter('[text="' + this.value + '"]'));
+        $select3.html($options1.filter('[text="' + this.value + '"]'));
+        $select4.html($options2.filter('[text="' + this.value + '"]'));
+        $select5.html($options3.filter('[text="' + this.value + '"]'));
+      } else {
+        $select2.html($options.filter('[text="' + " " + '"]'));
+        $select3.html($options1.filter('[text="' + " " + '"]'));
+        $select4.html($options2.filter('[text="' + " " + '"]'));
+        $select5.html($options3.filter('[text="' + " " + '"]'));
+
+      }
+
+    }).trigger('change');
+  });
+</script>
+
+
+<!-- add cust -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    function poppins() {
+        var chkbtn = document.getElementById('okay');
+        if (chkbtn.checked == true) {
+            document.getElementById('shipstreet').value = document.getElementById('street').value;
+            document.getElementById('shipcity').value = document.getElementById('city').value;
+            document.getElementById('shippinco').value = document.getElementById('pinco').value;
+            document.getElementById('shipcountry').value = document.getElementById('country').value;
+            document.getElementById('shipst').value = document.getElementById('state').value;
+            document.getElementById('shipst').innerHTML = document.getElementById('state').value;
+        } else {
+            document.getElementById('shipstreet').value = '';
+            document.getElementById('shipcity').value = '';
+            document.getElementById('shipstate').value = '';
+            document.getElementById('shippinco').value = '';
+            document.getElementById('shipcountry').value = '';
+        }
+    }
+</script>
+<script>
+    // function hidinput(divId, element) {
+    //     if (element.value == 'GST unregistered' || element.value == 'Consumer' || element.value == 'Overseas') {
+    //         document.getElementById(divId).style.display = 'none';
+    //     } else {
+    //         document.getElementById(divId).style.display = 'block';
+    //     }
+    // }
+
+    function hidinput(divId, element) {
+        if (element.value == 'GST registered- Regular' || element.value == 'GST registered- Composition' || element.value == 'SEZ' || element.value == "Deemed exports - EOU's STP's EHTP's etc") {
+            document.getElementById(divId).style.display = 'block';
+        } else {
+            document.getElementById(divId).style.display = 'none';
+        }
+    }
+
+    function disinput(divId, element) {
+        if (element.value == 'GST registered- Regular' || element.value == 'GST registered- Composition' || element.value == 'SEZ' || element.value == "Deemed exports - EOU's STP's EHTP's etc") {
+            document.getElementById(divId).style.display = 'block';
+        } else {
+            document.getElementById(divId).style.display = 'none';
+        }
+    }
+
+    function disinput2(divId, element) {
+        if (element.value == 'GST registered- Regular' || element.value == 'GST registered- Composition' || element.value == 'SEZ' || element.value == "Deemed exports - EOU's STP's EHTP's etc") {
+            document.getElementById(divId).style.display = 'block';
+        } else {
+            document.getElementById(divId).style.display = 'none';
+        }
+    }
+
+
+
+    function checkgst(element) {
+        var gstinput = element.value;
+        var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+        if (gstinput.match(gstregexp)) {
+            document.getElementById('warngst').innerHTML = '';
+        } else {
+            document.getElementById('warngst').innerHTML = 'Please provide a valid GST Number';
+            alert('Please provide a valid GST Number');
+        }
+    }
+
+    function checkpan(element) {
+        var paninput = element.value;
+        var panregexp = ["[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}"]
+        if (paninput.match(panregexp)) {
+            document.getElementById('warnpan').innerHTML = '';
+        } else {
+            document.getElementById('warnpan').innerHTML = 'Please provide a valid PAN Number';
+            alert('Please provide a valid PAN Number')
+        }
+    }
+
+    function checkweb(element) {
+        var webinput = element.value;
+        var webregexp = "www."
+        if (webinput.startsWith(webregexp)) {
+            document.getElementById('warnweb').innerHTML = '';
+        } else {
+            document.getElementById('warnweb').innerHTML = 'Please provide a valid Website Address';
+            alert('Please provide a valid Website Address')
+        }
+    }
+
+    function checkphone(element) {
+        var phoneinput = element.value;
+        var phoneregexp = "[0-9]{10}";
+        if (phoneinput.match(phoneregexp)) {
+            document.getElementById('warnphone').innerHTML = '';
+        } else {
+            document.getElementById('warnphone').innerHTML = 'Please provide a valid Phone Number';
+            alert('Please provide a valid Phone Number')
+        }
+    }
+</script>
+<script>
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+{% endblock %}

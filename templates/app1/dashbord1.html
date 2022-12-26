@@ -1,0 +1,147 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% if user.is_authenticated %}
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h2>{{ cmp1.cname }}</h2></center>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+{#            <div class="card-body">#}
+{#                <div class="alert alert-primary alert-dismissible fade show" role="alert">A simple primary alert with <a#}
+{#                        href="#" class="alert-link">an example link</a>. Give it a click if you like.#}
+{#                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span#}
+{#                            aria-hidden="true">&times;</span>#}
+{#                    </button>#}
+{#                </div>#}
+{#                <div class="alert alert-primary alert-dismissible fade show" role="alert">A simple primary alert with <a#}
+{#                        href="#" class="alert-link">an example link</a>. Give it a click if you like.#}
+{#                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span#}
+{#                            aria-hidden="true">&times;</span>#}
+{#                    </button>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="card-deck flex-column flex-lg-row">
+                <div class="card radius-15">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="mb-0">INVOICES </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div id="chart6"></div>
+                    </div>
+                </div>
+
+                <div class="card radius-15">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h5 class="mb-0">EXPENSES </h5>
+                        </div>
+                        <hr/>
+
+                        <div id="chart6"></div>
+                    </div>
+                </div>
+
+                <div class="card radius-15">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h5 class="mb-0">BANK ACCOUNTS </h5>
+                        </div>
+                        <hr/>
+                        <div class="row-cols-md">
+                            <div class="col-md">
+                                <h6><b>Bank Account</b></h6>
+                                <label>Bank balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label><br>
+                                <label>In Quickbooks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label>
+
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row-md">
+                            <div class="col-md">
+                                <h6><b>Bank Account</b></h6>
+                                <label>Bank balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label><br>
+                                <label>In Quickbooks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$0</label>
+
+
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row-md">
+                            <div class="col-md">
+
+                                <label> <a href="https://app.qbo.intuit.com/app/bankconnect?launchPoint=dashboard">Connect
+                                    Accounts</a></label>
+                            </div>
+                        </div>
+
+                        <div id="chart6"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-4">
+                    <div class="card radius-15">
+                        <div class="card-body">
+                            <div class="d-flex mb-2">
+                                <div>
+                                    <p class="mb-0 font-weight-bold text-white">PROFIT AND LOSS</p>
+                                    <h2 class="mb-0 text-white">501</h2>
+                                </div>
+                                <div class="ml-auto align-self-end">
+                                    <p class="mb-0 font-14"><i class='bx bxs-up-arrow-circle'></i>
+                                        <span>1.01% 31 days ago</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div id="chart1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div class="card radius-15">
+                        <div class="card-body">
+                            <div class="d-flex mb-2">
+                                <div>
+                                    <p class="mb-0 font-weight-bold text-white">SALES</p>
+                                    <h2 class="mb-0 text-white">467</h2>
+                                </div>
+                                <div class="ml-auto align-self-end">
+                                    <p class="mb-0 font-14"><i class='bx bxs-up-arrow-circle'></i>
+                                        <span>0.49% 31 days ago</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div id="chart2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div class="card radius-15">
+                        <div class="card-body">
+                            <div class="d-flex mb-2">
+                                <div>
+                                    <p class="mb-0 font-weight-bold text-white">REPORTS</p>
+                                    <h2 class="mb-0 text-white">2,346</h2>
+                                </div>
+                                <div class="ml-auto align-self-end">
+                                    <p class="mb-0 font-14"><i class='bx bxs-down-arrow-circle'></i> <span>130.68% 31 days ago</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div id="chart3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

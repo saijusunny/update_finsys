@@ -1,0 +1,372 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .hide{
+			display: none;
+    	}
+    </style>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">GENERATE e-WAY BILL</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">PART A</h4>
+                </div>
+                <hr/>
+                <form action="{% url 'create_eway_inv' %}" method="post" class="needs-validation" novalidate autocomplete="off">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom01">Transaction Sub Type </label>
+                                <select name="s_type" id="title" class="form-control">
+                                    <option value="Supply">Supply</option>
+                                    <option value="Import">Import</option>
+                                    <option value="Export">Export</option>
+                                    <option value="Job Work">Job Work</option>
+                                    <option value="For Own Use">For Own Use</option>
+                                    <option value="Job Work Returns">Job Work Returns</option>
+                                    <option value="Sales Returns">Sales Returns </option>
+                                    <option value="Others">Others</option>
+                                    <option value="SKD/CKD">SKD/CKD</option>
+                                    <option value="Line Sales">Line Sales</option>
+                                    <option value="Recipient Not Known">Recipient Not Known</option>
+                                    <option value="Exhibition or Faris">Exhibition or Faris</option>
+                                </select>
+                            </div>
+                           
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">Transporter</label>
+                                <div class="d-flex">
+                                <select name="transporter" id="title" class="form-control">
+                                   
+
+                                    <option selected disabled>select the transporter's name </option>
+                                    {% for i in trans %}
+                                    <option value="{{ i.name  }}">{{ i.name  }} </option>
+                                    {% endfor %}
+
+                                </select>
+                                <a href="#">
+                                    <button type="button" class="btn btn-outline-secondary ml-1" 
+                                    data-target="#newtransporter" data-toggle="modal">+</button>
+                                </a>
+                            </div>
+                        </div>
+                           
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom03">Distance (in Km)
+
+                                </label>
+                                <input type="text" class="form-control" id="validationCustom03" name="dist"
+                                    >
+                            </div>
+                           
+                        </div>
+                        <hr>
+                        <h4>PART B</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4 mt-3">
+                                <label for="validationCustom01">Mode of Transportation</label>
+                                <select name="tmode" id="title" class="form-control">
+                                    <option value="Road">Road</option>
+                                    <option value="Rail">Rail</option>
+                                    <option value="Ship">Ship</option>
+                                    <option value="Air">Air</option>
+                                </select>
+                            </div>
+                           
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                               
+                            </div>
+                           
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mt-3">
+                                <label for="validationCustom05" name style="color: white;">Vehicle Type
+                                    </label>
+                             
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" value="Regular" type="radio" name="vtype" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                      Regular
+                                    </label>
+                                  </div>
+                                 
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" value="Cargo" type="radio" name="vtype" id="flexRadioDefault2" >
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                  Over Dimentional Cargo
+                                </label>
+                              </div>
+                        </div>
+                  
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Vehicle No</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="vno"
+                                >
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Transporter's Doc No</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="tdoc_no"
+                                >
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Transporter's Doc Date</label>
+                            <input type="date" class="form-control" id="validationCustom03" name="tdoc_date"
+                                >
+                        </div>
+                       
+                    </div>
+                </div>
+                       
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                        type="submit">
+                                    Submit form
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    
+<!---------------------------------------------ADD Transporter MODAL ----------------------------------------------->
+
+<div class="modal fade" id="newtransporter">
+    <div class="modal-dialog">
+   
+        <div class="modal-content" style="background-color: #213b52;">
+            <form action="{% url 'create_transporter' %}" method="post" class="needs-validation"  validate>
+                {% csrf_token %}
+            <div class="modal-header">
+                <h3 class="m-3">Add Transporter</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              
+              
+                <div>
+                    <div class="form-check">
+                        <label class="form-check-label">Name *</label> 
+                        <input type="text" class="form-control" name="tname">
+                       
+                    </div>
+
+                    <div class="form-check">
+                        <label class="form-check-label">Transporter's ID *</label> 
+                        <input type="text" class="form-control" name="tid">
+                       
+                    </div>
+
+    
+                </div>
+           
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-info" >Save</button>
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+        </div>
+ 
+    </div>
+</div>            
+
+
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function poppins() {
+            var chkbtn = document.getElementById('okay');
+            if (chkbtn.checked == true) {
+                document.getElementById('shipstreet').value = document.getElementById('street').value;
+                document.getElementById('shipcity').value = document.getElementById('city').value;
+                document.getElementById('shippinco').value = document.getElementById('pinco').value;
+                document.getElementById('shipcountry').value = document.getElementById('country').value;
+                document.getElementById('shipst').value = document.getElementById('state').value;
+                document.getElementById('shipst').innerHTML = document.getElementById('state').value;
+            } else {
+                document.getElementById('shipstreet').value = '';
+                document.getElementById('shipcity').value = '';
+                document.getElementById('shipstate').value = '';
+                document.getElementById('shippinco').value = '';
+                document.getElementById('shipcountry').value = '';
+            }
+        }
+    </script>
+
+    <script>
+        function showgsttyp(){
+            var status = document.getElementById("gsttyp");
+            var a = status.value
+            console.log(a);
+            if( a == "Registered Business - Regular" ){
+                console.log(a);
+
+                document.getElementById('regular').style.display = "flex";
+                // document.getElementById('trade').style.display = "block";
+                // document.getElementById('legal').style.display = "block";
+                // document.getElementById('tax').style.display = "block";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Registered Business - Composition" ){
+                document.getElementById('comp').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "unregistered Business" ){
+                document.getElementById('unreg').style.display = "flex";
+                // document.getElementById('tax').style.display = "block";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Overseas" ){
+                document.getElementById('overseas').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Special Economic Zone (SEZ)" ){
+                document.getElementById('sez').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Demed Exports" ){
+                document.getElementById('demed').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "Tax Deductor" ){
+                document.getElementById('taxdud').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('sezdev').style.display = "none";
+            }
+            else if( a == "SEZ Developer" ){
+                document.getElementById('sezdev').style.display = "flex";
+                document.getElementById('tax').style.display = "none";
+                document.getElementById('trade').style.display = "none";
+                document.getElementById('legal').style.display = "none";
+                document.getElementById('demed').style.display = "none";
+                document.getElementById('sez').style.display = "none";
+                document.getElementById('unreg').style.display = "none";
+                document.getElementById('comp').style.display = "none";
+                document.getElementById('regular').style.display = "none";
+                document.getElementById('overseas').style.display = "none";
+                document.getElementById('taxdud').style.display = "none";
+            }
+        }
+
+    </script>
+
+    <script>
+        function hidinput(divId, element) {
+            if (element.value == 'unregistered Business' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+        }
+
+        function checkgst(element) {
+            var gstinput = element.value;
+            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+            if (gstinput.match(gstregexp)) {
+                document.getElementById('warngst').innerHTML = '';
+            } else {
+                document.getElementById('warngst').innerHTML = 'Please provide a valid GSTIN';
+                alert('Please provide a valid GSTIN');
+            }
+        }
+    </script>
+
+{% endblock %}

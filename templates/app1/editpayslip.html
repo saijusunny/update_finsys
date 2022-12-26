@@ -1,0 +1,525 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+
+<style>
+    #tt {
+            position: absolute;
+        }
+    input{
+        background-color: #2f516f;
+        border :0;
+        border-radius: 5px;
+        color: white;
+    }
+</style>
+<!-- Trigger/Open The Modal -->
+
+<form action="updatepay/{{ payslip.payslipid }}" method="post"  class="needs-validation" novalidate>
+
+       {% csrf_token %}
+
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h2 class="mb-0">EDIT PAY SLIP</h2></center>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col"><center><label style="font-size: 35px; font-family: -apple-system;">{{ cmp1.cname }}</label></center></div>
+                    </div>
+                    <hr>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col">
+                            <label for="validationCustom02">Employee Name</label>
+                            <input type="text" class="form-control" name="empname"  value="{{ payslip.empname }}"  readonly style="background-color: #2f516f;color: white;">
+                        </div>
+
+                        <div class="col">
+                            <label for="validationCustom02">Employee Number</label>
+                            <input type="text" class="form-control" name="employeenumber" value="{{ payslip.employeenumber}}" readonly style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col">
+                            <label for="validationCustom02">Designation</label>
+                            <input type="text" class="form-control" name="desig" value="{{ payslip.desig }}" readonly style="background-color: #2f516f;color: white;">
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col">
+                            <label for="validationCustom02">Pay Peried - From</label>
+                            <input type="date" class="form-control" name="fper" value="{{ payslip.fper}}" required style="background-color: #2f516f;color: white;">
+                        <div class="valid-feedback">Looks good!</div>
+                        </div>
+
+
+                        <div class="col">
+                            <label for="validationCustom02">To</label>
+                                                <input type="date" class="form-control" value="{{ payslip.tper }}" id="validationCustom02" name="tper" required style="background-color: #2f516f;color: white;">
+												<div class="valid-feedback">Looks good!</div>    </div>
+                        <div class="col">
+                            <label for="validationCustom02">Date of Payment</label>
+                            <input type="date" class="form-control" name="paydate" value="{{ payslip.paydate }}" required style="background-color: #2f516f;color: white;">
+                       <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-1"></div>
+                    </div>
+                    &nbsp;
+                    <hr>
+                    &nbsp; <center><h4>Salary Details</h4></center>
+
+                    &nbsp;
+                    <div class="row clearfix">
+                        <div class="col-md-6">
+                            <table class="table table-hover" id="tab_logic">
+                                <thead>
+                                <tr>
+                                    <th colspan="2"><center><h5>Earnings</h5></center></th>
+
+                                </tr>
+                                </thead>
+                                <tbody style="font-size: 18px;">
+                                <tr>
+                                    <td><h6>Basic  Salary </h6></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='basic' value="{{ payslip.basic}}" placeholder=' 'readonly  id="basic" class="form-control price" step="0.00" min="0" style="background-color: #2f516f;"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td><h6>Dearance Allowance </h6></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='da' value="{{ payslip.da}}" placeholder='  ' id="da" readonly class="form-control price" step="0.00" min="0" style="background-color: #2f516f;"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" name='ear1' value="{{ payslip.ear1}}"  placeholder=' 'readonly class="form-control" style="background-color: #2f516f;"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='earr1' id="earr1" value="{{ payslip.earr1}}" placeholder=' ' readonly class="form-control price" step="0.00" min="0" style="background-color: #2f516f;"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="e2">
+                                    <td><input type="text" name='ear2' value="{{ payslip.ear2}}"  placeholder=' ' readonly class="form-control" style="background-color: #2f516f;"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='earr2' id="earr2" value="{{ payslip.earr2}}" placeholder=' ' readonly style="background-color: #2f516f;" class="form-control price" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="e3">
+                                    <td><input type="text" name='ear3' value="{{ payslip.ear3}}"  placeholder=' ' readonly style="background-color: #2f516f;" class="form-control"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='earr3' id="earr3" value="{{ payslip.earr3}}" placeholder=' '  readonly style="background-color: #2f516f;" class="form-control price" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="e4">
+                                    <td><input type="text" name='ear4' value="{{ payslip.ear4}}"  placeholder=' ' readonly style="background-color: #2f516f;" class="form-control"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='earr4' id="earr4" value="{{ payslip.earr4}}" placeholder=' ' readonly style="background-color: #2f516f;" class="form-control price" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="e5">
+                                    <td><input type="text" name='ear5' value="{{ payslip.ear5}}" placeholder=' ' readonly style="background-color: #2f516f;" class="form-control"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='earr5' id="earr5" value="{{ payslip.earr5}}" placeholder=' ' readonly style="background-color: #2f516f;" class="form-control price" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <input class="form-control" value="{{ payslip.ear6}}" name="ear6" placeholder="Add" type="text" style="background-color: #2f516f;color: white;" />
+                                    </td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" class="form-control input" id="earr6" value="{{ payslip.earr6}}" name="earr6"  style="background-color: #2f516f;color: white;">
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" name="ear7" value="{{ payslip.ear7}}" placeholder="Add" type="text" style="background-color: #2f516f;color: white;" />
+                                    </td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" class="form-control input" id="earr7" value="{{ payslip.earr7}}" name="earr7" style="background-color: #2f516f;color: white;">
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td></td><td></td>
+                                </tr>
+                                </tbody>&nbsp;
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-hover" id="tab_logic2">
+                                <thead>
+
+                                <tr>
+                                    <th colspan="2"><center><h5>Deduction</h5></center></th>
+
+                                </tr>
+
+                                </thead>
+                                <tbody  style="font-size: 18px;">
+                                <tr>
+                                    <td><h6>Provident Fund</h6></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='provi' id="provi" value="{{payslip.provi}}" placeholder=' ' readonly style="background-color: #2f516f;" class="form-control price2" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><h6>Profession Tax</h6></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='prof' id="prof" value="{{ payslip.prof}}" placeholder=' '  readonly style="background-color: #2f516f;" class="form-control price2" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><h6>ESI</h6></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='esi' id="esi" value="{{ payslip.esi}}" placeholder='' readonly style="background-color: #2f516f;" class="form-control price2" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="d1">
+                                    <td><input type="text" name='ded1' value="{{ payslip.ded1}}"  placeholder=' ' readonly style="background-color: #2f516f;" class="form-control"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='dedu1' id="dedu1" value="{{ payslip.dedu1}}" placeholder=' ' readonly style="background-color: #2f516f;" class="form-control price2" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="d2">
+                                    <td><input type="text" name='ded2' value="{{ payslip.ded2}}"  placeholder='   ' readonly style="background-color: #2f516f;" class="form-control"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='dedu2' id="dedu2" value="{{ payslip.dedu2}}" placeholder=' ' readonly style="background-color: #2f516f;" class="form-control price2" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="d3">
+                                    <td><input type="text" name='ded3' value="{{ payslip.ded3}}"  placeholder=' ' readonly style="background-color: #2f516f;" class="form-control"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='dedu3' id="dedu3" value="{{ payslip.dedu3}}" placeholder='  ' readonly style="background-color: #2f516f;" class="form-control price2" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                                <tr id="d4">
+                                    <td><input type="text" name='ded4' value="{{ payslip.ded4}}"  placeholder=' ' readonly style="background-color: #2f516f;" class="form-control"/></td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <input type="number" name='dedu4' id="dedu4" value="{{ payslip.dedu4}}" placeholder='  ' readonly style="background-color: #2f516f;" class="form-control price2" step="0.00" min="0"/>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" name="ded5" placeholder="Add" value="{{ payslip.ded5}}" type="text" style="background-color: #2f516f;color: white;" />
+                                    </td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-11">
+
+                                                <input type="number" class="form-control input" id="deducamt5" name="dedu5" value="{{ payslip.dedu5}}" style="background-color: #2f516f;color: white;">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-control" name="ded6" placeholder="Add" value="{{ payslip.ded6}}" type="text" style="background-color: #2f516f;color: white;" />
+                                    </td>
+                                    <td>
+
+                                        <div class="row">
+                                            <div class="col-11">
+
+                                                <input type="number" class="form-control input" id="deducamt6" name="dedu6" value="{{ payslip.dedu6}}"  style="background-color: #2f516f;color: white;">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td><td></td>
+                                </tr>
+
+                                </tbody>&nbsp;
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row clearfix" style="margin-top:20px;font-size: 16px;">
+                        <div class="col"></div>
+                        <div class="col">
+                            <table class="table table-hover" id="tab_logic_total">
+                                <tbody>
+                                <tr>
+                                    <th>Gross Pay</th>
+                                    <td class="text-center"><input type="number" name='gros' value="{{ payslip.gros}}" class="form-control" id="subtotal"  readonly/></td>
+                                </tr>
+                                <tr>
+                                    <th>Total Deduction</th>
+                                    <td class="text-center"><input type="number" name='tded' value="{{ payslip.tded}}" class="form-control" id="subtotal2" readonly /></td>
+                                </tr>
+                                <tr>
+                                    <th>Net Salary</th>
+                                    <td class="text-center"><input type="number" name='netsal' id="grandtotal" value="{{ payslip.netsal}}" class="form-control" readonly/></td>
+                                </tr>
+                                 <tr>
+                                    <td></td><td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <div class="form-row">
+                                <button class="btn btn-outline-info rounded-pill w-100 text-light" type="submit" style="width: 100%;">Update Payslip</button>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                    <br>
+                    <hr>
+                    <div class="row">
+                        <div class="col" style="text-align: center;">
+                            Finsys All Terms and Conditions Apply
+                        </div>
+                    </div>
+                    <hr>
+                <div>
+            </div>
+                    <script>
+
+
+                                    var basic=document.getElementById('basic').value;
+                                    var da=document.getElementById('da').value;
+                                    var earr1=document.getElementById('earr1').value;
+
+
+                                    var earr2=document.getElementById('earr2').value;
+                                    earr2=parseFloat(earr2);
+
+                                    var earr3=document.getElementById('earr3').value;
+                                    earr3=parseFloat(earr3);
+
+                                    var earr4=document.getElementById('earr4').value;
+                                    earr4=parseFloat(earr4);
+
+                                    var earr5=document.getElementById('earr5').value;
+                                    earr5=parseFloat(earr5);
+
+
+
+                                    if(Number.isNaN(earr2)) {
+                                        earr2 = 0;
+                                        document.getElementById('e2').style.display = 'none';
+                                    }
+                                    if(Number.isNaN(earr3)) {
+                                        earr3 = 0;
+                                        document.getElementById('e3').style.display = 'none';
+                                    }
+
+                                    if(Number.isNaN(earr4)) {
+                                        earr4 = 0;
+                                        document.getElementById('e4').style.display = 'none';
+                                    }
+                                     if(Number.isNaN(earr5)) {
+                                         earr5 = 0;
+                                         document.getElementById('e5').style.display = 'none';
+                                     }
+
+
+
+
+
+
+                                    var dedu1 =document.getElementById('dedu1').value;
+                                    dedu1=parseFloat(dedu1);
+
+                                    var dedu2 =document.getElementById('dedu2').value;
+                                    dedu2=parseFloat(dedu2);
+
+                                    var dedu3 =document.getElementById('dedu3').value;
+                                    dedu3=parseFloat(dedu3);
+
+                                    var dedu4 =document.getElementById('dedu4').value;
+                                    dedu4=parseFloat(dedu4);
+
+                                    var provi =document.getElementById('provi').value;
+                                    var prof =document.getElementById('prof').value;
+                                    var esi =document.getElementById('esi').value;
+
+
+                                    if(Number.isNaN(dedu1)) {
+                                        dedu1 = 0;
+                                        document.getElementById('d1').style.display = 'none';
+                                    }
+                                    if(Number.isNaN(dedu2)) {
+                                        dedu2 = 0;
+                                        document.getElementById('d2').style.display = 'none';
+                                    }
+                                    if(Number.isNaN(dedu3)) {
+                                        dedu3 = 0;
+                                        document.getElementById('d3').style.display = 'none';
+                                    }
+                                    if(Number.isNaN(dedu4)) {
+                                        dedu4 = 0;
+                                        document.getElementById('d4').style.display = 'none';
+                                    }
+
+
+                                    var earn = document.getElementById('subtotal').value;
+                                    earn = parseFloat(earn);
+                                    var dedu = document.getElementById('subtotal2').value;
+                                    dedu = parseFloat(dedu);
+                                    var gp = document.getElementById('grandtotal').value;
+                                    gp = parseFloat(gp);
+
+                                    var earn1=parseFloat(basic)+parseFloat(da)+parseFloat(earr1)+earr2+earr3+earr4+earr5;
+                                    var dedu1=parseFloat(provi)+parseFloat(prof)+parseInt(esi)+dedu1+dedu2+dedu3+dedu4;
+                                    var gp1=parseFloat(earn1)-parseFloat(dedu1);
+
+
+                      $(".input").on('input',function ()
+                      {
+
+                        var x= document.getElementById('earr6').value;
+                        x=parseFloat(x);
+                        var y= document.getElementById('earr7').value;
+                        y=parseFloat(y);
+                        var a= document.getElementById('deducamt5').value;
+                        a=parseFloat(a);
+                        var b= document.getElementById('deducamt6').value;
+                        b=parseFloat(b);
+
+                        if(Number.isNaN(a))
+                            a=0;
+
+                        if(Number.isNaN(b))
+                            b=0;
+
+                        if(Number.isNaN(x))
+                            x=0;
+
+                        if(Number.isNaN(y))
+                            y=0;
+
+                        document.getElementById('subtotal').value = earn1 + x + y;
+                        document.getElementById('subtotal2').value = dedu1 + a + b;
+                        document.getElementById('grandtotal').value = gp1 + x + y - a - b;
+
+                      });
+                    </script>
+
+
+
+                <script>
+								// Example starter JavaScript for disabling form submissions if there are invalid fields
+								(function () {
+									'use strict';
+									window.addEventListener('load', function () {
+										// Fetch all the forms we want to apply custom Bootstrap validation styles to
+										var forms = document.getElementsByClassName('needs-validation');
+										// Loop over them and prevent submission
+										var validation = Array.prototype.filter.call(forms, function (form) {
+											form.addEventListener('submit', function (event) {
+												if (form.checkValidity() === false) {
+													event.preventDefault();
+													event.stopPropagation();
+												}
+												form.classList.add('was-validated');
+											}, false);
+										});
+									}, false);
+								})();
+                </script>
+            </div>
+        </div>
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<div class="page-content">
+					<div class="card radius-15">
+						<div class="card-body">
+							<div class="card-title">
+								<center><h3 class="mb-0">Connect Your Bank </h3></center>
+							</div>
+							<hr/>
+						</div>
+					</div>
+					<!--end breadcrumb-->
+					<div class="card radius-15">
+						<div class="card-body">
+							<div class="row">
+    							<div class="col-md-7">
+    								<div class="form-group">
+										<label>Select The Bank</label>
+											<select class="single-select" id="foo">
+												<option>choose Your Bank</option>
+												<option value="https://www.indianbank.in/">Allahabad Bank</option>
+												<!-- <option value="https://www.unionbankofindia.co.in/">Andhra Bank</option> -->
+												<option value="http://www.axisbank.com/">Axis Bank</option>
+												<option value="http://www.bbkonline.com/">Bank of Bahrain and Kuwait</option>
+												<option value="http://www.bankofbaroda.in/">Bank of Baroda</option>
+												<option value="http://www.bankofindia.co.in/">Bank of India</option>
+												<option value="http://www.bankofmaharashtra.in/">Bank of Maharashtra</option>
+												<option value="http://www.canarabank.com/">Canara Bank</option>
+												<option value="http://www.centralbankofindia.co.in/">Central Bank of India</option>
+												<option value="http://www.cityunionbank.com/">City Union Bank</option>
+												<!-- <option value="https://www.unionbankofindia.co.in/">Corporation Bank</option> -->
+												<option value="http://www.db.com/">Deutsche Bank</option>
+												<option value="http://www.dcbbank.com/">Development Credit Bank</option>
+												<option value="http://www.dhanbank.com/">Dhanlaxmi Bank</option>
+												<option value="http://www.federalbank.co.in/">Federal Bank</option>
+												<option value="http://www.icicibank.com/">ICICI Bank</option>
+												<option value="https://www.idbibank.in/index.asp">IDBI Bank</option>
+												<option value="https://www.indianbank.net.in/">Indian Bank</option>
+												<option value="http://www.iob.in/">Indian Overseas Bank</option>
+												<option value="https://www.indusind.com/">IndusInd Bank</option>
+												<option value="http://www.jkbank.com/">Jammu and Kashmir Bank</option>
+												<option value="http://karnatakabank.com/">Karnataka Bank Ltd</option>
+												<option value="http://www.kvb.co.in/">Karur Vysya Bank</option>
+												<option value="https://www.kotak.com/en.html">Kotak Bank</option>
+												<option value="http://www.lvbank.com/">Laxmi Vilas Bank</option>
+												<option value="https://www.obcindia.co.in/">Oriental Bank of Commerce</option>
+												<option value="http://www.pnbindia.in/">Punjab National Bank</option>
+												<option value="http://www.svcbank.com/">Shamrao Vitthal Co-operative Bank</option>
+												<option value="http://www.southindianbank.com/">South Indian Bank</option>
+												<option  value="https://www.onlinesbi.com/">State Bank of India</option>
+												<!-- <option value="https://canarabank.com/">Syndicate Bank</option> -->
+												<option value="https://www.tmb.in/">Tamilnad Mercantile Bank Ltd.</option>
+												<option value="http://www.ucobank.com/">UCO Bank</option>
+												<option value="http://www.unionbankofindia.co.in/">Union Bank of India</option>
+												<!-- <option value="https://www.unitedbank.co.in/">United Bank of India</option> -->
+												<!-- <option value="http://www.vijayabank.com/">Vijaya Bank</option> -->
+												<option value="http://www.yesbank.in/">Yes Bank Ltd</option>
+											</select>
+										</div>
+										<div class="row">
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/sbi.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/axis.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/canera.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/hdfc.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/icici.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/yes.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/sib.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/Federal.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+											<div class="col-12 col-lg-4 col-xl-4" >
+												<div class="card"style="background-color: white;">
+													<img src="{% static 'assets/img/Bod.png' %}" class="card-img-top" alt="...">
+												</div>
+											</div>
+										</div>
+	   							    </div>
+    							<div class="col-md-5">
+										<img src="{% static 'assets/img/banking.png' %}" class="card-img" alt="...">
+								</div>
+  							</div>
+						</div>
+					</div>
+				</div>
+
+
+	<!--plugins-->
+    <link href="{% static 'assets/plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet" />
+    <script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'assets/js/app.js' %}"></script>
+	<script>
+		$('.single-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+		$('.multiple-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+
+		document.getElementById("foo").onchange = function() {
+        	if (this.selectedIndex!==0) {
+            	window.location.href = this.value;
+        	}
+    	};
+	</script>
+
+
+	<!-- App JS -->
+
+{% endblock %}

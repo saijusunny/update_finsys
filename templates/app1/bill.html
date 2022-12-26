@@ -1,0 +1,917 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <!--<h1>Taxes</h1>-->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#selectref').on('change', function () {
+                var sel = document.getElementById('selectref');
+                var x = sel.value;
+                {% for exp in expence %}
+                    console.log(x)
+
+                    if (String({{ exp.refno }}) == x) {
+                        console.log('yes');
+                        console.log('{{ exp.payee }}')
+                        document.getElementById('payee1').value = '{{ exp.payee }}';
+
+                        var pd = '{{ exp.paymdate }}'
+                        document.getElementById('paymdate1').value = '{{ exp.paymdate}}'
+
+                        var pm = '{{ exp.paymmethod }}'
+                        document.getElementById('paymmethod1').value = '{{ exp.paymmethod }}'
+
+                        document.getElementById('totamt1').value = '{{ exp.totamt }}'
+
+                        var ct1 = '{{ exp.category1 }}'
+                        document.getElementById('category1').value = '{{ exp.category1 }}'
+
+                        document.getElementById('descrptin1').value = '{{ exp.descrptin1 }}'
+                        document.getElementById('catqty1').value = '{{ exp.catqty1 }}'
+                        document.getElementById('catprice1').value = '{{ exp.catprice1 }}'
+                        document.getElementById('cattotal1').value = '{{ exp.cattotal1 }}'
+
+                        document.getElementById('category2').value = '{{ exp.category2 }}'
+
+                        document.getElementById('descrptin2').value = '{{ exp.descrptin2 }}'
+                        document.getElementById('catqty2').value = '{{ exp.catqty2 }}'
+                        document.getElementById('catprice2').value = '{{ exp.catprice2 }}'
+                        document.getElementById('cattotal2').value = '{{ exp.cattotal2 }}'
+
+                        document.getElementById('category3').value = '{{ exp.category3 }}'
+
+                        document.getElementById('descrptin3').value = '{{ exp.descrptin3 }}'
+                        document.getElementById('catqty3').value = '{{ exp.catqty3 }}'
+                        document.getElementById('catprice3').value = '{{ exp.catprice3 }}'
+                        document.getElementById('cattotal3').value = '{{ exp.cattotal3 }}'
+
+                        document.getElementById('category4').value = '{{ exp.category4 }}'
+
+                        document.getElementById('descrptin4').value = '{{ exp.descrptin4 }}'
+                        document.getElementById('catqty4').value = '{{ exp.catqty4 }}'
+                        document.getElementById('catprice4').value = '{{ exp.catprice4 }}'
+                        document.getElementById('cattotal4').value = '{{ exp.cattotal4 }}'
+
+                        document.getElementById('product').value = '{{ exp.product }}'
+                        document.getElementById('hsn1').value = '{{ exp.hsn }}'
+                        document.getElementById('description1').value = '{{ exp.description }}'
+                        document.getElementById('qty1').value = '{{ exp.qty }}'
+                        document.getElementById('unit1').value = '{{ exp.price }}'
+                        document.getElementById('total1').value = '{{ exp.total }}'
+                        document.getElementById('ta1').value = '{{ exp.tax }}';
+                        document.getElementById('ta1').innerHTML = '{{ exp.tax }}' + '%';
+
+                        // document.getElementById('product2').value = '{{ exp.product2 }}'
+                        if ('{{ exp.product2 }}' !== "NIL") {
+                            document.getElementById('product2').value = '{{ exp.product2 }}';
+                        } else {
+                            document.getElementById('product2').value = 'NIL'
+                        }
+                        if ('{{ exp.product3 }}' !== "NIL") {
+                            document.getElementById('product3').value = '{{ exp.product3 }}';
+                        } else {
+                            document.getElementById('product3').value = 'NIL'
+                        }
+                        if ('{{ exp.product4 }}' !== "NIL") {
+                            document.getElementById('product4').value = '{{ exp.product4 }}';
+                        } else {
+                            document.getElementById('product4').value = 'NIL'
+                        }
+
+
+                        document.getElementById('hsn2').value = '{{ exp.hsn2 }}'
+                        document.getElementById('description2').value = '{{ exp.description2 }}'
+                        document.getElementById('qty2').value = '{{ exp.qty2 }}'
+                        document.getElementById('unit2').value = '{{ exp.price2 }}'
+                        document.getElementById('total2').value = '{{ exp.total2 }}'
+                        document.getElementById('ta2').value = '{{ exp.tax2 }}';
+                        document.getElementById('ta2').innerHTML = '{{ exp.tax2 }}' + '%';
+
+                        // document.getElementById('product3').value = '{{ exp.product3 }}'
+                        document.getElementById('hsn3').value = '{{ exp.hsn3 }}'
+                        document.getElementById('description3').value = '{{ exp.description3 }}'
+                        document.getElementById('qty3').value = '{{ exp.qty3 }}'
+                        document.getElementById('unit3').value = '{{ exp.price3 }}'
+                        document.getElementById('total3').value = '{{ exp.total3 }}'
+                        document.getElementById('ta3').value = '{{ exp.tax3 }}';
+                        document.getElementById('ta3').innerHTML = '{{ exp.tax3 }}' + '%';
+
+                        // document.getElementById('product4').value = '{{ exp.product4 }}'
+                        document.getElementById('hsn4').value = '{{ exp.hsn4 }}'
+                        document.getElementById('description4').value = '{{ exp.description4 }}'
+                        document.getElementById('qty4').value = '{{ exp.qty4 }}'
+                        document.getElementById('unit4').value = '{{ exp.price4 }}'
+                        document.getElementById('total4').value = '{{ exp.total4 }}'
+                        document.getElementById('ta4').value = '{{ exp.tax4 }}';
+                        document.getElementById('ta4').innerHTML = '{{ exp.tax4 }}' + '%';
+
+                        document.getElementById('sub_total').value = '{{ exp.subtotal }}'
+
+                        document.getElementById('tax_amount').value = '{{ exp.taxamount }}'
+
+                        document.getElementById('grandtotal').value = '{{ exp.grandtotal }}'
+
+                        t = document.getElementById('product2').value
+                        if (String({{ exp.product2 }}) == "") {
+                            document.getElementById('product2').value = " ";
+                        }
+
+                    }
+                {% endfor %}
+            });
+
+            function calc() {
+                $('#tab_logic tbody tr').each(function () {
+                    var html = $(this).html();
+                    if (html != '') {
+                        var qty = $(this).find('.qty').val();
+                        var price = $(this).find('.price').val();
+                        var tax = $(this).find('.tax').val();
+                        $(this).find('.total').val(qty * price);
+                        $(this).find('.taxamount').val((qty * price) * (tax / 100));
+                        calc_total();
+                    }
+                });
+            }
+
+            function calc_total() {
+                total = 0;
+                $('.total').each(function () {
+                    total += parseFloat($(this).val());
+                });
+                taxamount = 0;
+                $('.taxamount').each(function () {
+                    taxamount += parseFloat($(this).val());
+                });
+                $('#sub_total').val(total.toFixed(2));
+                $('#tax_amount').val(taxamount.toFixed(2));
+                $('#grandtotal').val((taxamount + total).toFixed(2));
+                $('#baldue').val((taxamount + total).toFixed(2));
+            }
+        });
+    </script>
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0" id="invnumb">PAYMENT</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <form action="billcreate" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5 class="text-info">Choose Ref No.</h5>
+                            <select id="selectref" name="refno" class="custom-select" required
+                                    style="background-color: #2f516f;color: white;">
+                                <option value=" " selected>Select Ref No.</option>
+                                {% for exp in expence %}
+                                    {% if exp.cid_id == cmp1.cid %}
+                                        <option value="{{ exp.refno }}">{{ exp.refno }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="validationCustom02">Payee</label>
+                                    <input type="text" name="payee" id="payee1" class="form-control"
+                                           required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="validationCustom02">Payment Account</label>
+                                    <div class="d-flex">
+                                        <select class="custom-select" name="paymacnt" id="paymacnt1" required
+                                                style="background-color: #2f516f; color: white;">
+                                            <option></option>
+                                            {% for acc in accoun %}
+                                                {% if acc.acctype == '3' %}
+                                                    <option value="{{ acc.name }}">{{ acc.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <a href="{% url 'expencoacreate' %}">
+                                            <button type="button" class="btn btn-outline-secondary ml-1">+</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="validationCustom02">Payment Date </label>
+                                    <input type="text" name="paymdate" class="form-control" id="paymdate1" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="validationCustom02">Payment Method</label>
+                                    <select class="custom-select" name="paymmethod" id="paymmethod1" required
+                                            style="background-color: #2f516f; color: white;">
+                                        <option value=" " selected></option>
+                                        <option>Cash</option>
+                                        <option>Cheque</option>
+                                        <option>Debit cards</option>
+                                        <option>Credit cards</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8 mt-3">
+                                    <label class="text-secondary" style="font-size: 40px;">AMOUNT</label>
+                                    <input type="text" name="totamt" id="totamt1" placeholder='0.00'
+                                           class="form-control" readonly
+                                           style="font-size: 50px; background-color: #243e54; border: 0px; color: white;">
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <label style="font-size: 30px;">Category Details</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class=" table-responsive-md">
+                                <table class="table table-bordered table-hover" id="tab_logic">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Category</th>
+                                        <th class="text-center">Discription</th>
+                                        <th class="text-center">Not-Applicable</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr id='addr0'>
+                                        <td>1</td>
+                                        <td><select class="custom-select" name="category1" id="category1"
+                                                    style="background-color: #2f516f; color: white;">
+                                            <option value="" selected>Choose Category...</option>
+                                            {% for c in catlist %}
+                                                <option value="{{ c }}">{{ c }}</option>
+                                            {% endfor %}
+                                        </select></td>
+                                        <td><input type="text" name="descrptin1" id="descrptin1" style="background-color: #2f516f; color: white;"
+                                                   placeholder='Enter description' class="form-control"/></td>
+                                        <td><input type="number" name="catqty1" id="catqty1"
+                                                   placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0" style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" name="catprice1" id="catprice1"
+                                                   placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                                   min="0" style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" name="cattotal1" id="cattotal1" placeholder='0.00'
+                                                   class="form-control total" readonly style="background-color: #2f516f; color: white;"/></td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>2</td>
+                                        <td><select class="custom-select" name="category2" id="category2"
+                                                    style="background-color: #2f516f; color: white;">
+                                            <option value="" selected>Choose Category...</option>
+                                            {% for c in catlist %}
+                                                <option value="{{ c }}">{{ c }}</option>
+                                            {% endfor %}
+                                        </select></td>
+                                        <td><input type="text" name="descrptin2" id="descrptin2" style="background-color: #2f516f; color: white;"
+                                                   placeholder='Enter description' class="form-control"/></td>
+                                        <td><input type="number" name="catqty2" id="catqty2"
+                                                   placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0" style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" name="catprice2" id="catprice2"
+                                                   placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                                   min="0" style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" name="cattotal2" id="cattotal2" placeholder='0.00'
+                                                   class="form-control total" readonly style="background-color: #2f516f; color: white;"/></td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>3</td>
+                                        <td><select class="custom-select" name="category3" id="category3"
+                                                    style="background-color: #2f516f; color: white;">
+                                            <option value="" selected>Choose Category...</option>
+                                            {% for c in catlist %}
+                                                <option value="{{ c }}">{{ c }}</option>
+                                            {% endfor %}
+                                        </select></td>
+                                        <td><input type="text" name="descrptin3" id="descrptin3" style="background-color: #2f516f; color: white;"
+                                                   placeholder='Enter description' class="form-control"/></td>
+                                        <td><input type="number" name="catqty3" id="catqty3"
+                                                   placeholder='Enter Qty' style="background-color: #2f516f; color: white;"
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name="catprice3" id="catprice3" style="background-color: #2f516f; color: white;"
+                                                   placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                                   min="0"/></td>
+                                        <td><input type="number" name="cattotal3" id="cattotal3" placeholder='0.00' style="background-color: #2f516f; color: white;"
+                                                   class="form-control total" readonly/></td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>4</td>
+                                        <td><select class="custom-select" name="category4" id="category4"
+                                                    style="background-color: #2f516f; color: white;">
+                                            <option value="" selected>Choose Category...</option>
+                                            {% for c in catlist %}
+                                                <option value="{{ c }}">{{ c }}</option>
+                                            {% endfor %}
+                                        </select></td>
+                                        <td><input type="text" name="descrptin4" id="descrptin4" style="background-color: #2f516f; color: white;"
+                                                   placeholder='Enter description' class="form-control"/></td>
+                                        <td><input type="number" name="catqty4" id="catqty4" style="background-color: #2f516f; color: white;"
+                                                   placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name="catprice4" id="catprice4" style="background-color: #2f516f; color: white;"
+                                                   placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                                   min="0"/></td>
+                                        <td><input type="number" name="cattotal4" id="cattotal4" placeholder='0.00' style="background-color: #2f516f; color: white;"
+                                                   class="form-control total" readonly/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <label style="font-size: 30px;">Item Details</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <div class="table-responsive-md">
+                                <table class="table table-bordered" id="tab_logic">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Product / Service</th>
+                                        <th class="text-center">HSN</th>
+                                        <th class="text-center">Description</th>
+                                        <th class="text-center">Qty</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Total</th>
+                                        <th class="text-center">Tax (%)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr id='addr0'>
+                                        <td>1</td>
+                                        <td class="d-flex">
+                                            <select name='product' id="product" class="form-control"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option value="{{ expences.product }}"
+                                                        selected>{{ expences.product }}</option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <!-- {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %} -->
+                                                {% for proinv in bun %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.bundleid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                        </td>
+                                        <td><input type="text" name='hsn' id="hsn1" placeholder='Enter HSN Code'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="text" name='description' id="description1"
+                                                   placeholder='Description'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/>
+
+                                        </td>
+                                        <td><input type="number" name='qty'
+                                                   placeholder='Enter Qty' id="qty1"
+                                                   class="form-control qty" step="0" min="0"
+                                                   style="background-color: #2f516f; color: white;"/>
+                                            <span id="qtyspan" class="text-muted"></span>
+
+                                        </td>
+                                        <td><input type="text" name='price' id="unit1"
+                                                   placeholder='Enter Unit Price'
+                                                   class="form-control price" step="0.00" min="0"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" name='total' id="total1" placeholder='0.00'
+                                                   class="form-control total" readonly
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td>
+                                            <select name="tax" id="tax1" class="form-control tax"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option id="ta1"></option>
+                                                <option value="28">28.0% GST(28%)</option>
+                                                <option value="18">18.0% GST(18%)</option>
+                                                <option value="12">12.0% GST(12%)</option>
+                                                <option value="6">06.0% GST(06%)</option>
+                                                <option value="5">05.0% GST(05%)</option>
+                                                <option value="3">03.0% GST(03%)</option>
+                                                <option value=".25">0.25% GST(0.25%)</option>
+                                                <option value="0">0.0% GST(0%)</option>
+                                                <option value="0">Exempt GST(0%)</option>
+                                                <option value="0">Out of Scope(0%)</option>
+                                            </select>
+                                        </td>
+                                        <td style="display: none;"><input type="text" name='taxamount1'
+                                                                          id="taxamount1"
+                                                                          class="form-control taxamount"
+                                                                          style="background-color: #2f516f; color: white; display: none;"/>
+                                        </td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>2</td>
+                                        <td class="d-flex">
+                                            <select name="product2" onclick="test()" id="product2"
+                                                    class="form-control"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option value=" " selected></option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <!-- {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %} -->
+                                                {% for proinv in bun %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.bundleid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                        </td>
+                                        <td><input type="text" name="hsn2" value="" id="hsn2"
+                                                   placeholder='Enter HSN Code'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="text" value="" name='description2' id="description2"
+                                                   placeholder='Description'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" value="" name="qty2"
+                                                   placeholder='Enter Qty' id="qty2"
+                                                   class="form-control qty" step="0" min="0"
+                                                   style="background-color: #2f516f; color: white;"/>
+                                            <span id="qtyspan1" class="text-muted"></span>
+                                        </td>
+                                        <td><input type="text" value="" name="price2" id="unit2"
+                                                   placeholder='Enter Unit Price'
+                                                   class="form-control price" step="0.00" min="0"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" value="" name="total2" id="total2"
+                                                   placeholder='0.00'
+                                                   class="form-control total" readonly
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td>
+                                            <select name="tax2" value="" id="tax2" class="form-control tax"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option id="ta2"></option>
+                                                <option value="28">28.0% GST(28%)</option>
+                                                <option value="18">18.0% GST(18%)</option>
+                                                <option value="12">12.0% GST(12%)</option>
+                                                <option value="6">06.0% GST(06%)</option>
+                                                <option value="5">05.0% GST(05%)</option>
+                                                <option value="3">03.0% GST(03%)</option>
+                                                <option value=".25">0.25% GST(0.25%)</option>
+                                                <option value="0">0.0% GST(0%)</option>
+                                                <option value="0">Exempt GST(0%)</option>
+                                                <option value="0">Out of Scope(0%)</option>
+                                            </select>
+                                        </td>
+                                        <td style="display: none;"><input type="text" name='taxamount2'
+                                                                          id="taxamount2"
+                                                                          class="form-control taxamount"
+                                                                          style="background-color: #2f516f; color: white; display: none;"/>
+                                        </td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>3</td>
+                                        <td class="d-flex">
+                                            <select name="product3" id="product3" class="form-control"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option value=" " selected></option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <!-- {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %} -->
+                                                {% for proinv in bun %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.bundleid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                        </td>
+                                        <td><input type="text" value="" name="hsn3" id="hsn3"
+                                                   placeholder='Enter HSN Code'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="text" value="" name='description3' id="description3"
+                                                   placeholder='Description'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" value="" name="qty3" id="qty3"
+                                                   placeholder='Enter Qty'
+                                                   class="form-control qty" step="0" min="0"
+                                                   style="background-color: #2f516f; color: white;"/>
+                                            <span id="qtyspan2" class="text-muted"></span>
+                                        </td>
+                                        <td><input type="text" value="" name="price3" id="unit3"
+                                                   placeholder='Enter Unit Price'
+                                                   class="form-control price" step="0.00" min="0"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" value="" name="total3" id="total3"
+                                                   placeholder='0.00'
+                                                   class="form-control total" readonly
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td>
+                                            <select name="tax3" value="" id="tax3" class="form-control tax"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option id="ta3"></option>
+                                                <option value="28">28.0% GST(28%)</option>
+                                                <option value="18">18.0% GST(18%)</option>
+                                                <option value="12">12.0% GST(12%)</option>
+                                                <option value="6">06.0% GST(06%)</option>
+                                                <option value="5">05.0% GST(05%)</option>
+                                                <option value="3">03.0% GST(03%)</option>
+                                                <option value=".25">0.25% GST(0.25%)</option>
+                                                <option value="0">0.0% GST(0%)</option>
+                                                <option value="0">Exempt GST(0%)</option>
+                                                <option value="0">Out of Scope(0%)</option>
+                                            </select>
+                                        </td>
+                                        <td style="display: none;"><input type="text" name='taxamount3'
+                                                                          id="taxamount3"
+                                                                          class="form-control taxamount"
+                                                                          style="background-color: #2f516f; color: white; display: none;"/>
+                                        </td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>4</td>
+                                        <td class="d-flex">
+                                            <select name="product4" id="product4" class="form-control"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option value=" " selected></option>
+                                                {% for proinv in inv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.inventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for proinv in noninv %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.noninventoryid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <!-- {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %} -->
+                                                {% for proinv in bun %}
+                                                    {% if proinv.cid_id == cmp1.cid %}
+                                                        <option text="{{ proinv.bundleid }}"
+                                                                value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                        </td>
+                                        <td><input type="text" value="" name="hsn4" id="hsn4"
+                                                   placeholder='Enter HSN Code'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="text" value="" name='description4' id="description4"
+                                                   placeholder='Description'
+                                                   class="form-control"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" value="" name="qty4"
+                                                   placeholder='Enter Qty'
+                                                   class="form-control qty" id="qty4" step="0" min="0"
+                                                   style="background-color: #2f516f; color: white;"/>
+                                            <span id="qtyspan3" class="text-muted"></span>
+                                        </td>
+                                        <td><input type="text" value="" name="price4" id="unit4"
+                                                   placeholder='Enter Unit Price'
+                                                   class="form-control price" step="0.00" min="0"
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td><input type="number" value="" name="total4" id="total4"
+                                                   placeholder='0.00'
+                                                   class="form-control total" readonly
+                                                   style="background-color: #2f516f; color: white;"/></td>
+                                        <td>
+                                            <select name="tax4" value="" id="tax4" class="form-control tax"
+                                                    style="background-color: #2f516f; color: white;">
+                                                <option id="ta4"></option>
+                                                <option value="28">28.0% GST(28%)</option>
+                                                <option value="18">18.0% GST(18%)</option>
+                                                <option value="12">12.0% GST(12%)</option>
+                                                <option value="6">06.0% GST(06%)</option>
+                                                <option value="5">05.0% GST(05%)</option>
+                                                <option value="3">03.0% GST(03%)</option>
+                                                <option value=".25">0.25% GST(0.25%)</option>
+                                                <option value="0">0.0% GST(0%)</option>
+                                                <option value="0">Exempt GST(0%)</option>
+                                                <option value="0">Out of Scope(0%)</option>
+                                            </select>
+                                        </td>
+                                        <td style="display: none;"><input type="text" name='taxamount4'
+                                                                          id="taxamount4"
+                                                                          class="form-control taxamount"
+                                                                          style="background-color: #2f516f; color: white;"/>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7"></div>
+                        <div class="col-md-5 mt-3">
+                            <div class="table-responsive-md">
+                                <table class="table table-bordered" id="tab_logic_total" border="0">
+                                    <tbody>
+                                    <tr>
+                                        <th class="text-center">Sub Total</th>
+                                        <td class="text-center"><input type="number" name='subtotal'
+
+                                                                       placeholder='0.00' class="form-control"
+                                                                       id="sub_total" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Tax Amount</th>
+                                        <td class="text-center"><input type="number" name='taxamount'
+                                                                       value="{{ expences.taxamount }}"
+                                                                       id="tax_amount"
+                                                                       placeholder='0.00' class="form-control"
+                                                                       readonly/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Grand Total</th>
+                                        <td class="text-center"><input type="number" name='grandtotal'
+                                                                       id="grandtotal" placeholder='0.00'
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 mt-3 mb-4">
+                            <button class="btn btn-outline-info w-100 text-light rounded-pill" type="submit"
+                                    style="width: 100%;">Submit form
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+    <script>
+        function showinp(divId, element) {
+            if (element.value == 'Add New Term') {
+                document.getElementById(divId).style.display = 'block';
+            } else {
+                document.getElementById(divId).style.display = 'none';
+            }
+        }
+
+        function addtemopt(element) {
+            var opt = document.getElementById('trmopt');
+
+            if (
+                element.value) {
+                opt.value = element.value;
+                opt.innerHTML = element.value;
+            } else {
+                pass
+            }
+        }
+
+    </script>
+    <script>
+        function myFunction() {
+            var checkBox = document.getElementById("myCheck");
+            var text = document.getElementById("bill");
+            if (checkBox.checked == true) {
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+
+
+    </script>
+    <script>
+        function show() {
+            var checkBox = document.getElementById("Check");
+            var abc = document.getElementById("sad");
+            var def = document.getElementById("happy");
+            if (checkBox.checked == true) {
+                abc.style.display = "block";
+                def.style.display = "block";
+            } else {
+                abc.style.display = "none";
+                def.style.display = "none";
+            }
+        }
+
+        function showinnum(divId, element) {
+            if (element.value) {
+                document.getElementById(divId).innerHTML = "Bill NO. " + element.value;
+            } else {
+                document.getElementById(divId).innerHTML = "Bill NO. ";
+            }
+        }
+    </script>
+    <script>
+        function test() {
+            t = document.getElementById('product2').value
+            if (t == "") {
+                console.log(document.getElementById('product2').value);
+                t = "";
+                document.getElementById('hsn2').value = "";
+            }
+
+        }
+    </script>
+
+    <script>
+        $('#product').on('change', function () {
+            select = $('#product').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn1').value = json_data[key]['hsn'];
+                    document.getElementById('description1').value = json_data[key]['description'];
+                    document.getElementById('qty1').value = 0;
+                    if (json_data[key]['initialqty'] == '') {
+                        document.getElementById('qtyspan').innerHTML = '';
+                    } else {
+                        document.getElementById('qtyspan').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit1').value = json_data[key]['cost'];
+                }
+            });
+        });
+
+        $('#product2').on('change', function () {
+            select = $('#product2').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn2').value = json_data[key]['hsn'];
+                    document.getElementById('description2').value = json_data[key]['description'];
+                    document.getElementById('qty2').value = 0;
+                    if (json_data[key]['initialqty'] == '') {
+                        document.getElementById('qtyspan1').innerHTML = '';
+                    } else {
+                        document.getElementById('qtyspan1').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit2').value = json_data[key]['salesprice'];
+                }
+            });
+        });
+        $('#product3').on('change', function () {
+            select = $('#product3').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn3').value = json_data[key]['hsn'];
+                    document.getElementById('description3').value = json_data[key]['description'];
+                    document.getElementById('qty3').value = 0;
+                    if (json_data[key]['initialqty'] == '') {
+                        document.getElementById('qtyspan2').innerHTML = '';
+                    } else {
+                        document.getElementById('qtyspan2').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit3').value = json_data[key]['salesprice'];
+                }
+            });
+        });
+        $('#product4').on('change', function () {
+            select = $('#product4').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn4').value = json_data[key]['hsn'];
+                    document.getElementById('description4').value = json_data[key]['description'];
+                    document.getElementById('qty4').value = 0;
+                    if (json_data[key]['initialqty'] == '') {
+                        document.getElementById('qtyspan3').innerHTML = '';
+                    } else {
+                        document.getElementById('qtyspan3').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit4').value = json_data[key]['salesprice'];
+                }
+            });
+        });
+
+    </script>
+
+
+{% endblock %}
+
+
+

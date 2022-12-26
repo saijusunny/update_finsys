@@ -1,0 +1,664 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+
+
+
+<style>
+
+
+  
+  div.tempinv{
+    background-color: white;
+    border-radius: 10px;
+    height: 100%;
+    position: relative;
+    margin-top: 50px;
+  }
+
+  
+ 
+  .ribbon .ribbon-inner {
+    font-size:10px;
+text-align: center;
+color: #fff;
+top: -20px;
+left: -90px;
+width: 120px;
+padding: 3px;
+/* position: relative;
+transform: rotate(-45deg); */
+}
+.ribbon .ribbon-open {
+font-size:10px;
+background-color: #268ddd;
+border-color: #1c72b4;
+}
+
+:root {
+--body-bg: rgb(204, 204, 204);
+--white: #ffffff;
+--darkWhite: #ccc;
+--black: #000000;
+--dark: #615c60;
+--themeColor: #22b8d1;
+--pageShadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+
+/* Font Include */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
+
+
+
+.page {
+font-size:10px;
+background: var(--white);
+display: block;
+margin: 0 auto;
+position: relative;
+box-shadow: var(--pageShadow);
+}
+
+.page {
+font-size:10px;
+width: 310px;
+height: 438px;
+overflow: hidden;
+}
+
+.bb {
+border-bottom: 1px solid var(--darkWhite);
+}
+
+/* Top Section */
+.top-content {
+padding-bottom: 1px;
+}
+
+.logo img {
+height: 60px;
+}
+
+.top-left p {
+margin: 0;
+color: #000000;
+}
+
+
+.top-left .graphic-path {
+height: 25px;
+position: relative;
+width:120px;
+}
+
+.top-left .graphic-path::before {
+font-size:10px;
+content: "";
+height: 20px;
+background-color: var(--dark);
+position: absolute;
+left: 15px;
+right: 0;
+top: -15px;
+z-index: 2;
+}
+
+.top-left .graphic-path::after {
+content: "";
+height: 22px;
+width: 17px;
+background: var(--black);
+position: absolute;
+top: -13px;
+left: 6px;
+transform: rotate(45deg);
+}
+
+.top-left .graphic-path p {
+height: 25px;
+left: 0;
+right: -100px;
+text-transform: uppercase;
+background-color: var(--themeColor);
+font-size: 13px;
+z-index: 3;
+position: absolute;
+padding-left: 10px;
+}
+
+/* User Store Section */
+.store-userh {
+    font-size:10px;
+    padding-bottom: 10px;
+    }
+    
+    .store-userh p {
+    font-size:10px;
+    margin: 0;
+    font-weight: 600;
+    color: #000000;
+    }
+    .store-user {
+        font-size:13px;
+        padding-bottom: 10px;
+        }
+        
+        .store-user p {
+        font-size:13px;
+        margin: 0;
+        font-weight: 600;
+        color: #000000;
+        }
+    
+    .store-user .address {
+    font-weight: 400;
+    }
+    
+    .store-user h6 {
+    color: var(--themeColor);
+    font-family: 'Rajdhani', sans-serif;
+    }
+    
+    
+    
+    /* Balance Info Section */
+    .balance-infoh .table td,
+    .balance-infoh .table th {
+    padding: 0;
+    border: 0;
+    }
+    
+    .balance-infoh tr td:first-child {
+    font-weight: 600;
+    }
+    .balance-infoh{
+    font-size:10px;
+    }
+    .balance-info .table td,
+    .balance-info .table th {
+    padding: 0;
+    border: 0;
+    }
+    
+    .balance-info tr td:first-child {
+    font-weight: 600;
+    }
+    .balance-info{
+        font-size:13px;
+        }
+
+.extra-info p span {
+font-weight: 400;
+
+}
+
+/* Product Section */
+thead.head {
+    font-size:10px;
+    color: var(--white);
+    background: var(--themeColor);
+    }
+    thead {
+        font-size:14px;
+        color: var(--white);
+        background: var(--themeColor);
+        }
+    
+
+.table td,
+.table th {
+text-align: center;
+vertical-align: middle;
+}
+
+tr th:first-child,
+tr td:first-child {
+text-align: left;
+}
+
+
+
+tfoot {
+border-top: 2px solid var(--darkWhite);
+}
+
+tfoot td {
+font-weight: 600;
+}
+
+.modalpage {
+    font-size:15px;
+background-color:white;
+display: block;
+margin: 0 auto;
+position: relative;
+box-shadow: var(--pageShadow);
+}
+
+.modalpage {
+    font-size:15px;
+    size: A4;
+    margin: 0;
+overflow: hidden;
+}
+.cardh{
+    width:fit-content;
+    height:fit-content;
+}
+.modal-dialog { /* Width */
+    width:500px;
+    height:800x;
+    display: inline-block;
+    font-size:20px;
+}
+.modal {
+    z-index: -1;
+    width:A4;
+    height:A4;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-open .modal {
+     z-index: 1050;
+  }
+
+</style>
+
+<div class="page-content">
+<div class="card radius-15 h-20">
+  <div class="row">
+      <div class="col-md-12">
+          <center><h2 class="mt-3">SALES ORDER TEMPLATES</h2></center>
+          
+          <hr style="width:95%">
+      </div>
+  </div>
+</div>
+
+  <div class="py-5">
+    <div class="container">
+      <div class="row hidden-md-up">
+        <div class="col-md-5">
+          <div class="card cardh">
+            <div class="card-block">
+              <div class="card-body">
+                <a data-toggle="modal" href="#MyModal">
+                    <div class="tempinv page">
+                        <div>
+                
+                            <div  >
+                                <div class="p-2">
+                                    <div id="ember2512" class="tooltip-container ember-view ribbon text-ellipsis">
+                                        <div class="ribbon-inner ribbon-open">status<!----></div></div>
+                                    <section class="top-content bb d-flex justify-content-between">
+                                        <div class="logo">
+                                            <!-- <img src="logo.png" alt="" class="img-fluid"> -->
+                                        </div>
+                                        <div class="top-left">
+                                            <div class="graphic-path">
+                                                <p>SALES ORDER</p>
+                                            </div>
+                                            <div class="position-relative">
+                                                <p>Sales order No. <span>1</span></p>
+                                            </div>
+                                        </div>
+                                    </section>
+                        
+                                    <section class="store-userh mt-1">
+                                        <div class="col-12">
+                                            <div class="row bb pb-3">
+                                                <div class="col-7">
+                                                    <p>FROM,</p>
+                                                    <h6>{{cmp1.cname }}</h6>
+                                                    <p class="address "> {{cmp1.caddress}}<br>
+                                                        {{cmp1.city}},
+                                                        {{cmp1.state}}<br>
+                                                        {{cmp1.pincode}}<br>
+                                                    </p>
+                                                    
+                                                </div>
+                                                <div class="col-5">
+                                                    <p>TO,</p>
+                                                    <h5>{{estimate.customer}}</h5>
+                                                    <p class="address col-6" style="margin-left: -14px;" > {{ estimate.billingaddress}} </p>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row extra-info ">
+                                                <div class="col-7">
+                                                    <p>Sales order Date: <span>{{estimate.estimatedate | date:'d-m-Y'}}</span></p>
+                                                </div>
+                                                <div class="col-5">
+                                                    <p>Expected Shipment date : <span>{{estimate.expirationdate | date:'d-m-Y'}}</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                        
+                                    <section class="product-area mt-2">
+                                        <table border="1" style="background-color:#444;" class="table table-hover">
+                                            <thead class="head">
+                                                <tr>
+                                                    <td>Item Description</td>
+                                                    <td>Price</td>
+                                                    <td>Quantity</td>
+                                                    <td>Total</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+            
+                                                
+                                                <tr>
+                                                    <td>
+                                                        <div class="media" >
+                                                            
+                                                            <div class="media-body">
+                                                                <p class="mt-0 title" style="color:black">{{estimate.product}}</p>
+                                                                <span style="color:black">{{estimate.description}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td style="color:black">{{estimate.rate}}</td>
+                                                    <td style="color:black">{{estimate.qty}}</td>
+                                                    <td style="color:black">{{estimate.total}}</td>
+                                                </tr>
+                                                
+            
+                                                {% if estimate.product3 == NIL  %}
+            
+                                                <tr>
+                                                    <td>
+                                                        <div class="media">
+                                                            
+                                                            <div class="media-body">
+                                                                <p class="mt-0 title" style="color:black">{{estimate.product3}}</p>
+                                                                <span style="color:black">{{estimate.description3}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td style="color:black">{{estimate.rate3}}</td>
+                                                    <td style="color:black">{{estimate.qty3}}</td>
+                                                    <td style="color:black">{{estimate.total3}}</td>
+                                                </tr>
+            
+                                                {% endif %}
+            
+            
+            
+            
+                                                
+                                            </tbody>
+                                        </table>
+                                    </section>
+                        
+                                    <section class="balance-infoh">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <p class="m-0 font-weight-bold" style="color:black"> Note: </p>
+                                                <p style="color:black">{{estimate.note}}</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <table cellspacing="0" class="table border-0 table-hover">
+                                                    <tr >
+                                                        <td style="color:black">Sub Total :</td>
+                                                        <td style="color:black">{{estimate.subtotal}}</td>
+                                                    </tr>
+                                                    {% if estimate.IGST != "0.00" %}
+                                                    <tr>
+                                                        <td style="color:black">IGST :</td>
+                                                        <td style="color:black">{{estimate.IGST}}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if estimate.CGST != "0.00" %}
+                                                    <tr>
+                                                        <td style="color:black">CGST :</td>
+                                                        <td style="color:black">{{estimate.CGST}}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if estimate.SGST != "0.00" %}
+                                                    <tr>
+                                                        <td style="color:black">SGST:</td>
+                                                        <td style="color:black">{{estimate.SGST}}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    {% if estimate.TCS != "0.00" %}
+                                                    <tr>
+                                                        <td style="color:black">TCS:</td>
+                                                        <td style="color:black">{{estimate.TCS}}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td style="color:black">Grand Total:</td>
+                                                            <td style="color:black ;">{{estimate.estimatetotal}}</td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                        
+                                              
+                                            </div>
+                                        </div>
+                                    </section>
+                        
+                                    <!-- Cart BG -->
+                                    <img src="cart.jpg" class="img-fluid cart-bg" alt="">
+                        
+                                   
+                                </div>
+                            </div>
+            
+                        </div>
+                  
+                    
+                        </div>
+            
+              <h5 class="card-text text-center" style="padding:5px;">Standard Template</h5>
+            </a>
+            </div>
+          </div>
+        </div>
+       
+      </div>
+ 
+<!-- modal -->
+<div id="printThis" >
+
+<div  id="MyModal" class="modal fade "  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  
+  <div class="modal-dialog" >
+    
+  
+      
+    <!-- Modal Content: begins -->
+    <div class="modal-content" >
+    
+      <!-- Modal Body -->  
+      <div class="modal-body" >
+        <div class="tempinv modalpage">
+            <div>
+    
+                <div  >
+                    <div class="p-2">
+                        <div id="ember2512" class="tooltip-container ember-view ribbon text-ellipsis">
+                            <div class="ribbon-inner ribbon-open">status<!----></div></div>
+                        <section class="top-content bb d-flex justify-content-between">
+                            <div class="logo">
+                                <!-- <img src="logo.png" alt="" class="img-fluid"> -->
+                            </div>
+                            <div class="top-left">
+                                <div class="graphic-path">
+                                    <p>Sales order</p>
+                                </div>
+                                <div class="position-relative">
+                                    <p>Sales Order No. <span>1</span></p>
+                                </div>
+                            </div>
+                        </section>
+            
+                        <section class="store-user mt-1">
+                            <div class="col-12">
+                                <div class="row bb pb-3">
+                                    <div class="col-7">
+                                        <p>FROM,</p>
+                                        <h6>{{cmp1.cname }}</h6>
+                                        <p class="address "> {{cmp1.caddress}}<br>
+                                            {{cmp1.city}},
+                                            {{cmp1.state}}<br>
+                                            {{cmp1.pincode}}<br>
+                                        </p>
+                                        
+                                    </div>
+                                    <div class="col-5">
+                                        <p>TO,</p>
+                                        <h5>{{estimate.customer}}</h5>
+                                        <p class="address col-6" style="margin-left: -14px;" > {{ estimate.billingaddress}} </p>
+                                        
+                                    </div>
+                                </div>
+                                <div class="row extra-info ">
+                                    <div class="col-7">
+                                        <p>Sales order Date: <span>{{estimate.estimatedate | date:'d-m-Y'}}</span></p>
+                                    </div>
+                                    <div class="col-5">
+                                        <p>Expected Shipment Date : <span>{{estimate.expirationdate | date:'d-m-Y'}}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+            
+                        <section class="product-area mt-2">
+                            <table border="1" style="background-color:#444;" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <td>Item Description</td>
+                                        <td>Price</td>
+                                        <td>Quantity</td>
+                                        <td>Total</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    
+                                    <tr>
+                                        <td>
+                                            <div class="media" >
+                                                
+                                                <div class="media-body">
+                                                    <p class="mt-0 title" style="color:black">{{estimate.product}}</p>
+                                                    <span style="color:black">{{estimate.description}}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="color:black">{{estimate.rate}}</td>
+                                        <td style="color:black">{{estimate.qty}}</td>
+                                        <td style="color:black">{{estimate.total}}</td>
+                                    </tr>
+                                    
+
+                                    {% if estimate.product3 == NIL  %}
+
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                
+                                                <div class="media-body">
+                                                    <p class="mt-0 title" style="color:black">{{estimate.product3}}</p>
+                                                    <span style="color:black">{{estimate.description3}}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="color:black">{{estimate.rate3}}</td>
+                                        <td style="color:black">{{estimate.qty3}}</td>
+                                        <td style="color:black">{{estimate.total3}}</td>
+                                    </tr>
+
+                                    {% endif %}
+
+
+
+
+                                    
+                                </tbody>
+                            </table>
+                        </section>
+            
+                        <section class="balance-info">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="m-0 font-weight-bold" style="color:black"> Note: </p>
+                                    <p style="color:black">{{estimate.note}}</p>
+                                </div>
+                                <div class="col-6">
+                                    <table cellspacing="0" class="table border-0 table-hover">
+                                        <tr >
+                                            <td style="color:black">Sub Total :</td>
+                                            <td style="color:black">{{estimate.subtotal}}</td>
+                                        </tr>
+                                        {% if estimate.IGST != "0.00" %}
+                                        <tr>
+                                            <td style="color:black">IGST :</td>
+                                            <td style="color:black">{{estimate.IGST}}</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% if estimate.CGST != "0.00" %}
+                                        <tr>
+                                            <td style="color:black">CGST :</td>
+                                            <td style="color:black">{{estimate.CGST}}</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% if estimate.SGST != "0.00" %}
+                                        <tr>
+                                            <td style="color:black">SGST:</td>
+                                            <td style="color:black">{{estimate.SGST}}</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% if estimate.TCS != "0.00" %}
+                                        <tr>
+                                            <td style="color:black">TCS:</td>
+                                            <td style="color:black">{{estimate.TCS}}</td>
+                                        </tr>
+                                        {% endif %}
+                                        <tfoot>
+                                            <tr>
+                                                <td style="color:black">Grand Total:</td>
+                                                <td style="color:black ;">{{estimate.estimatetotal}}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+            
+                                  
+                                </div>
+                            </div>
+                        </section>
+            
+                        <!-- Cart BG -->
+                        <img src="cart.jpg" class="img-fluid cart-bg" alt="">
+            
+                       
+                    </div>
+                </div>
+
+            </div>
+      
+        
+            </div>
+
+</div>
+    
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+       <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button id="btn-print-this" type="button" class="btn btn-default">Print</button>
+      </div>
+    
+    </div>
+  </div>
+</div></div>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,254 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    </head>
+    <body>
+
+    <!-- Trigger/Open The Modal -->
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">EXPENSES</h2></center>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-10"></div>
+                    <div class=col-md-2">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-outline-info text-light dropdown-toggle"
+                                    data-toggle="dropdown">New
+                                Transaction
+                            </button>
+                            <div class="dropdown-menu" style="background-color: black;">
+                                <a class="dropdown-item" href="{% url "expencesindex" %}"
+                                   style="height: 40px; font-size: 15px; color: white;">Expense</a>
+                                <a class="dropdown-item" href="{% url 'gobills' %}"
+                                   style="height: 40px; font-size: 15px; color: white;">Payment</a>
+                                <!-- <a class="dropdown-item" href="{% url 'gocheque' %}"
+                                   style="height: 40px; font-size: 15px; color: white;">Cheque</a> -->
+                                <a class="dropdown-item" href="{% url 'gosupcredit' %}"
+                                   style="height: 40px; font-size: 15px; color: white;">Debit Note</a>
+                                <a class="dropdown-item" href="{% url 'gotimeactivity' %}"
+                                   style="height: 40px; font-size: 15px; color: white;">Time Activity</a>
+                                <a class="dropdown-item" href="{% url 'addadvancepayment' %}"
+                                   style="height: 40px; font-size: 15px; color: white;">Advance Payment</a>
+                                <!-- <a class="dropdown-item" href="{% url 'addpdcc' %}"
+                                   style="height: 40px; font-size: 15px; color: white;">Pay down credit card</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover table-responsive-md mt-3" width="50%">
+                <thead>
+                <th>DATE</th>
+                <th>TYPE</th>
+                <th>PAYEE</th>
+                <th>TAX</th>
+                <th>AMOUNT</th>
+                <th>ACTION</th>
+                </thead>
+                    <tbody>
+                    {% for tim in ti %}
+                        {% if tim.cid_id == cmp1.cid %}
+                            <tr>
+                                <td>{{ tim.timdate }}</td>
+                                <td>{{ "Time Charge" }}</td>
+                                <td>{{ tim.timecust }}</td>
+                                <td>{{ "Nill" }}</td>
+                                <td>{{ "Nill" }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                data-toggle="dropdown">Actions
+                                        </button>
+                                        <div class="dropdown-menu" style="background-color: white;">
+                                            <a href="edittime/{{ tim.timeactid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i
+                                                    class="bx bx-edit"><b>EDIT</b></i></a><br>
+                                            <a href="deletetime/{{ tim.timeactid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i
+                                                    class="bx bx-trash"><b>DELETE</b></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+
+                    </tbody>
+                    <tbody>
+                    {% for ch in che %}
+                        {% if ch.cid_id == cmp1.cid %}
+                            <tr>
+                                <td>{{ ch.paydate }}</td>
+                                <td>{{ "Cheque" }}</td>
+                                <td>{{ ch.payee }}</td>
+                                <td>{{ ch.taxamount }}</td>
+
+                                <td>{{ ch.grandtotal }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                data-toggle="dropdown">Actions
+                                        </button>
+                                        <div class="dropdown-menu" style="background-color: white;">
+                                            <a href="editcheque/{{ ch.chequeid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i
+                                                    class="bx bx-edit"><b>EDIT</b></i></a><br>
+                                            <a href="deletecheque/{{ ch.chequeid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i
+                                                    class="bx bx-trash"><b>DELETE</b></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                    <tbody>
+                    {% for adv in advancepayment %}
+                        {% if adv.cid_id == cmp1.cid %}
+                            <tr>
+
+                                <td>{{ adv.paymentdate }}</td>
+                                <td>{{ "Advance Payment" }}</td>
+                                <th>{{ adv.payee }}</th>
+                                <td>{{ "Nill" }}</td>
+                                <td>{{ adv.amount }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                data-toggle="dropdown">Actions
+                                        </button>
+                                        <div class="dropdown-menu" style="background-color: white;">
+                                            <a href="advpayedit/{{ adv.advancepaymentid }}"
+                                               style="color: black;" class="dropdown-item"><i class="bx bx-edit"><b>EDIT</b></i></a>
+                                            <a href="deleteadvpay/{{ adv.advancepaymentid }}"
+                                               style="color: black;" class="dropdown-item"><i class="bx bx-trash"><b>DELETE</b></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                    <tbody>
+                    {% for bill in bills %}
+                        {% if bill.cid_id == cmp1.cid %}
+                            <tr>
+                                <th>{{ bill.paymdate }}</th>
+                                <td>{{ "Payment" }}</td>
+                                <td>{{ bill.payee }}</td>
+                                <td>{{ bill.taxamount }}</td>
+                                <td>{{ bill.grandtotal }}</td>
+                                <td>
+{#                                    <div class="dropdown">#}
+{#                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"#}
+{#                                                data-toggle="dropdown">Actions#}
+{#                                        </button>#}
+{#                                        <div class="dropdown-menu" style="background-color: white;">#}
+{#                                            <a href="editbills/{{ bill.billid }}"#}
+{#                                               style="color: black; font-size: 15px;" class="dropdown-item"><i#}
+{#                                                    class="bx bx-edit"><b>EDIT</b></i></a>#}
+{#                                            <a href="deletebills/{{ bill.billid }}"#}
+{#                                               style="color: black; font-size: 15px;" class="dropdown-item"><i#}
+{#                                                    class="bx bx-trash"><b>DELETE</b></i></a>#}
+{#                                        </div>#}
+{#                                    </div>#}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                    <tbody>
+                    {% for supcr in suplrcredit %}
+                        {% if supcr.cid_id == cmp1.cid %}
+                            <tr>
+                                <th>{{ supcr.paymdate }}</th>
+                                <td>{{ "Debit Note" }}</td>
+                                <td>{{ supcr.supplier }}</td>
+                                <td>{{ supcr.taxamount }}</td>
+                                <td>{{ supcr.grandtotal }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                data-toggle="dropdown">Actions
+                                        </button>
+                                        <div class="dropdown-menu" style="background-color: white;">
+                                            <a href="editsuplcredit/{{ supcr.suppliercreditid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i class="bx bx-edit"><b>EDIT</b></i></a>
+                                            <a href="deletesuplcredit/{{ supcr.suppliercreditid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i class="bx bx-trash"><b>DELETE</b></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                    <tbody>
+                    {% for expences in exp %}
+                        {% if expences.cid_id == cmp1.cid %}
+                            <tr>
+                                <th>{{ expences.paymdate }}</th>
+                                <th>{{ "Expences" }}</th>
+                                <td>{{ expences.payee }}</td>
+                                <td>{{ expences.taxamount }}</td>
+                                <td>{{ expences.grandtotal }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                data-toggle="dropdown">Actions
+                                        </button>
+                                        <div class="dropdown-menu" style="background-color: white;">
+                                            <a href="editexpences/{{ expences.expencesid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i class="bx bx-edit"><b>EDIT</b></i></a>
+                                            <a href="deleteexpences/{{ expences.expencesid }}"
+                                               style="color: black; font-size: 15px;" class="dropdown-item"><i class="bx bx-trash"><b>DELETE</b></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                    <tbody>
+                    {% for pdccs in pdcc %}
+                        {% if pdccs.cid_id == cmp1.cid %}
+                            <tr>
+                                <td>{{ pdccs.dateofpayment }}</td>
+                                  <th>{{ "Pay Down Credit Card" }}</th>
+                                 <td>{{ pdccs.payee }}</td>
+                                <td>{{ 'Nill' }}</td>
+                                <td>{{ pdccs.amount }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle text-grey"
+                                                data-toggle="dropdown">Actions
+                                        </button>
+                                        <div class="dropdown-menu" style="background-color: white;">
+                                            <a href="pdccedit/{{ pdccs.paycreditcardid }}"
+                                               style="color: black; font-size: 15px;"><i class="bx bx-edit"><b>EDIT</b></i></a>
+                                            <a href="pdccdelete/{{ pdccs.paycreditcardid }}"
+                                               style="color: black; font-size: 15px;"><i class="bx bx-trash"><b>DELETE</b></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </body>
+
+{% endblock %}
+

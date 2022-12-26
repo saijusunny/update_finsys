@@ -1,0 +1,1212 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style type="text/css">
+        #grad1 {
+            background-color: #9C27B0;
+        }
+
+        #msform {
+            text-align: center;
+            position: relative;
+            margin-top: 20px
+        }
+
+        #msform fieldset .form-card {
+            background: white;
+            border: 0 none;
+            border-radius: 0px;
+            box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+            padding: 20px 40px 30px 40px;
+            box-sizing: border-box;
+            width: 94%;
+            margin: 0 3% 20px 3%;
+            position: relative
+        }
+
+        #msform fieldset {
+            background: #243e54;
+            border: 0 none;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            width: 100%;
+            margin: 0;
+            padding-bottom: 20px;
+            position: relative
+        }
+
+        #msform fieldset:not(:first-of-type) {
+            display: none
+        }
+
+        #msform fieldset .form-card {
+            background-color: #243e54;
+            text-align: left;
+            color: #9E9E9E;
+            box-shadow: none !important;
+        }
+
+        #msform input,
+        #msform textarea {
+            padding: 0px 8px 4px 8px;
+            border: none;
+            background-color: #2f516f;
+            border-bottom: 1px solid #ccc;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            color: black;
+            font-size: 16px;
+            letter-spacing: 1px
+        }
+
+        #msform input:focus,
+        #msform textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: none;
+            font-weight: bold;
+            border-bottom: 2px solid skyblue;
+            outline-width: 0
+        }
+
+        #msform .action-button {
+            width: 100px;
+            background: skyblue;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px
+        }
+
+        #msform .action-button:hover,
+        #msform .action-button:focus {
+            box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue
+        }
+
+        #msform .action-button-previous {
+            width: 100px;
+            background: #616161;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px
+        }
+
+        #msform .action-button-previous:hover,
+        #msform .action-button-previous:focus {
+            box-shadow: 0 0 0 2px white, 0 0 0 3px #616161
+        }
+
+        select.list-dt {
+            border: none;
+            outline: 0;
+            border-bottom: 1px solid #ccc;
+            padding: 2px 5px 3px 5px;
+            margin: 2px
+        }
+
+        select.list-dt:focus {
+            border-bottom: 2px solid skyblue
+        }
+
+        .card {
+            z-index: 0;
+            border: none;
+            border-radius: 0.5rem;
+            position: relative
+        }
+
+        .fs-title {
+            font-size: 25px;
+            color: #2C3E50;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: left
+        }
+
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            color: lightgrey
+        }
+
+        #progressbar .active {
+            color: #2107ff;
+        }
+
+        #progressbar li {
+            list-style-type: none;
+            font-size: 12px;
+            width: 25%;
+            float: left;
+            position: relative
+        }
+
+        #progressbar #account:before {
+            font-family: FontAwesome;
+            content: "\f023"
+        }
+
+        #progressbar #personal:before {
+            font-family: FontAwesome;
+            content: "\f007"
+        }
+
+        #progressbar #payment:before {
+            font-family: FontAwesome;
+            content: "\f09d"
+        }
+
+        #progressbar #confirm:before {
+            font-family: FontAwesome;
+            content: "\f00c"
+        }
+
+        #progressbar li:before {
+            width: 50px;
+            height: 50px;
+            line-height: 45px;
+            display: block;
+            font-size: 18px;
+            color: #ffffff;
+            background: lightgray;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            padding: 2px
+        }
+
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background: lightgray;
+            position: absolute;
+            left: 0;
+            top: 25px;
+            z-index: -1
+        }
+
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #0b29ff;
+        }
+
+        .radio-group {
+            position: relative;
+            margin-bottom: 25px
+        }
+
+        .radio {
+            display: inline-block;
+            width: 204;
+            height: 104;
+            border-radius: 0;
+            background: lightblue;
+            box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            cursor: pointer;
+            margin: 8px 2px
+        }
+
+        .radio:hover {
+            box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3)
+        }
+
+        .radio.selected {
+            box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1)
+        }
+
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+
+    </style>
+    <style>
+        .form-input {
+            width: 300px;
+            padding: 20px;
+            background: #6c7394;;
+        }
+
+        .form-input input {
+            display: none;
+        }
+
+        .form-input label {
+            display: block;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            background: #333;
+            color: #fff;
+            font-size: 15px;
+            font-family: "Open Sans", sans-serif;
+            text-transform: Uppercase;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .form-input img {
+            width: 100%;
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+
+
+    <div class="page-content">
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">PRODUCT / SERVICE INFORMATION</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15 p-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-lg-12 col-xl-12">
+                        <div class="card" style="background-color: #2a4964;">
+                            <div class="row no-gutters">
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <center><h3>SERVICES</h3></center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form action="updateser/{{ ser.serviceid }}" method="post" class="needs-validation" novalidate
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-lg-12 mt-3">
+                            <label for="validationCustom01" style="color: white;">Name</label>
+                            <textarea class="form-control" name="name" id="validationCustom01" required
+                                      style="background-color: #2f516f;">{{ ser.name }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                            <label for="validationCustom01" style="color: white;">SKU</label>
+                            <input type="text" name="sku" value="{{ ser.sku }}" class="form-control"
+                                   pattern="^[a-zA-Z0-9]{6,}$" placeholder="Eg;N41554" id="validationCustom01"
+                                   required style="background-color: #2f516f;">
+                            <div class="invalid-feedback">
+                                <li>Must have atleast 6 characters (combination of alphabets and numbers)</li>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                            <label for="validationCustom05" style="color: white;">SAC Code</label>
+                            <input type="text" name="sac" value="{{ ser.sac }}" class="form-control"
+                                   placeholder="Enter SAC code :( for eg;998841-Coke and refined petroleum product manufacturing services)"
+                                   id="validationCustom05" style="background-color: #2f516f;" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                            <label for="validationCustom01" style="color: white;">Unit</label>
+                            <select class="custom-select" name="unit" id="validationCustom04"
+                                    required style="background-color: #2a4964; color: white;">
+                                <option>{{ ser.unit }}</option>
+                                <option>BAG-BAGS</option>
+                                <option>BAL-BALE</option>
+                                <option>BDL-BUNDLES</option>
+                                <option>BKL-BUCKLES</option>
+                                <option>BOX-BOX</option>
+                                <option>BOU-BILLIONS OF UNITS</option>
+                                <option>BTL-BOTTLES</option>
+                                <option>BUN-BUNCHES</option>
+                                <option>CAN-CANS</option>
+                                <option>CBM-CUBIC METER</option>
+                                <option>CMS-CENTIMETER</option>
+                                <option>CCM-CUBIC CENTIMETER</option>
+                                <option>CTN-CARTONS</option>
+                                <option>DOZ-DOZEN</option>
+                                <option>DRM-DRUM</option>
+                                <option>GGR-GREAT GROSS</option>
+                                <option>GMS-GRAMS</option>
+                                <option>GRS-GROSS</option>
+                                <option>GYD-GROSS YARDS</option>
+                                <option>KGS-KILOGRAMS</option>
+                                <option>KLR-KILOLITER</option>
+                                <option>KME-KILOMETRE</option>
+                                <option>MTS Metric ton</option>
+                                <option>MLT-MILLILITRE</option>
+                                <option>MTR-METERS</option>
+                                <option>NOS-NUMBER</option>
+                                <option>PAC-PACKS</option>
+                                <option>PCS-PIECES</option>
+                                <option>PRS-PAIRS</option>
+                                <option>QTL-QUINTAL</option>
+                                <option>ROL-ROLLS</option>
+                                <option>SQF-SQUARE FEET</option>
+                                <option>SET-SETS</option>
+                                <option>SQM-SQUARE METERS</option>
+                                <option>SQY-SQUARE YARDS</option>
+                                <option>TBS-TABLETS</option>
+                                <option>TGM-TEN GROSS</option>
+                                <option>THD-THOUSANDS</option>
+                                <option>TON-TONNES</option>
+                                <option>TUB-TUBES</option>
+                                <option>UGS-US GALLONS</option>
+                                <option>UNT-UNITS</option>
+                                <option>YDS-YARDS</option>
+                                <option>OTH-OTHERS</option>
+
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                            <label for="validationCustom05" style="color: white;">Category</label>
+                            <input type="text" class="form-control" value="{{ ser.categ }}" name="categ"
+                                   id="validationCustom04"
+                                   style="background-color: #2a4964; color: white;width: 100%">
+                        </div>
+                    </div>
+                    <hr style="margin-top: 25px;"/>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-lg-12 mt-3">
+                            <label for="description">Description</label><br>
+                            <div class="form-check">
+                                <input class="form-check-input" name="check1" type="checkbox" checked="true"
+                                       id="chkPassport1" onclick="ShowHideDivCust(this)">
+                                <label>I sell this product/service to my
+                                    customers.</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dvPassport2" style="display: block">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-lg-12 mt-3">
+                                <label for="validationCustom01" style="color: white;">Description</label>
+                                <textarea class="form-control" name="descr" id="validationCustom01"
+                                          style="background-color: #2f516f;">{{ ser.descr }}</textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                                <label for="validationCustom03" style="color: white;">Sales price/rate</label>
+                                <input type="text" name="saleprice" value="{{ ser.saleprice }}"
+                                       class="form-control" id="saleprice"
+                                       style="background-color: #2a4964; color: white;">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="check2" type="checkbox" id="Check1"
+                                           onclick="show()" value="inclusive">
+                                    <label>Inclusive of Tax.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                                <label for="validationCustom03" style="color: white;">Tax</label>
+                                <select class="custom-select" name="tax" id="tax"
+                                        style="background-color: #2a4964; color: white;">
+                                    <option value={{ ser.tax }}>{{ ser.tax }} %</option>
+                                    <option value=28>28.0% GST (28%)</option>
+                                    <option value=28>28.0% IGST (28%)</option>
+                                    <option value=18>18.0% GST (18%)</option>
+                                    <option value=18>18.0% IGST (18%)</option>
+                                    <option value=15>15.0% ST (100%)</option>
+                                    <option value=14.5>14.5% ST (100%)</option>
+                                    <option value=14>14.00% ST (100%)</option>
+                                    <option value=14>14.0% VAT (100%)</option>
+                                    <option value=12.36>12.36% ST (100%)</option>
+                                    <option value=12>12.0% GST (12%)</option>
+                                    <option value=12>12.0% IGST (12%)</option>
+                                    <option value=6>6.0% GST (6%)</option>
+                                    <option value=6>6.0% IGST (6%)</option>
+                                    <option value=5>5.0% GST (5%)</option>
+                                    <option value=5>5.0% IGST (5%)</option>
+                                    <option value=5>5.0% VAT (100%)</option>
+                                    <option value=4>4.0% VAT (100%)</option>
+                                    <option value=3>3.0% GST (3%)</option>
+                                    <option value=3>3.0% IGST (3%)</option>
+                                    <option value=2>2.0% CST (100%)</option>
+                                    <option value=0.25>0.25% GST (0.25%)</option>
+                                    <option value=0.25>0.25% IGST (0.25%)</option>
+                                    <option value=0>0% GST (0%)</option>
+                                    <option value=0>0% IGST (0%)</option>
+                                    <option value=0>Exempt GST (0%)</option>
+                                    <option value=0>Exempt IGST (0%)</option>
+                                    <option value=0>Out of Scope(0%)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-lg-4 mt-3">
+                                <label for="validationCustom04" style="color: white;">Income account</label>
+                                <select class="custom-select" name="income" id="validationCustom04"
+                                        style="background-color: #2a4964; color: white;width: 100%">
+                                    <option>{{ ser.income }}</option>
+                                    <option value="">Purchases.</option>
+                                    <option value="Billable Expense Income">Billable Expense Income</option>
+                                    <option value="Product Sales">Product Sales</option>
+                                    <option>Sales-Hardware</option>
+                                    <option>Sales-Software</option>
+                                    <option>Sales-Support and Maintanance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Cost of Sales</option>
+                                    <option>Equipment Rental for Jobs</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Advertising/Promotional</option>
+                                    <option>Bank Charges</option>
+                                    <option>Business Licenses and Permitts</option>
+                                    <option>Charitable Contributions</option>
+                                    <option>Computer and Internet Expense</option>
+                                    <option>Depreciation Expense</option>
+                                    <option>Dues and Subscriptions</option>
+                                    <option>HouseKeeping Charges</option>
+                                    <option>Insurance Expenses</option>
+                                    <option>Insurance Expenses-General Liability Insurance</option>
+                                    <option>Insurance Expenses-Health Insurance</option>
+
+                                    <option>Insurance Expense-Life and Disability Insurance</option>
+                                    <option>Insurance Expense-Professional Liabilty</option>
+                                    <option>Internet Expenses</option>
+                                    <option>Meals and Entertainment</option>
+                                    <option>Office Suppliers</option>
+                                    <option>Postage and Delivery</option>
+                                    <option>Printing and Reproduction</option>
+                                    <option>Professional Fees</option>
+                                    <option>Purchases</option>
+                                    <option>Rent Expense</option>
+                                    <option>Repair and Maintenance</option>
+                                    <option>Small Tools and Equipments</option>
+
+                                    <option>Swachh Barath Cess Expense</option>
+                                    <option>Taxes-Property</option>
+                                    <option>Telephone Expense</option>
+                                    <option>Travel Expense</option>
+                                    <option>Uncategorised Expense</option>
+                                    <option>Utilities</option>
+                                    <option>Finance Charge Income</option>
+                                    <option>Insurance Proceeds Received</option>
+                                    <option>Interest Income</option>
+                                    <option>Proceeds From Sale of Assets</option>
+                                    <option>Shipping and Delivery Income</option>
+                                    <option>Ask My Accountant</option>
+
+                                    <option>CGST Write-off</option>
+                                    <option>GST Write-off</option>
+                                    <option>IGST Write-off</option>
+                                    <option>Miscellaneous Expense</option>
+                                    <option>Political Contributions</option>
+                                    <option>Reconcilation Discrepancies</option>
+                                    <option>SGST Write-off</option>
+                                    <option>Vehicles</option>
+                                    <option>CGST Payable</option>
+                                    <option>CST Payable</option>
+                                    <option>CST Suspense</option>
+                                    <option>GST Payable</option>
+
+                                    <option>GST Suspense</option>
+                                    <option>IGST Payable</option>
+                                    <option>Input CGST</option>
+                                    <option>Input CGST Tax RCM</option>
+                                    <option>Input IGST</option>
+                                    <option>Input IGST Tax RCM</option>
+                                    <option>Input Krishi Kalyan Cess</option>
+                                    <option>Input Krishi Kalyan Cess RCM</option>
+                                    <option>Input SGST</option>
+                                    <option>Input SGST Tax RCM</option>
+                                    <option>Input VAT 14%</option>
+                                    <option>Input VAT 4%</option>
+                                    <option>Krishi Kalyan Cess Payable</option>
+                                    <option>Input VAT 5%</option>
+                                    <option>Krishi Kalyan Cess Suspense</option>
+                                    <option>Output CGST</option>
+                                    <option>Output CGST Tax RCM</option>
+                                    <option>Output CST 2%</option>
+                                    <option>Output IGST</option>
+                                    <option>Output IGST Tax RCM</option>
+                                    <option>Output Krishi Kalyan Cess</option>
+                                    <option>Output krishi kalyan Cess RCM</option>
+                                    <option>Output SGST Tax RCM</option>
+                                    <option>Output Service Tax</option>
+
+
+                                    <option>Output Service Tax RCM</option>
+                                    <option>Output VAT 14%</option>
+                                    <option>Output VAT 4%</option>
+                                    <option>Output VAT 5%</option>
+                                    <option>SGST Payable</option>
+                                    <option>Service Tax Payable</option>
+                                    <option>Service Tax Suspense</option>
+                                    <option>Swachh Barath Cess Payable</option>
+                                    <option>TDS Payable</option>
+                                    <option>VAT Payable</option>
+                                    <option>VAT Suspense</option>
+
+
+                                    <option>Deferred CGST</option>
+                                    <option>Deferred GST Input credit</option>
+                                    <option>Deferred IGST</option>
+                                    <option>Deferred SGST</option>
+                                    <option>Deferred Service Tax Input Credit</option>
+                                    <option>Deferred VAT Input Credit</option>
+                                    <option>GST Refund</option>
+                                    <option>Inventory Asset</option>
+                                    <option>Krishi Kalyan Cess Refund</option>
+                                    <option>Prepaid Insurance</option>
+
+                                    <option>Service Tax Refund</option>
+                                    <option>TDS Receivable</option>
+                                    <option>Uncategorised Asset</option>
+                                    <option>Undeposited Fund</option>
+                                    <option>Billable Expense Income</option>
+                                    <option>Consulting Income</option>
+                                    <option>Product Sales</option>
+                                    <option>Sales</option>
+                                    <option>Sales-Hardware</option>
+                                    <option>Sales-Software</option>
+
+                                    <option>Sales-Support And Maintanance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Accumulated Depreciation</option>
+                                    <option>Building And Improvements</option>
+                                    <option>Furniture And Equipment</option>
+                                    <option>Land</option>
+                                    <option>Leasehold Improvements</option>
+                                    <option>Vehicles</option>
+
+                                    <option>Retained Earnings</option>
+                                    <option>Cost of Sales</option>
+                                    <option>Equipment Rental For Jobs</option>
+                                    <option>Freight and shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases - Hardware For Resales</option>
+                                    <option>Equipment Rental For Jobs</option>
+                                    <option>Freight and Shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases-Hardware For Resale</option>
+
+                                    <option>Purchases-Software For Resale</option>
+                                    <option>Subcontracted Services</option>
+                                    <option>Tools and Craft Suppliers</option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4 col-lg-4 mt-3">
+                                <label for="validationCustom03" style="color: white;">Abatement</label>
+                                <input type="text" name="abatement" value="{{ ser.abatement }}"
+                                       class="form-control" id="validationCustom03"
+                                       style="background-color: #2a4964; color: white;">
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-lg-4 mt-3">
+                                <label for="validationCustom03" style="color: white;">Service Type</label>
+                                <select class="custom-select" name="sertype" id="validationCustom03"
+                                        style="background-color: #2a4964; color: white;">
+                                    <option>{{ ser.sertype }}</option>
+                                    <option>Stock Broking</option>
+                                    <option>General Insurance</option>
+                                    <option>Courier</option>
+                                    <option>Advertising Agency</option>
+                                    <option>Consulting Engineer</option>
+                                    <option>Custom House Agent</option>
+                                    <option>Steamer Agent</option>
+                                    <option>Clearing and Forwarding</option>
+                                    <option>Man power Recruiting</option>
+                                    <option>Air Travel Agent</option>
+                                    <option>Tour operator</option>
+                                    <option>Rent a Cab</option>
+                                    <option>Architect</option>
+                                    <option>Interior Director</option>
+                                    <option>Management Consultment</option>
+                                    <option>Chartered Accountant</option>
+
+                                    <option>Cost Accountant</option>
+                                    <option>Company Secretary</option>
+                                    <option>Real Estate Agent</option>
+                                    <option>Security Agency</option>
+                                    <option>Credit Rating Agency</option>
+                                    <option>Market Research Agency</option>
+                                    <option>Underwriter</option>
+                                    <option>Beauty Parlor</option>
+                                    <option>Cargo Handling</option>
+                                    <option>Cable Operators</option>
+
+                                    <option>Dry Cleaning</option>
+                                    <option>Event Management</option>
+                                    <option>Fashion Designer</option>
+                                    <option>Life insurance</option>
+                                    <option>Scientific and Technical Consultancy</option>
+                                    <option>Photograghy</option>
+                                    <option>Convention Services</option>
+                                    <option>Video Tape Production</option>
+                                    <option>Sound Recording</option>
+                                    <option>Broadcasting</option>
+
+                                    <option>Insurance Auxilary Service</option>
+                                    <option>Banking and Other Financial</option>
+                                    <option>Port Serrvices</option>
+                                    <option>Authorised Service Station</option>
+                                    <option>Health Club and fitness centres</option>
+                                    <option>Rail Travel Agent</option>
+                                    <option>Storage and Warehousing</option>
+                                    <option>Business Auxillary</option>
+                                    <option>Commercial Coaching</option>
+                                    <option>Erection or Installation</option>
+
+                                    <option>Franchise Service</option>
+                                    <option>Internet Cafe</option>
+                                    <option>Maintenance or repair</option>
+                                    <option>Techincal testing</option>
+                                    <option>Technical Inspection</option>
+                                    <option>Foreign exchange broking</option>
+                                    <option>Port</option>
+                                    <option>Airport Services</option>
+                                    <option>Air Transport</option>
+                                    <option>Business Exhibition</option>
+                                    <option>Goods Transport</option>
+                                    <option>Construction of commerce complex</option>
+                                    <option>Intellectual property service</option>
+                                    <option>Opinion poll service</option>
+                                    <option>Outdoor Catering</option>
+                                    <option>Television and Radio Programme Production</option>
+                                    <option>Survey and exploration of minerals</option>
+                                    <option>Pandal and shamiana</option>
+                                    <option>Travel Agent</option>
+                                    <option>Forward Contract Brokerage</option>
+                                    <option>Transport through pipeline</option>
+                                    <option>Site Preparation</option>
+                                    <option>Dredging</option>
+                                    <option>Survey and map making</option>
+                                    <option>Cleaning Service</option>
+                                    <option>Clubs and Association Service</option>
+                                    <option>Packaging Service</option>
+                                    <option>Mailing list Compilation</option>
+                                    <option>Residential Complex Construction</option>
+                                    <option>Share transfer Agent</option>
+                                    <option>Atm Manintenance</option>
+                                    <option>Recovery Agent</option>
+                                    <option>Sale of space for advertisement</option>
+                                    <option>Sponsorship</option>
+                                    <option>International Air travel</option>
+                                    <option>Containerised rail transport</option>
+                                    <option>Business Support Service</option>
+                                    <option>Action Service</option>
+                                    <option>Public Relation Management</option>
+                                    <option>Ship Management</option>
+                                    <option>Internet Telephony</option>
+                                    <option>Cruise Ship tour</option>
+                                    <option>Credit Card</option>
+                                    <option>Telecommuniction Service</option>
+                                    <option>Mining of Mineral ,Oil or gas</option>
+                                    <option>Renting Immovable Property</option>
+                                    <option>Works Contract</option>
+                                    <option>Development of Consent</option>
+                                    <option>Asset Management</option>
+                                    <option>Design Services</option>
+                                    <option>Information Technology Services</option>
+                                    <option>ULIP Management</option>
+                                    <option>Stock Exchange Service</option>
+                                    <option>Services for transaction in Goods</option>
+                                    <option>Clearing House Services</option>
+                                    <option>Supply of Tangible goods</option>
+                                    <option>Online Information Retrieval</option>
+                                    <option>Mandap keeper</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin-top: 25px;"/>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-lg-12 mt-3">
+                            <label for="description">Purchase Information</label><br>
+                            <div class="form-check">
+                                <input class="form-check-input" name="check3" type="checkbox" id="chkPassport"
+                                       onclick="ShowHideDiv(this)">
+                                <label>I Purchase this product/service from
+                                    Supplier.</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="dvPassport" style="display: none">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-lg-12 mt-3">
+                                <label for="validationCustom01" style="color: white;">Description</label>
+                                <textarea class="form-control" name="purchasedescr" id="validationCustom01"
+                                          style="background-color: #2f516f;">{{ ser.purchasedescr }}</textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                                <label for="validationCustom03" style="color: white;">Cost</label>
+                                <input type="text" name="cost" value="{{ ser.cost }}" class="form-control"
+                                       id="cost" style="background-color: #2f516f;">
+                                <div class="form-check mt-1">
+                                    <input class="form-check-input" name="check4" type="checkbox" id="Check"
+                                           onclick="show()" value="inclusive">
+                                    <label>Inclusive of Tax.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6 mt-3">
+                                <label for="validationCustom03" style="color: white;">Purchase Tax</label>
+                                <select class="custom-select" name="purchasetax" id="purtax"
+                                        style="background-color: #2a4964; color: white;">
+                                    <option>{{ ser.purchasetax }} %</option>
+                                    <option value=28>28.0% GST (28%)</option>
+                                    <option value=28>28.0% IGST (28%)</option>
+                                    <option value=18>18.0% GST (18%)</option>
+                                    <option value=18>18.0% IGST (18%)</option>
+                                    <option value=15>15.0% ST (100%)</option>
+                                    <option value=14.5>14.5% ST (100%)</option>
+                                    <option value=14>14.00% ST (100%)</option>
+                                    <option value=14>14.0% VAT (100%)</option>
+                                    <option value=12.36>12.36% ST (100%)</option>
+                                    <option value=12>12.0% GST (12%)</option>
+                                    <option value=12>12.0% IGST (12%)</option>
+                                    <option value=6>6.0% GST (6%)</option>
+                                    <option value=6>6.0% IGST (6%)</option>
+                                    <option value=5>5.0% GST (5%)</option>
+                                    <option value=5>5.0% IGST (5%)</option>
+                                    <option value=5>5.0% VAT (100%)</option>
+                                    <option value=4>4.0% VAT (100%)</option>
+                                    <option value=3>3.0% GST (3%)</option>
+                                    <option value=3>3.0% IGST (3%)</option>
+                                    <option value=2>2.0% CST (100%)</option>
+                                    <option value=0.25>0.25% GST (0.25%)</option>
+                                    <option value=0.25>0.25% IGST (0.25%)</option>
+                                    <option value=0>0% GST (0%)</option>
+                                    <option value=0>0% IGST (0%)</option>
+                                    <option value=0>Exempt GST (0%)</option>
+                                    <option value=0>Exempt IGST (0%)</option>
+                                    <option value=0>Out of Scope(0%)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-lg-4 mt-3">
+                                <label for="validationCustom03" style="color: white;">Expense Account</label>
+                                <select class="custom-select" name="expenseaccount" id="validationCustom03"
+                                        style="background-color: #2a4964; color: white;width: 100%">
+                                    <option>{{ ser.expenseaccount }}</option>
+                                    <option value="">Purchases.</option>
+                                    <option value="Billable Expense Income">Billable Expense Income</option>
+                                    <option value="Product Sales">Product Sales</option>
+                                    <option>Sales-Hardware</option>
+                                    <option>Sales-Software</option>
+                                    <option>Sales-Support and Maintanance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Cost of Sales</option>
+                                    <option>Equipment Rental for Jobs</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Advertising/Promotional</option>
+                                    <option>Bank Charges</option>
+                                    <option>Business Licenses and Permitts</option>
+                                    <option>Charitable Contributions</option>
+                                    <option>Computer and Internet Expense</option>
+                                    <option>Depreciation Expense</option>
+                                    <option>Dues and Subscriptions</option>
+                                    <option>HouseKeeping Charges</option>
+                                    <option>Insurance Expenses</option>
+                                    <option>Insurance Expenses-General Liability Insurance</option>
+                                    <option>Insurance Expenses-Health Insurance</option>
+
+                                    <option>Insurance Expense-Life and Disability Insurance</option>
+                                    <option>Insurance Expense-Professional Liabilty</option>
+                                    <option>Internet Expenses</option>
+                                    <option>Meals and Entertainment</option>
+                                    <option>Office Suppliers</option>
+                                    <option>Postage and Delivery</option>
+                                    <option>Printing and Reproduction</option>
+                                    <option>Professional Fees</option>
+                                    <option>Purchases</option>
+                                    <option>Rent Expense</option>
+                                    <option>Repair and Maintenance</option>
+                                    <option>Small Tools and Equipments</option>
+
+                                    <option>Swachh Barath Cess Expense</option>
+                                    <option>Taxes-Property</option>
+                                    <option>Telephone Expense</option>
+                                    <option>Travel Expense</option>
+                                    <option>Uncategorised Expense</option>
+                                    <option>Utilities</option>
+                                    <option>Finance Charge Income</option>
+                                    <option>Insurance Proceeds Received</option>
+                                    <option>Interest Income</option>
+                                    <option>Proceeds From Sale of Assets</option>
+                                    <option>Shipping and Delivery Income</option>
+                                    <option>Ask My Accountant</option>
+
+                                    <option>CGST Write-off</option>
+                                    <option>GST Write-off</option>
+                                    <option>IGST Write-off</option>
+                                    <option>Miscellaneous Expense</option>
+                                    <option>Political Contributions</option>
+                                    <option>Reconcilation Discrepancies</option>
+                                    <option>SGST Write-off</option>
+                                    <option>Vehicles</option>
+                                    <option>CGST Payable</option>
+                                    <option>CST Payable</option>
+                                    <option>CST Suspense</option>
+                                    <option>GST Payable</option>
+
+                                    <option>GST Suspense</option>
+                                    <option>IGST Payable</option>
+                                    <option>Input CGST</option>
+                                    <option>Input CGST Tax RCM</option>
+                                    <option>Input IGST</option>
+                                    <option>Input IGST Tax RCM</option>
+                                    <option>Input Krishi Kalyan Cess</option>
+                                    <option>Input Krishi Kalyan Cess RCM</option>
+                                    <option>Input SGST</option>
+                                    <option>Input SGST Tax RCM</option>
+                                    <option>Input VAT 14%</option>
+                                    <option>Input VAT 4%</option>
+                                    <option>Krishi Kalyan Cess Payable</option>
+                                    <option>Input VAT 5%</option>
+                                    <option>Krishi Kalyan Cess Suspense</option>
+                                    <option>Output CGST</option>
+                                    <option>Output CGST Tax RCM</option>
+                                    <option>Output CST 2%</option>
+                                    <option>Output IGST</option>
+                                    <option>Output IGST Tax RCM</option>
+                                    <option>Output Krishi Kalyan Cess</option>
+                                    <option>Output krishi kalyan Cess RCM</option>
+                                    <option>Output SGST Tax RCM</option>
+                                    <option>Output Service Tax</option>
+
+
+                                    <option>Output Service Tax RCM</option>
+                                    <option>Output VAT 14%</option>
+                                    <option>Output VAT 4%</option>
+                                    <option>Output VAT 5%</option>
+                                    <option>SGST Payable</option>
+                                    <option>Service Tax Payable</option>
+                                    <option>Service Tax Suspense</option>
+                                    <option>Swachh Barath Cess Payable</option>
+                                    <option>TDS Payable</option>
+                                    <option>VAT Payable</option>
+                                    <option>VAT Suspense</option>
+
+
+                                    <option>Deferred CGST</option>
+                                    <option>Deferred GST Input credit</option>
+                                    <option>Deferred IGST</option>
+                                    <option>Deferred SGST</option>
+                                    <option>Deferred Service Tax Input Credit</option>
+                                    <option>Deferred VAT Input Credit</option>
+                                    <option>GST Refund</option>
+                                    <option>Inventory Asset</option>
+                                    <option>Krishi Kalyan Cess Refund</option>
+                                    <option>Prepaid Insurance</option>
+
+                                    <option>Service Tax Refund</option>
+                                    <option>TDS Receivable</option>
+                                    <option>Uncategorised Asset</option>
+                                    <option>Undeposited Fund</option>
+                                    <option>Billable Expense Income</option>
+                                    <option>Consulting Income</option>
+                                    <option>Product Sales</option>
+                                    <option>Sales</option>
+                                    <option>Sales-Hardware</option>
+                                    <option>Sales-Software</option>
+
+                                    <option>Sales-Support And Maintanance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Accumulated Depreciation</option>
+                                    <option>Building And Improvements</option>
+                                    <option>Furniture And Equipment</option>
+                                    <option>Land</option>
+                                    <option>Leasehold Improvements</option>
+                                    <option>Vehicles</option>
+
+                                    <option>Retained Earnings</option>
+                                    <option>Cost of Sales</option>
+                                    <option>Equipment Rental For Jobs</option>
+                                    <option>Freight and shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases - Hardware For Resales</option>
+                                    <option>Equipment Rental For Jobs</option>
+                                    <option>Freight and Shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases-Hardware For Resale</option>
+
+                                    <option>Purchases-Software For Resale</option>
+                                    <option>Subcontracted Services</option>
+                                    <option>Tools and Craft Suppliers</option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4 col-lg-4 mt-3">
+                                <label for="validationCustom03" style="color: white;">Reverse Charge %</label>
+                                <input type="text" name="revcharge" value="{{ ser.revcharge }}"
+                                       class="form-control" id="validationCustom03" style="background-color: #2a4964; color: white;">
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-lg-4 mt-3">
+                                <label for="validationCustom03" style="color: white;">Preferred Supplier</label>
+                                <select name="presupplier" class="form-control" id="validationCustom03" style="background-color: #2a4964; color: white;">
+                                    <option>{{ ser.presupplier }}</option>
+                                    {% for sup in suppliers %}
+                                        {% if sup.cid_id == cmp1.cid %}
+                                            <option value="{{ sup.supplierid }}">{{ sup.firstname }} {{ sup.lastname }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 mt-5 mb-5">
+                            <button class="btn btn-outline-info rounded-pill w-100 text-light" type="submit">SUBMIT
+                            </button>
+                        </div>
+                        <div class="col-md-4"></div>
+
+                    </div>
+                </form>
+                <script>
+                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                    (function () {
+                        'use strict';
+                        window.addEventListener('load', function () {
+                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                            var forms = document.getElementsByClassName('needs-validation');
+                            // Loop over them and prevent submission
+                            var validation = Array.prototype.filter.call(forms, function (form) {
+                                form.addEventListener('submit', function (event) {
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    }
+                                    form.classList.add('was-validated');
+                                }, false);
+                            });
+                        }, false);
+                    })();
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+    <script>
+        $('#tax').on('change', function () {
+            alert(" INFORMATION \n\n Change saleprice before changing tax.\n Never mind if already done.")
+            tax = parseFloat($('#tax').val());
+            saleprice = parseFloat($('#saleprice').val());
+            check = $('#Check1').val();
+            if ($("#Check1").prop('checked') == true) {
+                taxm = 1 + (tax / 100)
+                salep = saleprice / taxm
+                document.getElementById('saleprice').value = salep.toFixed(2)
+            }
+        });
+        $('#purtax').on('change', function () {
+            alert(" INFORMATION \n\n Change saleprice before changing tax.\n Never mind if already done.")
+            tax = parseFloat($('#purtax').val());
+            saleprice = parseFloat($('#cost').val());
+            check = $('#Check').val();
+            if ($("#Check").prop('checked') == true) {
+                taxm = 1 + (tax / 100)
+                salep = saleprice / taxm
+                document.getElementById('cost').value = salep.toFixed(2)
+            }
+        });
+    </script>
+    <script>
+        $('.single-select').select2({
+            theme: 'bootstrap4',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            allowClear: Boolean($(this).data('allow-clear')),
+        });
+        $('.multiple-select').select2({
+            theme: 'bootstrap4',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            allowClear: Boolean($(this).data('allow-clear')),
+        });
+
+        document.getElementById("foo").onchange = function () {
+            if (this.selectedIndex !== 0) {
+                window.location.href = this.value;
+            }
+        };
+    </script>
+
+    <script type="text/javascript">
+        function ShowHideDiv(chkPassport) {
+            var dvPassport = document.getElementById("dvPassport");
+
+            dvPassport.style.display = chkPassport.checked ? "block" : "none";
+
+        }
+    </script>
+
+    <script type="text/javascript">
+        function ShowHideDivCust(chkPassport1) {
+            var dvPassport2 = document.getElementById("dvPassport2");
+
+
+            dvPassport2.style.display = chkPassport1.checked ? "block" : "none";
+        }
+    </script>
+
+    <script>
+        function insertValue() {
+            var select = document.getElementById("select"),
+                txtVal = document.getElementById("val").value,
+                newOption = document.createElement("OPTION"),
+                newOptionval = document.createTextNode(txtVal);
+
+            newOption.appendChild(newOptionval);
+            select.insertBefore(newOption, select.lastChild);
+        }
+    </script>
+    <script>
+        $('.datepicker').pickadate({
+            selectMonths: true,
+            selectYears: true
+        }),
+            $('.timepicker').pickatime()
+    </script>
+    <script>
+        $(function () {
+            $('#date-time').bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
+            $('#date').bootstrapMaterialDatePicker({
+                time: false
+            });
+            $('#time').bootstrapMaterialDatePicker({
+                date: false,
+                format: 'HH:mm'
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var current_fs, next_fs, previous_fs; //fieldsets
+            var opacity;
+
+            $(".next").click(function () {
+
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+
+//Add Class Active
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+//show the next fieldset
+                next_fs.show();
+//hide the current fieldset with style
+                current_fs.animate({opacity: 0}, {
+                    step: function (now) {
+// for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                    },
+                    duration: 600
+                });
+            });
+
+            $(".previous").click(function () {
+
+                current_fs = $(this).parent();
+                previous_fs = $(this).parent().prev();
+
+//Remove class active
+                $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+//show the previous fieldset
+                previous_fs.show();
+
+//hide the current fieldset with style
+                current_fs.animate({opacity: 0}, {
+                    step: function (now) {
+// for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        previous_fs.css({'opacity': opacity});
+                    },
+                    duration: 600
+                });
+            });
+
+            $('.radio-group .radio').click(function () {
+                $(this).parent().find('.radio').removeClass('selected');
+                $(this).addClass('selected');
+            });
+
+            $(".submit").click(function () {
+                return false;
+            })
+
+        });
+    </script>
+
+    <script>
+        function showPreview(event) {
+            if (event.target.files.length > 0) {
+                var src = URL.createObjectURL(event.target.files[0]);
+                var preview = document.getElementById("file-ip-1-preview");
+                preview.src = src;
+                preview.style.display = "block";
+            }
+        }
+    </script>
+
+    <script>
+        function myFunction() {
+            var checkBox = document.getElementById("myCheck");
+            var text = document.getElementById("bill");
+            if (checkBox.checked == true) {
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        function show() {
+            var checkBox = document.getElementById("Check");
+            var abc = document.getElementById("sad");
+            var def = document.getElementById("happy");
+            if (checkBox.checked == true) {
+                abc.style.display = "block";
+                def.style.display = "block";
+            } else {
+                abc.style.display = "none";
+                def.style.display = "none";
+            }
+        }
+    </script>
+
+{% endblock %}

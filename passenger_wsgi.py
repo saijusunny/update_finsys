@@ -1,0 +1,1 @@
+from infoxfinsys.wsgi import application

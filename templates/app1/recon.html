@@ -1,0 +1,501 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">RECONCILED</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div class="card-body">
+                            <center><p>Open your statement and we'll get started.</p></center>
+                            <form method="post" action="{% url 'reconcreate' %}">
+                                {% csrf_token %}
+                                <div class="container" id="one">
+                                    <h5 class="mt-5 mb-3 text-light">Which account do you want to reconcile?</h5>
+                                    <label for="acc">Account</label>
+                                    <select name="account" id="acc" onclick="showDiv('four', this)"
+                                            class="custom-select-md form-control w-75" required>
+                                        <option></option>
+                                        {% for accoutyp in accountype %}
+                                            <option value="{{ accoutyp.accountname }}">{{ accoutyp.accountname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="container" id="two">
+                                    <h5 class="mt-5 mb-3 text-grey">Add the following information</h5>
+                                    <div class="row" style="display: inline-flex;">
+                                        <div class="col-sm-4">
+                                            <label for="bb">Beginning balance*</label>
+                                            <input type="text" name="begbal" class="form-control" id="bb"
+                                                   placeholder="0.00" value="0"
+                                                   style="width: 100%;">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="eb">Ending balance*</label>
+                                            <input type="text" name="endbal" class="form-control" id="eb"
+                                                   style="width: 100%;" value="0">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="enddate">Ending date*</label>
+                                            <input type="date" name="enddate" class="form-control" id="enddate"
+                                                   style="width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container" id="three">
+                                    <h5 class="mt-5 mb-3 text-grey">Enter the service charge or interest earned, if
+                                        necessary</h5>
+                                    <div class="row" style="display: inline-flex;">
+                                        <div class="col-sm-4">
+                                            <label for="jdate">Date</label>
+                                            <input type="date" name="dat" class="form-control" id="jdate"
+                                                   placeholder=" "
+                                                   style="width: 100%;">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="eb">Service charge</label>
+                                            <input type="text" name="serchar" class="form-control" id="eb"
+                                                   style="width: 100%;" value="0">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="ed">Expense Account</label>
+                                            <select name="expacc" class="form-control" id="ed" style="width: 100%;">
+                                                <option selected=selected value=" "></option>
+                                                <option value="Advertising/Promotional">Advertising/Promotional</option>
+                                                <option value="Bank Charges">Bank Charges</option>
+                                                <option value="Business Licenses and Permits">Business Licenses and
+                                                    Permits
+                                                </option>
+                                                <option value="Charitable Contributions">Charitable Contributions
+                                                </option>
+                                                <option value="Computer and Internet Expense">Computer and Internet
+                                                    Expense
+                                                </option>
+                                                <option value="Continuing Education">Continuing Education</option>
+                                                <option value="Depreciation Expense">Depreciation Expense</option>
+                                                <option value="Dues and Subscriptions">Dues and Subscriptions</option>
+                                                <option value="Housekeeping Charges">Housekeeping Charges</option>
+                                                <option value="Insurance Expense">Insurance Expense</option>
+                                                <option value="Insurance Expense-General Liability Insurance">Insurance
+                                                    Expense-General Liability Insurance
+                                                </option>
+                                                <option value="Insurance Expense-Health Insurance">Insurance
+                                                    Expense-Health
+                                                    Insurance
+                                                </option>
+                                                <option value="Insurance Expense-Professional Liability">Insurance
+                                                    Expense-Professional Liability
+                                                </option>
+                                                <option value="Interest Expense">Interest Expense</option>
+                                                <option value="Meals and Entertainment">Meals and Entertainment</option>
+                                                <option value="Office Supplies">Office Supplies</option>
+                                                <option value="Postage ang Delivery">Postage ang Delivery</option>
+                                                <option value="Printing and Reproduction">Printing and Reproduction
+                                                </option>
+                                                <option value="Professional Fees">Professional Fees</option>
+                                                <option value="Purchases">Purchases</option>
+                                                <option value="Rent Expense">Rent Expense</option>
+                                                <option value="Repair and Maintenance">Repair and Maintenance</option>
+                                                <option value="Small Tools and Equipments">Small Tools and Equipments
+                                                </option>
+                                                <option value="Swachh Bharath Cess Expense">Swachh Bharath Cess Expense
+                                                </option>
+                                                <option value="Taxes-Property">Taxes-Property</option>
+                                                <option value="Telephone Expense">Telephone Expense</option>
+                                                <option value="Travel Expense">Travel Expense</option>
+                                                <option value="Uncategorised Expenses">Uncategorised Expenses</option>
+                                                <option value="Utilities">Utilities</option>
+                                                <option value="Ask My Accountant">Ask My Accountant</option>
+                                                <option value="CGST write-off">CGST write-off</option>
+                                                <option value="GST write-off">GST write-off</option>
+                                                <option value="IGST write-off">IGST write-off</option>
+                                                <option value="Miscelleneous Expense">Miscelleneous Expense</option>
+                                                <option value="Political Contribution">Political Contribution</option>
+                                                <option value="Reconcilation Discrepancies">Reconcilation Discrepancies
+                                                </option>
+                                                <option value="SGST write-off">SGST write-off</option>
+                                                <option value="Tax write-off">Tax write-off</option>
+                                                <option value="Vehicle Expenses">Vehicle Expenses</option>
+                                                <option value="Deferred GST Input Credit">Deferred GST Input Credit
+                                                </option>
+                                                <option value="Deferred IGST">Deferred IGST</option>
+                                                <option value="Deferred Krishi Kalyan Cess Input Cedit">Deferred Krishi
+                                                    Kalyan Cess Input Cedit
+                                                </option>
+                                                <option value="Deferred Service Tax Input Credit">Deferred Service Tax
+                                                    Input
+                                                    Credit
+                                                </option>
+                                                <option value="Deferred SGST">Deferred SGST</option>
+                                                <option value="Deferred VAT Input Credit">Deferred VAT Input Credit
+                                                </option>
+                                                <option value="GST Refund">GST Refund</option>
+                                                <option value="Inventory Asset">Inventory Asset</option>
+                                                <option value="Krishi Kalyan Cess Refund">Krishi Kalyan Cess Refund
+                                                </option>
+                                                <option value="Prepaid Insurance">Prepaid Insurance</option>
+                                                <option value="Service Tax Refund">Service Tax Refund</option>
+                                                <option value="TDS Receivable">TDS Receivable</option>
+                                                <option value="Uncategorised Asset">Uncategorised Asset</option>
+                                                <option value="Accumulated Depreciation">Accumulated Depreciation
+                                                </option>
+                                                <option value="Buildings and Improvements">Buildings and Improvements
+                                                </option>
+                                                <option value="Furniture and Equipments">Furniture and Equipments
+                                                </option>
+                                                <option value="Land">Land</option>
+                                                <option value="Leasehold Improvements">Leasehold Improvements</option>
+                                                <option value="Vehicles">Vehicles</option>
+                                                <option value="CGST Payable">CGST Payable</option>
+                                                <option value="CST Payable">CST Payable</option>
+                                                <option value="CST Suspense">CST Suspense</option>
+                                                <option value="GST Payable">GST Payable</option>
+                                                <option value="GST Suspense">GST Suspense</option>
+                                                <option value="IGST Payable">IGST Payable</option>
+                                                <option value="Input CGST">Input CGST</option>
+                                                <option value="Input CGST Tax RCM">Input CGST Tax RCM</option>
+                                                <option value="Input IGST">Input IGST</option>
+                                                <option value="Input IGST Tax RCM">Input IGST Tax RCM</option>
+                                                <option value="Input Krishi Kalyan Cess">Input Krishi Kalyan Cess
+                                                </option>
+                                                <option value="Input Krishi Kalyan Cess RCM">Input Krishi Kalyan Cess
+                                                    RCM
+                                                </option>
+                                                <option value="Input Service Tax">Input Service Tax</option>
+                                                <option value="Input Service Tax RCM">Input Service Tax RCM</option>
+                                                <option value="Input SGST">Input SGST</option>
+                                                <option value="Input SGST Tax RCM">Input SGST Tax RCM</option>
+                                                <option value="Input VAT">Input VAT</option>
+                                                <option value="Input VAT 14%">Input VAT 14%</option>
+                                                <option value="Input VAT 4%">Input VAT 4%</option>
+                                                <option value="Input VAT 5%">Input VAT 5%</option>
+                                                <option value="Krishi Kalyan Cess Payable">Krishi Kalyan Cess Payable
+                                                </option>
+                                                <option value="Krishi Kalyan Cess Suspense">Krishi Kalyan Cess Suspense
+                                                </option>
+                                                <option value="Output CGST">Output CGST</option>
+                                                <option value="Output CGST Tax RCM">Output CGST Tax RCM</option>
+                                                <option value="Output CST 2%">Output CST 2%</option>
+                                                <option value="Output IGST">Output IGST</option>
+                                                <option value="Output IGST Tax RCM">Output IGST Tax RCM</option>
+                                                <option value="Output Krishi Kalyan Cess">Output Krishi Kalyan Cess
+                                                </option>
+                                                <option value="Output Krishi Kalyan Cess RCM">Output Krishi Kalyan Cess
+                                                    RCM
+                                                </option>
+                                                <option value="Output Service Tax">Output Service Tax</option>
+                                                <option value="Output Service Tax RCM">Output Service Tax RCM</option>
+                                                <option value="Output SGST">Output SGST</option>
+                                                <option value="Output VAT 14%">Output VAT 14%</option>
+                                                <option value="Output VAT 4%">Output VAT 4%</option>
+                                                <option value="Output VAT 5%">Output VAT 5%</option>
+                                                <option value="Service Tax Payable">Service Tax Payable</option>
+                                                <option value="Service Tax Suspense">Service Tax Suspense</option>
+                                                <option value="SGST Payable">SGST Payable</option>
+                                                <option value="Swachh Bharat Cess Payable">Swachh Bharat Cess Payable
+                                                </option>
+                                                <option value="Swachh Bharat Cess Suspense">Swachh Bharat Cess Suspense
+                                                </option>
+                                                <option value="TDS Payable">TDS Payable</option>
+                                                <option value="VAT Payable">VAT Payable</option>
+                                                <option value="VAT Suspense">VAT Suspense</option>
+                                                <option value="Opening Balance Equity">Opening Balance Equity</option>
+                                                <option value="Retained Earnings">Retained Earnings</option>
+                                                <option value="Billable Expense Income">Billable Expense Income</option>
+                                                <option value="Consulting Income">Consulting Income</option>
+                                                <option value="Products Sales">Products Sales</option>
+                                                <option value="Sales">Sales</option>
+                                                <option value="Sales-Hardware">Sales-Hardware</option>
+                                                <option value="Sales-Software">Sales-Software</option>
+                                                <option value="Sales-Support and Maintenance">Sales-Support and
+                                                    Maintenance
+                                                </option>
+                                                <option value="Sales Discounts">Sales Discounts</option>
+                                                <option value="Sales of Product Income">Sales of Product Income</option>
+                                                <option value="Uncategorised Income">Uncategorised Income</option>
+                                                <option value="Cost of Sales">Cost of Sales</option>
+                                                <option value="Equipments Rental for Jobs">Equipments Rental for Jobs
+                                                </option>
+                                                <option value="Freight and Shipping Cost">Freight and Shipping Cost
+                                                </option>
+                                                <option value="Merchant Account Fees">Merchant Account Fees</option>
+                                                <option value="Purchase-Hardware for Resale">Purchase-Hardware for
+                                                    Resale
+                                                </option>
+                                                <option value="Purchase-Software for Resale">Purchase-Software for
+                                                    Resale
+                                                </option>
+                                                <option value="Sub-contracted Services">Sub-contracted Services</option>
+                                                <option value="Tools and Craft Supplies">Tools and Craft Supplies
+                                                </option>
+                                                <option value="Finance Charge Income">Finance Charge Income</option>
+                                                <option value="Insurance Proceeds Received">Insurance Proceeds Received
+                                                </option>
+                                                <option value="Interest Income">Interest Income</option>
+                                                <option value="Proceeds from Sale of Asset">Proceeds from Sale of Asset
+                                                </option>
+                                                <option value="Shipping and Delivery Income">Shipping and Delivery
+                                                    Income
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container" id="four" style="display: none;">
+                                    <div class="row mt-2" style="display: inline-flex;">
+                                        <div class="col-sm-4">
+                                            <label for="ddate">Date</label>
+                                            <input type="date" name="dat1" class="form-control" id="ddate" max=""
+                                                   placeholder=" "
+                                                   style="width: 100%;">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="eb">Interest earned</label>
+                                            <input type="text" name="intear" class="form-control" id="eb"
+                                                   style="width: 100%;" value="0">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label for="ed">Income Account</label>
+                                            <select name="incacc" class="form-control" id="ed" style="width: 100%;">
+                                                <option selected=selected value=" "></option>
+                                                <option value="Finance Charge Income">Finance Charge Income</option>
+                                                <option value="Insurance Proceeds Received">Insurance Proceeds Received
+                                                </option>
+                                                <option value="Interest Income">Interest Income</option>
+                                                <option value="Proceeds From Sale of Asset">Proceeds From Sale of Asset
+                                                </option>
+                                                <option value="Shipping and Delivery Income">Shipping and Delivery
+                                                    Income
+                                                </option>
+                                                <option value="Billable Expense Income">Billable Expense Income</option>
+                                                <option value="Consulting Income">Consulting Income</option>
+                                                <option value="Product Sales">Product Sales</option>
+                                                <option value="Sales">Sales</option>
+                                                <option value="Sales-Hardware">Sales-Hardware</option>
+                                                <option value="Sales-Software">Sales-Software</option>
+                                                <option value="Sales-Support and Maintenance">Sales-Support and
+                                                    Maintenance
+                                                </option>
+                                                <option value="Sales Discounts">Sales Discounts</option>
+                                                <option value="Sales of Product Income">Sales of Product Income</option>
+                                                <option value="Uncategorised Income">Uncategorised Income</option>
+                                                <option value="Deferred GST Input Credit">Deferred GST Input Credit
+                                                </option>
+                                                <option value="Deferred IGST">Deferred IGST</option>
+                                                <option value="Deferred Krishi Kalyan Cess Input Credit">Deferred Krishi
+                                                    Kalyan Cess Input Credit
+                                                </option>
+                                                <option value="Deferred Service Tax Input Credit">Deferred Service Tax
+                                                    Input
+                                                    Credit
+                                                </option>
+                                                <option value="Deferred SGST">Deferred SGST</option>
+                                                <option value="Deferred VAT Input Credit">Deferred VAT Input Credit
+                                                </option>
+                                                <option value="GST Refund">GST Refund</option>
+                                                <option value="Inventory Asset">Inventory Asset</option>
+                                                <option value="Krishi Kalyan Cess Refund">Krishi Kalyan Cess Refund
+                                                </option>
+                                                <option value="Prepaid Insurance">Prepaid Insurance</option>
+                                                <option value="Service Tax Refund">Service Tax Refund</option>
+                                                <option value="TDS Receivable">TDS Receivable</option>
+                                                <option value="Uncategorised Asset">Uncategorised Asset</option>
+                                                <option value="Accumulated Depreciation">Accumulated Depreciation
+                                                </option>
+                                                <option value="Building and Improvements">Building and Improvements
+                                                </option>
+                                                <option value="Furniture and Equipments">Furniture and Equipments
+                                                </option>
+                                                <option value="Land">Land</option>
+                                                <option value="Leasehold Improvements">Leasehold Improvements</option>
+                                                <option value="Vehicles">Vehicles</option>
+                                                <option value="CGST Payable">CGST Payable</option>
+                                                <option value="CST Payable">CST Payable</option>
+                                                <option value="CST Suspense">CST Suspense</option>
+                                                <option value="GST Payable">GST Payable</option>
+                                                <option value="GST Suspense">GST Suspense</option>
+                                                <option value="IGST Payable">IGST Payable</option>
+                                                <option value="Input CGST">Input CGST</option>
+                                                <option value="Input CGST Tax RCM">Input CGST Tax RCM</option>
+                                                <option value="Input IGST">Input IGST</option>
+                                                <option value="Input IGST Tax RCM">Input IGST Tax RCM</option>
+                                                <option value="Input Krishi Kalyan Cess">Input Krishi Kalyan Cess
+                                                </option>
+                                                <option value="Input Krishi Kalyan Cess RCM">Input Krishi Kalyan Cess
+                                                    RCM
+                                                </option>
+                                                <option value="Input Service Tax">Input Service Tax</option>
+                                                <option value="Input Service Tax RCM">Input Service Tax RCM</option>
+                                                <option value="Input SGST">Input SGST</option>
+                                                <option value="Input SGST Tax RCM">Input SGST Tax RCM</option>
+                                                <option value="Input VAT 14%">Input VAT 14%</option>
+                                                <option value="Input VAT 4%">Input VAT 4%</option>
+                                                <option value="Input VAT 5%">Input VAT 5%</option>
+                                                <option value="Krishi Kalyan Cess Payable">Krishi Kalyan Cess Payable
+                                                </option>
+                                                <option value="Krishi Kalyan Cess Suspense">Krishi Kalyan Cess Suspense
+                                                </option>
+                                                <option value="Output CGST">Output CGST</option>
+                                                <option value="Output CSGT Tax RCM">Output CSGT Tax RCM</option>
+                                                <option value="Output CGST 2%">Output CGST 2%</option>
+                                                <option value="Output IGST">Output IGST</option>
+                                                <option value="Output IGST Tax RCM">Output IGST Tax RCM</option>
+                                                <option value="Output Krishi Kalyan Cess">Output Krishi Kalyan Cess
+                                                </option>
+                                                <option value="Output Krishi Kalyan Cess RCM">Output Krishi Kalyan Cess
+                                                    RCM
+                                                </option>
+                                                <option value="Output Service Tax">Output Service Tax</option>
+                                                <option value="Output Service Tax RCM">Output Service Tax RCM</option>
+                                                <option value="Output SGST">Output SGST</option>
+                                                <option value="Output SGST Tax RCM">Output SGST Tax RCM</option>
+                                                <option value="Output VAT 14%">Output VAT 14%</option>
+                                                <option value="Output VAT 4%">Output VAT 4%</option>
+                                                <option value="Output VAT 5%">Output VAT 5%</option>
+                                                <option value="Service Tax Payable">Service Tax Payable</option>
+                                                <option value="Service Tax Suspense">Service Tax Suspense</option>
+                                                <option value="SGST Payable">SGST Payable</option>
+                                                <option value="Swachh Bharat Cess Payable">Swachh Bharat Cess Payable
+                                                </option>
+                                                <option value="Swachh Bharat Cess Suspense">Swachh Bharat Cess Suspense
+                                                </option>
+                                                <option value="TDS Payable">TDS Payable</option>
+                                                <option value="VAT Payable">VAT Payable</option>
+                                                <option value="Retained Earnings">Retained Earnings</option>
+                                                <option value="VAT Suspense">VAT Suspense</option>
+                                                <option value="Equipment Rental for Jobs">Equipment Rental for Jobs
+                                                </option>
+                                                <option value="Freight and Shipping Costs">Freight and Shipping Costs
+                                                </option>
+                                                <option value="Merchant Account Fees">Merchant Account Fees</option>
+                                                <option value="Purchases-Hardware for Resale">Purchases-Hardware for
+                                                    Resale
+                                                </option>
+                                                <option value="Purchases-Software for Resale">Purchases-Software for
+                                                    Resale
+                                                </option>
+                                                <option value="Subcontracted Services">Subcontracted Services</option>
+                                                <option value="Tools and Craft Supplies">Tools and Craft Supplies
+                                                </option>
+                                                <option value="Advertising/Promotional">Advertising/Promotional</option>
+                                                <option value="Bank Charges">Bank Charges</option>
+                                                <option value="Business License and Permits">Business License and
+                                                    Permits
+                                                </option>
+                                                <option value="Charitable Contributions">Charitable Contributions
+                                                </option>
+                                                <option value="Computer and Internet Expense">Computer and Internet
+                                                    Expense
+                                                </option>
+                                                <option value="Continuing Education">Continuing Education</option>
+                                                <option value="Depreciation Expense">Depreciation Expense</option>
+                                                <option value="Dues and Subscriptions">Dues and Subscriptions</option>
+                                                <option value="Housekeeping Charges">Housekeeping Charges</option>
+                                                <option value="Insurance Expense">Insurance Expense</option>
+                                                <option value="Insurance Expense-General Liability Expenses">Insurance
+                                                    Expense-General Liability Expenses
+                                                </option>
+                                                <option value="Insurance Expense-Health Insurance">Insurance
+                                                    Expense-Health
+                                                    Insurance
+                                                </option>
+                                                <option value="Insurance Expense-Life and Disability Insurance">
+                                                    Insurance
+                                                    Expense-Life and Disability Insurance
+                                                </option>
+                                                <option value="Interest Expense">Interest Expense</option>
+                                                <option value="Meals and Entertainment">Meals and Entertainment</option>
+                                                <option value="Office Supplies">Office Supplies</option>
+                                                <option value="Postage and Delivery">Postage and Delivery</option>
+                                                <option value="Printing and Reproduction">Printing and Reproduction
+                                                </option>
+                                                <option value="Professional Fees">Professional Fees</option>
+                                                <option value="Rent Expense">Rent Expense</option>
+                                                <option value="Repair and Maintenance">Repair and Maintenance</option>
+                                                <option value="Small Tools and Equipments">Small Tools and Equipments
+                                                </option>
+                                                <option value="Swachh Bharat Cess Expense">Swachh Bharat Cess Expense
+                                                </option>
+                                                <option value="Taxes-Property">Taxes-Property</option>
+                                                <option value="Telephone Expense">Telephone Expense</option>
+                                                <option value="Travel Expense">Travel Expense</option>
+                                                <option value="Uncategorised Expense">Uncategorised Expense</option>
+                                                <option value="Utilities">Utilities</option>
+                                                <option value="Ask My Accountant">Ask My Accountant</option>
+                                                <option value="CGST write-off">CGST write-off</option>
+                                                <option value="GST write-off">GST write-off</option>
+                                                <option value="IGST write-off">IGST write-off</option>
+                                                <option value="Miscellaneous Expense">Miscellaneous Expense</option>
+                                                <option value="Political Contributions">Political Contributions</option>
+                                                <option value="Reconcilation Discrepancies">Reconcilation Discrepancies
+                                                </option>
+                                                <option value="SGST write-off">SGST write-off</option>
+                                                <option value="Tax write-off">Tax write-off</option>
+                                                <option value="Vehicle Expenses">Vehicle Expenses</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <center>
+                                    <button class="btn btn-outline-info rounded-pill mt-5 mb-3 text-light">Start Reconciling
+                                    </button>
+                                </center>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="hello"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        document.getElementById("enddate").onchange = function () {
+            var input1 = document.getElementById("jdate");
+            input1.setAttribute("max", this.value);
+            var input = document.getElementById("ddate");
+            input.setAttribute("max", this.value);
+        }
+    </script>
+    <script>
+        function showDiv(divId, element) {
+            var accou = element.value;
+            if (element.value == 'CGST Payable' || element.value == 'CST Payable' || element.value == 'CST Suspense' || element.value == 'GST Payable' || element.value == 'GST Suspense' || element.value == 'IGST Payable' || element.value == 'Input CGST' || element.value == 'Input CGST Tax RCM' || element.value == 'Input IGST' || element.value == 'Input IGST Tax RCM' || element.value == 'Input Krishi Kalyan Cess' || element.value == 'Input Krishi Kalyan Cess RCM' || element.value == 'Input Service Tax' || element.value == 'Input Service Tax RCM' || element.value == 'Input SGST' || element.value == 'Input SGST Tax RCM' || element.value == 'Input VAT 14 %' || element.value == 'Input VAT 4%' || element.value == 'Input VAT 5%' || element.value == 'Krishi Kalyan Cess Payable' || element.value == 'Krishi Kalyan Cess Suspense' || element.value == 'Output CGST' || element.value == 'Output CGST Tax RCM' || element.value == 'Output CST 2%' || element.value == 'Output IGST' || element.value == 'Output IGST Tax RCM' || element.value == 'Output Krishi Kalyan Cess' || element.value == 'Output Krishi Kalyan Cess RCM' || element.value == 'Output Service Tax' || element.value == 'Output Service Tax RCM' || element.value == 'Output SGST' || element.value == 'Output SGST Tax RCM' || element.value == 'Output VAT 14%' || element.value == 'Output VAT 4%' || element.value == 'Output VAT 5%' || element.value == 'Service Tax Payable' || element.value == 'Service Tax Suspense' || element.value == 'SGST Payable' || element.value == 'SGST Suspense' || element.value == 'Swachh Barath Cess Payable' || element.value == 'Swachh Barath Cess Suspense' || element.value == 'TDS Payable' || element.value == 'VAT Payable' || element.value == 'VAT Suspense') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+            return accou
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#acc').on('change', function () {
+                select = $('#acc').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getbalan' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                        document.getElementById('bb').value = json_data[key]['accountbal']
+                    }
+                }).fail(function () {
+                    alert("failed");
+                })
+            })
+        })
+    </script>
+{% endblock %}

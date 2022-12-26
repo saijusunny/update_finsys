@@ -1,0 +1,412 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+
+
+<script type="text/javascript" src="{% static 'assets/dist/jautocalc.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+<style>
+ @media print {
+  body *{
+   visibility: hidden;
+  }
+  .print-container,.print-container *{
+         visibility: visible;
+     }
+
+ }
+
+
+</style>
+
+<style>
+
+	.mt-50 {
+    	margin-top: 50px
+	}
+
+	.mb-50 {
+    	margin-bottom: 50px
+	}
+
+	.card {
+    	position: relative;
+    	display: -ms-flexbox;
+    	display: flex;
+    	-ms-flex-direction: column;
+    	flex-direction: column;
+    	min-width: 0;
+    	word-wrap: break-word;
+    	background-color: #fff;
+    	background-clip: border-box;
+    	border: 1px solid rgba(0, 0, 0, .125);
+    	border-radius: .1875rem
+	}
+
+	.card-img-actions {
+    	position: relative
+	}
+
+	.card-body {
+    	-ms-flex: 1 1 auto;
+    	flex: 1 1 auto;
+    	padding: 1.25rem;
+    	text-align: center
+	}
+
+	.card-title {
+    	margin-top: 10px;
+    	font-size: 17px
+	}
+
+	.invoice-color {
+    	color: red !important
+	}
+
+	.card-header {
+    	padding: .9375rem 1.25rem;
+    	margin-bottom: 0;
+    	background-color: rgba(0, 0, 0, .02);
+    	border-bottom: 1px solid rgba(0, 0, 0, .125)
+	}
+
+	a {
+    	text-decoration: none !important
+	}
+
+	.btn-light {
+    	color: #333;
+    	background-color: #fafafa;
+    	border-color: #ddd
+	}
+
+	.header-elements-inline {
+    	display: -ms-flexbox;
+    	display: flex;
+    	-ms-flex-align: center;
+    	align-items: center;
+    	-ms-flex-pack: justify;
+    	justify-content: space-between;
+    	-ms-flex-wrap: nowrap;
+    	flex-wrap: nowrap
+	}
+
+	@media (min-width: 768px) {
+    	.wmin-md-400 {
+        	min-width: 400px !important
+    	}
+	}
+
+	.btn-primary {
+    	color: #fff;
+    	background-color: #2196f3
+	}
+
+	.btn-labeled>b {
+    	position: absolute;
+    	top: -1px;
+    	background-color: blue;
+    	display: block;
+    	line-height: 1;
+    	padding: .62503rem
+	}
+</style>
+
+
+    <div class="page-content">
+                	<div class="card radius-15" style="background-color: #243e54; border-radius: 10px; width: 90%; margin-left: 5%;">
+                        <div class="row">
+                        	<div class="col-md-9">
+                        		<div class="card-title">
+                                	<center><h3 class="mb-0">INVOICE</h3></center>
+                            	</div>
+                        	</div>
+                    		<div class="col-md-3">
+                    			<center>
+                    			<div class="card-title">
+                					<button class="btn btn-primary" id="download"> download pdf</button>&nbsp;&nbsp;&nbsp;
+                					<button id="print2" class="btn btn-warning" onclick="window.print();" style="background-color: red; color: white;"> Print</button>
+                				</center>
+                				</div>
+			  				</div>
+			  			</div>
+			  		</div>
+    				<div class="row print-container">
+    					<div class="col-md-12">
+                			<div class="row" id="invoice" style=" width: 90%; margin-left: 5%;">
+                				<div class="container">
+  									<div class="card" style="background-color: #243e54;">
+										<div class="card-header">
+											<h1 style="font-size: 50px;"> &nbsp;&nbsp;INVOICE</h1>
+  											<span class="float-right"></span>
+										</div>
+										<div class="card-header">
+											<div class="row">
+                                                <div class="col-6">
+                                                    <h1></h1>
+                                                    <form>
+                                                    	<div>&nbsp;</div>
+                                                    	<div>&nbsp;</div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Invoice No:</label>
+                                                            <label class="col-sm-3 col-form-label">rjoir</label>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Invoice Date:</label>
+                                                            <label class="col-sm-3 col-form-label">rjoir</label>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="col-6 company-details">
+                                                    <h2 class="name">
+                                                    	<label class="col col-form-label">
+                                                    		Raigan
+                                                    	</label>
+                                                    </h2>
+                                                    <div>
+                                                    	<label class="col col-form-label">
+                                                    		Infox Technologies
+                                                    	</label>
+                                                    </div>
+                                                    <div>
+                                                    	<label class="col col-form-label">
+                                                    		Infopark
+                                                    	</label>
+                                                    </div>
+                                                    <div>
+                                                    	<label class="col col-form-label">
+                                                    		infox@gmail.com
+                                                    	</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+										</div>
+										<div class="car">
+											&nbsp;
+											<div class="row">
+												<div class="col-1"></div>
+												<div class="col-6">
+													<h4>Bill To:</h4>
+													<div>
+														<label class="col col-form-label"><strong>Webz Poland</strong></label>
+													</div>
+													<div>
+														<label class="col col-form-label">
+															Madalinskiego 8
+														</label>
+													</div>
+													<div>
+														<label class="col col-form-label">
+															71-101 Szczecin, Poland
+														</label>
+													</div>
+													<div>
+														<label class="col col-form-label">
+															Email: info@webz.com.pl
+														</label>
+													</div>
+												</div>
+												<div class="col-4">
+													<h4>Ship To:</h4>
+													<div>
+														<label class="col col-form-label"><strong>Webz Poland</strong></label>
+													</div>
+													<div>
+														<label class="col col-form-label">
+															Madalinskiego 8
+														</label>
+													</div>
+													<div>
+														<label class="col col-form-label">
+															71-101 Szczecin, Poland
+														</label>
+													</div>
+													<div>
+														<label class="col col-form-label">
+															Email: info@webz.com.pl
+														</label>
+													</div>
+												</div>
+												<div class="col-1"></div>
+											</div>
+											&nbsp;
+										</div>
+										<div class="car">
+											<div class="table-responsive-sm">
+												<table class="table table-striped">
+													<thead>
+														<tr>
+															<th>Product / Service</th>
+															<th>HSN code</th>
+															<th class="right">Quantity</th>
+  															<th class="center">Price</th>
+															<th class="right">Total</th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td class="left strong">
+																<label class="col col-form-label">
+																	Origin License
+																</label>
+															</td>
+															<td class="left">
+																<label class="col col-form-label">
+																	Extended License
+																</label>
+															</td>
+															<td class="right">
+																<label class="col col-form-label">
+																	$999,00
+																</label>
+															</td>
+  															<td class="center">
+  																<label class="col col-form-label">
+  																	1
+  																</label>
+  															</td>
+															<td class="right">
+																<label class="col col-form-label">
+																	$999,00
+																</label>
+															</td>
+															<td></td>
+														</tr>
+														<tr>
+															<td class="left strong">
+																<label class="col col-form-label">
+																	Origin License
+																</label>
+															</td>
+															<td class="left">
+																<label class="col col-form-label">
+																	Extended License
+																</label>
+															</td>
+															<td class="right">
+																<label class="col col-form-label">
+																	$999,00
+																</label>
+															</td>
+  															<td class="center">
+  																<label class="col col-form-label">
+  																	1
+  																</label>
+  															</td>
+															<td class="right">
+																<label class="col col-form-label">
+																	$999,00
+																</label>
+															</td>
+															<td></td>
+														</tr>
+														<tr>
+															<td class="left strong">
+																<label class="col col-form-label">
+																	Origin License
+																</label>
+															</td>
+															<td class="left">
+																<label class="col col-form-label">
+																	Extended License
+																</label>
+															</td>
+															<td class="right">
+																<label class="col col-form-label">
+																	$999,00
+																</label>
+															</td>
+  															<td class="center">
+  																<label class="col col-form-label">
+  																	1
+  																</label>
+  															</td>
+															<td class="right">
+																<label class="col col-form-label">
+																	$999,00
+																</label>
+															</td>
+															<td></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="row">
+												<div class="col-lg-5 col-sm-5">
+
+												</div>
+
+												<div class="col-lg-6 col-sm-5 ml-auto">
+													<table class="table table-clear">
+														<tbody>
+															<tr>
+																<td class="left">
+																	<strong>Subtotal</strong>
+																</td>
+																<td class="right">$8.497,00</td>
+															</tr>
+															<tr>
+																<td class="left">
+																	<strong>Discount (20%)</strong>
+																</td>
+																<td class="right">$1,699,40</td>
+															</tr>
+															<tr>
+																<td class="left">
+ 																	<strong>VAT (10%)</strong>
+																</td>
+																<td class="right">$679,76</td>
+															</tr>
+															<tr>
+																<td class="left">
+																	<strong>Total</strong>
+																</td>
+																<td class="right">
+																	<strong>$7.477,36</strong>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<div class="col-1"></div>
+											</div>
+										</div>
+										<hr>
+										<div class="car">
+											<span>
+												<center>Invoice was created on a computer and is valid without the signature and seal.</center>
+											</span>
+											&nbsp;
+										</div>
+										<hr>
+									</div>
+								</div>
+                    		</div>
+                		</div>
+            		</div>
+                </div>
+
+
+
+    <script>
+    window.onload = function () {
+        document.getElementById("download")
+            .addEventListener("click", () => {
+                const invoice = this.document.getElementById("invoice");
+                console.log(invoice);
+                console.log(window);
+                var opt = {
+                    margin: 1,
+                    filename: 'myfile.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf().from(invoice).set(opt).save();
+            })
+    }
+</script>
+
+{% endblock %}

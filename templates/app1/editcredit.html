@@ -1,0 +1,2328 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+    var i = 1;
+    $("#add_row").click(function() {
+      b = i - 1;
+      $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+      $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+      i++;
+    });
+    $("#delete_row").click(function() {
+      if (i > 1) {
+        $("#addr" + (i - 1)).html('');
+        i--;
+      }
+      calc();
+    });
+
+    $('#tab_logic tbody').on('keyup change', function() {
+      calc();
+    });
+
+    $('#tax').on('keyup change', function() {
+      calc_total();
+    });
+  });
+
+  function calc() {
+    $('#tab_logic tbody tr').each(function() {
+      var html = $(this).html();
+      if (html != '') {
+        var qty = $(this).find('.qty').val();
+        var price = $(this).find('.price').val();
+        var tax = $(this).find('.tax').val();
+        $(this).find('.total').val(qty * price);
+        $(this).find('.taxamount').val((qty * price) * (tax / 100));
+        calc_total();
+      }
+    });
+  }
+
+  function calc_total() {
+    total = 0;
+    $('.total').each(function() {
+      total += parseFloat($(this).val());
+    });
+    taxamount = 0;
+    $('.taxamount').each(function() {
+      taxamount += parseFloat($(this).val());
+    });
+    $('#subtotal').val(parseFloat(total.toFixed(2)));
+    $('#taxamnt').val(parseFloat(taxamount.toFixed(2)));
+    $('#grndtot').val(parseFloat((taxamount + total).toFixed(2)));
+    $('#baldue').val(parseFloat((taxamount + total).toFixed(2)));
+  }
+</script>
+
+<style>
+  input {
+    background-color: #2f516f;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+  }
+</style>
+<form action="updatecredit/{{ credit.creditnoteid }}" method="post" class="post-form" novalidate>
+  {% csrf_token %}
+  <div class="page-content">
+    <div class="card radius-15">
+      <div class="card-body">
+        <div class="card-title">
+          <center>
+            <h2 class="mb-0" id="cno">CREDIT NOTE NO. {{ credit.creditno }}</h2>
+          </center>
+        </div>
+        <hr />
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div id="invoice">
+          <div class="invoice overflow-auto">
+            <div class="row">
+              <div class="col">
+                <center>
+                  <h2>Fin sYs</h2>
+                </center>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-md-3">
+                <label class="col-form-label">Customer</label>
+                <div class="d-flex">
+                  <input name="customer" class="form-control" value="{{ credit.customer }}">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Email </label>
+                <input type="text" name="mail" value="{{ credit.mail }}" placeholder='Email' class="form-control">
+              </div>
+              <div class="col-md-3"></div>
+              <div class="col-md-3 p-3">
+                <h6 class="name text-muted">
+                  AMOUNT TO REFUND
+                </h6>
+                <h4 class="text-muted">₹0.00</h4>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-3">
+                <label class="col-form-label">Billing
+                  address </label>
+                <textarea type="text" name="biladdr" rows="7" class="form-control">{{ credit.biladdr }}</textarea>
+              </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Credit Note
+                  Date </label>
+                <input type="text" name="creditdate" value="{{ credit.creditdate }}" class="form-control">
+              </div>
+              <div class="col-md-3"></div>
+              <div class="col-md-3">
+                <label class="col-form-label">Credit Note
+                  No. </label>
+                <input type="text" name="creditno" value="{{ credit.creditno }}" onchange="showinnum('cno', this)" class="form-control">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <label class="col-form-label"> Place of supply </label>
+                <select type="text" class="form-control" id="plosu" name="place" style="background-color: #2f516f; color: white;">
+                  <option value="{{ credit.place }}" selected> {{ credit.place }}</option>
+                  <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                  <option value="Andhra Predhesh">Andhra Predhesh</option>
+                  <option value="Arunachal Predesh">Arunachal Predesh</option>
+                  <option value="Assam">Assam</option>
+                  <option value="Bihar">Bihar</option>
+                  <option value="Chandigarh">Chandigarh</option>
+                  <option value="Chhattisgarh">Chhattisgarh</option>
+                  <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                  <option value="Damn anad Diu">Damn anad Diu</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Goa">Goa</option>
+                  <option value="Gujarat">Gujarat</option>
+                  <option value="Haryana">Haryana</option>
+                  <option value="Himachal Predesh">Himachal Predesh</option>
+                  <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                  <option value="Jharkhand">Jharkhand</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Kerala">Kerala</option>
+                  <option value="Ladakh">Ladakh</option>
+                  <option value="Lakshadweep">Lakshadweep</option>
+                  <option value="Madhya Predesh">Madhya Predesh</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Manipur">Manipur</option>
+                  <option value="Meghalaya">Meghalaya</option>
+                  <option value="Mizoram">Mizoram</option>
+                  <option value="Nagaland">Nagaland</option>
+                  <option value="Odisha">Odisha</option>
+                  <option value="Puducherry">Puducherry</option>
+                  <option value="Punjab">Punjab</option>
+                  <option value="Rajasthan">Rajasthan</option>
+                  <option value="Sikkim">Sikkim</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Telangana">Telangana</option>
+                  <option value="Tripura">Tripura</option>
+                  <option value="Uttar Predesh">Uttar Predesh</option>
+                  <option value="Uttarakhand">Uttarakhand</option>
+                  <option value="West Bengal">West Bengal</option>
+                  <option value="Other Territory">Other Territory</option>
+                </select>
+              </div>
+              <div class="col-md-3"></div>
+              <div class="col-md-3"></div>
+              <div class="col-md-3"></div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-3">
+                <label class="col-form-label">Invoice period</label>
+                <input type="text" name="invperiod" value="{{ credit.invperiod }}" placeholder='select invoice period' class="form-control">
+              </div>
+              <div class="col-md-3">
+                <label class="col-form-label">Invoice No.</label>
+                <input type="text" name="invnum" value="{{ credit.invnum }}" placeholder='select invoice no.' onchange="showinnum('cno', this)" class="form-control">
+              </div>
+              <div class="col-md-3"></div>
+              <div class="col-md-3"></div>
+            </div>
+            <div class="row clearfix mt-4">
+              <div class="col-md-12 table-responsive-md">
+                <table class="table table-bordered table-hover" id="tab_logic">
+                  <thead>
+                    <tr>
+                      <th class="text-center">#</th>
+                      <th class="text-center">PRODUCT / SERVICE</th>
+                      <th class="text-center">DESCRIPTION</th>
+                      <th class="text-center">QUANTITY</th>
+                      <th class="text-center">PRICE</th>
+                      <th class="text-center">TOTAL</th>
+                      <th class="text-center">TAX (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr id='addr0'>
+                      <td>1</td>
+                      <td><select name="product" id="product" class="form-control" style="background-color: #2f516f; color: white;">
+                          <option value="{{ credit.product }}" selected>{{ credit.product }}</option>
+                          {% for proinv in inv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.inventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in noninv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.noninventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in bun %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.bundleid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                        </select>
+                      </td>
+                      <td><input type="text" value="{{ credit.descrip }}" id="description" name='descrip' placeholder='Enter description' class="form-control" />
+                      </td>
+                      <td><input type="number" value="{{ credit.qty }}" name='qty' id="qty1" onchange="qtychange1(this)" placeholder='Enter Qty' class="form-control qty" step=0 min=0 max="{{ invo.qty }}" />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" value="{{ credit.price }}" name='price' id="unit1" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                      <td><input type="number" value="{{ credit.total }}" name='total' id="total1" placeholder=0 class="form-control total" readonly />
+                      <td>
+                        <select name="tax" id="tax" class="form-control tax" style="background-color: #2f516f; color: white;">
+                          <option value={{ credit.tax }} text={{ cmp1.state }}>{{ credit.tax }} % GST</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option text=" " value={{ credit.tax }}>{{ credit.tax }} % IGST</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" id="taxamount" name='taxamount' value=0 step="any" class="form-control taxamount">
+                      </td>
+                    </tr>
+                    <tr id='bun1' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product11' id="product11" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description11' id="description11" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty11' placeholder='Enter Qty' id="qty11" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="qty111" class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="creqty11" name="creqty11" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price11' id="unit11" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total11' id="total11" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="ototal11" name="ototal11" placeholder=0 class="form-control" value=0 step="any" style="background-color: #2f516f; color: white;" hidden />
+                      </td>
+                      <td>
+                        <input type="number" name="otax11" id="otax11" class="form-control" value=0 step="any" hidden>
+                        <select name="tax11" id="tax11" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount11' id="taxamount11" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun2' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product12' id="product12" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description12' id="description12" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty12' placeholder='Enter Qty' id="qty12" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" placeholder='Enter Qty' id="qty121" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="creqty12" name="creqty12" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price12' id="unit12" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total12' id="total12" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal12" name="ototal12" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax12" id="otax12" class="form-control" value=0 step="any" hidden>
+                        <select name="tax12" id="tax12" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount12' id="taxamount12" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun3' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product13' id="product13" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description13' id="description13" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty13' placeholder='Enter Qty' id="qty13" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" placeholder='Enter Qty' id="qty131" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="creqty13" name="creqty13" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price13' id="unit13" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total13' id="total13" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal13" name="ototal13" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax13" id="otax13" class="form-control" value=0 step="any" hidden>
+                        <select name="tax13" id="tax13" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount13' id="taxamount13" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun4' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product14' id="product14" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description14' id="description14" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty14' placeholder='Enter Qty' id="qty14" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="qty141" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="creqty14" name="creqty14" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price14' id="unit14" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total14' id="total14" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal14" name="ototal14" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax14" id="otax14" class="form-control" value=0 step="any" hidden>
+                        <select name="tax14" id="tax14" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount14' id="taxamount14" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='addr0'>
+                      <td>2</td>
+                      <td><select name="product1" id="product2" class="form-control" style="background-color: #2f516f; color: white;">
+                          <option value="{{ credit.product1 }}" selected>{{ credit.product1 }}</option>
+                          {% for proinv in inv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.inventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in noninv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.noninventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in bun %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.bundleid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                        </select></td>
+                      <td><input type="text" value="{{ credit.descrip1 }}" id="description2" name='descrip1' placeholder='Enter description' class="form-control" /></td>
+                      <td><input type="number" value="{{ credit.qty1 }}" name='qty1' id="qty2" onchange="qtychange2(this)" placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' class="form-control qty" step=0 min=0 max={{ invo.qty2 }} />
+                        <span id="qtyspan1" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" value="{{ credit.price1 }}" name='price1' id="unit2" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                      <td><input type="number" value="{{ credit.total1 }}" name='total1' id="total2" placeholder=0 class="form-control total" readonly /></td>
+                      <td>
+                        <select name="tax1" id="tax1" class="form-control tax" style="background-color: #2f516f; color: white;">
+                          <option value={{ credit.tax1 }} text={{ cmp1.state }}>{{ credit.tax1 }} % GST</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option text=" " value={{ credit.tax1 }}>{{ credit.tax1 }} % IGST</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" id="taxamount1" name='taxamount1' value=0 step="any" class="form-control taxamount">
+                      </td>
+                    </tr>
+                    <tr id='bun5' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product21' id="product21" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description21' id="description21" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty21' placeholder='Enter Qty' id="qty21" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty21" name="creqty21" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="qty211" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price21' id="unit21" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total21' id="total21" placeholder=0 class="form-control total" value=0 step="any" style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="ototal21" name="ototal21" placeholder=0 class="form-control" value=0 step="any" style="background-color: #2f516f; color: white;" hidden />
+                      </td>
+                      <td>
+                        <input type="number" name="otax21" id="otax21" class="form-control" value=0 step="any" hidden>
+                        <select name="tax21" id="tax21" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount21' id="taxamount21" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun6' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product22' id="product22" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description22' id="description22" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty22' placeholder='Enter Qty' id="qty22" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty22" name="creqty22" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty221" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price22' id="unit22" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total22' id="total22" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal22" name="ototal22" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax22" id="otax22" class="form-control" value=0 step="any" hidden>
+                        <select name="tax22" id="tax22" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount22' id="taxamount22" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun7' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product23' id="product23" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description23' id="description23" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty23' placeholder='Enter Qty' id="qty23" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty23" name="creqty23" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="qty231" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price23' id="unit23" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total23' id="total23" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal23" name="ototal23" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax23" id="otax23" class="form-control" value=0 step="any" hidden>
+                        <select name="tax23" id="tax23" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount23' id="taxamount23" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun8' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product24' id="product24" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description24' id="description24" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty24' placeholder='Enter Qty' id="qty24" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty24" name="creqty24" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="qty241" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price24' id="unit24" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total24' id="total24" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal24" name="ototal24" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax24" id="otax24" class="form-control" value=0 step="any" hidden>
+                        <select name="tax24" id="tax24" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount24' id="taxamount24" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='addr0'>
+                      <td>3</td>
+                      <td><select name="product2" id="product3" class="form-control" style="background-color: #2f516f; color: white;">
+                          <option value="{{ credit.product2 }}" selected>{{ credit.product2 }}</option>
+                          {% for proinv in inv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.inventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in noninv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.noninventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in bun %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.bundleid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                        </select></td>
+                      <td><input type="text" value="{{ credit.descrip2 }}" id="description3" name='descrip2' placeholder='Enter description' class="form-control" /></td>
+                      <td><input type="number" value="{{ credit.qty2 }}" name='qty2' id="qty3" onchange="qtychange3(this)" placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' class="form-control qty" step=0 min=0 max={{ invo.qty3 }} />
+                        <span id="qtyspan2" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" value="{{ credit.price2 }}" name='price2' id="unit3" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                      <td><input type="number" value="{{ credit.total2 }}" name='total2' id="total3" placeholder=0 class="form-control total" readonly /></td>
+                      <td>
+                        <select name="tax2" id="tax2" class="form-control tax" style="background-color: #2f516f; color: white;">
+                          <option value={{ credit.tax2 }} text={{ cmp1.state }}>{{ credit.tax2 }} % GST</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option text=" " value={{ credit.tax2 }}>{{ credit.tax2 }} % IGST</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" id="taxamount2" name='taxamount2' value=0 step="any" class="form-control taxamount">
+                      </td>
+                    </tr>
+                    <tr id='bun9' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product31' id="product31" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description31' id="description31" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty31' placeholder='Enter Qty' id="qty31" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty31" name="creqty31" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty311" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price31' id="unit31" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total31' id="total31" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal31" name="ototal31" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax31" id="otax31" class="form-control" value=0 step="any" hidden>
+                        <select name="tax31" id="tax31" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount31' id="taxamount31" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun10' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product32' id="product32" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description32' id="description32" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty32' placeholder='Enter Qty' id="qty32" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty32" name="creqty32" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty321" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price32' id="unit32" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total32' id="total32" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal32" name="ototal32" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax32" id="otax32" class="form-control" value=0 step="any" hidden>
+                        <select name="tax32" id="tax32" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount32' id="taxamount32" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun11' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product33' id="product33" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description33' id="description33" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty33' placeholder='Enter Qty' id="qty33" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty33" name="creqty33" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" id="qty331" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price33' id="unit33" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total33' id="total33" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal33" name="ototal33" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax33" id="otax33" class="form-control" value=0 step="any" hidden>
+                        <select name="tax33" id="tax33" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount33' id="taxamount33" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun12' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product34' id="product34" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description34' id="description34" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty34' placeholder='Enter Qty' id="qty34" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty34" name="creqty34" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty341" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price34' id="unit34" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total34' id="total34" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal34" name="ototal34" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax34" id="otax34" class="form-control" value=0 step="any" hidden>
+                        <select name="tax34" id="tax34" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount34' id="taxamount34" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='addr0'>
+                      <td>4</td>
+                      <td><select name="product3" id="product4" class="form-control" style="background-color: #2f516f; color: white;">
+                          <option value="{{ credit.product3 }}" selected>{{ credit.product3 }}</option>
+                          {% for proinv in inv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.inventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in noninv %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.noninventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                          {% for proinv in bun %}
+                          {% if proinv.cid_id == cmp1.cid %}
+                          <option text="{{ proinv.bundleid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
+                          {% endif %}
+                          {% endfor %}
+                        </select></td>
+                      <td><input type="text" value="{{ credit.descrip3 }}" name='descrip3' id="description4" placeholder='Enter description' class="form-control" /></td>
+                      <td><input type="number" value="{{ credit.qty3 }}" name='qty3' onchange="qtychange4(this)" id="qty4" placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' class="form-control qty" step=0 min=0 max={{ invo.qty4 }} />
+                        <span id="qtyspan3" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" value="{{ credit.price3 }}" name='price3' id="unit4" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                      <td><input type="number" value="{{ credit.total3 }}" name='total3' id="total4" placeholder='0.00' class="form-control total" readonly /></td>
+                      <td>
+                        <select name="tax3" id="tax3" class="form-control tax" style="background-color: #2f516f; color: white;">
+                          <option value={{ credit.tax3 }} text={{ cmp1.state }}>{{ credit.tax3 }} % GST</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option text=" " value={{ credit.tax3 }}>{{ credit.tax3 }} % IGST</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" id="taxamount3" name='taxamount3' value=0 step="any" class="form-control taxamount">
+                      </td>
+                    </tr>
+                    <tr id='bun13' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product41' id="product41" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description41' id="description41" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty41' placeholder='Enter Qty' id="qty41" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty41" name="creqty41" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty411" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price41' id="unit41" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total41' id="total41" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal41" name="ototal41" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax41" id="otax41" class="form-control" value=0 step="any" hidden>
+                        <select name="tax41" id="tax41" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount41' id="taxamount41" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun14' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product42' id="product42" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description42' id="description42" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty42' placeholder='Enter Qty' id="qty42" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty42" name="creqty42" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty421" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price42' id="unit42" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total42' id="total42" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal42" name="ototal42" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax42" id="otax42" class="form-control" value=0 step="any" hidden>
+                        <select name="tax42" id="tax42" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount42' id="taxamount42" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun15' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product43' id="product43" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description43' id="description43" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty43' placeholder='Enter Qty' id="qty43" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty43" name="creqty43" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty431" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price43' id="unit43" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total43' id="total43" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal43" name="ototal43" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax43" id="otax43" class="form-control" value=0 step="any" hidden>
+                        <select name="tax43" id="tax43" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount43' id="taxamount43" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                    <tr id='bun16' style="display: none;">
+                      <td></td>
+                      <td>
+                        <input name='product44' id="product44" class="form-control" style="background-color: #2f516f; color: white;" readonly>
+                      </td>
+                      <td><input type="text" name='description44' id="description44" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='qty44' placeholder='Enter Qty' id="qty44" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" readonly />
+                        <input type="number" id="creqty44" name="creqty44" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <input type="number" placeholder='Enter Qty' id="qty441" value=0 class="form-control" step=0 min=0 style="background-color: #2f516f; color: white;" hidden />
+                        <span id="qtyspan" class='text-muted'></span>
+                      </td>
+                      <td><input type="number" name='price44' id="unit44" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" readonly /></td>
+                      <td><input type="number" name='total44' id="total44" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" />
+                        <input type="number" id="ototal44" name="ototal44" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: #2f516f; color: white;" />
+                      </td>
+                      <td>
+                        <input type="number" name="otax44" id="otax44" class="form-control" value=0 step="any" hidden>
+                        <select name="tax44" id="tax44" class="form-control tax" style="background-color: #2f516f; color: white;" readonly>
+                          <option id="ta1" value=0 text={{ cmp1.state }}>Choose</option>
+                          <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                          <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                          <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                          <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                          <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                          <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                          <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                          <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                          <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                          <option id="ta5" value=0 text=" ">Choose</option>
+                          <option value=28 text=" ">28.0% IGST(28%)</option>
+                          <option value=18 text=" ">18.0% IGST(18%)</option>
+                          <option value=12 text=" ">12.0% IGST(12%)</option>
+                          <option value=6 text=" ">06.0% IGST(06%)</option>
+                          <option value=5 text=" ">05.0% IGST(05%)</option>
+                          <option value=3 text=" ">03.0% IGST(03%)</option>
+                          <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                          <option value=0 text=" ">0.0% IGST(0%)</option>
+                          <option value=0 text=" ">Exempt IGST(0%)</option>
+                          <option value=0 text=" ">Out of Scope(0%)</option>
+                        </select>
+                      </td>
+                      <td style="display: none;"><input type="number" step="any" name='taxamount44' id="taxamount44" class="form-control taxamount" readonly />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row clearfix" style="margin-top:20px">
+              <div class="col"></div>
+              <div class="col table-responsive-md">
+                <table class="table table-bordered table-hover" id="tab_logic_total">
+                  <tbody>
+                    <tr>
+                      <th class="text-center">Sub Total</th>
+                      <td class="text-center"><input type="number" step="any" value={{ credit.subtot }} name='subtot' placeholder=0 class="form-control" id="subtotal">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="text-center">Tax Amount</th>
+                      <td class="text-center"><input type="number" value={{ credit.taxamnt }} name='taxamnt' id="taxamnt" placeholder=0 step="any" class="form-control"></td>
+                    </tr>
+                    <tr>
+                      <th class="text-center">Grand Total</th>
+                      <td class="text-center"><input type="number" value={{ credit.grndtot }} name='grndtot' id="grndtot" placeholder=0 step="any" class="form-control"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-10"></div>
+              <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-info w-100 text-light rounded-pill">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<script>
+  function showinnum(divId, element) {
+    if (element.value) {
+      document.getElementById(divId).innerHTML = "CREDIT NOTE NO. " + element.value;
+    } else {
+      document.getElementById(divId).innerHTML = "CREDIT NOTE NO. ";
+    }
+  }
+
+  $('#product').on('change', function() {
+    select = $('#product').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description').value = json_data[key]['description'];
+        document.getElementById('qty1').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit1').value = 0;
+          document.getElementById('unit1').style.display = 'none';
+          document.getElementById('tax').style.display = 'none';
+          document.getElementById('total1').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun1').style.display = 'none';
+          } else {
+            document.getElementById('bun1').style.display = 'table-row';
+            document.getElementById('product11').value = json_data[key]['product1'];
+            document.getElementById('description11').value = json_data[key]['description1'];
+            document.getElementById('qty11').value = json_data[key]['qty1'];
+            document.getElementById('qty111').value = json_data[key]['qty1'];
+            document.getElementById('unit11').value = json_data[key]['price1'];
+            document.getElementById('total11').value = json_data[key]['total1'];
+            document.getElementById('tax11').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun2').style.display = 'none';
+          } else {
+            document.getElementById('bun2').style.display = 'table-row';
+            document.getElementById('product12').value = json_data[key]['product2'];
+            document.getElementById('description12').value = json_data[key]['description2'];
+            document.getElementById('qty12').value = json_data[key]['qty2'];
+            document.getElementById('qty121').value = json_data[key]['qty2'];
+            document.getElementById('unit12').value = json_data[key]['price2'];
+            document.getElementById('total12').value = json_data[key]['total2'];
+            document.getElementById('tax12').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun3').style.display = 'none';
+          } else {
+            document.getElementById('bun3').style.display = 'table-row';
+            document.getElementById('product13').value = json_data[key]['product3'];
+            document.getElementById('description13').value = json_data[key]['description3'];
+            document.getElementById('qty13').value = json_data[key]['qty3'];
+            document.getElementById('qty131').value = json_data[key]['qty3'];
+            document.getElementById('unit13').value = json_data[key]['price3'];
+            document.getElementById('total13').value = json_data[key]['total3'];
+            document.getElementById('tax13').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun4').style.display = 'none';
+          } else {
+            document.getElementById('bun4').style.display = 'table-row';
+            document.getElementById('product14').value = json_data[key]['product4'];
+            document.getElementById('description14').value = json_data[key]['description4'];
+            document.getElementById('qty14').value = json_data[key]['qty4'];
+            document.getElementById('qty141').value = json_data[key]['qty4'];
+            document.getElementById('unit14').value = json_data[key]['price4'];
+            document.getElementById('total14').value = json_data[key]['total4'];
+            document.getElementById('tax14').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit1').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta1').value = json_data[key]['tax'];
+            document.getElementById('ta1').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta5').value = json_data[key]['tax'];
+            document.getElementById('ta5').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+
+          document.getElementById('bun1').style.display = 'none';
+          document.getElementById('product11').value = '';
+          document.getElementById('description11').value = '';
+          document.getElementById('qty11').value = 0;
+          document.getElementById('qty111').value = 0;
+          document.getElementById('unit11').value = 0;
+          document.getElementById('total11').value = 0;
+          document.getElementById('tax11').value = 0;
+
+          document.getElementById('bun2').style.display = 'none';
+          document.getElementById('product12').value = '';
+          document.getElementById('description12').value = '';
+          document.getElementById('qty12').value = 0;
+          document.getElementById('qty121').value = 0;
+          document.getElementById('unit12').value = 0;
+          document.getElementById('total12').value = 0;
+          document.getElementById('tax12').value = 0;
+
+          document.getElementById('bun3').style.display = 'none';
+          document.getElementById('product13').value = '';
+          document.getElementById('description13').value = '';
+          document.getElementById('qty13').value = 0;
+          document.getElementById('qty131').value = 0;
+          document.getElementById('unit13').value = 0;
+          document.getElementById('total13').value = 0;
+          document.getElementById('tax13').value = 0;
+
+          document.getElementById('bun4').style.display = 'none';
+          document.getElementById('product14').value = '';
+          document.getElementById('description14').value = '';
+          document.getElementById('qty14').value = 0;
+          document.getElementById('qty141').value = 0;
+          document.getElementById('unit14').value = 0;
+          document.getElementById('total14').value = 0;
+          document.getElementById('tax14').value = 0;
+        }
+      }
+    });
+  });
+  $('#product2').on('change', function() {
+    select = $('#product2').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description2').value = json_data[key]['description'];
+        document.getElementById('qty2').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan1').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan1').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit2').value = 0;
+          document.getElementById('unit2').style.display = 'none';
+          document.getElementById('tax1').style.display = 'none';
+          document.getElementById('total2').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun5').style.display = 'none';
+          } else {
+            document.getElementById('bun5').style.display = 'table-row';
+            document.getElementById('product21').value = json_data[key]['product1'];
+            document.getElementById('description21').value = json_data[key]['description1'];
+            document.getElementById('qty21').value = json_data[key]['qty1'];
+            document.getElementById('qty211').value = json_data[key]['qty1'];
+            document.getElementById('unit21').value = json_data[key]['price1'];
+            document.getElementById('total21').value = json_data[key]['total1'];
+            document.getElementById('tax21').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun6').style.display = 'none';
+          } else {
+            document.getElementById('bun6').style.display = 'table-row';
+            document.getElementById('product22').value = json_data[key]['product2'];
+            document.getElementById('description22').value = json_data[key]['description2'];
+            document.getElementById('qty22').value = json_data[key]['qty2'];
+            document.getElementById('qty221').value = json_data[key]['qty2'];
+            document.getElementById('unit22').value = json_data[key]['price2'];
+            document.getElementById('total22').value = json_data[key]['total2'];
+            document.getElementById('tax22').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun7').style.display = 'none';
+          } else {
+            document.getElementById('bun7').style.display = 'table-row';
+            document.getElementById('product23').value = json_data[key]['product3'];
+            document.getElementById('description23').value = json_data[key]['description3'];
+            document.getElementById('qty23').value = json_data[key]['qty3'];
+            document.getElementById('qty231').value = json_data[key]['qty3'];
+            document.getElementById('unit23').value = json_data[key]['price3'];
+            document.getElementById('total23').value = json_data[key]['total3'];
+            document.getElementById('tax23').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun8').style.display = 'none';
+          } else {
+            document.getElementById('bun8').style.display = 'table-row';
+            document.getElementById('product24').value = json_data[key]['product4'];
+            document.getElementById('description24').value = json_data[key]['description4'];
+            document.getElementById('qty24').value = json_data[key]['qty4'];
+            document.getElementById('qty241').value = json_data[key]['qty4'];
+            document.getElementById('unit24').value = json_data[key]['price4'];
+            document.getElementById('total24').value = json_data[key]['total4'];
+            document.getElementById('tax24').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit2').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta2').value = json_data[key]['tax'];
+            document.getElementById('ta2').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta6').value = json_data[key]['tax'];
+            document.getElementById('ta6').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun5').style.display = 'none';
+          document.getElementById('product21').value = '';
+          document.getElementById('description21').value = '';
+          document.getElementById('qty21').value = 0;
+          document.getElementById('qty211').value = 0;
+          document.getElementById('unit21').value = 0;
+          document.getElementById('total21').value = 0;
+          document.getElementById('tax21').value = 0;
+
+          document.getElementById('bun6').style.display = 'none';
+          document.getElementById('product22').value = '';
+          document.getElementById('description22').value = '';
+          document.getElementById('qty22').value = 0;
+          document.getElementById('qty221').value = 0;
+          document.getElementById('unit22').value = 0;
+          document.getElementById('total22').value = 0;
+          document.getElementById('tax22').value = 0;
+
+          document.getElementById('bun7').style.display = 'none';
+          document.getElementById('product23').value = '';
+          document.getElementById('description23').value = '';
+          document.getElementById('qty23').value = 0;
+          document.getElementById('qty231').value = 0;
+          document.getElementById('unit23').value = 0;
+          document.getElementById('total23').value = 0;
+          document.getElementById('tax23').value = 0;
+
+          document.getElementById('bun8').style.display = 'none';
+          document.getElementById('product24').value = '';
+          document.getElementById('description24').value = '';
+          document.getElementById('qty24').value = 0;
+          document.getElementById('qty241').value = 0;
+          document.getElementById('unit24').value = 0;
+          document.getElementById('total24').value = 0;
+          document.getElementById('tax24').value = 0;
+        }
+      }
+    });
+  });
+  $('#product3').on('change', function() {
+    select = $('#product3').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description3').value = json_data[key]['description'];
+        document.getElementById('qty3').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan2').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan2').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit3').value = 0;
+          document.getElementById('unit3').style.display = 'none';
+          document.getElementById('tax2').style.display = 'none';
+          document.getElementById('total3').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun9').style.display = 'none';
+          } else {
+            document.getElementById('bun9').style.display = 'table-row';
+            document.getElementById('product31').value = json_data[key]['product1'];
+            document.getElementById('description31').value = json_data[key]['description1'];
+            document.getElementById('qty31').value = json_data[key]['qty1'];
+            document.getElementById('qty311').value = json_data[key]['qty1'];
+            document.getElementById('unit31').value = json_data[key]['price1'];
+            document.getElementById('total31').value = json_data[key]['total1'];
+            document.getElementById('tax31').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun10').style.display = 'none';
+          } else {
+            document.getElementById('bun10').style.display = 'table-row';
+            document.getElementById('product32').value = json_data[key]['product2'];
+            document.getElementById('description32').value = json_data[key]['description2'];
+            document.getElementById('qty32').value = json_data[key]['qty2'];
+            document.getElementById('qty321').value = json_data[key]['qty2'];
+            document.getElementById('unit32').value = json_data[key]['price2'];
+            document.getElementById('total32').value = json_data[key]['total2'];
+            document.getElementById('tax32').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun11').style.display = 'none';
+          } else {
+            document.getElementById('bun11').style.display = 'table-row';
+            document.getElementById('product33').value = json_data[key]['product3'];
+            document.getElementById('description33').value = json_data[key]['description3'];
+            document.getElementById('qty33').value = json_data[key]['qty3'];
+            document.getElementById('qty331').value = json_data[key]['qty3'];
+            document.getElementById('unit33').value = json_data[key]['price3'];
+            document.getElementById('total33').value = json_data[key]['total3'];
+            document.getElementById('tax33').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun12').style.display = 'none';
+          } else {
+            document.getElementById('bun12').style.display = 'table-row';
+            document.getElementById('product34').value = json_data[key]['product4'];
+            document.getElementById('description34').value = json_data[key]['description4'];
+            document.getElementById('qty34').value = json_data[key]['qty4'];
+            document.getElementById('qty341').value = json_data[key]['qty4'];
+            document.getElementById('unit34').value = json_data[key]['price4'];
+            document.getElementById('total34').value = json_data[key]['total4'];
+            document.getElementById('tax34').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit3').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta3').value = json_data[key]['tax'];
+            document.getElementById('ta3').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta7').value = json_data[key]['tax'];
+            document.getElementById('ta7').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun9').style.display = 'none';
+          document.getElementById('product31').value = '';
+          document.getElementById('description31').value = '';
+          document.getElementById('qty31').value = 0;
+          document.getElementById('qty311').value = 0;
+          document.getElementById('unit31').value = 0;
+          document.getElementById('total31').value = 0;
+          document.getElementById('tax31').value = 0;
+
+          document.getElementById('bun10').style.display = 'none';
+          document.getElementById('product32').value = '';
+          document.getElementById('description32').value = '';
+          document.getElementById('qty32').value = 0;
+          document.getElementById('qty321').value = 0;
+          document.getElementById('unit32').value = 0;
+          document.getElementById('total32').value = 0;
+          document.getElementById('tax32').value = 0;
+
+          document.getElementById('bun11').style.display = 'none';
+          document.getElementById('product33').value = '';
+          document.getElementById('description33').value = '';
+          document.getElementById('qty33').value = 0;
+          document.getElementById('qty331').value = 0;
+          document.getElementById('unit33').value = 0;
+          document.getElementById('total33').value = 0;
+          document.getElementById('tax33').value = 0;
+
+          document.getElementById('bun12').style.display = 'none';
+          document.getElementById('product34').value = '';
+          document.getElementById('description34').value = '';
+          document.getElementById('qty34').value = 0;
+          document.getElementById('qty341').value = 0;
+          document.getElementById('unit34').value = 0;
+          document.getElementById('total34').value = 0;
+          document.getElementById('tax34').value = 0;
+        }
+      }
+    });
+  });
+  $('#product4').on('change', function() {
+    select = $('#product4').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description4').value = json_data[key]['description'];
+        document.getElementById('qty4').value = 0;
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan3').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan3').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit4').value = 0;
+          document.getElementById('unit4').style.display = 'none';
+          document.getElementById('tax3').style.display = 'none';
+          document.getElementById('total4').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun13').style.display = 'none';
+          } else {
+            document.getElementById('bun13').style.display = 'table-row';
+            document.getElementById('product41').value = json_data[key]['product1'];
+            document.getElementById('description41').value = json_data[key]['description1'];
+            document.getElementById('qty41').value = json_data[key]['qty1'];
+            document.getElementById('qty411').value = json_data[key]['qty1'];
+            document.getElementById('unit41').value = json_data[key]['price1'];
+            document.getElementById('total41').value = json_data[key]['total1'];
+            document.getElementById('tax41').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun14').style.display = 'none';
+          } else {
+            document.getElementById('bun14').style.display = 'table-row';
+            document.getElementById('product42').value = json_data[key]['product2'];
+            document.getElementById('description42').value = json_data[key]['description2'];
+            document.getElementById('qty42').value = json_data[key]['qty2'];
+            document.getElementById('qty421').value = json_data[key]['qty2'];
+            document.getElementById('unit42').value = json_data[key]['price2'];
+            document.getElementById('total42').value = json_data[key]['total2'];
+            document.getElementById('tax42').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun15').style.display = 'none';
+          } else {
+            document.getElementById('bun15').style.display = 'table-row';
+            document.getElementById('product43').value = json_data[key]['product3'];
+            document.getElementById('description43').value = json_data[key]['description3'];
+            document.getElementById('qty43').value = json_data[key]['qty3'];
+            document.getElementById('qty431').value = json_data[key]['qty3'];
+            document.getElementById('unit43').value = json_data[key]['price3'];
+            document.getElementById('total43').value = json_data[key]['total3'];
+            document.getElementById('tax43').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun16').style.display = 'none';
+          } else {
+            document.getElementById('bun16').style.display = 'table-row';
+            document.getElementById('product44').value = json_data[key]['product4'];
+            document.getElementById('description44').value = json_data[key]['description4'];
+            document.getElementById('qty44').value = json_data[key]['qty4'];
+            document.getElementById('qty441').value = json_data[key]['qty4'];
+            document.getElementById('unit44').value = json_data[key]['price4'];
+            document.getElementById('total44').value = json_data[key]['total4'];
+            document.getElementById('tax44').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit4').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta4').value = json_data[key]['tax'];
+            document.getElementById('ta4').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta8').value = json_data[key]['tax'];
+            document.getElementById('ta8').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun13').style.display = 'none';
+          document.getElementById('product41').value = '';
+          document.getElementById('description41').value = '';
+          document.getElementById('qty41').value = 0;
+          document.getElementById('qty411').value = 0;
+          document.getElementById('unit41').value = 0;
+          document.getElementById('total41').value = 0;
+          document.getElementById('tax41').value = 0;
+
+          document.getElementById('bun14').style.display = 'none';
+          document.getElementById('product42').value = '';
+          document.getElementById('description42').value = '';
+          document.getElementById('qty42').value = 0;
+          document.getElementById('qty421').value = 0;
+          document.getElementById('unit42').value = 0;
+          document.getElementById('total42').value = 0;
+          document.getElementById('tax42').value = 0;
+
+          document.getElementById('bun15').style.display = 'none';
+          document.getElementById('product43').value = '';
+          document.getElementById('description43').value = '';
+          document.getElementById('qty43').value = 0;
+          document.getElementById('qty431').value = 0;
+          document.getElementById('unit43').value = 0;
+          document.getElementById('total43').value = 0;
+          document.getElementById('tax43').value = 0;
+
+          document.getElementById('bun16').style.display = 'none';
+          document.getElementById('product44').value = '';
+          document.getElementById('description44').value = '';
+          document.getElementById('qty44').value = 0;
+          document.getElementById('qty441').value = 0;
+          document.getElementById('unit44').value = 0;
+          document.getElementById('total44').value = 0;
+          document.getElementById('tax44').value = 0;
+        }
+      }
+    });
+  });
+
+  function qtychange1(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty11').value = parseInt(document.getElementById('qty111').value) * tx;
+    document.getElementById('qty12').value = parseInt(document.getElementById('qty121').value) * tx;
+    document.getElementById('qty13').value = parseInt(document.getElementById('qty131').value) * tx;
+    document.getElementById('qty14').value = parseInt(document.getElementById('qty141').value) * tx;
+  }
+
+  function qtychange2(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty21').value = parseInt(document.getElementById('qty211').value) * tx;
+    document.getElementById('qty22').value = parseInt(document.getElementById('qty221').value) * tx;
+    document.getElementById('qty23').value = parseInt(document.getElementById('qty231').value) * tx;
+    document.getElementById('qty24').value = parseInt(document.getElementById('qty241').value) * tx;
+  }
+
+  function qtychange3(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty31').value = parseInt(document.getElementById('qty311').value) * tx;
+    document.getElementById('qty32').value = parseInt(document.getElementById('qty321').value) * tx;
+    document.getElementById('qty33').value = parseInt(document.getElementById('qty331').value) * tx;
+    document.getElementById('qty34').value = parseInt(document.getElementById('qty341').value) * tx;
+  }
+
+  function qtychange4(element) {
+    var tx = parseInt(element.value);
+    document.getElementById('qty41').value = parseInt(document.getElementById('qty411').value) * tx;
+    document.getElementById('qty42').value = parseInt(document.getElementById('qty421').value) * tx;
+    document.getElementById('qty43').value = parseInt(document.getElementById('qty431').value) * tx;
+    document.getElementById('qty44').value = parseInt(document.getElementById('qty441').value) * tx;
+  }
+</script>
+<script>
+  $(document).ready(function() {
+    var $select1 = $('#plosu'),
+      $select2 = $('#tax'),
+      $select3 = $('#tax1'),
+      $select4 = $('#tax2'),
+      $select5 = $('#tax3'),
+      $options = $select2.find('option'),
+      $options1 = $select3.find('option'),
+      $options2 = $select4.find('option'),
+      $options3 = $select5.find('option');
+    if ($options1.value == '{{ cmp1.state }}') {
+      $options1.text = "{{ cmp1.state }}"
+    }
+    $select1.on('change', function() {
+      if (this.value == "{{ cmp1.state }}") {
+        $select2.html($options.filter('[text="' + this.value + '"]'));
+        $select3.html($options1.filter('[text="' + this.value + '"]'));
+        $select4.html($options2.filter('[text="' + this.value + '"]'));
+        $select5.html($options3.filter('[text="' + this.value + '"]'));
+      } else {
+        $select2.html($options.filter('[text="' + " " + '"]'));
+        $select3.html($options1.filter('[text="' + " " + '"]'));
+        $select4.html($options2.filter('[text="' + " " + '"]'));
+        $select5.html($options3.filter('[text="' + " " + '"]'));
+
+      }
+    }).trigger('change');
+    select = $('#product').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit1').value = 0;
+          document.getElementById('unit1').style.display = 'none';
+          document.getElementById('tax').style.display = 'none';
+          document.getElementById('total1').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun1').style.display = 'none';
+          } else {
+            document.getElementById('bun1').style.display = 'table-row';
+            document.getElementById('product11').value = json_data[key]['product1'];
+            document.getElementById('description11').value = json_data[key]['description1'];
+            document.getElementById('qty11').value = json_data[key]['qty1'] * parseInt('{{ credit.qty }}');
+            document.getElementById('creqty11').value = json_data[key]['qty1'] * parseInt('{{ credit.qty }}');
+            document.getElementById('qty111').value = json_data[key]['qty1'];
+            document.getElementById('unit11').value = json_data[key]['price1'];
+            document.getElementById('total11').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty11').value);
+            document.getElementById('ototal11').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty11').value);
+            document.getElementById('tax11').value = json_data[key]['tax1'];
+            document.getElementById('otax11').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun2').style.display = 'none';
+          } else {
+            document.getElementById('bun2').style.display = 'table-row';
+            document.getElementById('product12').value = json_data[key]['product2'];
+            document.getElementById('description12').value = json_data[key]['description2'];
+            document.getElementById('qty12').value = json_data[key]['qty2'] * parseInt('{{ credit.qty }}');
+            document.getElementById('creqty12').value = json_data[key]['qty2'] * parseInt('{{ credit.qty }}');
+            document.getElementById('qty121').value = json_data[key]['qty2'];
+            document.getElementById('unit12').value = json_data[key]['price2'];
+            document.getElementById('total12').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty12').value);
+            document.getElementById('ototal12').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty12').value);
+            document.getElementById('tax12').value = json_data[key]['tax2'];
+            document.getElementById('otax12').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun3').style.display = 'none';
+          } else {
+            document.getElementById('bun3').style.display = 'table-row';
+            document.getElementById('product13').value = json_data[key]['product3'];
+            document.getElementById('description13').value = json_data[key]['description3'];
+            document.getElementById('qty13').value = json_data[key]['qty3'] * parseInt('{{ credit.qty }}');
+            document.getElementById('creqty13').value = json_data[key]['qty3'] * parseInt('{{ credit.qty }}');
+            document.getElementById('qty131').value = json_data[key]['qty3'];
+            document.getElementById('unit13').value = json_data[key]['price3'];
+            document.getElementById('total13').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty13').value);
+            document.getElementById('ototal13').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty13').value);
+            document.getElementById('tax13').value = json_data[key]['tax3'];
+            document.getElementById('otax13').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun4').style.display = 'none';
+          } else {
+            document.getElementById('bun4').style.display = 'table-row';
+            document.getElementById('product14').value = json_data[key]['product4'];
+            document.getElementById('description14').value = json_data[key]['description4'];
+            document.getElementById('qty14').value = json_data[key]['qty4'] * parseInt('{{ credit.qty }}');
+            document.getElementById('creqty14').value = json_data[key]['qty4'] * parseInt('{{ credit.qty }}');
+            document.getElementById('qty141').value = json_data[key]['qty4'];
+            document.getElementById('unit14').value = json_data[key]['price4'];
+            document.getElementById('total14').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty14').value);
+            document.getElementById('ototal14').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty14').value);
+            document.getElementById('tax14').value = json_data[key]['tax4'];
+            document.getElementById('otax14').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit1').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta1').value = json_data[key]['tax'];
+            document.getElementById('ta1').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit1').style.display = 'block';
+            document.getElementById('tax').style.display = 'block';
+            document.getElementById('total1').style.display = 'block';
+            document.getElementById('ta5').value = json_data[key]['tax'];
+            document.getElementById('ta5').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+
+          document.getElementById('bun1').style.display = 'none';
+          document.getElementById('product11').value = '';
+          document.getElementById('description11').value = '';
+          document.getElementById('qty11').value = 0;
+          document.getElementById('creqty11').value = 0;
+          document.getElementById('qty111').value = 0;
+          document.getElementById('unit11').value = 0;
+          document.getElementById('total11').value = 0;
+          document.getElementById('tax11').value = 0;
+
+          document.getElementById('bun2').style.display = 'none';
+          document.getElementById('product12').value = '';
+          document.getElementById('description12').value = '';
+          document.getElementById('qty12').value = 0;
+          document.getElementById('creqty12').value = 0;
+          document.getElementById('qty121').value = 0;
+          document.getElementById('unit12').value = 0;
+          document.getElementById('total12').value = 0;
+          document.getElementById('tax12').value = 0;
+
+          document.getElementById('bun3').style.display = 'none';
+          document.getElementById('product13').value = '';
+          document.getElementById('description13').value = '';
+          document.getElementById('qty13').value = 0;
+          document.getElementById('creqty13').value = 0;
+          document.getElementById('qty131').value = 0;
+          document.getElementById('unit13').value = 0;
+          document.getElementById('total13').value = 0;
+          document.getElementById('tax13').value = 0;
+
+          document.getElementById('bun4').style.display = 'none';
+          document.getElementById('product14').value = '';
+          document.getElementById('description14').value = '';
+          document.getElementById('qty14').value = 0;
+          document.getElementById('creqty14').value = 0;
+          document.getElementById('qty141').value = 0;
+          document.getElementById('unit14').value = 0;
+          document.getElementById('total14').value = 0;
+          document.getElementById('tax14').value = 0;
+        }
+      }
+    });
+
+    select = $('#product2').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description2').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan1').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan1').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit2').value = 0;
+          document.getElementById('unit2').style.display = 'none';
+          document.getElementById('tax1').style.display = 'none';
+          document.getElementById('total2').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun5').style.display = 'none';
+          } else {
+            document.getElementById('bun5').style.display = 'table-row';
+            document.getElementById('product21').value = json_data[key]['product1'];
+            document.getElementById('description21').value = json_data[key]['description1'];
+            document.getElementById('qty21').value = json_data[key]['qty1'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('creqty21').value = json_data[key]['qty1'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('qty211').value = json_data[key]['qty1'];
+            document.getElementById('unit21').value = json_data[key]['price1'];
+            document.getElementById('total21').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty21').value);
+            document.getElementById('ototal21').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty21').value);
+            document.getElementById('tax21').value = json_data[key]['tax1'];
+            document.getElementById('otax21').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun6').style.display = 'none';
+          } else {
+            document.getElementById('bun6').style.display = 'table-row';
+            document.getElementById('product22').value = json_data[key]['product2'];
+            document.getElementById('description22').value = json_data[key]['description2'];
+            document.getElementById('qty22').value = json_data[key]['qty2'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('creqty22').value = json_data[key]['qty2'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('qty221').value = json_data[key]['qty2'];
+            document.getElementById('unit22').value = json_data[key]['price2'];
+            document.getElementById('total22').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty22').value);
+            document.getElementById('ototal22').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty22').value);
+            document.getElementById('tax22').value = json_data[key]['tax2'];
+            document.getElementById('otax22').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun7').style.display = 'none';
+          } else {
+            document.getElementById('bun7').style.display = 'table-row';
+            document.getElementById('product23').value = json_data[key]['product3'];
+            document.getElementById('description23').value = json_data[key]['description3'];
+            document.getElementById('qty23').value = json_data[key]['qty3'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('creqty23').value = json_data[key]['qty3'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('qty231').value = json_data[key]['qty3'];
+            document.getElementById('unit23').value = json_data[key]['price3'];
+            document.getElementById('total23').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty23').value);
+            document.getElementById('ototal23').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty23').value);
+            document.getElementById('tax23').value = json_data[key]['tax3'];
+            document.getElementById('otax23').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun8').style.display = 'none';
+          } else {
+            document.getElementById('bun8').style.display = 'table-row';
+            document.getElementById('product24').value = json_data[key]['product4'];
+            document.getElementById('description24').value = json_data[key]['description4'];
+            document.getElementById('qty24').value = json_data[key]['qty4'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('creqty24').value = json_data[key]['qty4'] * parseInt('{{ credit.qty1 }}');
+            document.getElementById('qty241').value = json_data[key]['qty4'];
+            document.getElementById('unit24').value = json_data[key]['price4'];
+            document.getElementById('total24').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty24').value);
+            document.getElementById('ototal24').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty24').value);
+            document.getElementById('tax24').value = json_data[key]['tax4'];
+            document.getElementById('otax24').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit2').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta2').value = json_data[key]['tax'];
+            document.getElementById('ta2').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax1').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta6').value = json_data[key]['tax'];
+            document.getElementById('ta6').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun5').style.display = 'none';
+          document.getElementById('product21').value = '';
+          document.getElementById('description21').value = '';
+          document.getElementById('qty21').value = 0;
+          document.getElementById('creqty21').value = 0;
+          document.getElementById('qty211').value = 0;
+          document.getElementById('unit21').value = 0;
+          document.getElementById('total21').value = 0;
+          document.getElementById('tax21').value = 0;
+
+          document.getElementById('bun6').style.display = 'none';
+          document.getElementById('product22').value = '';
+          document.getElementById('description22').value = '';
+          document.getElementById('qty22').value = 0;
+          document.getElementById('creqty22').value = 0;
+          document.getElementById('qty221').value = 0;
+          document.getElementById('unit22').value = 0;
+          document.getElementById('total22').value = 0;
+          document.getElementById('tax22').value = 0;
+
+          document.getElementById('bun7').style.display = 'none';
+          document.getElementById('product23').value = '';
+          document.getElementById('description23').value = '';
+          document.getElementById('qty23').value = 0;
+          document.getElementById('creqty23').value = 0;
+          document.getElementById('qty231').value = 0;
+          document.getElementById('unit23').value = 0;
+          document.getElementById('total23').value = 0;
+          document.getElementById('tax23').value = 0;
+
+          document.getElementById('bun8').style.display = 'none';
+          document.getElementById('product24').value = '';
+          document.getElementById('description24').value = '';
+          document.getElementById('qty24').value = 0;
+          document.getElementById('creqty24').value = 0;
+          document.getElementById('qty241').value = 0;
+          document.getElementById('unit24').value = 0;
+          document.getElementById('total24').value = 0;
+          document.getElementById('tax24').value = 0;
+        }
+      }
+    });
+
+    select = $('#product3').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description3').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan2').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan2').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit3').value = 0;
+          document.getElementById('unit3').style.display = 'none';
+          document.getElementById('tax2').style.display = 'none';
+          document.getElementById('total3').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun9').style.display = 'none';
+          } else {
+            document.getElementById('bun9').style.display = 'table-row';
+            document.getElementById('product31').value = json_data[key]['product1'];
+            document.getElementById('description31').value = json_data[key]['description1'];
+            document.getElementById('qty31').value = json_data[key]['qty1'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('creqty31').value = json_data[key]['qty1'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('qty311').value = json_data[key]['qty1'];
+            document.getElementById('unit31').value = json_data[key]['price1'];
+            document.getElementById('total31').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty31').value);
+            document.getElementById('ototal31').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty31').value);
+            document.getElementById('tax31').value = json_data[key]['tax1'];
+            document.getElementById('otax31').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun10').style.display = 'none';
+          } else {
+            document.getElementById('bun10').style.display = 'table-row';
+            document.getElementById('product32').value = json_data[key]['product2'];
+            document.getElementById('description32').value = json_data[key]['description2'];
+            document.getElementById('qty32').value = json_data[key]['qty2'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('creqty32').value = json_data[key]['qty2'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('qty321').value = json_data[key]['qty2'];
+            document.getElementById('unit32').value = json_data[key]['price2'];
+            document.getElementById('total32').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty32').value);
+            document.getElementById('ototal32').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty32').value);
+            document.getElementById('tax32').value = json_data[key]['tax2'];
+            document.getElementById('otax32').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun11').style.display = 'none';
+          } else {
+            document.getElementById('bun11').style.display = 'table-row';
+            document.getElementById('product33').value = json_data[key]['product3'];
+            document.getElementById('description33').value = json_data[key]['description3'];
+            document.getElementById('qty33').value = json_data[key]['qty3'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('creqty33').value = json_data[key]['qty3'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('qty331').value = json_data[key]['qty3'];
+            document.getElementById('unit33').value = json_data[key]['price3'];
+            document.getElementById('total33').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty33').value);
+            document.getElementById('ototal33').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty33').value);
+            document.getElementById('tax33').value = json_data[key]['tax3'];
+            document.getElementById('otax33').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun12').style.display = 'none';
+          } else {
+            document.getElementById('bun12').style.display = 'table-row';
+            document.getElementById('product34').value = json_data[key]['product4'];
+            document.getElementById('description34').value = json_data[key]['description4'];
+            document.getElementById('qty34').value = json_data[key]['qty4'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('creqty34').value = json_data[key]['qty4'] * parseInt('{{ credit.qty2 }}');
+            document.getElementById('qty341').value = json_data[key]['qty4'];
+            document.getElementById('unit34').value = json_data[key]['price4'];
+            document.getElementById('total34').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty34').value);
+            document.getElementById('ototal34').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty34').value);
+            document.getElementById('tax34').value = json_data[key]['tax4'];
+            document.getElementById('otax34').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit3').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta3').value = json_data[key]['tax'];
+            document.getElementById('ta3').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta7').value = json_data[key]['tax'];
+            document.getElementById('ta7').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun9').style.display = 'none';
+          document.getElementById('product31').value = '';
+          document.getElementById('description31').value = '';
+          document.getElementById('qty31').value = 0;
+          document.getElementById('creqty31').value = 0;
+          document.getElementById('qty311').value = 0;
+          document.getElementById('unit31').value = 0;
+          document.getElementById('total31').value = 0;
+          document.getElementById('tax31').value = 0;
+
+          document.getElementById('bun10').style.display = 'none';
+          document.getElementById('product32').value = '';
+          document.getElementById('description32').value = '';
+          document.getElementById('qty32').value = 0;
+          document.getElementById('creqty32').value = 0;
+          document.getElementById('qty321').value = 0;
+          document.getElementById('unit32').value = 0;
+          document.getElementById('total32').value = 0;
+          document.getElementById('tax32').value = 0;
+
+          document.getElementById('bun11').style.display = 'none';
+          document.getElementById('product33').value = '';
+          document.getElementById('description33').value = '';
+          document.getElementById('qty33').value = 0;
+          document.getElementById('creqty33').value = 0;
+          document.getElementById('qty331').value = 0;
+          document.getElementById('unit33').value = 0;
+          document.getElementById('total33').value = 0;
+          document.getElementById('tax33').value = 0;
+
+          document.getElementById('bun12').style.display = 'none';
+          document.getElementById('product34').value = '';
+          document.getElementById('description34').value = '';
+          document.getElementById('qty34').value = 0;
+          document.getElementById('creqty34').value = 0;
+          document.getElementById('qty341').value = 0;
+          document.getElementById('unit34').value = 0;
+          document.getElementById('total34').value = 0;
+          document.getElementById('tax34').value = 0;
+        }
+      }
+    });
+
+    select = $('#product4').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('description4').value = json_data[key]['description'];
+        if (json_data[key]['initialqty'] == '' || json_data[key]['initialqty'] == undefined) {
+          document.getElementById('qtyspan3').innerHTML = '';
+        } else {
+          document.getElementById('qtyspan3').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+        }
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit4').value = 0;
+          document.getElementById('unit4').style.display = 'none';
+          document.getElementById('tax3').style.display = 'none';
+          document.getElementById('total4').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun13').style.display = 'none';
+          } else {
+            document.getElementById('bun13').style.display = 'table-row';
+            document.getElementById('product41').value = json_data[key]['product1'];
+            document.getElementById('description41').value = json_data[key]['description1'];
+            document.getElementById('qty41').value = json_data[key]['qty1'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('creqty41').value = json_data[key]['qty1'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('qty411').value = json_data[key]['qty1'];
+            document.getElementById('unit41').value = json_data[key]['price1'];
+            document.getElementById('total41').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty41').value);
+            document.getElementById('ototal41').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty41').value);
+            document.getElementById('tax41').value = json_data[key]['tax1'];
+            document.getElementById('otax41').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun14').style.display = 'none';
+          } else {
+            document.getElementById('bun14').style.display = 'table-row';
+            document.getElementById('product42').value = json_data[key]['product2'];
+            document.getElementById('description42').value = json_data[key]['description2'];
+            document.getElementById('qty42').value = json_data[key]['qty2'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('creqty42').value = json_data[key]['qty2'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('qty421').value = json_data[key]['qty2'];
+            document.getElementById('unit42').value = json_data[key]['price2'];
+            document.getElementById('total42').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty42').value);
+            document.getElementById('ototal42').value = json_data[key]['price2'] * parseFloat(document.getElementById('qty42').value);
+            document.getElementById('tax42').value = json_data[key]['tax2'];
+            document.getElementById('otax42').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun15').style.display = 'none';
+          } else {
+            document.getElementById('bun15').style.display = 'table-row';
+            document.getElementById('product43').value = json_data[key]['product3'];
+            document.getElementById('description43').value = json_data[key]['description3'];
+            document.getElementById('qty43').value = json_data[key]['qty3'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('creqty43').value = json_data[key]['qty3'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('qty431').value = json_data[key]['qty3'];
+            document.getElementById('unit43').value = json_data[key]['price3'];
+            document.getElementById('total43').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty43').value);
+            document.getElementById('ototal43').value = json_data[key]['price3'] * parseFloat(document.getElementById('qty43').value);
+            document.getElementById('tax43').value = json_data[key]['tax3'];
+            document.getElementById('otax43').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun16').style.display = 'none';
+          } else {
+            document.getElementById('bun16').style.display = 'table-row';
+            document.getElementById('product44').value = json_data[key]['product4'];
+            document.getElementById('description44').value = json_data[key]['description4'];
+            document.getElementById('qty44').value = json_data[key]['qty4'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('creqty44').value = json_data[key]['qty4'] * parseInt('{{ credit.qty3 }}');
+            document.getElementById('qty441').value = json_data[key]['qty4'];
+            document.getElementById('unit44').value = json_data[key]['price4'];
+            document.getElementById('total44').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty44').value);
+            document.getElementById('ototal44').value = json_data[key]['price4'] * parseFloat(document.getElementById('qty44').value);
+            document.getElementById('tax44').value = json_data[key]['tax4'];
+            document.getElementById('otax44').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('unit4').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta4').value = json_data[key]['tax'];
+            document.getElementById('ta4').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta8').value = json_data[key]['tax'];
+            document.getElementById('ta8').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+          document.getElementById('bun13').style.display = 'none';
+          document.getElementById('product41').value = '';
+          document.getElementById('description41').value = '';
+          document.getElementById('qty41').value = 0;
+          document.getElementById('creqty41').value = 0;
+          document.getElementById('qty411').value = 0;
+          document.getElementById('unit41').value = 0;
+          document.getElementById('total41').value = 0;
+          document.getElementById('tax41').value = 0;
+
+          document.getElementById('bun14').style.display = 'none';
+          document.getElementById('product42').value = '';
+          document.getElementById('description42').value = '';
+          document.getElementById('qty42').value = 0;
+          document.getElementById('creqty42').value = 0;
+          document.getElementById('qty421').value = 0;
+          document.getElementById('unit42').value = 0;
+          document.getElementById('total42').value = 0;
+          document.getElementById('tax42').value = 0;
+
+          document.getElementById('bun15').style.display = 'none';
+          document.getElementById('product43').value = '';
+          document.getElementById('description43').value = '';
+          document.getElementById('qty43').value = 0;
+          document.getElementById('creqty43').value = 0;
+          document.getElementById('qty431').value = 0;
+          document.getElementById('unit43').value = 0;
+          document.getElementById('total43').value = 0;
+          document.getElementById('tax43').value = 0;
+
+          document.getElementById('bun16').style.display = 'none';
+          document.getElementById('product44').value = '';
+          document.getElementById('description44').value = '';
+          document.getElementById('qty44').value = 0;
+          document.getElementById('creqty44').value = 0;
+          document.getElementById('qty441').value = 0;
+          document.getElementById('unit44').value = 0;
+          document.getElementById('total44').value = 0;
+          document.getElementById('tax44').value = 0;
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

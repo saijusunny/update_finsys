@@ -1,0 +1,1101 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+
+
+<script type="text/javascript" src="{% static 'assets/dist/jautocalc.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+<style>
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    .print-container,
+    .print-container * {
+      visibility: visible;
+    }
+
+  }
+</style>
+
+<style>
+  .mt-50 {
+    margin-top: 50px
+  }
+
+  .mb-50 {
+    margin-bottom: 50px
+  }
+
+  .cards {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+  }
+
+  .card-img-actions {
+    position: relative
+  }
+
+  .card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    text-align: center
+  }
+
+  .card-title {
+    margin-top: 10px;
+    font-size: 17px
+  }
+
+  .invoice-color {
+    color: red !important
+  }
+
+  .card-header {
+    padding: .9375rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, .02);
+    border-bottom: 1px solid rgba(0, 0, 0, .125)
+  }
+
+  a {
+    text-decoration: none !important
+  }
+
+  .btn-light {
+    color: #333;
+    background-color: #fafafa;
+    border-color: #ddd
+  }
+
+  .header-elements-inline {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap
+  }
+
+  @media (min-width: 768px) {
+    .wmin-md-400 {
+      min-width: 400px !important
+    }
+  }
+
+  .btn-primary {
+    color: #fff;
+    background-color: #2196f3
+  }
+
+  .btn-labeled>b {
+    position: absolute;
+    top: -1px;
+    background-color: blue;
+    display: block;
+    line-height: 1;
+    padding: .62503rem
+  }
+</style>
+
+{% csrf_token %}
+<div class="page-content">
+  <div class="card radius-10 p-3" style="background-color: #243e54;">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="card-title">
+          <center>
+            <h3 class="mb-0">INVOICE</h3>
+          </center>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <center>
+          <div class="card-title">
+            <button class="btn btn-outline-info" id="download"> download pdf</button>&nbsp;&nbsp;&nbsp;
+            <button id="print2" class="btn btn-outline-info" onclick="window.print();"> Print
+            </button>
+          </div>
+        </center>
+      </div>
+    </div>
+  </div>
+  <div class="card radius-10 p-3" style="background-color: #243e54;">
+    <div class="row print-container">
+      <div class="col-md-12">
+        <div class="row" id="invoice">
+          <div class="container">
+            <div class="card" style="background-color: white; color: black; font-family: {{ styles.fonts }}">
+              <div class="card-header" style="margin-top: 50px;">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label class="col col-form-label">
+                      <strong>{{ cmp1.cname }}</strong>
+                      <br>
+                      {{ cmp1.caddress }}
+                      <br>
+                      {{ cmp1.city }},{{ cmp1.state }}
+                      <br>
+                      {{ cmp1.pincode }}
+                      <br>
+                      {{ cmp1.cemail }}
+                      <br>
+                      {{ cmp1.phone }}
+                      <br>
+                      <br>
+                    </label>
+                  </div>
+                  <div class="col-md-3">
+                  </div>
+                  <div class="col-md-3">
+                    <h3 style="color: {{ styles.pcolour }};">TAX INVOICE</h3>
+                  </div>
+                </div>
+                <div class="row m-2">
+                  <div class="col-md-4">
+
+                  </div>
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h5 style="color: black; background-color: {{ styles.scolour }}; padding-left: 20px;">BILL TO:</h5>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 pt-2 pl-5 pr-5">
+                        {{ invoice.bname }}
+                        <br>
+                        {{ invoice.baddr }}
+                        <br>
+                        {{ invoice.bemail }}
+                        <br>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="col-md-4">
+                  </div>
+                </div>
+              </div>
+              <div class="m-4">
+                <div class="table-responsive">
+                  <table class="table table-sm">
+                    <thead style="background-color: {{ styles.scolour }};">
+                      <tr>
+                        <th style='color: black;'>INVOICE NO</th>
+                        <th style='color: black;'>INVOICE DATE</th>
+                        <th style='color: black;'>DUE DATE</th>
+                        <th style='color: black;'>TERMS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style='color: black;'>{{ invoice.invoiceno }}</td>
+                        <td style='color: black;'>{{ invoice.invoicedate }}</td>
+                        <td style='color: black;'>{{ invoice.duedate }}</td>
+                        <td style='color: black;'>{{ invoice.terms }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div style="margin-bottom: 300px">
+                <div class="m-4">
+                  <div class="table-responsive">
+                    <table class="table table-sm">
+                      <thead style="background-color: {{ styles.scolour }};">
+                        <tr>
+                          <th></th>
+                          <th class="center" style="color: black;">PRODUCT / SERVICES</th>
+                          <th class="center" style="color: black;">HSN</th>
+                          <th class="center" style="color: black;">QTY</th>
+                          <th class="center" style="color: black;">PRICE</th>
+                          <th class="center" style="color: black;">TOTAL</th>
+                          <th class="center" style="color: black;">TAX (%)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr id='addr0'>
+                          <td style='color: black;'>1</td>
+                          <td><select name="product" id="product" class="custom-select" style="background-color: white; color: black;">
+                              <option value="{{ invoice.product }}" selected>{{ invoice.product }}</option>
+                            </select></td>
+                          <td><input type="text" name='hsn' id="hsn1" value="{{ invoice.hsn }}" style="background-color: white; color: black;" placeholder='Enter HSN Code' class="form-control" /></td>
+                          <td><input type="number" name='qty' id="qty1" value="{{ invoice.qty }}" style="background-color: white; color: black;" placeholder='Enter Qty' onchange="qtychange1(this)" class="form-control qty" step=0 min=0 />
+                            <span id="qtyspan" class="text-muted"></span>
+                          </td>
+                          <td><input type="number" name='price' id="unit1" value="{{ invoice.price }}" style="background-color: white; color: black;" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                          <td><input type="number" name='total' id="total1" value="{{ invoice.total }}" style="background-color: white; color: black;" placeholder=0 class="form-control total" readonly /></td>
+                          <td>
+                            <select name="tax" id="tax1" class="custom-select tax" style="background-color: white; color: black;">
+                              <option id="ta1" value={{ invoice.tax }} text={{ cmp1.state }}>{{ invoice.tax }}
+                                % GST
+                              </option>
+                              <option id="ta5" text=" " value={{ invoice.tax }}>{{ invoice.tax }} %
+                                IGST
+                              </option>
+                            </select>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount0' id="taxamount" value=0 class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun1' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product11' id="product11" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn11' id="hsn11" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty11' placeholder='Enter Qty' id="qty11" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="qty111" class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="creqty11" name="creqty11" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price11' id="unit11" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total11' id="total11" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" readonly />
+                            <input type="number" id="ototal11" name="ototal11" placeholder=0 class="form-control" value=0 step="any" style="background-color: white; color: black;" hidden />
+                          </td>
+                          <td>
+                            <input type="number" name="otax11" id="otax11" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax11" id="tax11" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount11' id="taxamount11" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun2' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product12' id="product12" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn12' id="hsn12" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty12' placeholder='Enter Qty' id="qty12" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" placeholder='Enter Qty' id="qty121" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="creqty12" name="creqty12" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price12' id="unit12" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total12' id="total12" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal12" name="ototal12" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax12" id="otax12" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax12" id="tax12" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount12' id="taxamount12" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun3' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product13' id="product13" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn13' id="hsn13" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty13' placeholder='Enter Qty' id="qty13" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" placeholder='Enter Qty' id="qty131" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="creqty13" name="creqty13" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price13' id="unit13" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total13' id="total13" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal13" name="ototal13" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax13" id="otax13" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax13" id="tax13" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount13' id="taxamount13" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun4' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product14' id="product14" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn14' id="hsn14" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty14' placeholder='Enter Qty' id="qty14" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="qty141" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="creqty14" name="creqty14" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price14' id="unit14" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total14' id="total14" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal14" name="ototal14" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax14" id="otax14" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax14" id="tax14" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount14' id="taxamount14" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='p2'>
+                          <td style='color: black;'>2</td>
+                          <td><select name="product2" id="product2" class="custom-select" style="background-color: white; color: black;">
+                              <option value="{{ invoice.product2 }}" selected>{{ invoice.product2 }}</option>
+                            </select></td>
+                          <td><input type="text" name="hsn2" id="hsn2" value="{{ invoice.hsn2 }}" style="background-color: white; color: black;" placeholder='Enter HSN Code' class="form-control" /></td>
+                          <td><input type="number" name="qty2" id="qty2" value="{{ invoice.qty2 }}" style="background-color: white; color: black;" placeholder='Enter Qty' onchange="qtychange2(this)" class="form-control qty" step=0 min=0 />
+                            <span id="qtyspan1" class="text-muted"></span>
+                          </td>
+                          <td><input type="number" name="price2" id="unit2" value="{{ invoice.price2 }}" style="background-color: white; color: black;" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                          <td><input type="number" name="total2" id="total2" value="{{ invoice.total2 }}" style="background-color: white; color: black;" placeholder=0 class="form-control total" readonly /></td>
+                          <td>
+                            <select name="tax2" id="tax2" class="custom-select tax" style="background-color: white; color: black;">
+                              <option id="ta2" value={{ invoice.tax2 }} text={{ cmp1.state }}>{{ invoice.tax2 }}
+                                % GST
+                              </option>
+                              <option id="ta6" text=" " value={{ invoice.tax2 }}>{{ invoice.tax2 }} %
+                                IGST
+                              </option>
+                            </select>
+                          </td>
+                          <td style="display: none"><input type="number" step="any" name='taxamount1' id="taxamount1" value=0 class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun5' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product21' id="product21" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn21' id="hsn21" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty21' placeholder='Enter Qty' id="qty21" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty21" name="creqty21" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="qty211" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price21' id="unit21" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total21' id="total21" placeholder=0 class="form-control total" value=0 step="any" style="background-color: white; color: black;" readonly />
+                            <input type="number" id="ototal21" name="ototal21" placeholder=0 class="form-control" value=0 step="any" style="background-color: white; color: black;" hidden />
+                          </td>
+                          <td>
+                            <input type="number" name="otax21" id="otax21" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax21" id="tax21" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount21' id="taxamount21" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun6' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product22' id="product22" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn22' id="hsn22" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty22' placeholder='Enter Qty' id="qty22" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty22" name="creqty22" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty221" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price22' id="unit22" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total22' id="total22" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal22" name="ototal22" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax22" id="otax22" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax22" id="tax22" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount22' id="taxamount22" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun7' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product23' id="product23" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn23' id="hsn23" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty23' placeholder='Enter Qty' id="qty23" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty23" name="creqty23" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="qty231" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price23' id="unit23" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total23' id="total23" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal23" name="ototal23" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax23" id="otax23" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax23" id="tax23" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount23' id="taxamount23" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun8' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product24' id="product24" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn24' id="hsn24" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty24' placeholder='Enter Qty' id="qty24" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty24" name="creqty24" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="qty241" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price24' id="unit24" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total24' id="total24" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal24" name="ototal24" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax24" id="otax24" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax24" id="tax24" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount24' id="taxamount24" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='p3'>
+                          <td style='color: black;'>3</td>
+                          <td><select name="product3" id="product3" class="custom-select" style="background-color: white; color: black;">
+                              <option value="{{ invoice.product3 }}" selected>{{ invoice.product3 }}</option>
+                            </select></td>
+                          <td><input type="text" name="hsn3" id="hsn3" value="{{ invoice.hsn3 }}" style="background-color: white; color: black;" placeholder='Enter HSN Code' class="form-control" /></td>
+                          <td><input type="number" name="qty3" id="qty3" value="{{ invoice.qty3 }}" style="background-color: white; color: black;" placeholder='Enter Qty' onchange="qtychange3(this)" class="form-control qty" step=0 min=0 />
+                            <span id="qtyspan2" class="text-muted"></span>
+                          </td>
+                          <td><input type="number" name="price3" id="unit3" value="{{ invoice.price3 }}" style="background-color: white; color: black;" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                          <td><input type="number" name="total3" id="total3" value="{{ invoice.total3 }}" style="background-color: white; color: black;" placeholder=0 class="form-control total" readonly /></td>
+                          <td>
+                            <select name="tax3" id="tax3" class="custom-select tax" style="background-color: white; color: black;">
+                              <option id="ta3" value={{ invoice.tax3 }} text={{ cmp1.state }}>{{ invoice.tax3 }}
+                                % GST
+                              </option>
+                              <option id="ta7" text=" " value={{ invoice.tax3 }}>{{ invoice.tax3 }} %
+                                IGST
+                              </option>
+                            </select>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount2' id="taxamount2" value=0 class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun9' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product31' id="product31" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn31' id="hsn31" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty31' placeholder='Enter Qty' id="qty31" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty31" name="creqty31" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty311" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price31' id="unit31" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total31' id="total31" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal31" name="ototal31" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax31" id="otax31" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax31" id="tax31" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount31' id="taxamount31" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun10' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product32' id="product32" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn32' id="hsn32" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty32' placeholder='Enter Qty' id="qty32" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty32" name="creqty32" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty321" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price32' id="unit32" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total32' id="total32" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal32" name="ototal32" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax32" id="otax32" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax32" id="tax32" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount32' id="taxamount32" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun11' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product33' id="product33" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn33' id="hsn33" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty33' placeholder='Enter Qty' id="qty33" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty33" name="creqty33" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" id="qty331" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price33' id="unit33" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total33' id="total33" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal33" name="ototal33" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax33" id="otax33" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax33" id="tax33" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount33' id="taxamount33" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun12' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product34' id="product34" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn34' id="hsn34" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty34' placeholder='Enter Qty' id="qty34" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty34" name="creqty34" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty341" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price34' id="unit34" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total34' id="total34" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal34" name="ototal34" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax34" id="otax34" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax34" id="tax34" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount34' id="taxamount34" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='p4'>
+                          <td style='color: black;'>4</td>
+                          <td><select name="product4" id="product4" class="custom-select" style="background-color: white; color: black;">
+                              <option value="{{ invoice.product4 }}" selected>{{ invoice.product4 }}</option>
+                            </select></td>
+                          <td><input type="text" name="hsn4" id="hsn4" value="{{ invoice.hsn4 }}" style="background-color: white; color: black;" placeholder='Enter HSN Code' class="form-control" /></td>
+                          <td><input type="number" name="qty4" id="qty4" value="{{ invoice.qty4 }}" style="background-color: white; color: black;" placeholder='Enter Qty' onchange="qtychange4(this)" class="form-control qty" step=0 min=0 />
+                            <span id="qtyspan3" class="text-muted"></span>
+                          </td>
+                          <td><input type="number" name="price4" id="unit4" value="{{ invoice.price4 }}" style="background-color: white; color: black;" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" /></td>
+                          <td><input type="number" name="total4" id="total4" value="{{ invoice.total4 }}" style="background-color: white; color: black;" placeholder='0.00' class="form-control total" readonly /></td>
+                          <td>
+                            <select name="tax4" id="tax4" class="custom-select tax" style="background-color: white; color: black;">
+                              <option id="ta4" value={{ invoice.tax4 }} text={{ cmp1.state }}>{{ invoice.tax4 }}
+                                % GST
+                              </option>
+                              <option id="ta8" text=" " value={{ invoice.tax4 }}>{{ invoice.tax4 }} %
+                                IGST
+                              </option>
+                            </select>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount3' id="taxamount3" value='' class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun13' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product41' id="product41" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn41' id="hsn41" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty41' placeholder='Enter Qty' id="qty41" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty41" name="creqty41" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty411" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price41' id="unit41" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total41' id="total41" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal41" name="ototal41" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax41" id="otax41" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax41" id="tax41" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount41' id="taxamount41" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun14' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product42' id="product42" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn42' id="hsn42" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty42' placeholder='Enter Qty' id="qty42" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty42" name="creqty42" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty421" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price42' id="unit42" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total42' id="total42" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal42" name="ototal42" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax42" id="otax42" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax42" id="tax42" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount42' id="taxamount42" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun15' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product43' id="product43" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn43' id="hsn43" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty43' placeholder='Enter Qty' id="qty43" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty43" name="creqty43" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty431" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price43' id="unit43" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total43' id="total43" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal43" name="ototal43" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax43" id="otax43" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax43" id="tax43" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount43' id="taxamount43" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                        <tr id='bun16' style="display: none;">
+                          <td></td>
+                          <td>
+                            <input name='product44' id="product44" class="form-control" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td><input type="text" name='hsn44' id="hsn44" placeholder='Enter HSN Code' class="form-control" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='qty44' placeholder='Enter Qty' id="qty44" value=0 class="form-control qty" step=0 min=0 style="background-color: white; color: black;" readonly />
+                            <input type="number" id="creqty44" name="creqty44" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <input type="number" placeholder='Enter Qty' id="qty441" value=0 class="form-control" step=0 min=0 style="background-color: white; color: black;" hidden />
+                            <span id="qtyspan" class='text-muted'></span>
+                          </td>
+                          <td><input type="number" name='price44' id="unit44" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: white; color: black;" readonly /></td>
+                          <td><input type="number" name='total44' id="total44" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: white; color: black;" />
+                            <input type="number" id="ototal44" name="ototal44" placeholder=0 class="form-control" value=0 step="any" hidden style="background-color: white; color: black;" />
+                          </td>
+                          <td>
+                            <input type="number" name="otax44" id="otax44" class="form-control" value=0 step="any" hidden>
+                            <input type='text' name="tax44" id="tax44" class="form-control tax" style="background-color: white; color: black;" readonly>
+                          </td>
+                          <td style="display: none;"><input type="number" step="any" name='taxamount44' id="taxamount44" class="form-control taxamount" readonly />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-7"></div>
+                  <div class="col-md-5">
+                    <table class="table table-sm mb-5">
+                      <tbody>
+                        <tr>
+                          <td class="center" style='color: black;'><strong>SUBTOTAL</strong></td>
+                          <td class="center" style='color: black;'>{{ invoice.subtotal }}</td>
+                        </tr>
+                        <tr>
+                          <td class="center" style='color: black;'><strong>TAX AMOUNT</strong></td>
+                          <td class="center" style='color: black;'>{{ invoice.taxamount }}</td>
+                        </tr>
+                        <tr>
+                          <td class="center" style='color: black;'><strong>TOTAL</strong></td>
+                          <td class="center" style='color: black;'>{{ invoice.grandtotal }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="bg-gray" style="height: 2px;">
+                </div>
+                <span>
+                  <center>Invoice was created on a computer and is valid without the signature and seal.</center>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var p2 = document.getElementById('p2');
+    var p3 = document.getElementById('p3');
+    var p4 = document.getElementById('p4');
+    var p2val = '{{ invoice.qty2 }}';
+    var p3val = '{{ invoice.qty3 }}';
+    var p4val = '{{ invoice.qty4 }}';
+    if (p2val == 0) {
+      p2.style.display = 'none';
+      if (p3val == 0) {
+        p3.style.display = 'none';
+        if (p4val == 0) {
+          p4.style.display = 'none';
+        }
+      }
+    } else if (p3val == 0) {
+      p3.style.display = 'none';
+      if (p4val == 0) {
+        p4.style.display = 'none';
+      }
+    } else if (p4val == 0) {
+      p4.style.display = 'none';
+    } else {
+      p2.style.display = 'table-row';
+      p3.style.display = 'table-row';
+      p4.style.display = 'table-row';
+    }
+    select = $('#product').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn1').value = json_data[key]['hsn'];
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit1').value = 0;
+          document.getElementById('unit1').style.display = 'none';
+          document.getElementById('tax1').style.display = 'none';
+          document.getElementById('total1').style.display = 'none';
+          if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+            document.getElementById('bun1').style.display = 'none';
+          } else {
+            document.getElementById('bun1').style.display = 'table-row';
+            document.getElementById('product11').value = json_data[key]['product1'];
+            document.getElementById('hsn11').value = json_data[key]['hsn1'];
+            document.getElementById('qty111').value = json_data[key]['qty1'];
+            document.getElementById('qty11').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty }}');
+            document.getElementById('unit11').value = json_data[key]['price1'];
+            document.getElementById('total11').value = json_data[key]['price1'] * parseFloat(document.getElementById('qty11').value);
+            document.getElementById('tax11').value = json_data[key]['tax1'];
+          }
+          if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+            document.getElementById('bun2').style.display = 'none';
+          } else {
+            document.getElementById('bun2').style.display = 'table-row';
+            document.getElementById('product12').value = json_data[key]['product2'];
+            document.getElementById('hsn12').value = json_data[key]['hsn2'];
+            document.getElementById('qty12').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty }}');
+            document.getElementById('qty121').value = json_data[key]['qty2'];
+            document.getElementById('unit12').value = json_data[key]['price2'];
+            console.log('{{ invoice.qty }}', typeof '{{ invoice.qty }}')
+            document.getElementById('total12').value = json_data[key]['price2'] * parseInt(document.getElementById('qty12').value);
+            document.getElementById('tax12').value = json_data[key]['tax2'];
+          }
+          if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+            document.getElementById('bun3').style.display = 'none';
+          } else {
+            document.getElementById('bun3').style.display = 'table-row';
+            document.getElementById('product13').value = json_data[key]['product3'];
+            document.getElementById('hsn13').value = json_data[key]['hsn3'];
+            document.getElementById('qty13').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty }}');
+            document.getElementById('qty131').value = json_data[key]['qty3'];
+            document.getElementById('unit13').value = json_data[key]['price3'];
+            document.getElementById('total13').value = json_data[key]['price3'] * parseInt(document.getElementById('qty13').value);
+            document.getElementById('tax13').value = json_data[key]['tax3'];
+          }
+          if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+            document.getElementById('bun4').style.display = 'none';
+          } else {
+            document.getElementById('bun4').style.display = 'table-row';
+            document.getElementById('product14').value = json_data[key]['product4'];
+            document.getElementById('hsn14').value = json_data[key]['hsn4'];
+            document.getElementById('qty14').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty }}');
+            document.getElementById('qty141').value = json_data[key]['qty4'];
+            document.getElementById('unit14').value = json_data[key]['price4'];
+            document.getElementById('total14').value = json_data[key]['price4'] * parseInt(document.getElementById('qty14').value);
+            document.getElementById('tax14').value = json_data[key]['tax4'];
+          }
+        } else {
+          document.getElementById('bun1').style.display = 'none';
+          document.getElementById('bun2').style.display = 'none';
+          document.getElementById('bun3').style.display = 'none';
+          document.getElementById('bun4').style.display = 'none';
+        }
+      }
+    });
+    select = $('#product2').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn2').value = json_data[key]['hsn'];
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit2').value = 0;
+          document.getElementById('unit2').style.display = 'none';
+          document.getElementById('tax2').style.display = 'none';
+          document.getElementById('total2').style.display = 'none';
+        } else {
+          document.getElementById('unit2').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta2').value = json_data[key]['tax'];
+            document.getElementById('ta2').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit2').style.display = 'block';
+            document.getElementById('tax2').style.display = 'block';
+            document.getElementById('total2').style.display = 'block';
+            document.getElementById('ta6').value = json_data[key]['tax'];
+            document.getElementById('ta6').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+        }
+        if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+          document.getElementById('bun5').style.display = 'none';
+        } else {
+          document.getElementById('bun5').style.display = 'table-row';
+          document.getElementById('product21').value = json_data[key]['product1'];
+          document.getElementById('hsn21').value = json_data[key]['hsn1'];
+          document.getElementById('qty21').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty211').value = json_data[key]['qty1'];
+          document.getElementById('unit21').value = json_data[key]['price1'];
+          document.getElementById('total21').value = json_data[key]['price1'] * parseInt(document.getElementById('qty21').value);
+          document.getElementById('tax21').value = json_data[key]['tax1'];
+        }
+        if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+          document.getElementById('bun6').style.display = 'none';
+        } else {
+          document.getElementById('bun6').style.display = 'table-row';
+          document.getElementById('product22').value = json_data[key]['product2'];
+          document.getElementById('hsn22').value = json_data[key]['hsn2'];
+          document.getElementById('qty22').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty221').value = json_data[key]['qty2'];
+          document.getElementById('unit22').value = json_data[key]['price2'];
+          document.getElementById('total22').value = json_data[key]['price2'] * parseInt(document.getElementById('qty22').value);
+          document.getElementById('tax22').value = json_data[key]['tax2'];
+        }
+        if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+          document.getElementById('bun7').style.display = 'none';
+        } else {
+          document.getElementById('bun7').style.display = 'table-row';
+          document.getElementById('product23').value = json_data[key]['product3'];
+          document.getElementById('hsn23').value = json_data[key]['hsn3'];
+          document.getElementById('qty23').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty231').value = json_data[key]['qty3'];
+          document.getElementById('unit23').value = json_data[key]['price3'];
+          document.getElementById('total23').value = json_data[key]['price3'] * parseInt(document.getElementById('qty23').value);
+          document.getElementById('tax23').value = json_data[key]['tax3'];
+        }
+        if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+          document.getElementById('bun8').style.display = 'none';
+        } else {
+          document.getElementById('bun8').style.display = 'table-row';
+          document.getElementById('product24').value = json_data[key]['product4'];
+          document.getElementById('hsn24').value = json_data[key]['hsn4'];
+          document.getElementById('qty24').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty2 }}');
+          document.getElementById('qty241').value = json_data[key]['qty4'];
+          document.getElementById('unit24').value = json_data[key]['price4'];
+          document.getElementById('total24').value = json_data[key]['price4'] * parseInt(document.getElementById('qty24').value);
+          document.getElementById('tax24').value = json_data[key]['tax4'];
+        }
+      }
+    });
+    select = $('#product3').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn3').value = json_data[key]['hsn'];
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit3').value = 0;
+          document.getElementById('unit3').style.display = 'none';
+          document.getElementById('tax3').style.display = 'none';
+          document.getElementById('total3').style.display = 'none';
+        } else {
+          document.getElementById('unit3').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta3').value = json_data[key]['tax'];
+            document.getElementById('ta3').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit3').style.display = 'block';
+            document.getElementById('tax3').style.display = 'block';
+            document.getElementById('total3').style.display = 'block';
+            document.getElementById('ta7').value = json_data[key]['tax'];
+            document.getElementById('ta7').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+        }
+        if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+          document.getElementById('bun9').style.display = 'none';
+        } else {
+          document.getElementById('bun9').style.display = 'table-row';
+          document.getElementById('product31').value = json_data[key]['product1'];
+          document.getElementById('hsn31').value = json_data[key]['hsn1'];
+          document.getElementById('qty31').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty311').value = json_data[key]['qty1'];
+          document.getElementById('unit31').value = json_data[key]['price1'];
+          document.getElementById('total31').value = json_data[key]['price1'] * parseInt(document.getElementById('qty31').value);
+          document.getElementById('tax31').value = json_data[key]['tax1'];
+        }
+        if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+          document.getElementById('bun10').style.display = 'none';
+        } else {
+          document.getElementById('bun10').style.display = 'table-row';
+          document.getElementById('product32').value = json_data[key]['product2'];
+          document.getElementById('hsn32').value = json_data[key]['hsn2'];
+          document.getElementById('qty32').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty321').value = json_data[key]['qty2'];
+          document.getElementById('unit32').value = json_data[key]['price2'];
+          document.getElementById('total32').value = json_data[key]['price2'] * parseInt(document.getElementById('qty32').value);
+          document.getElementById('tax32').value = json_data[key]['tax2'];
+        }
+        if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+          document.getElementById('bun11').style.display = 'none';
+        } else {
+          document.getElementById('bun11').style.display = 'table-row';
+          document.getElementById('product33').value = json_data[key]['product3'];
+          document.getElementById('hsn33').value = json_data[key]['hsn3'];
+          document.getElementById('qty33').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty331').value = json_data[key]['qty3'];
+          document.getElementById('unit33').value = json_data[key]['price3'];
+          document.getElementById('total33').value = json_data[key]['price3'] * parseInt(document.getElementById('qty33').value);
+          document.getElementById('tax33').value = json_data[key]['tax3'];
+        }
+        if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+          document.getElementById('bun12').style.display = 'none';
+        } else {
+          document.getElementById('bun12').style.display = 'table-row';
+          document.getElementById('product34').value = json_data[key]['product4'];
+          document.getElementById('hsn34').value = json_data[key]['hsn4'];
+          document.getElementById('qty34').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty3 }}');
+          document.getElementById('qty341').value = json_data[key]['qty4'];
+          document.getElementById('unit34').value = json_data[key]['price4'];
+          document.getElementById('total34').value = json_data[key]['price4'] * parseInt(document.getElementById('qty34').value);
+          document.getElementById('tax34').value = json_data[key]['tax4'];
+        }
+      }
+    })
+    select = $('#product4').val();
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getitems' %}",
+      data: {
+        id: select
+      }
+    }).done(function(response) {
+      var json_data = JSON.parse(response);
+      for (key in json_data) {
+        document.getElementById('hsn4').value = json_data[key]['hsn'];
+        if (json_data[key]['item'] == 'bundle') {
+          document.getElementById('unit4').value = 0;
+          document.getElementById('unit4').style.display = 'none';
+          document.getElementById('tax4').style.display = 'none';
+          document.getElementById('total4').style.display = 'none';
+        } else {
+          document.getElementById('unit4').value = json_data[key]['salesprice'];
+          var place = document.getElementById('plosu').value;
+          if (place == '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax4').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta4').value = json_data[key]['tax'];
+            document.getElementById('ta4').innerHTML = json_data[key]['tax'] + ' % GST';
+          } else if (place != '{{ cmp1.state }}') {
+            document.getElementById('unit4').style.display = 'block';
+            document.getElementById('tax4').style.display = 'block';
+            document.getElementById('total4').style.display = 'block';
+            document.getElementById('ta8').value = json_data[key]['tax'];
+            document.getElementById('ta8').innerHTML = json_data[key]['tax'] + ' % IGST';
+          }
+        }
+        if (json_data[key]['qty1'] == undefined || json_data[key]['qty1'] == 0) {
+          document.getElementById('bun13').style.display = 'none';
+        } else {
+          document.getElementById('bun13').style.display = 'table-row';
+          document.getElementById('product41').value = json_data[key]['product1'];
+          document.getElementById('hsn41').value = json_data[key]['hsn1'];
+          document.getElementById('qty41').value = json_data[key]['qty1'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty411').value = json_data[key]['qty1'];
+          document.getElementById('unit41').value = json_data[key]['price1'];
+          document.getElementById('total41').value = json_data[key]['price1'] * parseInt(document.getElementById('qty41').value);
+          document.getElementById('tax41').value = json_data[key]['tax1'];
+        }
+        if (json_data[key]['qty2'] == undefined || json_data[key]['qty2'] == 0) {
+          document.getElementById('bun14').style.display = 'none';
+        } else {
+          document.getElementById('bun14').style.display = 'table-row';
+          document.getElementById('product42').value = json_data[key]['product2'];
+          document.getElementById('hsn42').value = json_data[key]['hsn2'];
+          document.getElementById('qty42').value = json_data[key]['qty2'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty421').value = json_data[key]['qty2'];
+          document.getElementById('unit42').value = json_data[key]['price2'];
+          document.getElementById('total42').value = json_data[key]['price2'] * parseInt(document.getElementById('qty42').value);
+          document.getElementById('tax42').value = json_data[key]['tax2'];
+        }
+        if (json_data[key]['qty3'] == undefined || json_data[key]['qty3'] == 0) {
+          document.getElementById('bun15').style.display = 'none';
+        } else {
+          document.getElementById('bun15').style.display = 'table-row';
+          document.getElementById('product43').value = json_data[key]['product3'];
+          document.getElementById('hsn43').value = json_data[key]['hsn3'];
+          document.getElementById('qty43').value = json_data[key]['qty3'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty431').value = json_data[key]['qty3'];
+          document.getElementById('unit43').value = json_data[key]['price3'];
+          document.getElementById('total43').value = json_data[key]['price3'] * parseInt(document.getElementById('qty43').value);
+          document.getElementById('tax43').value = json_data[key]['tax3'];
+        }
+        if (json_data[key]['qty4'] == undefined || json_data[key]['qty4'] == 0) {
+          document.getElementById('bun16').style.display = 'none';
+        } else {
+          document.getElementById('bun16').style.display = 'table-row';
+          document.getElementById('product44').value = json_data[key]['product4'];
+          document.getElementById('hsn44').value = json_data[key]['hsn4'];
+          document.getElementById('qty44').value = json_data[key]['qty4'] * parseInt('{{ invoice.qty4 }}');
+          document.getElementById('qty441').value = json_data[key]['qty4'];
+          document.getElementById('unit44').value = json_data[key]['price4'];
+          document.getElementById('total44').value = json_data[key]['price4'] * parseInt(document.getElementById('qty44').value);
+          document.getElementById('tax44').value = json_data[key]['tax4'];
+        }
+      }
+    });
+  });
+</script>
+<script>
+  window.onload = function() {
+    document.getElementById("download")
+      .addEventListener("click", () => {
+        const invoice = this.document.getElementById("invoice");
+        console.log(invoice);
+        console.log(window);
+        var opt = {
+          margin: 1,
+          filename: 'myfile.pdf',
+          image: {
+            type: 'jpeg',
+            quality: 0.98
+          },
+          html2canvas: {
+            scale: 2
+          },
+          jsPDF: {
+            unit: 'in',
+            format: 'letter',
+            orientation: 'portrait'
+          }
+        };
+        html2pdf().from(invoice).set(opt).save();
+      })
+  }
+</script>
+{% endblock %}

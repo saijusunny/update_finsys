@@ -1,0 +1,96 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+
+    <style>
+        tr:hover{
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <div class="page-content content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">EXPENSES</h2></center>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="d-flex">
+                            <input type="text" id="search" class="form-control" placeholder="Search.." autocomplete="off">
+                            <center><i class="fa fa-search form-control" style="width: 60px;"></i></center>
+                        </div> 
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-1"></div>
+                        <!-- <div class="btn-group col-md-2"> -->
+                        <!-- <a class="btn btn-outline-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            role="button">Filter By
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">All</a>
+                            <a class="dropdown-item" href="#">Active</a>
+                            <a class="dropdown-item" href="#">Inactive</a>
+                        </div> -->
+                        <a href="{% url 'addexpenses' %}" class="btn btn-outline-info fa fa-plus" role="button">&nbsp;New</a>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <table class="table table-responsive-md mt-4" id="table">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Expense Account</th>
+                            <th>Expense Type</th>
+                            <th>Reference</th>
+                            <th>Vendor</th>
+                            <th>Paid Through</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for e in expnc %}
+                        <tr onclick="window.location='viewexpense/{{ e.expenseid }}';">
+                            <th>{{ e.date | date:'d-m-Y' }}</th>
+                            <td>{{ e.expenseaccount }}</td>
+                            <td>{{ e.expensetype }}</td>
+                            <td>{{ e.reference }}</td>
+                            <td>{{ e.vendor }}</td>
+                            <td>{{ e.paidthrough }}</td>
+                            <!-- <td>{{ e.status }}</a></td> -->
+                            <td>{{ e.customer }}</td>
+                            <td>{{ e.amount }}</td>
+                        </a>
+                        </tr> 
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var $rows = $('#table tr');
+        $('#search').keyup(function() {
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+            
+            $rows.show().filter(function() {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
+    </script>
+
+    {% endif %}
+{% endblock %}

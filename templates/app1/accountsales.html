@@ -1,0 +1,238 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+h1,h2{
+    font-size: 24px;
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+
+<div class="page-content">
+<div class="card p-5">
+            <div class="card-body">
+<h1>SALES FORM CONTENT</h1><br>
+<hr style="height: 15px">
+
+
+<div class="row">
+
+    <div class="col" style="font-size: 20px">
+      Item wise discount
+    </div>
+    <div class="col">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+
+<div class="row">
+
+    <div class="col" style="font-size: 20px">
+      Deposit
+    </div>
+    <div class="col">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+
+<div class="row">
+
+    <div class="col" style="font-size: 20px">
+      Round off final amount for transaction
+    </div>
+    <div class="col">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+
+<div class="row">
+
+    <div class="col" style="font-size: 20px">
+      Total discount
+    </div>
+    <div class="col"style="font-size: 20px">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+<br>
+<div class="row">
+
+    <div class="col-6"style="font-size: 20px">
+      Preferred invoice term
+    </div>
+    <div class="col-2">
+        <select name="tax4" id="tax4" class="form-control tax"
+                                                    style="background-color: #2f516f; color: white;">
+
+                                                <option id="ta8" value=0 text=" ">Choose</option>
+                                                <option value=1 text=" ">DUE OR RECEIPT</option>
+                                                <option value=2 text=" ">NET 15</option>
+                                                <option value=3 text=" ">NET 30</option>
+                                                <option value=4 text=" ">NET 60</option>
+
+        </select></div><br>
+</div>
+<br>
+
+
+<div class="row">
+
+    <div class="col" style="font-size: 20px">
+        Service date
+    </div>
+    <div class="col"style="font-size: 20px">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+<div class="row">
+
+    <div class="col" style="font-size: 20px">
+        Classification of tax and retail services
+    </div>
+    <div class="col"style="font-size: 20px">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+
+  <h2>PRODUCT AND SERVICES</h2><br>
+<hr style="height: 15px">
+<div class="row">
+
+    <div class="col" style="font-size: 20px">
+        Show Product/Service column on sales forms
+    </div>
+    <div class="col"style="font-size: 20px">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+                <div class="row">
+
+    <div class="col" style="font-size: 20px">
+        Show SKU column
+    </div>
+    <div class="col"style="font-size: 20px">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+                <div class="row">
+
+    <div class="col" style="font-size: 20px">
+        Track quantity and price/rate
+    </div>
+    <div class="col"style="font-size: 20px">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+                <div class="row">
+
+    <div class="col" style="font-size: 20px">
+        Track inventory quantity on hand
+    </div>
+    <div class="col"style="font-size: 20px">
+        <label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+        </label></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+<div class="col-md-2 mt-2">
+
+                            <button type="button" class="btn btn-outline-info rounded-pill w-100 text-light">
+                                save
+                            </button>
+
+                    </div>
+
+            </div>
+</div></div>
+
+
+{% endblock %}

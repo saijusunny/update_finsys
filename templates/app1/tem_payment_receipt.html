@@ -1,0 +1,328 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+
+<style>
+
+
+    hr {
+        border: 0;
+        clear:both;
+        display:block;
+        width: 96%;               
+        background-color:#000000;
+        height: 1px;
+      }
+    .spaced>li {
+        color:black;
+        font-size:10px;
+    }
+
+    .table1{
+        font-size:10px;
+        width:100% ;
+        color:black;
+
+    }
+    .label-lg {
+            padding: .3em .6em .4em;
+            font-size: 12px;
+            color:black;
+            line-height: 1.1;
+            height: 24px
+    }
+    .widget-header{
+        background-color:#444;
+        color:white;
+        font-size:14px;
+    }
+    .widget-header:after,
+    .widget-header:before {
+            content: "";
+            display: table;
+            line-height: 0
+    }
+    .widget-header:after {
+            clear: right
+    }
+    .widget-box.collapsed>.widget-header {
+            border-bottom-width: 0
+        }
+        
+        .collapsed.fullscreen>.widget-header {
+            border-bottom-width: 1px
+        }
+        
+        .collapsed>.widget-body {
+            display: none
+        }
+        
+        .widget-header-flat {
+            background: #F7F7F7
+        }
+        
+        .widget-header-large {
+            min-height: 49px;
+            padding-left: 18px
+        }
+        
+
+        
+        .widget-header-small {
+            min-height: 31px;
+            padding-left: 10px
+        }
+        
+        .widget-header>.widget-title {
+            line-height: 36px;
+            padding: 0;
+            margin: 0;
+            display: inline;
+            font-size:13px;
+        }
+        
+        
+        
+        .widget-toolbar {
+            display: inline-block;
+            padding: 0 10px;
+            line-height: 37px;
+            float: right;
+            position: relative
+        }
+        
+        
+        
+        
+        
+       
+        
+        .widget-body {
+            background-color: #FFF
+        }
+        
+        .widget-main {
+            padding: 12px
+        }
+        
+        
+        .modal-dialog { /* Width */
+            width:500px;
+            height:800px;
+            display: inline-block;
+            font-size:20px;
+        }
+        .modal {
+            z-index: -1;
+            width:A4;
+            height:A4;
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+          }
+          
+          .modal-open .modal {
+             z-index: 1050;
+          }  
+        
+</style>
+
+<div class="page-content">
+<div class="card radius-15 h-20">
+  <div class="row">
+      <div class="col-md-12">
+          <center><h2 class="mt-3">PAYMENT RECEIPT TEMPLATES</h2></center>
+          
+          
+      </div>
+  </div>
+</div>
+
+  <div class="py-5">
+    <div class="container">
+      <div class="row hidden-md-up">
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-block">
+              <div class="card-body">
+                <div class="container bootdey">
+                    <a data-toggle="modal" data-target="#exampleModal" >
+                    <div class="row">
+                            <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
+                                <div class="widget-box">
+                                    <div class="widget-header widget-header-large" >
+                                        <h6 class="widget-title ">
+                                            Payment receipt
+                                        </h6>
+                    
+                                      
+                                    </div>
+                    
+                                    <div class="widget-body">
+                                        <div class="widget-main padding-24">
+                                            <div class="row"  style="padding:20px;" >
+                                                <div class="col-sm-12">
+                                                    <div class="col-6">
+                                                        <div style="width:30px;">
+                                                            <img src="/media/images/default.png">
+                                                          </div>
+                                      
+                                                    </div>
+                    
+                                                    <div class="col-6">
+                                                        <p style="font-size:10px;color:black;">Street ,City <br>
+                                                            Zip code<br>
+                                                            State,Country <br>
+                                                            email id:
+                                                            <br>
+                                                            contact<br></p>
+                                                       
+                                                    </div>
+                                                     <hr>
+                                                </div><!-- /.col -->
+                                               
+                                              
+                                            </div><!-- /.row -->
+                   
+                                            <div class="row col-12">
+                                                <div class="col-8">
+                                                    <p style="font-size:11px;color:black;">payment date :<br>
+                                                        payment mode :<br>
+                                                        reference no. :<br>
+                                                
+                                                </div>
+                                                <div class="col-4">
+                                                    <p style="background-color:green;align:center;">&nbsp &nbspAmount<br>
+                                                        &nbsp &nbsp  ₹0.00</p>
+                                                </div>
+                                               
+                                            </div><br>
+                    
+                                            <div class="hr hr8 hr-double hr-dotted"></div>
+                    
+                                            <div class="row">
+                                              
+                                                    <div class="col-md-4" 
+                                                    style="color:black;font-size:10px;margin-left:20px;">RECEIVED FROM
+                                                <br>
+                                                <p style="font-size:10px;color:black;">Street ,City <br>
+                                                    Zip code<br>
+                                                    State,Country <br>
+                                                    email id:
+                                                    <br>
+                                                    contact<br></p>
+                                            </div>
+                                            </div>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                </a>
+              <h5 class="card-text text-center" style="padding:5px;">Standard Template</h5>
+             
+            </div>
+          </div>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
+                    <div class="widget-box">
+                        <div class="widget-header widget-header-large" >
+                            <h6 class="widget-title ">
+                               PAYMENT RECEIPT
+                            </h6>
+        
+                          
+                        </div>
+        
+                        <div class="widget-body">
+                            <div class="widget-main padding-24">
+                                <div class="row"  style="padding:20px;" >
+                                    <div class="col-sm-12">
+                                        <div class="col-6">
+                                            <div style="width:30px;">
+                                                <img src="/media/images/default.png">
+                                              </div>
+                          
+                                        </div>
+        
+                                        <div class="col-6">
+                                            <p style="font-size:12px;color:black;">Street ,City <br>
+                                                Zip code<br>
+                                                State,Country <br>
+                                                email id:
+                                                <br>
+                                                contact<br></p>
+                                           
+                                        </div>
+                                         <hr>
+                                    </div><!-- /.col -->
+                                   
+                                  
+                                </div><!-- /.row -->
+       
+                                <div class="row col-12">
+                                    <div class="col-8">
+                                        <p style="font-size:13px;color:black;">payment date :<br>
+                                            payment mode :<br>
+                                            reference no. :<br>
+                                    
+                                    </div>
+                                    <div class="col-4">
+                                        <p style="background-color:green;align:center;">&nbsp &nbspAmount<br>
+                                            &nbsp &nbsp  ₹0.00</p>
+                                    </div>
+                                   
+                                </div><br>
+        
+                                <div class="hr hr8 hr-double hr-dotted"></div>
+        
+                                <div class="row">
+                                  
+                                        <div class="col-md-4" 
+                                        style="color:black;font-size:12px;margin-left:20px;">RECEIVED FROM
+                                    <br>
+                                    <p style="font-size:12px;color:black;">Street ,City <br>
+                                        Zip code<br>
+                                        State,Country <br>
+                                        email id:
+                                        <br>
+                                        contact<br></p>
+                                </div>
+                                </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Print</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+  <script src="https://pingendo.com/assets/bootstrap/bootstrap-4.0.0-alpha.6.min.js"></script>
+
+{% endblock %}

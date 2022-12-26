@@ -1,0 +1,826 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+            font-size: 1rem;
+            line-height: 2.15;
+            padding-left: .75em;
+            padding-right: .75em;
+        }
+        .card-registration .select-arrow {
+            top: 13px;
+        }
+        .bg-grey {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        @media (min-width: 992px) {
+            .card-registration-2 .bg-grey {
+                border-top-right-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        @media (max-width: 991px) {
+            .card-registration-2 .bg-grey {
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        .vl {
+            border-left: 6px solid gray;
+        }
+        .table-row{
+            cursor:pointer;
+        }
+        .spaced>li {
+            color:black;
+            font-size:10px;
+        }
+        .table1{
+            font-size:10px;
+            width:100% ;
+            color:black;
+        }
+        .label-lg {
+            padding: .3em .6em .4em;
+            font-size: 12px;
+            color:black;
+            line-height: 1.1;
+            height: 24px
+        }
+        .widget-header{
+            background-color:#444;
+            color:white;
+            font-size:14px;
+        }
+        .widget-header:after,
+        .widget-header:before {
+            content: "";
+            display: table;
+            line-height: 0
+        }
+        .widget-header:after {
+            clear: right
+        }
+        .widget-box.collapsed>.widget-header {
+            border-bottom-width: 0
+        }
+        .collapsed.fullscreen>.widget-header {
+            border-bottom-width: 1px
+        }
+        .collapsed>.widget-body {
+            display: none
+        }
+        .widget-header-flat {
+            background: #F7F7F7
+        }
+        .widget-header-large {
+            min-height: 49px;
+            padding-left: 18px
+        }
+        .widget-header-small {
+            min-height: 31px;
+            padding-left: 10px
+        }
+        .widget-header>.widget-title {
+            line-height: 36px;
+            padding: 0;
+            margin: 0;
+            display: inline;
+            font-size:13px;
+        }
+        .widget-toolbar {
+            display: inline-block;
+            padding: 0 10px;
+            line-height: 37px;
+            /* float: right; */
+            position: relative;
+        }
+        .widget-body {
+            background-color: #FFF
+        }
+        .widget-main {
+            padding: 12px
+        }
+        .ed:hover{
+            background-color: rgba(255, 255, 255,0.2);
+        }
+        .tr:hover{
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .head:hover{
+            background-color: rgba(255, 255, 255,0.2);
+        }
+        .new{
+            color: #fff;
+        }
+        .new:hover{
+            color: rgba(255, 255, 255,0.4);
+        }
+    </style>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <nav class="navbar navbar-expand-lg navbar-light" style="background-color:rgba(0,0,0,.01);">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link btn head" role="button" onclick="Details()"><i class="fa fa-info-circle">&nbsp;Details</i><span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" onclick="Overview()"><i class="fa fa-list-alt">&nbsp;Overview</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" onclick="transaction()"><i class="fa fa-stack-exchange">&nbsp;Transactions</i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" onclick="Statment()"><i class="fa fa-tasks">&nbsp;Statment</i></a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav navbar-right">
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" href="{% url 'addvendor' %}">
+                                    <i class="fa fa-plus">&nbsp;New</i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head" role="button" href="{% url 'goeditvendor' vndr.vendorid %}">
+                                    <i class="fa fa-edit">&nbsp;Edit</i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn head delete" role="button" href="{% url 'deletevendor' vndr.vendorid %}">
+                                    <i class="fa fa-trash-o">&nbsp;Delete</i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card-body p-0">
+                <div id="details">
+                    <div class="row g-0">
+                        <div class="col-lg-8">
+                            <div class="p-5">
+                                <div class="d-flex justify-content-between align-items-center mb-5">
+                                    <h1 class="fw-bold mb-0 text-black">{{ vndr.firstname }} {{ vndr.lastname }}</h1>
+                                    <h6 class="mb-0 text-muted">{{ cmp1.cname }}</h6>
+                                </div>
+                                <hr class="my-4">
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">Company</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.companyname }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Email</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.email }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">Mobile</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.mobile }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Website</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.website }}</p>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-4 mt-3">
+                                        <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Billing Address</h5>
+                                    </div>
+                                    <div class="col-md-4 mt-3"></div>
+                                    <div class="col-md-4 mt-3"></div>
+    
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">Street</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.street }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">City</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.city }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">State</h6>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <p class="mb-0">{{ vndr.state }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Pincode</h6>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <p class="mb-0">{{ vndr.pincode }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Country</h6>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <p class="mb-0">{{ vndr.country }}</p>
+                                    </div>
+                                </div><hr>
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-4 mt-3">
+                                        <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Shipping Address</h5>
+                                    </div>
+                                    <div class="col-md-4 mt-3"></div>
+                                    <div class="col-md-4 mt-3"></div>
+    
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">Street</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.shipstreet }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">City</h6>
+                                    </div>
+                                    <div class="col-md-4 mt-3">
+                                        <p class="mb-0">{{ vndr.shipcity }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="col-md-2 mt-3">
+                                        <h6 class="mb-0">State</h6>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <p class="mb-0">{{ vndr.shipstate }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Pincode</h6>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <p class="mb-0">{{ vndr.shippincode }}</p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 vl">
+                                        <h6 class="mb-0">Country</h6>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <p class="mb-0">{{ vndr.shipcountry }}</p>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 bg-grey">
+                            <div class="p-5">
+                                <h3 class="fw-bold mb-5 mt-2 pt-1">GST</h3>
+                                <hr class="my-4">
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="">GSTIN</h5>
+                                    <h6>{{ vndr.gstin }}</h6>
+                                </div>
+                                <h5 class="mb-3">GST Type</h5>
+                                <div class="mb-4 pb-2">
+                                    {{ vndr.gsttype }}
+                                </div>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="">PAN Number</h5>
+                                    <h6>{{ vndr.panno }}</h6>
+                                </div>
+                                <hr class="my-4">
+                                <div class="d-flex justify-content-between mb-5">
+                                    <h6 class="">Sorce Of Supply</h6>
+                                    <h6>{{ vndr.sourceofsupply }}</h6>
+                                </div>
+                                <div class="d-flex justify-content-between mb-5">
+                                    <h6 class="">Currency</h6>
+                                    <h6>{{ vndr.currency }}</h6>
+                                </div>
+                                <div class="d-flex justify-content-between mb-5">
+                                    <h6 class="">Opening Balance</h6>
+                                    <h6>{{ vndr.openingbalance }}</h6>
+                                </div>
+                                <div class="d-flex justify-content-between mb-5">
+                                    <h6 class="">Payment Terms</h6>
+                                    <h6>{{ vndr.paymentterms }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="overview" style="display: none;">
+                    <div class="container-fluid" >
+                        <!-- <div class="row"><div class="col-lg-3"><div class="text-muted">Payment due period</div> 
+                        <div>Due on Receipt</div></div>
+                         </div> -->
+                         <div class="row ml-0 mt-6"><p class="" style="margin-top: 50px; font-size: 20px;">Receivables</p></div>
+                        <table class="table table-responsive-md mt-4 table-hover">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center;">CURRENCY</th>
+                                <th style="text-align: center;">OUTSTANDING RECEIVABLES</th>
+                                <th style="text-align: center;">UNUSED CREDITS</th>  
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row " data-href="{% url 'goinvoices' %}">
+                                <td style="text-align: center;">INR- Indian Rupee</td>
+                                <td style="text-align: center;" id="t2"></td>
+                                <td style="text-align: center;" id="t3"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="statment" style="display: none;">
+                    <div class="container-fluid" >
+                        <div class="py-5">
+
+                            <div>
+                                <div class="card-body">
+                                    <form action="" method="post" class="needs-validation" novalidate>
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <label style="text-align:left ">Report period</label><br>
+                                                
+                                                <select class="form-control" id="filterstyle" onchange="filterDate(this)"
+                                                        list="hosting-plan"
+                                                        name="reportperiod" type="text">
+                                                    <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                                    <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                                    <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                                                    <option><span class="bx bx-right-arrow-alt"></span>This month</option>
+                                                    <option><span class="bx bx-right-arrow-alt"></span>This financial year</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4" id="frdate" style="display: none;">
+                                                <label for="from">From</label>
+                                                <input type="date" class="form-control" name="fper">
+                                            </div>
+                                            <div class="col-sm-4" id="todate" style="display: none;">
+                                                <label for="from">To</label>
+                                                <input type="date" class="form-control" name="tper">
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-5"></div>
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Run report</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr>
+                            
+                            <div class="row hidden-md-up" style="margin-top: 15px;">
+                                <div class="col-md-7" style="margin: auto;">
+                                  <div class="card">
+                                    <div id="panel">
+                                        <div class="card-block">
+                                            <div class="card-body">
+                                                <div class="container bootdey">
+                                                    <div class="row">
+                                                        <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
+                                                            <div class="widget-box">
+                                                                <div class="widget-header widget-header-large" >
+                                                                    <h6 class="widget-title ">
+                                                                        Statement of Accounts<br>
+                                                                        <input  id="df" value="{{tod}}" style="border: none; background-color:#444; width: 13%;"  >to
+                                                                        <input type="text" id="dl" value="{{tod}}" style="border: none; background-color: none; background-color:#444;">
+                                                                    </h6>  
+                                                                </div>
+                                                
+                                                                <div class="widget-body">
+                                                                    <div class="widget-main padding-24">
+                                                                        <div class="row"  style="padding:20px;" >
+                                                                            <div class="col-sm-12">
+                                                                                <div class="col-6">
+                                                                                    <div style="width:30px;">
+                                                                                        <img src="/media/images/default.png">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-6">
+                                                                                    <p style="font-size:10px;color:black;"> {{cmp1.city}} <br>
+                                                                                        {{cmp1.pincode}}<br>
+                                                                                        {{cmp1.state}},India <br>
+                                                                                        {{cmp1.cemail}}<br>
+                                                                                        {{cmp1.pincode}}<br>
+                                                                                    </p>  
+                                                                                </div>
+                                                                                 <hr>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row col-12">
+                                                                            <div class="col-6">
+                                                                                <p style="font-size:10px;color:black;">To,<br>{{vndr.firstname}} {{vndr.lastname}}<br>
+                                                                                    {{vndr.street}},{{vndr.city}}<br>
+                                                                                    {{vndr.state}},{{vndr.country}}<br>
+                                                                                    {{vndr.pincode }}<br>
+                                                                                    {{vndr.email}}<br>
+                                                                                    {{vndr.phone}}<br>
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="col-6" >
+                                                                                <table style="font-size:10px;color:black;">
+                                                                                    <tr>
+                                                                                        <td>Account Summary</td>
+                                                                                    </tr>
+                                                                                    {% if vndr.openingbalance != ""  %}
+                                                                                        <tr>
+                                                                                            <td>Opening balance</td>
+                                                                                            <td>{{vndr.openingbalance}}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    <tr>
+                                                                                        <td>Billed Amount</td>
+                                                                                        <td>{{tot2.t2}}</td>
+                                                                                    </tr>
+                                                                                    <tr style="border-bottom: 1px solid black; width:100%;">
+                                                                                        <td>Amount received</td>
+                                                                                        <td>{{tot1.t2}}</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>Balance Due</td>
+                                                                                        <td>{{tot6.t2}}</td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div><br>
+                                                                    <div class="col-md-12">
+                                                                        <table border="0" id="logic" class=" table-striped" width="100%" style="font-size:10px;color:black;">
+                                                                            <thead class="thead-dark">
+                                                                                <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Transactions</th>
+                                                                                <th>Details</th>
+                                                                                <th>Amount</th>
+                                                                                <th>Payments</th>
+                                                                                <th>Balance</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>{{ tod }}</td>
+                                                                                    <td>**Opening Balance**</td>
+                                                                                    <td></td>
+                                                                                    <td>{{ tot2.t2 }}</td>
+                                                                                    <td></td>
+                                                                                    <td>{{ tot6.t2 }}{{ tot8.t2 }}</td>
+                                                                                </tr>
+                                                                                {% for i in statment %}
+                                                                                    <tr>
+                                                                                        <td>{{i.date | date:'d-m-Y'}}</td>
+                                                                                        <td>
+                                                                                            {% if i.transactions == "Payable"  %}
+                                                                                                Payment Payable
+                                                                                            {% elif i.transactions == "Billed"  %}
+                                                                                                Bill
+                                                                                            {% else %}
+                                                                                                {{i.transactions}}
+                                                                                            {% endif %}</td>
+                                                                                        <td>{% if i.pbill != null  %}
+                                                                                            BILL-{{i.pbill.bill_no}}
+                                                                                            {% endif %} 
+                                                                                            {% if i.pymnt != null  %}
+                                                                                            ₹{{i.payments}} 
+                                                                                            {% endif %} 
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {% if i.amount %}
+                                                                                            {{i.amount}}
+                                                                                            {% endif %}
+                                                                                        </td>
+                                                                                        <td>{% if i.payments %}
+                                                                                            {{i.payments}}
+                                                                                            {% endif %}
+                                                                                            </td>
+                                                                                        <td>{% if i.balance %}
+                                                                                            {{i.balance}}
+                                                                                            {% endif %} 
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                {% endfor %}
+                                                                                <br>
+                                                                                <tr>
+                                                                                    <td colspan="5">Balance Due</td>
+                                                                                    <td >{{tot6.t2}}</td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                            <tbody></tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="col-md-12 tab_logic">
+                                                                        <!-- <table border="0" id="tab_logic" class=" table-striped" width="100%" style="font-size:10px;color:black;">
+                                                                            <thead class="thead-dark">
+                                                                                <tr>
+                                                                                <th>Date</th>
+                                                                                <th>Transactions</th>
+                                                                                <th>Details</th>
+                                                                                <th>Amount</th>
+                                                                                <th>Payments</th>
+                                                                                <th>Balance</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody></tbody>
+                                                                        </table> -->
+                                                                    </div>
+                                                                    <div class="hr hr8 hr-double hr-dotted"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="transation" style="display: none;" >
+                <div style=" margin-top: 20px;">
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="dispinv()">Bill</a>
+                    <a href="{% url 'addbilling' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a>   
+                </div> 
+                <div id="invtable" style="display:none;">
+                    <table class="table table-responsive-md mt-3">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">BILL DATE</th>
+                                <th style="text-align: center;">BILL NO</th>
+                                <th style="text-align: center;">REFERENCE</th>
+                                <th style="text-align: center;">STATUS</th>
+                                <th style="text-align: center;">DUE DATE</th>
+                                <th style="text-align: center;">GRAND TOTAL</th>
+                                <th style="text-align: center;">BALANCE DUE</th>   
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in pbl %}
+                                 <tr class="table-row tr" onclick=window.location='{% url "viewbill" p.billid %}';>
+                                    <th style="text-align: center;">{{ p.date }}</th>
+                                    <td style="text-align: center;">{{ p.bill_no }}</td>
+                                    <td style="text-align: center;">{{ p.reference }}</td>
+                                    <td style="text-align: center;">{{ p.status }}</td>
+                                    <td style="text-align: center;">{{ p.due_date }}</td>
+                                    <td style="text-align: center;">{{ p.grand_total }}</td>
+                                    <td style="text-align: center;">{{ p.balance_due }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div><br>
+                <div style=" margin-top: 20px;">
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="dispay()" >Payment</a>
+                    <a href="{% url 'addpurchasepymnt' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a>    
+                </div> 
+                <div id="paytable" style="display:none;">
+                    <table class="table table-responsive-md mt-4">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">DATE</th>
+                                <th style="text-align: center;">PAYMENT NO</th>
+                                <th style="text-align: center;">PAYMENT METHOD</th>
+                                <th style="text-align: center;">APPLIED AMOUNT</th>
+                                <th style="text-align: center;">CREDITED AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in paymnt %}
+                            <tr class="table-row tr" onclick=window.location="{% url 'viewpurchasepymnt' i.pymntid %}">
+                                <th style="text-align: center;">{{ i.paymentdate  | date:'d-m-Y' }}</th>
+                                <td style="text-align: center;">{{ i.reference }}</td>
+                                <td style="text-align: center;"> {{ i.paymentmethod }}</td>
+                                <td style="text-align: center;"> {{ i.paymentamount }}</td>
+                                <td style="text-align: center;">{{ i.amtcredit }}</td>   
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div><br>
+                <!-- <div style=" margin-top: 20px;">
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="disest()" >Expenses</a>
+                    <a href="{% url 'addexpenses' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a> 
+                </div> 
+                <div id="esttable" style="display:none;">
+                    <table class="table table-responsive-md mt-4">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: center;">Expense No</th>
+                                <th style="text-align: center;">Reference Number</th>
+                                <th style="text-align: center;">Status</th>
+                                <th style="text-align: center;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in expnc %}
+                            <tr class="table-row tr" onclick=window.location="{% url 'viewexpense' e.expenseid %}">
+                                <th style="text-align: center;">{{ e.date | date:'d-m-Y' }}</th>
+                                <td style="text-align: center;">{{ e.expense_no }}</td>
+                                <td style="text-align: center;"> {{ e.reference }}</td>
+                                <td style="text-align: center;"> {{ e.status }}</td>
+                                <td style="text-align: center;">{{ e.amount }}</td>    
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div><br> -->
+                <div style=" margin-top: 20px;">
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="dissale()" >Purchase Order</a>
+                    <a href="{% url 'addpurchaseorder' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a>   
+                </div> 
+                <div id="saletable" style="display:none;">
+                    <table class="table table-responsive-md mt-4">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">DATE</th>
+                                <th style="text-align: center;">PURCHASE ORDER N0</th>
+                                <th style="text-align: center;">REFERENCE NUMBER</th>
+                                <th style="text-align: center;">CUSTOMER NAME</th>
+                                <th style="text-align: center;">STATUS</th>
+                                <th style="text-align: center;">AMOUNT</th>
+                                <!-- <th style="text-align: center;">ACTION</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for po in pordr %}
+                                <tr tr class="table-row tr" onclick=window.location="{% url 'viewpurchaseorder' po.porderid %}">
+                                    <th style="text-align: center;">{{ po.date | date:'d-m-Y' }}</th>
+                                    <td style="text-align: center;">PO - {{ po.puchaseorder_no }}</td>
+                                    <td style="text-align: center;"> {{ po.reference }}</td>
+                                    <td style="text-align: center;">{{ po.contact_name }}</td>
+                                    <td style="text-align: center;"> {{ po.status }}</td>
+                                    <td style="text-align: center;">{{ po.grand_total }}</td> 
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div><br>
+                <div style=" margin-top: 20px;">
+                    <a style="padding: 10px; cursor: pointer; font-size: 20px;" class="head" onclick="dispdeb()">Debit Note</a>
+                    <a href="{% url 'addpurchasedebit' %}" class="fa fa-plus new" style="float: right; margin-right: 20px;">&nbsp;Add New</a>   
+                </div> 
+                <div id="pdebtable" style="display:none;">
+                    <table class="table table-responsive-md mt-3">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">DATE</th>
+                                <th style="text-align: center;">DEBIT NOTE</th>
+                                <th style="text-align: center;">VENDOR</th>
+                                <th style="text-align: center;">BILL NO</th>
+                                <th style="text-align: center;">GRAND TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in pdeb %}
+                                 <tr class="table-row tr" onclick=window.location='{% url "viewpurchasedebit" p.pdebitid %}';>
+                                    <th style="text-align: center;">{{ p.debitdate |date:'d-m-Y' }}</th>
+                                    <td style="text-align: center;">DN - {{ p.debit_no }}</td>
+                                    <td style="text-align: center;">{{ p.vendor }}</td>
+                                    <td style="text-align: center;">{{ p.billno }}</td>
+                                    <td style="text-align: center;">{{ p.grandtotal }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div><br>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $('.delete').click(function(e){
+            var result = confirm("Are you sure you want to delete this record ?");
+
+            if(!result) {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+   <script>
+        $(document).ready(function () {
+            var t6 = parseFloat('{{ tot6.t2 }}');
+            var t7 = parseFloat('{{ tot7.t3 }}');
+            if (Number.isNaN(t6)) {
+                t6 = 0;
+            }
+            if (Number.isNaN(t7)) {
+                t7 = 0;
+            }
+            var t = t6
+            var tt = t7
+            document.getElementById('t2').innerHTML = "&#8377;" + t
+            document.getElementById('t3').innerHTML = "&#8377;" + tt
+        });
+    </script>
+
+
+    <script>
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+
+    <script> 
+        function printDiv() { 
+            var divContents = document.getElementById("panel").innerHTML; 
+            var a = window.open('', '', 'height=800, width=800'); 
+            a.document.write('<html>'); 
+            a.document.write('<body > <h1> <br>'); 
+            a.document.write(divContents); 
+            a.document.write('</body></html>'); 
+            a.document.close(); 
+            a.print(); 
+        } 
+    </script>
+    
+    <script>
+        function Overview() {    
+            document.getElementById('overview').style.display = 'block';
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('statment').style.display = 'none';
+            document.getElementById('transation').style.display = 'none';
+        }
+        function Details() {
+            document.getElementById('overview').style.display = 'none';
+            document.getElementById('details').style.display = 'block';
+            document.getElementById('statment').style.display = 'none';
+            document.getElementById('transation').style.display = 'none';
+        }
+        function Statment() {
+            document.getElementById('overview').style.display = 'none';
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('statment').style.display = 'block';
+            document.getElementById('transation').style.display = 'none';              
+        }
+        function transaction() {
+            document.getElementById('overview').style.display = 'none';
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('statment').style.display = 'none';
+            document.getElementById('transation').style.display = 'block';          
+        }
+    </script>
+
+    <script>
+        function dispinv(){
+            document.getElementById('invtable').style.display = 'block';
+        }
+        function dispdeb(){
+            document.getElementById('pdebtable').style.display = 'block';
+        }
+        function dispay(){
+            document.getElementById('paytable').style.display = 'block';
+        }
+        function disest(){
+            document.getElementById('esttable').style.display = 'block';
+        }
+        function dissale(){
+            document.getElementById('saletable').style.display = 'block';
+        }
+    </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+    integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+    integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+    crossorigin="anonymous"></script>
+{% endblock %}

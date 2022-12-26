@@ -1,0 +1,281 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% if user.is_authenticated %}
+        {% load static %}
+
+        <style type="text/css">
+            form div{
+                width: 100%;
+            }
+
+            .top{
+                display: flex; 
+            }
+            .top .left1{
+                width: 50%;
+               
+                
+                display: flex;
+                flex-direction:left;
+                
+                padding: 30px;
+    
+            }
+            .top .right1{
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items:center;
+                background-color: rgba(128, 128, 128, 0.09);
+                padding: 30px;
+                
+            }
+            
+            select.list-dt {
+                border: none;
+                outline: 0;
+                border-bottom: 1px solid #ccc;
+                padding: 2px 5px 3px 5px;
+                margin: 2px
+            }
+
+            select.list-dt:focus {
+                border-bottom: 2px solid skyblue
+            }
+
+            .card {
+                z-index: 0;
+                border: none;
+                border-radius: 0.5rem;
+                position: relative
+            }
+
+            .fs-title {
+                font-size: 25px;
+                color: #2C3E50;
+                margin-bottom: 10px;
+                font-weight: bold;
+                text-align: left
+            }
+
+            
+
+        </style>
+        
+{% for a in item %}
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-lg-12 col-xl-12">
+                        <div class="card" style="background-color: #2a4964;">
+                            <div class="row no-gutters">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-7 mt-4 mb-4">
+                                    <center>
+                                        <h5 class="card-title"><h3 style="text-transform:Uppercase;">{{ a.name }}</h3></h5>
+                                        {% if a.status == 'Inactive' %}
+                                        <h5 style="background-color:rgba(0,0,0,.2);color:red;width:140px;">INACTIVE</h5>
+                                        {% else %}
+                                        <h5 style="background-color:rgba(0,0,0,.2);width:140px;">ACTIVE</h5>
+                                        {% endif %}
+                                    </center>
+                                </div> 
+                                <div class="col-md-1 mt-4 mb-4">
+                                    <a href="#" class="dropdown-item" 
+                                       style="color: white; font-size: 25px;">
+                                       <i class='bx bx-add-to-queue'></i>
+                                    </a>
+                                </div>
+                                <div class="col-md-1 mt-4 mb-4">
+                                    <a  href="{% url 'deleteitem' a.id %}" title="delete" class="dropdown-item"
+                                       style="color: white; font-size: 25px;" onclick="return confirm('Are you sure you want to delete this item?')">
+                                        <i class="bx bx-trash"></i>
+                                    </a>
+                                </div>
+                                <div class="col-md-1 mt-4 mb-4">
+                                    <ul class="navbar navbar-expand" style="list-style-type: none; margin: 0; padding: 0;">
+                                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="javascript:;" data-toggle="dropdown" style=" color: white; font-size: 25px; display: block; padding: 8px 16px; text-decoration: none;">
+                                            <i class='bx bx-dots-vertical-rounded'></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                          <ul class="a" style=" list-style-type: none; margin: 0; padding: 0; width: 200px;">
+                                            <li><a href="{% url 'itemedit_page' a.id %}" style="display: block; padding: 8px 16px; text-decoration: none">Edit {{ a.name }}</a></li>
+                                            <li><a href="{% url 'item_trans' a.id %}" style="display: block; padding: 8px 16px; text-decoration: none">Transactions</a></li>
+
+                                          </ul>
+                                        </div>
+                                      </ul>
+                                    <!--<a href="{% url 'itemedit_page' a.id %}" title="edit" class="dropdown-item"
+                                       style="color: white; font-size: 25px;">
+                                       <i class='bx bx-edit'></i>-->
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form action="#" method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                    
+                    
+                    <div class="top">
+                        <div class="left1">
+                            
+                            <div class="row ">
+                                <div class="col-md-12 mx-0 ">
+                                    <center><h4>ITEM DETAILS </h4></center><br>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom01" style="color: white;">Type  </label>
+                                            <p style="margin-left:150px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;" 
+                                            readonly>{{ a.item_type }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom03" style="color: white;">Unit</label>
+                                            <p style="margin-left:155px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.unit }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom05" style="color: white;">HSN Code</label>
+                                            <p style="margin-left:112px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.hsn }}</p>
+                                        </div>
+                                    </div>   
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom05" name style="color: white;">Tax Reference</label>
+                                            <p style="margin-left:90px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.tax_reference }}</p>                   
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom01" style="color: white;align:left;">Intra State Tax Rate</label>
+                                            <p style="margin-left:55px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.intra_st }} % GST</p>                 
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom01" style="color: white;">Inter State Tax Rate</label>
+                                            <p style="margin-left:56px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.inter_st }} % IGST</p>                 
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-12 mt-3">
+                                            <label for="validationCustom01" style="color: white;">Inventory Account</label>
+                                            <p style="margin-left:70px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.inventry }}</p>            
+                                        </div>
+                                    </div> 
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">   
+                                            <label for="validationCustom01" style="color: white;">Stock On Hand</label>
+                                            <p style="margin-left:85px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.stock }}</p>       
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom03" style="color: white;">Tax rate</label><br>
+                                            <p style="margin-left:130px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{a.tax_rate}}</p> 
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                            <div class="right1">
+                                <center><h4>PURCHASE INFORMATION </h4></center><br>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom01" style="color: white;">Purchase Price  </label>
+                                            <p style="margin-left:150px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;" 
+                                            readonly>INR : {{ a.purchase_cost }} /-</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-12 mt-3">
+                                            <label for="validationCustom03" style="color: white;">Purchase Account</label>
+                                            <p style="margin-left:130px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.acount_pur }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom05" style="color: white;">Description </label>
+                                            <p style="margin-left:175px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.pur_desc }}</p>
+                                        </div>
+                                    </div>   <br>
+                                    <center><h4>SALES INFORMATION </h4></center><br>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom01" style="color: white;">Sales Price  </label>
+                                            <p style="margin-left:170px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;" 
+                                            readonly>INR : {{ a.sales_cost }} /-</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom03" style="color: white;">Sales Account</label>
+                                            <p style="margin-left:150px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.account_sal }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="display:flex;" class="col-md-10 mt-3">
+                                            <label for="validationCustom05" style="color: white;">Description </label>
+                                            <p style="margin-left:170px;" >:</p>
+                                            <p style="color: white;font-size:15px;margin-left:30px;text-transform:Uppercase;"   
+                                            readonly>{{ a.sale_desc }}</p>
+                                        </div>
+                                    </div>   
+                                </div>
+                            </div>
+                            <div class="row mt-5 mb-5">
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="{% url 'goitem' %}" class="btn btn-outline-info rounded-pill w-100 text-light">
+                                    BACK</a>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                   
+
+             {% endfor %}
+
+       
+    {% endif %}
+
+
+
+{% endblock %}

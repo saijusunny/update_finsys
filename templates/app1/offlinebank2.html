@@ -1,0 +1,190 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <style>
+        input #file-upload-button {
+            background-color: #0a53be;
+        }
+    </style>
+    </head>
+    <body>
+    <!-- Trigger/Open The Modal -->
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">ADD TRANSACTIONS</h2></center>
+                </div>
+            </div>
+        </div>
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="row p-3">
+                    <div class="col-md-3">
+                        <input type="file" id="fileUpload" class="btn btn-outline-light"/>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <input type="button" class="btn btn-outline-info text-light" id="upload" value="Upload"
+                               onclick="UploadProcess()"/>
+                    </div>
+                </div>
+                <br/>
+                <div id="ExcelTable">
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1 id="test"></h1>
+    </body>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+    <script type="text/javascript">
+        function UploadProcess() {
+            //Reference the FileUpload element.
+            var fileUpload = document.getElementById("fileUpload");
+
+            //Validate whether File is valid Excel file.
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+            if (regex.test(fileUpload.value.toLowerCase())) {
+                if (typeof (FileReader) != "undefined0") {
+                    var reader = new FileReader();
+
+                    //For Browsers other than IE.
+                    if (reader.readAsBinaryString) {
+                        reader.onload = function (e) {
+                            GetTableFromExcel(e.target.result);
+                        };
+                        reader.readAsBinaryString(fileUpload.files[0]);
+                    } else {
+                        //For IE Browser.
+                        reader.onload = function (e) {
+                            var data = "";
+                            var bytes = new Uint8Array(e.target.result);
+                            for (var i = 0; i < bytes.byteLength; i++) {
+                                data += String.fromCharCode(bytes[i]);
+                            }
+                            GetTableFromExcel(data);
+                        };
+                        reader.readAsArrayBuffer(fileUpload.files[0]);
+                    }
+                } else {
+                    alert("This browser does not support HTML5.");
+                }
+            } else {
+                alert("Please upload a valid Excel file.");
+            }
+        };
+
+        function GetTableFromExcel(data) {
+            //Read the Excel File data in binary
+            var workbook = XLSX.read(data, {
+                type: 'binary'
+            });
+
+            //get the name of First Sheet.
+            var Sheet = workbook.SheetNames[0];
+            console.log(Sheet)
+            //Read all rows from First Sheet into an JSON array.
+            var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[Sheet]);
+
+            //Create a HTML Table element.
+            var myTable = document.createElement("table");
+            myTable.setAttribute("class", "table table-hover table-responsive-md mt-4")
+
+            //Add the header row.
+            var row = myTable.insertRow(-1);
+
+            //Add the header cells.
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = "DATE";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "DESCRIPTION";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "DEBIT";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "CREDIT";
+            row.appendChild(headerCell);
+
+            headerCell = document.createElement("TH");
+            headerCell.innerHTML = "ACTIONS";
+            row.appendChild(headerCell);
+
+            var banklis = []
+            //Add the data rows from Excel file.
+            for (var i = 0; i < excelRows.length; i++) {
+                //Add the data row.
+
+                banklis.push(excelRows[i].NAME)
+                banklis.push(excelRows[i].DATE)
+                banklis.push(excelRows[i].DESCRIPTION)
+                banklis.push(excelRows[i].DEBIT)
+                banklis.push(excelRows[i].CREDIT)
+
+                var row = myTable.insertRow(-1);
+
+                //Add the data cells.
+                var cell = row.insertCell(-1);
+                cell.innerHTML = excelRows[i].DATE;
+
+
+                cell = row.insertCell(-1);
+                cell.innerHTML = excelRows[i].DESCRIPTION;
+
+                cell = row.insertCell(-1);
+                cell.innerHTML = excelRows[i].DEBIT;
+                if (cell.innerHTML == 'undefined') {
+                    cell.innerHTML = 0;
+                }
+
+                cell = row.insertCell(-1);
+                cell.innerHTML = excelRows[i].CREDIT;
+                if (cell.innerHTML == 'undefined') {
+                    cell.innerHTML = 0;
+                }
+
+                cell = row.insertCell(-1);
+                cell.innerHTML = "<a href='#'>ADD</a>";
+
+            }
+            var ExcelTable = document.getElementById("ExcelTable");
+            ExcelTable.innerHTML = "";
+            ExcelTable.appendChild(myTable);
+            console.log(ExcelTable)
+        };
+    </script>
+    <script type="text/javascript">
+
+        document.getElementById('inputfile')
+
+            .addEventListener('change', function () {
+
+                var fr = new FileReader();
+
+                fr.onload = function () {
+
+                    document.getElementById('output')
+
+                        .textContent = fr.result;
+
+                }
+
+                fr.readAsText(this.files[0]);
+
+            })
+
+    </script>
+
+    <script>var pdfjsLib = window['pdfjs-dist/build/pdf'];</script>
+
+{% endblock %}
+
+
+

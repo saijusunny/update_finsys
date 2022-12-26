@@ -1,0 +1,202 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <!--<h1>Taxes</h1>-->
+
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">EDIT TIME ACTIVITY</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <form action="updattimesale/{{ time.timeactsaleid }}" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-3 p-4">
+                            <img src="{% static 'assets/img/time.png' %}" width="100%" height="100%">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="validationCustom02">Date</label>
+                                    <input type="date" name="timdatesale" value="{{ time.timdatesale }}" class="form-control" id="validationCustom02"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="validationCustom02">Name</label>
+                                    <div class="d-flex">
+                                        <input type="text" name="timenamesale" value="{{ time.timenamesale }}" class="form-control"
+                                               id="validationCustom02"
+                                               required style="background-color: #2f516f;color: white;">
+                                    </div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <label for="validationCustom02">Customer </label>
+                                    <div class="d-flex">
+                                        <select name="timecustsale" class="form-control"
+                                                style="background-color: #2f516f;color: white;">
+                                            <option selected>{{ time.timecustsale }}</option>
+                                            {% for cust in customers %}
+                                                {% if cust.cid_id == cmp1.cid %}
+                                                    <option text="{{ cust.customerid }}" value="{{ cust.firstname }} {{ cust.lastname }}">{{ cust.firstname }} {{ cust.lastname }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="validationCustom03">billable(/hr)</label>
+                                    <select id="selgst" onchange="changegst()" class="custom-select"
+                                            name="timechecksale" style="background-color: #2f516f;color: white;">
+                                        <option>{{ time.timechecksale }}</option>
+                                        <option>Yes</option>
+                                        <option>No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mt-4" id="aa">
+                                    <label for="validationCustom05"> </label>
+                                    <input type="number" class="form-control" id="validationCustom05"
+                                           name="timebillsale" value="{{ time.timebillsale }}" style="background-color: #2f516f;color: white;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mt-3">
+                                    <label for="validationCustom03">Enter start and end time</label>
+                                    <select id="seltim" onchange="changetime()" class="custom-select"
+                                            name="timecheckksale" style="background-color: #2f516f;color: white;">
+                                        <option>{{ time.timecheckksale }}</option>
+                                        <option>Yes</option>
+                                        <option>No</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mt-3" id="aaa">
+                                    <label for="validationCustom03">Start time</label>
+                                    <input type="time" class="form-control" value="{{ time.timestartsale }}" id="validationCustom05"
+                                           name="timestartsale" style="background-color: #2f516f;color: white;">
+                                </div>
+                                <div class="col-md-4 mt-3" id="aaa1">
+                                    <label for="validationCustom03">End time</label>
+                                    <input type="time" class="form-control" value="{{ time.timeendsale }}" id="validationCustom05"
+                                           name="timeendsale" style="background-color: #2f516f;color: white;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <label for="validationCustom02">Time </label>
+                                    <input type="time" name="tymesale" value="{{ time.tymesale }}" class="form-control" id="validationCustom02"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <label for="validationCustom02">Description </label>
+                                    <textarea name="timedessale" class="form-control" id="validationCustom01" required
+                                              style="background-color: #2f516f;color: white;">{{ time.timedessale }}</textarea>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            <div class="row mt-4 mb-4">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-outline-info rounded-pill w-100" type="submit"
+                                            style="width: 100%;">Submit form
+                                    </button>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            // Example starter JavaScript for disabling form submissions if there are invalid fields
+            (function () {
+                'use strict';
+                window.addEventListener('load', function () {
+                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                    var forms = document.getElementsByClassName('needs-validation');
+                    // Loop over them and prevent submission
+                    var validation = Array.prototype.filter.call(forms, function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (form.checkValidity() === false) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+                }, false);
+            })();
+        </script>
+    </div>
+    </div>
+    </div>
+    <script>
+        function myFunction() {
+            var checkBox = document.getElementById("myCheck");
+            var text = document.getElementById("bill");
+            if (checkBox.checked == true) {
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        function show() {
+            var checkBox = document.getElementById("Check");
+            var abc = document.getElementById("sad");
+            var def = document.getElementById("happy");
+            if (checkBox.checked == true) {
+                abc.style.display = "block";
+                def.style.display = "block";
+            } else {
+                abc.style.display = "none";
+                def.style.display = "none";
+            }
+        }
+    </script>
+
+    <script>
+        function changegst() {
+            var status = document.getElementById("selgst");
+            if (status.value == "No") {
+                document.getElementById("aa").style.visibility = "hidden";
+            } else if (status.value == "Overseas") {
+                document.getElementById("aa").style.visibility = "hidden";
+            } else {
+                document.getElementById("aa").style.visibility = "visible";
+            }
+        }
+    </script>
+    <script>
+        function changetime() {
+            var status = document.getElementById("seltim");
+            if (status.value == "No") {
+                document.getElementById("aa").style.visibility = "hidden";
+            } else if (status.value == "Overseas") {
+                document.getElementById("aaa").style.visibility = "hidden";
+            } else {
+                document.getElementById("aaa").style.visibility = "visible";
+            }
+        }
+    </script>
+{% endblock %}

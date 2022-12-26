@@ -1,0 +1,46 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0" id="invnumb">BANK STATEMENTS</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="table-responsive-md">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center">DATE</th>
+                            <th>DESCRIPTION</th>
+                            <th class="text-center">DEBIT</th>
+                            <th class="text-center">CREDIT</th>
+                            <th class="text-center">ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in bstat %}
+                            <tr>
+                                <td class="text-center">{{ i.date }}</td>
+                                <td>{{ i.description }}</td>
+                                <td class="text-center">{{ i.debit }}</td>
+                                <td class="text-center">{{ i.credit }}</td>
+                                <td class="text-center">
+                                    <a href="addbankdata/{{ i.bankstatementid }}">
+                                        <button type="button" class="btn btn-outline-info text-light w-50">Add</button>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

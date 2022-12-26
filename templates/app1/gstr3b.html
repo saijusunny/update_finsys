@@ -1,0 +1,257 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+
+    <style>
+        tr.noBorder td {
+            border: 0;
+        }
+    </style>
+
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">GSTR-3B</h2></center>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <form action="{% url 'gstr3b1' %}" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label style="text-align:left ">Report period</label><br>
+                            <select class="form-control" id="filterstyle" onchange="filterDate(this)" list="hosting-plan"
+                                name="reportperiod" type="text">
+                                <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>This month</option>
+                                <option><span class="bx bx-right-arrow-alt"></span>This financial year</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4" id="frdate" style="display: none;">
+                            <label for="from">From</label>
+                            <input type="date" class="form-control" name="fdate">
+                        </div>
+                        <div class="col-sm-4" id="todate" style="display: none;">
+                            <label for="from">To</label>
+                            <input type="date" class="form-control" name="ldate">
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-10"></div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-info" type="submit">Search</button>
+                            <button class="btn btn-outline-info" onclick="printDiv()">Print</button>
+                        </div>   
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <table class="table table-responsive-md mt-4 table-hover table-bordered" style="background-color: rgba(0, 0, 0, 0.2);">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Nature Of Supplies</th>
+                                <th style="text-align: center;">Total Taxable Value</th>
+                                <th style="text-align: center;">IGST</th>
+                                <th style="text-align: center;">CGST</th>
+                                <th style="text-align: center;">SGST</th>
+                                <th style="text-align: center;">Cess</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>(a) Outward taxable supplies (other than zero rated,nill rated and exempted)</td>
+                                <td style="text-align: center;">
+                                    {% if total %}
+                                        ₹{{ total }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if igst %}
+                                        ₹{{ igst }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if cgst %}
+                                        ₹{{ cgst }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if sgst %}
+                                        ₹{{ sgst }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if tds %}
+                                        ₹{{ tds }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>    
+                            </tr>
+                            <tr>
+                                <td>(b) Outward taxable supplies (zero rated)</td>
+                                <td style="text-align: center;">
+                                    {% if total1 %}
+                                        {{ total1 }}.00
+                                    {% else %}
+                                        ₹0
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if igst1 %}
+                                        ₹{{ igst1 }}
+                                    {% else %}
+                                        ₹0
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if cgst1 %}
+                                        ₹{{ cgst1 }}
+                                    {% else %}
+                                        ₹0
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if sgst1 %}
+                                        ₹{{ sgst1 }}
+                                    {% else %}
+                                        ₹0
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if tds1 %}
+                                        ₹{{ tds1 }}
+                                    {% else %}
+                                        ₹0
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>(c) Other outward supplies (nill rated and exempted)</td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>    
+                            </tr>
+                            <tr>
+                                <td>(d) Inward supplies (liable to reverse charge)</td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>    
+                            </tr>
+                            <tr>
+                                <td>(e) Non-GST outward supplies (liable to reverse charge)</td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>
+                                <td style="text-align: center;"></td>    
+                            </tr>
+                            <tr>
+                                <td><b>Total Value</b></td>
+                                <td style="text-align: center;"><b>₹{{ sum1 }}.00</b></td>
+                                <td style="text-align: center;"><b>₹{{ igst }}.00</b></td>
+                                <td style="text-align: center;"><b>₹{{ cgst }}.00</b></td>
+                                <td style="text-align: center;"><b>₹{{ sgst }}.00</b></td>
+                                <td style="text-align: center;"><b>₹{{ tds }}.00</b></td>    
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <h6>Eligible ITC</h6>
+                    <table class="table table-responsive-md mt-4 table-hover table-bordered" style="background-color: rgba(0, 0, 0, 0.2);">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Details</th>
+                                <th style="text-align: center;">IGST</th>
+                                <th style="text-align: center;">CGST</th>
+                                <th style="text-align: center;">SGST</th>
+                                <th style="text-align: center;">Cess</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ITC Available</td>
+                                <td style="text-align: center;">
+                                    {% if igst2 %}
+                                        ₹{{ igst2 }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if cgst2 %}
+                                        ₹{{ cgst2 }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if sgst2 %}
+                                        ₹{{ sgst2 }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if tds2 %}
+                                        ₹{{ tds2 }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                </td>  
+                            </tr>
+                            <tr>
+                                <td><b>Total Value</b></td>
+                                <td style="text-align: center;"><b>₹{{ igst2 }}.00</b></td>
+                                <td style="text-align: center;"><b>₹{{ cgst2 }}.00</b></td>
+                                <td style="text-align: center;"><b>₹{{ sgst2 }}.00</b></td>
+                                <td style="text-align: center;"><b>₹{{ tds2 }}.00</b></td>    
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterDate(element) {
+           if (element.value == 'Custom') {
+               document.getElementById('frdate').style.display = 'block';
+               document.getElementById('todate').style.display = 'block';
+           } else {
+               document.getElementById('frdate').style.display = 'none';
+               document.getElementById('todate').style.display = 'none';
+           }
+       }
+    </script> 
+
+    {% endif %}
+{% endblock %}

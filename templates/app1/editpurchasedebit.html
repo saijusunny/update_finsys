@@ -1,0 +1,388 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <!--<h1>Taxes</h1>-->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var i = 1;
+            $("#add_row").click(function () {
+                b = i - 1;
+                $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+                $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+                i++;
+            });
+            $("#delete_row").click(function () {
+                if (i > 1) {
+                    $("#addr" + (i - 1)).html('');
+                    i--;
+                }
+                calc();
+            });
+
+            $('#tab_logic tbody').on('keyup change', function () {
+                calc();
+            });
+
+            $('#tax').on('keyup change', function () {
+                calc_total();
+            });
+        });
+
+        function calc() {
+            $('#tab_logic tbody tr').each(function () {
+                var html = $(this).html();
+                if (html != '') {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    var tax = $(this).find('.tax').val();
+                    $(this).find('.total').val(qty * price);
+                    $(this).find('.taxamount').val((qty * price) * (tax / 100));
+                    calc_total();
+                }
+            });
+        }
+
+        function calc_total() {
+            total = 0;
+            $('.total').each(function () {
+                total += parseFloat($(this).val());
+            });
+            taxamount = 0;
+            $('.taxamount').each(function () {
+                taxamount += parseFloat($(this).val());
+            });
+            $('#sub_total').val(total.toFixed(2));
+            $('#tax_amount').val(taxamount.toFixed(2));
+            $('#grandtotal').val((taxamount + total).toFixed(2));
+            $('#baldue').val((taxamount + total).toFixed(2));
+        }
+    </script>
+    <script>
+        function showinnum(divId, element) {
+            if (element.value) {
+                document.getElementById(divId).innerHTML = "Debit Note " + element.value;
+            } else {
+                document.getElementById(divId).innerHTML = "Debit Note";
+            }
+        }
+
+    </script>
+
+    <form action="{% url 'editpurchasedebit' pdebt.pdebitid %}" method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="page-content">
+            <!--breadcrumb-->
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h3 class="mb-0" id="invnumb">DEBIT NOTE</h3></center>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
+            <!--end breadcrumb-->
+            <div class="card radius-15" style="background-color: #243e54;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-5 mt-3">
+                                    <label for="validationCustom02">Vendor</label>
+                                    <select name="vendor" id="select" class="custom-select">
+                                        <option value="{{ pdebt.vendor }}">{{ pdebt.vendor }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5 mt-3">
+                                    <label>Email</label>&nbsp;
+                                    <input type="text" id="email" name="email" value="{{ pdebt.email }}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 mt-3">
+                                    <label for="validationCustom02">Billing address</label>
+                                    <textarea class="form-control" name="address" rows="5" id="mailaddr">{{ pdebt.address }}</textarea>
+                                </div>
+                                <div class="col-md-5 mt-3">
+                                    <label for="validationCustom02">Debit Note Date</label>
+                                    <input type="date" class="form-control" value="{{ pdebt.debitdate| date:'Y-m-d' }}" name="debitdate">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mt-3">
+                                    <label>Place of supply</label>&nbsp;
+                                    <select type="text" class="form-control" id="plosu" name="supply" >
+                                        <option value="{{ pdebt.supply }}"> {{ pdebt.supply }}</option>
+                                        <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                                        <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                        <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chandigarh">Chandigarh</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                        <option value="Damn anad Diu">Damn anad Diu</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Predesh">Himachal Predesh</option>
+                                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Ladakh">Ladakh</option>
+                                        <option value="Lakshadweep">Lakshadweep</option>
+                                        <option value="Madhya Predesh">Madhya Predesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Puducherry">Puducherry</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Predesh">Uttar Predesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                        <option value="Other Territory">Other Territory</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <label for="validationCustom02">Bill Number</label>
+                                    <select name="billno" id="" class="form-control">
+                                        <option value="{{ pdebt.billno }}">{{ pdebt.billno }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <label>Debit Note Number</label>
+                                    <input type="text" id="" name="debit_no" value="{{ pdebt.debit_no }}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row" style="margin-top: 20%">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-6"><label style="font-size: 20px;">CREDIT AMOUNT</label></div>
+                                <div class="col-md-4"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-8">
+                                    <input type="text" name="creditamount" id="baldue" value="{{ pdebt.grandtotal }}" class="form-control"
+                                    readonly style="font-size: 50px; background-color: #243e54; border: 0px; color: white;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin-top: 25px;">
+                
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <label style="font-size: 30px;">Item Details</label>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12 mt-3">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="tab_logic">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">HSN</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Total</th>
+                                        <th class="text-center">Tax (%)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="items-table-body">
+                                        {% for p in pdebt1 %}
+                                        <tr id='addr0'>
+                                            <td>{{ forloop.counter }}
+                                                <input type="text" name="id[]" value="{{p.id}}" hidden>
+                                            </td>
+                                            <td style="width: 20%;">
+                                                <select name="items[]" id="product" class="form-control">
+                                                    <option value="{{ p.items }}">{{ p.items }}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" name='hsn[]' id="hsn1" value="{{ p.hsn }}"
+                                                class="form-control hsn"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name='quantity[]' id="qty1" value="{{ p.quantity }}" step="any"
+                                                class="form-control qty" min=0/>
+                                            </td>
+                                            <td>
+                                                <input type="text" name='price[]' id="unit1" value="{{ p.price }}"
+                                                class="form-control price" step="0.00" min="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name='total[]' id="total1" value="{{ p.total }}" class="form-control total"/>
+                                            </td>
+                                            <td>
+                                                <select name="tax[]" id="tax1" class="form-control tax">
+                                                    <option id="ta1" value="{{ p.tax }}" text={{ cmp1.state }}>{{ p.tax }} % GST</option>
+                                                    <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                                                    <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                                                    <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                                                    <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                                                    <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                                                    <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                                                    <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                                                    <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                                                    <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                                                    <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                                                    <option id="ta5" value="{{ pdeb1.tax }}" text=" ">{{ pdeb1.tax }} % IGST</option>
+                                                    <option value=28 text=" ">28.0% IGST(28%)</option>
+                                                    <option value=18 text=" ">18.0% IGST(18%)</option>
+                                                    <option value=12 text=" ">12.0% IGST(12%)</option>
+                                                    <option value=6 text=" ">06.0% IGST(06%)</option>
+                                                    <option value=5 text=" ">05.0% IGST(05%)</option>
+                                                    <option value=3 text=" ">03.0% IGST(03%)</option>
+                                                    <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                                                    <option value=0 text=" ">0.0% IGST(0%)</option>
+                                                    <option value=0 text=" ">Exempt IGST(0%)</option>
+                                                    <option value=0 text=" ">Out of Scope(0%)</option>
+                                                </select>
+                                            </td>
+                                            <td style="display: none;">
+                                                <input type="text" name='taxamount1' id="taxamount1" class="form-control taxamount"/>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <!-- <tr>
+                                            <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="add_item_row()">+</a></td>
+                                        </tr> -->
+                                    {% endfor %}   
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="tab_logic_total">
+                                    <tbody>
+                                    <tr>
+                                        <th class="text-center">Sub Total</th>
+                                        <td class="text-center"><input type="number" name='subtotal'
+                                                                       value="{{ pdebt.subtotal }}" class="form-control"
+                                                                       id="sub_total" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                    <tr>
+                                        <th class="text-center">CGST</th>
+                                        <td class="text-center"><input type="number" name='cgst'
+                                                                       id="cgst" value="{{ pdebt.cgst }}"
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">SGST</th>
+                                        <td class="text-center"><input type="number" name='sgst'
+                                                                       id="sgst" value="{{ pdebt.sgst }}"
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">IGST</th>
+                                        <td class="text-center"><input type="number" name='igst'
+                                                                       id="igst" value="{{ pdebt.igst }}"
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Tax Amount</th>
+                                        <td class="text-center"><input type="number" name='taxamount'
+                                                                       id="tax_amount" value="{{ pdebt.taxamount }}"
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Grand Total</th>
+                                        <td class="text-center"><input type="number" name='grandtotal'
+                                                                       id="grandtotal" value="{{ pdebt.grandtotal }}"
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="notices mt-3">
+                        <div class="text-muted">NOTICE:</div>
+                        <div class="text-muted">
+                          Fin sYs Terms and Conditions Apply
+                        </div>
+                    </div>
+                    <div class="row mt-4 mb-4">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3 mt-3 mb-4">
+                            <button class="btn btn-outline-info w-100 text-light rounded-pill" type="submit">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $('#date').val(new Date().toJSON().slice(0,10));
+    
+        $(document).ready(function () {
+            $('#select').on('change', function() {
+                select = $('#select').val();
+                $.ajax({
+                type: "GET",
+                url: "{% url 'getvendordata' %}",
+                data: {
+                    id: select
+                }
+                }).done(function(response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('email').value = json_data[key]['email'];
+                    document.getElementById('mailaddr').value = json_data[key]['street'] + '\n' + json_data[key]['city'] + '\n' + json_data[key]['state'] + '\n' + json_data[key]['pincode'] + '\n' + json_data[key]['country'];
+                    
+                }
+                })
+            });
+
+            var $select1 = $('#plosu'),
+            $select2 = $('#tax1'),
+            $select3 = $('#tax2'),
+            $select4 = $('#tax3'),
+            $select5 = $('#tax4'),
+            $options = $select2.find('option'),
+            $options1 = $select3.find('option'),
+            $options2 = $select4.find('option'),
+            $options3 = $select5.find('option');
+            if ($options1.value == '{{ cmp1.state }}') {
+                $options1.text = "{{ cmp1.state }}"
+            }
+            $select1.on('change', function() {
+                if (this.value == "{{ cmp1.state }}") {
+                    $select2.html($options.filter('[text="' + this.value + '"]'));
+                    $select3.html($options1.filter('[text="' + this.value + '"]'));
+                    $select4.html($options2.filter('[text="' + this.value + '"]'));
+                    $select5.html($options3.filter('[text="' + this.value + '"]'));
+                } 
+                else {
+                    $select2.html($options.filter('[text="' + " " + '"]'));
+                    $select3.html($options1.filter('[text="' + " " + '"]'));
+                    $select4.html($options2.filter('[text="' + " " + '"]'));
+                    $select5.html($options3.filter('[text="' + " " + '"]'));
+                }
+            }).trigger('change');
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center>
+                            <h2 class="mb-0">Reconcile </h2>
+                            {% if expen.cid_id == cmp1.cid %}
+                                <h2 class="text-grey">{{ expen.account }}</h2>
+                            {% endif %}
+                            <h6 class="mb-0">Statement ending date </h6>
+                            {% if expen.cid_id == cmp1.cid %}
+                                <h6 class="text-grey"> {{ expen.enddate }}</h6>
+                            {% endif %}
+                        </center>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <center>
+
+                                {% if expen.cid_id == cmp1.cid %}
+                                    <h6 class="text-info" id="serchar">
+                                        {{ expen.serchar }}
+                                    </h6>
+                                {% endif %}
+
+                            </center>
+                            <hr class="w-50"/>
+                            <center><h6 class="text-info">PAYMENTS</h6></center>
+                        </div>
+                        <div class="col-md-2">
+                            {% if incom.cid_id == cmp1.cid %}
+                                <center>
+                                    <h6 class="text-info" id="intear">{{ incom.intear }}</h6>
+                                </center>
+                            {% endif %}
+                            <hr class="w-50"/>
+                            <center><h6 class="text-info">DEPOSITS</h6></center>
+                        </div>
+                        <div class="col-md-2">
+                            {% if expen.cid_id == cmp1.cid %}
+                                <center>
+                                    <h6 class="text-info" id="difference"></h6>
+                                </center>
+                            {% endif %}
+                            <hr class="w-50"/>
+                            <center><h6 class="text-info">DIFFERENCE</h6></center>
+                        </div>
+                        <div class="col-md-2">
+                            <center><h6 class="text-success mt-4" id="reconc"></h6></center>
+                        </div>
+                        <div class="col-md-2 mt-2 mb-2">
+                            {% if expen.cid_id == cmp1.cid %}
+                                <a href="/app1/editrecon/{{ expen.expenseid }}">
+                                    <button type="button" class="btn btn-outline-info w-100">Edit info</button>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2 mt-2 mb-2">
+                            <div class="btn-group w-100">
+                                <button type="button" class="btn btn-outline-info">Save for later</button>
+                                <button type="button"
+                                        class="btn btn-outline-info dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Finish now</a>
+                                    <a class="dropdown-item" href="#">Save for later</a>
+                                    <a class="dropdown-item" href="#">Close without saving</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row mt-3 mb-3">
+                        <div class="col-md-1 pt-2 pb-2">
+
+                        </div>
+                        <div class="col-md-2 pt-3">
+                        </div>
+                        <div class="col-md-2 pt-3">
+                        </div>
+                        <div class="col-md-4 justify-content-center">
+                            <div class="btn-group col-md-3 w-100 mb-3">
+                                <button type="button" class="btn btn-outline-light">Payments</button>
+                                <button type="button" class="btn btn-outline-light">Deposits</button>
+                                <button type="button" class="btn btn-outline-light">All</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-end">
+                        </div>
+                        <table class="table table-responsive-md">
+                            <thead>
+                            <tr>
+                                <th scope="col">DATE</th>
+                                <th scope="col">TYPE</th>
+                                <th scope="col">REF NO.</th>
+                                <th scope="col">ACCOUNT</th>
+                                <th scope="col">PAYEE</th>
+                                <th scope="col">MEMO</th>
+                                <th scope="col"></th>
+                                <th scope="col">DEPOSIT(INR)</th>
+                                <th scope="col">PAYMENT(INR)</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if expen.expacc %}
+                                {% if expen.cid_id == cmp1.cid %}
+                                    <tr>
+                                        <td>{{ expen.dat }}</td>
+                                        <td>{{ expen.type1 }}</td>
+                                        <td></td>
+                                        <td>{{ expen.expacc }}</td>
+                                        <td></td>
+                                        <td>{{ expen.memo1 }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ expen.serchar }}</td>
+                                        <td></td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                            {% if incom.dat1  %}
+                                {% if incom.cid_id == cmp1.cid %}
+                                    <tr>
+                                        <td>{{ incom.dat1 }}</td>
+                                        <td>{{ incom.type2 }}</td>
+                                        <td></td>
+                                        <td>{{ incom.incacc }}</td>
+                                        <td></td>
+                                        <td>{{ incom.memo2 }}</td>
+                                        <td></td>
+                                        <td>{{ incom.intear }}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.js"></script>
+        <script>
+            $(document).ready(function () {
+                var deposit = parseFloat('{{ incom.intear }}');
+                var payment = parseFloat('{{ expen.serchar }}');
+                var begbal = parseFloat('{{ expen.begbal }}');
+                var endbal = parseFloat('{{ expen.endbal }}');
+                var cleared = begbal - payment + deposit
+                var difference = endbal - cleared
+                document.getElementById('difference').innerHTML = difference
+                if (difference == 0 && payment == 0 && deposit == 0) {
+                    document.getElementById('reconc').innerHTML = ''
+                }else if (difference == 0 && payment != 0 && deposit != 0){
+                    document.getElementById('reconc').innerHTML = 'Reconciled'
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,811 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<div class="page-content">
+  <div class="card radius-15">
+    <div class="card-body">
+      <div class="card-title">
+        <center>
+          <h2 class="mb-0">EDIT FORM STYLES</h2>
+        </center>
+        <hr>
+      </div>
+    </div>
+  </div>
+  <div class="card radius-15">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="row">
+            <div class="col-md-12">
+              <form class="post-form" action="updatestyle/{{ newstyle.customizeid }}" method="post">
+                {% csrf_token %}
+                <div class="row m-3">
+                  <div class="col-md-12 mt-3">
+                    <label>Form Name</label>
+                    <input type='text' class="custom-select" name="name" id="name" value="{{ newstyle.name }}">
+                  </div>
+                </div>
+                <div class="row m-3">
+                  <div class="col-md-12 mt-3">
+                    <label>Change Template</label>
+                    <input type='text' class="custom-select" value="{{ newstyle.template }}" name="template" id="templat">
+                  </div>
+                  <div class="col-md-12 mt-3">
+                    <div class="row">
+                      <button type="button" class="col-md-5 card ml-3" value="classic" id="classic" onclick="hello(this)" style="opacity: 0.6; color: white; height: 100px; padding: 40px 0px 0px 30px;">Classic</button>
+                      <button type="button" class="col-md-5 card ml-3" value="modern" id="modern" onclick="hello(this)" style="opacity: 0.6; color: white; height: 100px; padding: 40px 0px 0px 30px;">Modern</button>
+                      <button type="button" class="col-md-5 card ml-3" value="fresh" id="fresh" onclick="hello(this)" style="opacity: 0.6; color: white; height: 100px; padding: 40px 0px 0px 30px;">Fresh</button>
+                      <button type="button" class="col-md-5 card ml-3" value="friendly" id="friendly" onclick="hello(this)" style="opacity: 0.6; color: white; height: 100px; padding: 40px 0px 0px 30px;">Friendly</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="row m-3">
+                  <div class="col-md-12 mt-3">
+                    <label>Primary Colours</label>
+                    <input type='text' class="custom-select" id='formcolour' name="pcolour" value="{{ newstyle.pcolour }}">
+                  </div>
+                  <div class="col-md-12">
+                    <div class="row">
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#E9967A" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #E9967A; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#8FBC8F" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #8FBC8F; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#B0C4DE" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #B0C4DE; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#87CEFA" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #87CEFA; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#F0E68C" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #F0E68C; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#DDA0DD" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #DDA0DD; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#2F4F4F" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #2F4F4F; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#98FB98" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #98FB98; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#DB7093" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #DB7093; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#D2B48C" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #D2B48C; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#D3D3D3" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #D3D3D3; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#F5F5F5" onclick="colours(this)" style="width: 40px; height: 40px; background-color: #F5F5F5; border-radius: 50%;"></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="row m-3">
+                  <div class="col-md-12 mt-3">
+                    <label>Secondary Colours</label>
+                    <input type='text' class="custom-select" id='secondarycolour' name="scolour" value="{{ newstyle.scolour }}">
+                  </div>
+                  <div class="col-md-12">
+                    <div class="row">
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#E9967A" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #E9967A; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#8FBC8F" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #8FBC8F; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#B0C4DE" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #B0C4DE; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#87CEFA" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #87CEFA; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#F0E68C" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #F0E68C; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#DDA0DD" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #DDA0DD; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#2F4F4F" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #2F4F4F; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#98FB98" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #98FB98; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#DB7093" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #DB7093; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#D2B48C" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #D2B48C; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#D3D3D3" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #D3D3D3; border-radius: 50%;"></button>
+                      <button type='button' class="col-md-1 ml-4 mt-3" value="#F5F5F5" onclick="coloursecond(this)" style="width: 40px; height: 40px; background-color: #F5F5F5; border-radius: 50%;"></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="row m-3">
+                  <div class="col-md-12 mt-3">
+                    <label>Try New Fonts</label>
+                    <input type='text' class="custom-select" name="fonts" id="formfont" value="{{ newstyle.fonts }}">
+                  </div>
+                  <div class="col-md-12 mt-3">
+                    <div class="row">
+                      <center></center>
+                      <button type="button" class="col-md-5 card ml-3" value="serif" onclick="formfonts(this)" style="color: white; height: 100px; padding-top: 30px; font-family: serif;">Serif<br>Serif font</button>
+                      <button type="button" class="col-md-5 card ml-3" value="sans-serif" onclick="formfonts(this)" style="color: white; height: 100px; padding-top: 30px; font-family: sans-serif;">Sans-serif<br>Sans-serif font</button>
+                      <button type="button" class="col-md-5 card ml-3" value="monospace" onclick="formfonts(this)" style="color: white; height: 100px; padding-top: 30px; font-family: monospace;">Monospace<br>Monospace font</button>
+                      <button type="button" class="col-md-5 card ml-3" value="system-ui" onclick="formfonts(this)" style="color: white; height: 100px; padding-top: 30px; font-family: system-ui;">System-ui<br>system-ui font</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+
+                  </div>
+                  <div class="col-md-9 mt-0 p-2">
+                    <div class="form-check-inline">
+                      <label class="form-check-label">
+                        {% if newstyle.selected == 'selected' %}
+                        <input type="checkbox" class="form-check-input" name="selected" value="selected" checked>
+                        {% endif %}
+                        {% if newstyle.selected == ' ' %}
+                        <input type="checkbox" class="form-check-input" name="selected" value="selected">
+                        {% endif %}
+                        Apply this theme
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4"></div>
+                  <div class="col-md-4">
+                    <button type="submit" class="btn btn-outline-info w-100 rounded-pill text-light" name="button">Submit</button>
+                  </div>
+                  <div class="col-md-4"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card" id='cardfont' style="background-color: white; color: black; height: 1000px;">
+                <div class="card-header" style="margin-top: 50px;">
+                  <div class="col-md-6">
+                    <label class="col col-form-label">
+                      <strong>{{ cmp1.cname }}</strong>
+                      <br>
+                      {{ cmp1.caddress }}
+                      <br>
+                      {{ cmp1.city }},{{ cmp1.state }}
+                      <br>
+                      {{ cmp1.pincode }}
+                      <br>
+                      {{ cmp1.cemail }}
+                      <br>
+                      {{ cmp1.phone }}
+                      <br>
+                      <br>
+                      <h3 id='taxinvclassic' style="color: skyblue;">TAX INVOICE</h3>
+                    </label>
+                  </div>
+                  <div class="row m-2">
+                    <div class="col-md-4">
+                      <h5 style="color: black;">Bill To:</h5>
+                      ABC Company
+                      <br>
+                      Address
+                      <br>
+                      Details
+                      <br>
+                    </div>
+                    <div class="col-md-4">
+
+                    </div>
+                    <div class="col-md-4">
+                      <strong>Invoice
+                        No: </strong>1001
+                      <br>
+                      <strong>Invoice Date: </strong>12-09-2021
+                      <br>
+                      <strong>Due
+                        Date: </strong>12-09-2021
+                      <br>
+                      <strong>Terms: </strong>60
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="table-responsive">
+                        <table class="table table-sm">
+                          <thead id='theadclassic' style="background-color: skyblue;">
+                            <tr>
+                              <th></th>
+                              <th class="center" style="color: black;">PRODUCT / SERVICES</th>
+                              <th class="center" style="color: black;">HSN</th>
+                              <th class="center" style="color: black;">QTY</th>
+                              <th class="center" style="color: black;">PRICE</th>
+                              <th class="center" style="color: black;">TOTAL</th>
+                              <th class="center" style="color: black;">TAX (%)</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <td class="center" style="color: black;">Item</td>
+                              <td class="center" style="color: black;">hsn</td>
+                              <td class="center" style="color: black;">10</td>
+                              <td class="center" style="color: black;">220</td>
+                              <td class="center" style="color: black;">2200</td>
+                              <td class="center" style="color: black;">06 (%)</td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <td class="center" style="color: black;">Item</td>
+                              <td class="center" style="color: black;">hsn</td>
+                              <td class="center" style="color: black;">1</td>
+                              <td class="center" style="color: black;">220</td>
+                              <td class="center" style="color: black;">220</td>
+                              <td class="center" style="color: black;">06 (%)</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-7"></div>
+                    <div class="col-md-5">
+                      <table class="table table-sm" style="margin-bottom: 300px;">
+                        <tbody>
+                          <tr>
+                            <td class="center text-dark"><strong>Subtotal</strong></td>
+                            <td class="center text-dark">2420</td>
+                          </tr>
+                          <tr>
+                            <td class="center text-dark"><strong>Tax Amount</strong></td>
+                            <td class="center text-dark">145.2</td>
+                          </tr>
+                          <tr>
+                            <td class="center text-dark"><strong>Total</strong></td>
+                            <td class="center text-dark">
+                              2565.2
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="bg-gray" style="height: 2px;">
+                  </div>
+                  <span>
+                    <center>Invoice was created on a computer and is valid without the signature and seal.</center>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="invoice">
+            <div class="container">
+              <div class="card" id='cardfont1' style="background-color: white; color: black; display: none;">
+                <div class="card-header" style="margin-top: 50px;">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="col col-form-label">
+                        <strong>{{ cmp1.cname }}</strong>
+                        <br>
+                        {{ cmp1.caddress }}
+                        <br>
+                        {{ cmp1.city }},{{ cmp1.state }}
+                        <br>
+                        {{ cmp1.pincode }}
+                        <br>
+                        {{ cmp1.cemail }}
+                        <br>
+                        {{ cmp1.phone }}
+                        <br>
+                        <br>
+                      </label>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
+                      <h3 id="taxinvmodern" style="color: black;">TAX INVOICE</h3>
+                    </div>
+                  </div>
+                  <div class="row m-2">
+                    <div class="col-md-4">
+
+                    </div>
+                    <div class="col-md-4">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <h5 id='theadmodern3' style="color: black; background-color: #91bbff; padding-left: 20px;">Bill To:</h5>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12 pt-2 pl-5 pr-5">
+                          ABC Company
+                          <br>
+                          Address
+                          <br>
+                          Details
+                          <br>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                  </div>
+                </div>
+                <div class="m-4">
+                  <div class="table-responsive">
+                    <table class="table table-sm">
+                      <thead id='theadmodern1' style="background-color: #91bbff;">
+                        <tr>
+                          <th style='color: black;'>INVOICE NO</th>
+                          <th style='color: black;'>INVOICE DATE</th>
+                          <th style='color: black;'>DUE DATE</th>
+                          <th style='color: black;'>TERMS</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style='color: black;'>1001</td>
+                          <td style='color: black;'>14-12-2021</td>
+                          <td style='color: black;'>14-12-2021</td>
+                          <td style='color: black;'>60</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div style="margin-bottom: 300px">
+                  <div class="m-4">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead id='theadmodern2' style="background-color: #91bbff;">
+                          <tr>
+                            <th></th>
+                            <th class="center" style="color: black;">PRODUCT / SERVICES</th>
+                            <th class="center" style="color: black;">HSN</th>
+                            <th class="center" style="color: black;">QTY</th>
+                            <th class="center" style="color: black;">PRICE</th>
+                            <th class="center" style="color: black;">TOTAL</th>
+                            <th class="center" style="color: black;">TAX (%)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td class="center" style="color: black;">Item</td>
+                            <td class="center" style="color: black;">hsn</td>
+                            <td class="center" style="color: black;">10</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">2200</td>
+                            <td class="center" style="color: black;">06 (%)</td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td class="center" style="color: black;">Item</td>
+                            <td class="center" style="color: black;">hsn</td>
+                            <td class="center" style="color: black;">1</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">06 (%)</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-7"></div>
+                    <div class="col-md-5">
+                      <table class="table table-sm mb-5">
+                        <tbody>
+                          <tr>
+                            <td class="center" style='color: black;'><strong>SUBTOTAL</strong></td>
+                            <td class="center" style='color: black;'>2420</td>
+                          </tr>
+                          <tr>
+                            <td class="center" style='color: black;'><strong>TAX AMOUNT</strong></td>
+                            <td class="center" style='color: black;'>145.2</td>
+                          </tr>
+                          <tr>
+                            <td class="center" style='color: black;'><strong>TOTAL</strong></td>
+                            <td class="center" style='color: black;'>2565.2
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="bg-gray" style="height: 2px;">
+                  </div>
+                  <span>
+                    <center>Invoice was created on a computer and is valid without the signature and seal.</center>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="invoice">
+            <div class="container">
+              <div class="card" id='cardfont2' style="background-color: white; color: black; display: none;">
+                <div class="card-header" style="margin-top: 50px;">
+                  <div class="col-md-6">
+                    <label class="col col-form-label">
+                      <strong>{{ cmp1.cname }}</strong>
+                      <br>
+                      {{ cmp1.caddress }}
+                      <br>
+                      {{ cmp1.city }},{{ cmp1.state }}
+                      <br>
+                      {{ cmp1.pincode }}
+                      <br>
+                      {{ cmp1.cemail }}
+                      <br>
+                      {{ cmp1.phone }}
+                      <br>
+                      <br>
+                      <h3 id="taxinvfresh">TAX INVOICE</h3>
+                    </label>
+                  </div>
+                  <div class="row m-2">
+                    <div class="col-md-4">
+                      <h5 style="color: black;">Bill To:</h5>
+                      <strong>ABC Company</strong>
+                      <br>
+                      Address
+                      <br>
+                      Details
+                      <br>
+                    </div>
+                    <div class="col-md-4">
+
+                    </div>
+                    <div class="col-md-4">
+                      <div class="row mt-1">
+                        <div id='theadfresh1' class="col-md-12" style='background-color: #91bbff; color: black;'>
+                          <strong>Invoice
+                            No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </strong>1001
+                        </div>
+                      </div>
+                      <div class="row mt-1">
+                        <div id='theadfresh2' class="col-md-12" style='background-color: #91bbff; color: black;'>
+                          <strong>Invoice Date&nbsp;&nbsp;&nbsp;: </strong>14-12-2021
+                        </div>
+                      </div>
+                      <div class="row mt-1">
+                        <div id='theadfresh3' class="col-md-12" style='background-color: #91bbff; color: black;'>
+                          <strong>Due
+                            Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </strong>14-12-2021
+                        </div>
+                      </div>
+                      <div class="row mt-1">
+                        <div id='theadfresh4' class="col-md-12" style='background-color: #91bbff; color: black;'>
+                          <strong>Terms&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </strong>60
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-bottom: 300px">
+                  <div class="m-4">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead id='theadfresh5' style='background-color: #91bbff; color: black;'>
+                          <tr>
+                            <th></th>
+                            <th class="center" style="color: black;">PRODUCT / SERVICES</th>
+                            <th class="center" style="color: black;">HSN</th>
+                            <th class="center" style="color: black;">QTY</th>
+                            <th class="center" style="color: black;">PRICE</th>
+                            <th class="center" style="color: black;">TOTAL</th>
+                            <th class="center" style="color: black;">TAX (%)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td class="center" style="color: black;">Item</td>
+                            <td class="center" style="color: black;">hsn</td>
+                            <td class="center" style="color: black;">10</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">2200</td>
+                            <td class="center" style="color: black;">06 (%)</td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td class="center" style="color: black;">Item</td>
+                            <td class="center" style="color: black;">hsn</td>
+                            <td class="center" style="color: black;">1</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">06 (%)</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-7"></div>
+                    <div class="col-md-5">
+                      <table class="table table-sm mb-5">
+                        <tbody>
+                          <tr>
+                            <td class="center text-dark"><strong>Subtotal</strong></td>
+                            <td class="center text-dark">2420</td>
+                          </tr>
+                          <tr>
+                            <td class="center text-dark"><strong>Tax Amount</strong></td>
+                            <td class="center text-dark">145.2</td>
+                          </tr>
+                          <tr>
+                            <td class="center text-dark"><strong>Total</strong></td>
+                            <td class="center text-dark">
+                              <strong>2565.2</strong>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="bg-gray" style="height: 2px;"></div>
+                  <span>
+                    <center>Invoice was created on a computer and is valid without the signature and seal.</center>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="invoice">
+            <div class="container">
+              <div class="card" id='cardfont3' style="background-color: white; color: black; display: none;">
+                <div class="card-header" style="margin-top: 50px;">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label class="col col-form-label">
+                        <strong>{{ cmp1.cname }}</strong>
+                        <br>
+                        {{ cmp1.caddress }}
+                        <br>
+                        {{ cmp1.city }},{{ cmp1.state }}
+                        <br>
+                        {{ cmp1.pincode }}
+                        <br>
+                        {{ cmp1.cemail }}
+                        <br>
+                        {{ cmp1.phone }}
+                        <br>
+                        <br>
+                      </label>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-3">
+                      <h4 style="color: black;" id="taxinvfriendly">TAX INVOICE</h4>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div id='theadfriendly5' style='background-color: #91bbff; height:1px; width: 100%;'></div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <h5 style="color: black;">Bill To:</h5>
+                      <strong>ABC Company</strong>
+                      <br>
+                      Address
+                      <br>
+                      Details
+                      <br>
+                    </div>
+                    <div class="col-md-3 mt-2">
+                      <strong>Invoice
+                        No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </strong>1001
+                      <br>
+                      <strong>Invoice Date&nbsp;&nbsp;&nbsp;: </strong>14-12-2021
+                      <br>
+                      <strong>Due
+                        Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </strong>14-12-2021
+                      <br>
+                      <strong>Terms&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </strong>60
+                    </div>
+                    <div id='theadfriendly1' class="col-md-2" style='background-color: #9cbcf0;'>
+                      <div class="row">
+                        <div class="col-md-12 mt-5">
+                          <h6 style="text-align: center; color: black;">Date</h6>
+                        </div>
+                        <div class="col-md-12" style="text-align: center; color: white; color: black;">
+                          14-12-2021
+                        </div>
+                      </div>
+                    </div>
+                    <div id='theadfriendly2' class="col-md-2" style='background-color: #4185f2;'>
+                      <div class="row">
+                        <div class="col-md-12 mt-5" style="font-weight: 100px;">
+                          <h6 style="text-align: center; color: black;">Please Pay</h6>
+                        </div>
+                        <div class="col-md-12" style="text-align: center; color: white; color: black;">
+                          2420.5
+                        </div>
+                      </div>
+                    </div>
+                    <div id='theadfriendly3' class="col-md-2" style='background-color: #9cbcf0;'>
+                      <div class="row">
+                        <div class="col-md-12 mt-5">
+                          <h6 style="text-align: center; color: black;">Due Date</h6>
+                        </div>
+                        <div class="col-md-12" style="text-align: center; color: white; color: black;">
+                          14-12-2021
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-bottom: 300px">
+                  <div class="m-4">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead id='theadfriendly4'>
+                          <tr>
+                            <th></th>
+                            <th class="center" style="color: black;">PRODUCT / SERVICES</th>
+                            <th class="center" style="color: black;">HSN</th>
+                            <th class="center" style="color: black;">QTY</th>
+                            <th class="center" style="color: black;">PRICE</th>
+                            <th class="center" style="color: black;">TOTAL</th>
+                            <th class="center" style="color: black; width: 200px;">TAX (%)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td class="center" style="color: black;">Item</td>
+                            <td class="center" style="color: black;">hsn</td>
+                            <td class="center" style="color: black;">10</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">2200</td>
+                            <td class="center" style="color: black;">06 (%)</td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td class="center" style="color: black;">Item</td>
+                            <td class="center" style="color: black;">hsn</td>
+                            <td class="center" style="color: black;">1</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">220</td>
+                            <td class="center" style="color: black;">06 (%)</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-7"></div>
+                    <div class="col-md-5">
+                      <table class="table table-sm mb-5">
+                        <tbody>
+                          <tr>
+                            <td class="center text-dark"><strong>Subtotal</strong></td>
+                            <td class="center text-dark">2420</td>
+                          </tr>
+                          <tr>
+                            <td class="center text-dark"><strong>Tax Amount</strong></td>
+                            <td class="center text-dark">145.2</td>
+                          </tr>
+                          <tr>
+                            <td class="center text-dark"><strong>Total</strong></td>
+                            <td class="center text-dark">
+                              <strong>2565.2</strong>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="bg-gray" style="height: 2px;">
+                  </div>
+                  <span>
+                    <center>Invoice was created on a computer and is valid without the signature and seal.</center>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+
+  // Get the button that opens the modal
+  var btn = document.getElementById("myBtn");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks the button, open the modal
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+
+  function colours(element) {
+    document.getElementById('formcolour').value = element.value;
+    document.getElementById('taxinvclassic').style.color = element.value;
+    document.getElementById('taxinvmodern').style.color = element.value;
+    document.getElementById('taxinvfresh').style.color = element.value;
+    document.getElementById('taxinvfriendly').style.color = element.value;
+    document.getElementById('theadfriendly2').style.background = element.value;
+    element.style.opacity = 0.9;
+  }
+
+  function coloursecond(element) {
+    document.getElementById('secondarycolour').value = element.value;
+    document.getElementById('theadclassic').style.background = element.value;
+    document.getElementById('theadmodern1').style.background = element.value;
+    document.getElementById('theadmodern2').style.background = element.value;
+    document.getElementById('theadmodern3').style.background = element.value;
+    document.getElementById('theadfresh1').style.background = element.value;
+    document.getElementById('theadfresh2').style.background = element.value;
+    document.getElementById('theadfresh3').style.background = element.value;
+    document.getElementById('theadfresh4').style.background = element.value;
+    document.getElementById('theadfresh5').style.background = element.value;
+    document.getElementById('theadfriendly1').style.background = element.value;
+    document.getElementById('theadfriendly3').style.background = element.value;
+    document.getElementById('theadfriendly4').style.background = element.value;
+    document.getElementById('theadfriendly5').style.background = element.value;
+    element.style.opacity = 0.9;
+  }
+
+  function formfonts(element) {
+    console.log(element.value)
+    document.getElementById('formfont').value = element.value;
+    document.getElementById('cardfont').style.fontFamily = element.value;
+    document.getElementById('cardfont1').style.fontFamily = element.value;
+    document.getElementById('cardfont2').style.fontFamily = element.value;
+    document.getElementById('cardfont3').style.fontFamily = element.value;
+  }
+
+  function hello(element){
+    document.getElementById('templat').value = element.value;
+    if (element.value == 'classic') {
+      document.getElementById('classic').style.opacity = 1;
+      document.getElementById('friendly').style.opacity = 0.6;
+      document.getElementById('modern').style.opacity = 0.6;
+      document.getElementById('fresh').style.opacity = 0.6;
+      document.getElementById('cardfont').style.display = 'block';
+      document.getElementById('cardfont1').style.display = 'none';
+      document.getElementById('cardfont2').style.display = 'none';
+      document.getElementById('cardfont3').style.display = 'none';
+    }
+    else if(element.value == 'modern') {
+      document.getElementById('classic').style.opacity = 0.6;
+      document.getElementById('friendly').style.opacity = 0.6;
+      document.getElementById('modern').style.opacity = 1;
+      document.getElementById('fresh').style.opacity = 0.6;
+      document.getElementById('cardfont1').style.display = 'block';
+      document.getElementById('cardfont2').style.display = 'none';
+      document.getElementById('cardfont3').style.display = 'none';
+      document.getElementById('cardfont').style.display = 'none';
+    }
+    else if(element.value == 'fresh') {
+      document.getElementById('classic').style.opacity = 0.6;
+      document.getElementById('friendly').style.opacity = 0.6;
+      document.getElementById('modern').style.opacity = 0.6;
+      document.getElementById('fresh').style.opacity = 1;
+      document.getElementById('cardfont').style.display = 'none';
+      document.getElementById('cardfont1').style.display = 'none';
+      document.getElementById('cardfont2').style.display = 'block';
+      document.getElementById('cardfont3').style.display = 'none';
+    }
+    else if(element.value == 'friendly') {
+      document.getElementById('classic').style.opacity = 0.6;
+      document.getElementById('friendly').style.opacity = 1;
+      document.getElementById('modern').style.opacity = 0.6;
+      document.getElementById('fresh').style.opacity = 0.6;
+      document.getElementById('cardfont').style.display = 'none';
+      document.getElementById('cardfont1').style.display = 'none';
+      document.getElementById('cardfont2').style.display = 'none';
+      document.getElementById('cardfont3').style.display = 'block';
+    }
+  }
+</script>
+
+{% endblock %}

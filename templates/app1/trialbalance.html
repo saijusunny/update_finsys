@@ -1,0 +1,304 @@
+
+
+    {% extends 'app1/base.html' %}
+    {% block body %}
+        {% load static %}
+        <style>
+            .flexy{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        .form1{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            
+        }
+        form{
+            padding:30px;
+            cursor: pointer;
+        }
+        .close {
+            position: absolute;
+            top: 3px;
+            right: 8px;
+            font-size: 25px;
+            color: rgb(255, 255, 255);
+            transform: rotate(45deg);
+            cursor: pointer;
+            text-decoration: none;
+            
+        }
+        .back{
+            background-color:rgba(0,0,0,0.4);
+            color: white;
+
+        }
+        btns:hover{
+            background-color:rgba(225,225,225,0.4);
+            color:black;
+        }
+        button{
+            background-color:rgb(103, 175, 220) ;
+            color:white;
+            padding:10px 20px;
+        }
+        .tr1:hover{
+            background:  rgb(202, 202, 13);
+        }
+        a:hover{
+            color: black;
+        }
+        th:hover{
+          color: black;
+        }
+        .hu:hover{
+          color: white;
+        }
+        td:hover{
+          color: black;
+        }
+        .tes{
+          display: none;
+        }
+        #list{
+          visibility:hidden;
+        }
+        #fixx{
+          visibility: hidden;
+        }
+    </style>
+     <div class="row container-fluid p-0 mx-0" >
+        <div class="col-sm-1 m-0  p-0"></div>
+        <div class="col-sm-10 m-0 p-0" style=" width: 100%; background-color:rgba(0,0,0,0.2);" >
+        <div>
+            <h6  class="bg-info text-light m-0 p-2">Trial Balance</h6>
+            <div class="row container-fluid p-3 m-0 back">
+        
+            <div class="col-sm-2   m-0 p-0 d-flex">
+             
+                <h4>Particulers</h4>
+            </div>
+            <div class="col-sm-6   m-0 p-0"></div>
+            <div class="col-sm-2   m-0 p-0" style="text-align: center;">
+                <p></p>
+                <p><b>info</b></p>
+                <h6>For 1-Apr-22</h6>
+                <p>closing balance</p>
+               
+            </div>
+           
+
+            </div>
+
+            <div style="overflow: scroll ;max-height: 70vh; width: 100%;background-color:rgba(0,0,0,0.4); ">
+                <table class="table ">
+                   
+                      <tr>
+                        <td></td>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">Credit</th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">Debit</th>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td> 
+                        <td></td>
+                      </tr>
+                      <tr class="tr1" >
+                        <th  class="col-sm-2 m-0 p-1"><a href="acre">Account Receivable</a> </th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ sum3 }}</th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ sum4 }}</th>
+                        
+                      </tr>
+                     
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1"><a href="curli">current Liabilities</a></th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ cl1 }}</th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ cl2 }}</th>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        
+                      </tr>
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1" onclick="fix()">Fixed Assets</th>
+                        <th class="col-sm-2 m-0 p-0" class="col-sm-2 m-0 p-0" style="text-align: center;">{{ fx1 }}</th>
+                        <th class="col-sm-2 m-0 p-0" class="col-sm-2 m-0 p-0" style="text-align: center;">{{ fx2 }}</th>
+                      </tr>
+                      <fieldset>
+                        <div>
+                          <tr id="fixx">
+                            <td>fixed</td>
+                          </tr>
+                        </div>
+                      </fieldset>
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1"><a href="{% url 'nonass' %}">Non-Current Assets</a></th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ nc1 }}</th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ nc2 }}</th>
+                      </tr>
+                      <tr class=" tr1">
+                        <div class="curr">
+                        <th class="col-sm-2 m-0 p-1"  onclick="showList()">Current Assets </th>
+                      </div>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ sum1 }}</th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ sum2 }}</th>
+                      </tr>
+<fieldset>
+                      <div  >
+                        
+                        
+                     
+                        <tr id="list">
+                          
+
+                          <td  ></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                       
+                      </div>
+                    </fieldset>
+
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1"><a href="accpay">Accounts Payable</a></th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ acp1 }} </th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ acp2 }}</th>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        
+                      </tr>
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1"><a href="credc">Credit Card</a></th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ cr1 }} </th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ cr2 }}</th>
+                      </tr>
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1"><a href="nonli">Non-Current Liabilities</a></th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ ncl1 }} </th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ ncl2 }}</th>
+                      </tr>
+                      <tr >
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        
+                      </tr>
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1"><a href="eqt">Equity</a></th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ eq1 }}</th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ eq2 }}</th>
+                      </tr>
+                      
+
+            
+                     
+                      <tr class="tr1">
+                       
+
+                        <th scope="row" class="col-sm-2 m-0 p-1"><a href="incm">Income </a> </th>
+                       
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ inc1 }} </th>
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;">  {{ inc2 }}</th>
+                       
+                       
+                        
+                      </tr>
+                      <tr class="tr1">
+                       
+
+                        <th scope="row" class="col-sm-2 m-0 p-1"><a href="oincm">Other Incomes</a> </th>
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ onc1 }}</th>
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ onc2 }}</th>
+                        
+                      </tr>
+                      <tr class="tr1">
+                        <th class="col-sm-2 m-0 p-1"><a href="cog">Cost Of Goods</a></th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;">{{ co1 }} </th>
+                        <th class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ co2 }}</th>
+                      </tr>
+                      <tr class="tr1">                      
+
+                        <th scope="row" class="col-sm-2 m-0 p-1"><a href="exp">Expenses</a> </th>
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ ex1 }}</th>               
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;">  {{ ex2 }}</th>
+                      </tr>
+                      <tr class="tr1">                      
+
+                        <th scope="row" class="col-sm-2 m-0 p-1"><a href="">Other Expenses</a> </th>
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ ox1 }}</th>               
+                        <th scope="row"  class="col-sm-2 m-0 p-0" style="text-align: center;"> {{ ox2 }}</th> 
+                      </tr>
+
+                      <tr  class="tr1">
+                        <td class="col-sm-2 m-0 p-1" >Difference In Opening Balance</td>
+                        {% if crtot < drtot %} 
+                        <td class="col-sm-2 m-0 p-0" style="text-align: center;">{{ diff }}  </td>
+                        <td class="col-sm-2 m-0 p-0" style="text-align: center;"></td>
+                        {% else %}
+                        <td  class="col-sm-2 m-0 p-0" style="text-align: center;"></td>
+                        <td class="col-sm-2 m-0 p-0" style="text-align: center;">  {{ diff }}</td>
+                        {% endif %}
+                        
+                        
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <th class="hu">Grand Total</th>
+                        {% if crtot > drtot %}
+                        <th class="col-sm-2 m-0 p-0 hu" style="text-align: center;">{{ crtot  }}</th>
+                        <th class="col-sm-2 m-0 p-0 hu" style="text-align: center;"> {{ crtot  }}</th>
+                        {% else %}
+                        <th class="col-sm-2 m-0 p-0 hu" style="text-align: center;">{{ drtot  }} </th>
+                        <th class="col-sm-2 m-0 p-0 hu" style="text-align: center;">{{ drtot  }}</th>
+                       
+                        {% endif %}
+                      </tr>
+                    
+                    
+                   
+                      
+                      
+                    
+                     
+                      
+
+                </table>
+
+
+            </div>
+       
+        </div> 
+        </div></div>
+
+        <script>
+          function  showList() {
+                      document.getElementById("list").style.visibility = "visible";
+                      document.getElementById("fixx").style.visibility = "hidden";
+                  }
+          function fix(){
+            document.getElementById("fixx").style.visibility = "visible";
+            document.getElementById("list").style.visibility = "hidden";
+          }        
+
+        </script>
+     
+    
+{% endblock %}

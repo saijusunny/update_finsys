@@ -1,0 +1,155 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<style type="text/css">
+    .container
+    {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 1200px;
+      flex-wrap: wrap;
+      z-index: 1;
+    }
+    .container .card1
+    {
+      position: relative;
+      width: 40%;
+      height: 50%;
+      margin: 30px;
+      box-shadow: 20px 20px 50px rgba(0,0,0,0.5);
+      border-radius: 15px;
+      background:rgba(255,255,255,0.1);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.5);
+      border-left: 1px solid rgba(255,255,255,0.5);
+      backdrop-filter:blur(5px);
+    }
+    .container .card1 .content
+    {
+      padding: 20px;
+      text-align: center;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: 0.5s;
+    }
+    .container .card1:hover .content
+    {
+      background-color: #2f516f;
+      transform: translateY(0px);
+      opacity: 1;
+    }
+    .container .card1 .content h2
+    {
+      top: 0px;
+      right: 30px;
+      font-size: 3em;
+      color: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+    .container .card1 .content h3
+    {
+      font-size: 1.8em;
+      color: #fff;
+      z-index: 1;
+    }
+    .container .card1 .content p
+    {
+      font-size: 1.1em;
+      color: #fff;
+      font-weight: 300;
+    }
+    .container .card1 .content a
+    {
+      position: relative;
+      display: inline-block;
+      padding: 8px 20px;
+      margin-top: 15px;
+      width: 50%;
+      background: blue;
+      color: white;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+</style>
+<div class="page-content">
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="card-title">
+                <center><h2 class="mb-0">PRODUCT / SERVICE INFORMATION</h2></center>
+            </div>
+            <hr>
+        </div>
+    </div>
+    <div class="card radius-15">
+        <div class="container">
+            <div class="card1" style=" background-image: url({% static 'assets/img/1.png' %});background-size: 50%;background-repeat: no-repeat; background-position: center;">
+                <div class="content">
+                    <div class="row">
+                        <div class="col" style="width: 100%; height: 100%; background-color: #2f516f;">
+                            <h2>INVENTORY</h2>
+                            <h3>Inventory</h3>
+                            <p>Inventory is the goods available for sale and raw materials used to produce goods available for sale.</p>
+                            <a href="{% url 'goinv' %}">Add Item</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="card1" style=" background-image: url({% static 'assets/img/2.png' %});background-size: 50%;background-repeat: no-repeat; background-position: center;">
+          <div class="content">
+              <div class="row">
+                  <div class="col" style="width: 100%; height: 100%; background-color: #2f516f;">
+                    <h2>NON-INVENTORY</h2>
+                    <h3>Non-Inventory</h3>
+                    <p>A non-inventory is a type of product that is procured, sold, consumed in production but we do not keep inventories for it.</p>
+                    <a href="{% url 'gononinv' %}">Add Item</a>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="card1" style=" background-image: url({% static 'assets/img/3.png' %});background-size: 50%;background-repeat: no-repeat; background-position: center;">
+          <div class="content">
+              <div class="row">
+                  <div class="col" style="width: 100%; height: 100%; background-color: #2f516f;">
+                    <h2>SERVICES</h2>
+                    <h3>Services</h3>
+                    <p>A service is a transaction in which no physical goods are transferred from the seller to the buyer.</p>
+                    <a href="{% url 'goser' %}">Add Item</a>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="card1" style=" background-image: url({% static 'assets/img/4.png' %});background-size: 50%;background-repeat: no-repeat; background-position: center;">
+          <div class="content">
+              <div class="row">
+                  <div class="col" style="width: 100%; height: 100%; background-color: #2f516f;">
+                    <h2>BUNDLE</h2>
+                    <h3>Bundle</h3>
+                    <p>A bundle is a group of software programs or hardware devices that are grouped together and sold as one.</p>
+                    <a href="{% url 'gobun' %}">Add Item</a>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <script src="{% static 'assets/js/vanilla-tilt.js' %}"></script>
+      <script>
+        VanillaTilt.init(document.querySelectorAll(".card1"),
+        {
+          max: 25,
+          speed: 400,
+          glare: true,
+          "max-glare":0.6,
+        });
+      </script>
+    </div>
+</div>
+
+
+{% endblock %}

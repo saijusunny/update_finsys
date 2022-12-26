@@ -1,0 +1,1282 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <!--<h1>Taxes</h1>-->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+            var i = 1;
+            $("#add_row").click(function () {
+                b = i - 1;
+                $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+                $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+                i++;
+            });
+            $("#delete_row").click(function () {
+                if (i > 1) {
+                    $("#addr" + (i - 1)).html('');
+                    i--;
+                }
+                calc();
+            });
+
+            $('#tab_logic tbody').on('keyup change', function () {
+                calc();
+            });
+
+            $('#tax').on('keyup change', function () {
+                calc_total();
+            });
+        });
+
+        function calc() {
+            $('#tab_logic tbody tr').each(function () {
+                var html = $(this).html();
+                if (html != '') {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    var tax = $(this).find('.tax').val();
+                    $(this).find('.total').val(qty * price);
+                    $(this).find('.taxamount').val((qty * price) * (tax / 100));
+                    calc_total();
+                }
+            });
+        }
+
+        function calc_total() {
+            total = 0;
+            $('.total').each(function () {
+                total += parseFloat($(this).val());
+            });
+            taxamount = 0;
+            $('.taxamount').each(function () {
+                taxamount += parseFloat($(this).val());
+            });
+            $('#subtotal').val(total.toFixed(2));
+            $('#tax_amount').val(taxamount.toFixed(2));
+            $('#grandtotal').val((taxamount + total).toFixed(2));
+            $('#baldue').val((taxamount + total).toFixed(2));
+        }
+    </script>
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0" id="invnumb">CHEQUE NO. :</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <form action="updatecheque/{{ che.chequeid }}" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Payee</label>
+{#                                    <input type="text" class="form-control" name="payee" value="{{ che.payee }}"#}
+{#                                           id="validationCustom02" required#}
+{#                                           style="background-color: #2f516f;color: white;">#}
+                                      <select name="payee" id="select" class="form-control">
+                                        <option value="{{ che.payee }}" selected>{{ che.payee }}</option>
+                                          {% for cust in customers %}
+                                            {% if cust.cid_id == cmp1.cid %}
+                                                <option text="{{ cust.customerid }}"
+                                                        value="{{ cust.firstname }} ">{{ cust.firstname }} {{ cust.lastname }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Customer
+
+                                                </option>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% for sup in suppliers %}
+                                            {% if sup.cid_id == cmp1.cid %}
+                                                <option text="{{ sup.supplierid }}"
+                                                        value="{{ sup.firstname }}">{{ sup.firstname }} {{ sup.lastname }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    Supplier
+                                                </option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Bank Accounts</label>
+                                    <select class="custom-select" name="bankacc"
+                                            style="background-color: #2f516f; color: white;">
+                                        <option>{{ che.bankacc }}</option>
+                                        <option>Deferred CGST</option>
+                                        <option>Deferred GST Input Credit</option>
+                                        <option>Deferred IGST</option>
+                                        <option>Deferred Krishi Kalyan Cess Input Credit</option>
+                                        <option>Deferred Service Tax Input Credit</option>
+                                        <option>Deferred SGST</option>
+                                        <option>Deferred VAT Input Credit</option>
+                                        <option>GST Refund</option>
+                                        <option>Inventory Asset</option>
+                                        <option>Krishi Kalyan Cess Refund</option>
+                                        <option>Prepaid Insurance</option>
+                                        <option>Service Tax Refund</option>
+                                        <option>TDS Receivable</option>
+                                        <option>Uncategorised Asset</option>
+                                        <option>Undeposited Funds</option>
+                                    </select>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Mailing address </label>
+                                    <textarea class="form-control" name="mailaddr" rows="7" id="validationCustom01" required
+                                              style="background-color: #2f516f;color: white;">{{ che.mailaddr }}</textarea>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Payment Date </label>
+                                    <input type="date" name="paydate" value="{{ che.paydate }}" class="form-control"
+                                           id="validationCustom02" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col">
+                                    <label for="validationCustom02">Cheque no: </label>
+                                    <input type="number" name="chequeno" value="{{ che.chequeno }}" onchange="showinnum('invnumb', this)" class="form-control"
+                                           id="validationCustom02" style="background-color: #2f516f;color: white;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div class="row" style="margin-top: 10%">
+                                <div class="col-5"></div>
+                                <div class="col-7"><label style="font-size: 20px;">AMOUNT</label></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4"></div>
+                                <div class="col-8"><input type="text" value="{{ che.amount }}" id="baldue"
+                                                          placeholder='0.00' class="form-control" readonly
+                                                          style="width: 100%; height: 70px; font-size: 50px; background-color: #243e54; border: 0px; color: white;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <hr>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col">
+                            <label style="font-size: 30px;">Category Details</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-bordered table-hover table-responsive" id="tab_logic">
+                            <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">CATEGORY</th>
+                                <th class="text-center">DESCRIPTION</th>
+                                <th class="text-center">NOT-APPLICABLE</th>
+                                <th class="text-center">PRICE</th>
+                                <th class="text-center">TOTAL</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr id='addr0'>
+                                <td>1</td>
+                                <td>
+{#                                    <input type="text" name="category1" value="{{ che.category1 }}"#}
+{#                                           placeholder='Enter Category' class="form-control"/>#}
+
+                                    <select class="custom-select" name="category1"
+                                            style="background-color: #2f516f; color: white;">
+                                    <option>{{ che.category1 }}</option>
+                                    <option>Advertising/Promotional</option>
+                                    <option>Bank charges</option>
+                                    <option>Business Licenses and Permits</option>
+                                    <option>Charitable Contributions</option>
+                                    <option>Computer and Internet Expense</option>
+                                    <option>Continuing Education</option>
+                                    <option>Depreciation Expense</option>
+                                    <option>Dues and Subscriptions</option>
+                                    <option>Housekeeping Charges</option>
+                                    <option>Insurance Expense</option>
+                                    <option>Insurance Expense-General Liability Insurance</option>
+                                    <option>Insurance Expense-Health Insurance</option>
+                                    <option>Insurance Expense-Life and Disability Insurance</option>
+                                    <option>Insurance Expense-Professional Liability</option>
+                                    <option>Interest Expense</option>
+                                    <option>Meals and entertainment</option>
+                                    <option>Office Supplies</option>
+                                    <option>Postage and Delivery</option>
+                                    <option>Printing and Reproduction</option>
+                                    <option>Professional Fees</option>
+                                    <option>Purchases</option>
+                                    <option>Rent Expense</option>
+                                    <option>Repair and maintenance</option>
+                                    <option>Small Tools and Equipment</option>
+                                    <option>Swachh Bharat Cess Expense</option>
+                                    <option>Taxes - Property</option>
+                                    <option>Telephone Expense</option>
+                                    <option>Travel Expense</option>
+                                    <option>Uncategorised Expense</option>
+                                    <option>Utilities</option>
+                                    <option>Cash and cash equivalents</option>
+                                    <option>Accounts Receivable (Debtors)</option>
+                                    <option>Deferred CGST</option>
+                                    <option>Deferred GST Input Credit</option>
+                                    <option>Deferred IGST</option>
+                                    <option>Deferred Krishi Kalyan Cess Input Credit</option>
+                                    <option>Deferred Service Tax Input Credit</option>
+                                    <option>Deferred SGST</option>
+                                    <option>Deferred VAT Input Credit</option>
+                                    <option>GST Refund</option>
+                                    <option>Inventory Asset</option>
+                                    <option>Krishi Kalyan Cess Refund</option>
+                                    <option>Prepaid Insurance</option>
+                                    <option>Service Tax Refund</option>
+                                    <option>TDS Receivable</option>
+                                    <option>Uncategorised Asset</option>
+                                    <option>Undeposited Funds</option>
+                                    <option>Accumulated Depreciation</option>
+                                    <option>Buildings and Improvements</option>
+                                    <option>Furniture and Equipment</option>
+                                    <option>Land</option>
+                                    <option>Leasehold Improvements</option>
+                                    <option>Vehicles</option>
+                                    <option>CGST Payable</option>
+                                    <option>CST Payable</option>
+                                    <option>CST Suspense</option>
+                                    <option>GST Payable</option>
+                                    <option>GST Suspense</option>
+                                    <option>IGST Payable</option>
+                                    <option>Input CGST</option>
+                                    <option>Input CGST Tax RCM</option>
+                                    <option>Input IGST</option>
+                                    <option>Input IGST Tax RCM</option>
+                                    <option>Input Krishi Kalyan Cess</option>
+                                    <option>Input Krishi Kalyan Cess RCM</option>
+                                    <option>Input Service Tax</option>
+                                    <option>Input Service Tax RCM</option>
+                                    <option>Input SGST</option>
+                                    <option>Input SGST Tax RCM</option>
+                                    <option>Input VAT 14%</option>
+                                    <option>Input VAT 4%</option>
+                                    <option>Input VAT 5%</option>
+                                    <option>Krishi Kalyan Cess Payable</option>
+                                    <option>Krishi Kalyan Cess Suspense</option>
+                                    <option>Output CGST</option>
+                                    <option>Output CGST Tax RCM</option>
+                                    <option>Output CST 2%</option>
+                                    <option>Output IGST</option>
+                                    <option>Output IGST Tax RCM</option>
+                                    <option>Output Krishi Kalyan Cess</option>
+                                    <option>Output Krishi Kalyan Cess RCM</option>
+                                    <option>Output Service Tax</option>
+                                    <option>Output Service Tax RCM</option>
+                                    <option>Output SGST</option>
+                                    <option>Output SGST Tax RCM</option>
+                                    <option>Output VAT 14%</option>
+                                    <option>Output VAT 4%</option>
+                                    <option>Output VAT 5%</option>
+                                    <option>Service Tax Payable</option>
+                                    <option>Service Tax Suspense</option>
+                                    <option>SGST Payable</option>
+                                    <option>Swachh Bharat Cess Payable</option>
+                                    <option>Swachh Bharat Cess Suspense</option>
+                                    <option>TDS Payable</option>
+                                    <option>VAT Payable</option>
+                                    <option>VAT Suspense</option>
+                                    <option>Opening Balance Equity</option>
+                                    <option>Retained Earnings</option>
+                                    <option>Billable Expense Income</option>
+                                    <option>Consulting Income</option>
+                                    <option>Product Sales</option>
+                                    <option>Sales</option>
+                                    <option>Sales - Hardware</option>
+                                    <option>Sales - Software</option>
+                                    <option>Sales - Support and Maintenance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Cost of sales</option>
+                                    <option>Equipment Rental for Jobs</option>
+                                    <option>Freight and Shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases - Hardware for Resale</option>
+                                    <option>Purchases - Software for Resale</option>
+                                    <option>Subcontracted Services</option>
+                                    <option>Tools and Craft Supplies</option>
+                                    <option>Finance Charge Income</option>
+                                    <option>Insurance Proceeds Received</option>
+                                    <option>Interest Income</option>
+                                    <option>Proceeds from Sale of Assets</option>
+                                    <option>Shipping and Delivery Income</option>
+                                    <option>Ask My Accountant</option>
+                                    <option>CGST write-off</option>
+                                    <option>GST write-off</option>
+                                    <option>IGST write-off</option>
+                                    <option>Miscellaneous Expense</option>
+                                    <option>Political Contributions</option>
+                                    <option>SGST write-off</option>
+                                    <option>Tax write-off</option>
+                                    <option>Vehicle Expenses</option>
+                                </select>
+
+
+                                </td>
+                                <td><input type="text" name="descrptin1" value="{{ che.descrptin1 }}"
+                                           placeholder='Enter description' class="form-control"/></td>
+                                <td><input type="number" name="catqty1" value="{{ che.catqty1 }}"
+                                           placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                           class="form-control qty" step="0" min="0"/></td>
+                                <td><input type="number" name="catprice1" value="{{ che.catprice1 }}"
+                                           placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                           min="0"/></td>
+                                <td><input type="number" name="cattotal1" value="{{ che.cattotal1 }}" placeholder='0.00'
+                                           class="form-control total" readonly/></td>
+                            </tr>
+                            <tr id='addr0'>
+                                <td>2</td>
+                                <td>
+{#                                    <input type="text" name="category2" value="{{ che.category2 }}"#}
+{#                                           placeholder='Enter Category' class="form-control"/>#}
+{#                                    #}
+                                     <select class="custom-select" name="category2"
+                                            style="background-color: #2f516f; color: white;">
+                                    <option>{{ che.category2 }}</option>
+                                    <option>Advertising/Promotional</option>
+                                    <option>Bank charges</option>
+                                    <option>Business Licenses and Permits</option>
+                                    <option>Charitable Contributions</option>
+                                    <option>Computer and Internet Expense</option>
+                                    <option>Continuing Education</option>
+                                    <option>Depreciation Expense</option>
+                                    <option>Dues and Subscriptions</option>
+                                    <option>Housekeeping Charges</option>
+                                    <option>Insurance Expense</option>
+                                    <option>Insurance Expense-General Liability Insurance</option>
+                                    <option>Insurance Expense-Health Insurance</option>
+                                    <option>Insurance Expense-Life and Disability Insurance</option>
+                                    <option>Insurance Expense-Professional Liability</option>
+                                    <option>Interest Expense</option>
+                                    <option>Meals and entertainment</option>
+                                    <option>Office Supplies</option>
+                                    <option>Postage and Delivery</option>
+                                    <option>Printing and Reproduction</option>
+                                    <option>Professional Fees</option>
+                                    <option>Purchases</option>
+                                    <option>Rent Expense</option>
+                                    <option>Repair and maintenance</option>
+                                    <option>Small Tools and Equipment</option>
+                                    <option>Swachh Bharat Cess Expense</option>
+                                    <option>Taxes - Property</option>
+                                    <option>Telephone Expense</option>
+                                    <option>Travel Expense</option>
+                                    <option>Uncategorised Expense</option>
+                                    <option>Utilities</option>
+                                    <option>Cash and cash equivalents</option>
+                                    <option>Accounts Receivable (Debtors)</option>
+                                    <option>Deferred CGST</option>
+                                    <option>Deferred GST Input Credit</option>
+                                    <option>Deferred IGST</option>
+                                    <option>Deferred Krishi Kalyan Cess Input Credit</option>
+                                    <option>Deferred Service Tax Input Credit</option>
+                                    <option>Deferred SGST</option>
+                                    <option>Deferred VAT Input Credit</option>
+                                    <option>GST Refund</option>
+                                    <option>Inventory Asset</option>
+                                    <option>Krishi Kalyan Cess Refund</option>
+                                    <option>Prepaid Insurance</option>
+                                    <option>Service Tax Refund</option>
+                                    <option>TDS Receivable</option>
+                                    <option>Uncategorised Asset</option>
+                                    <option>Undeposited Funds</option>
+                                    <option>Accumulated Depreciation</option>
+                                    <option>Buildings and Improvements</option>
+                                    <option>Furniture and Equipment</option>
+                                    <option>Land</option>
+                                    <option>Leasehold Improvements</option>
+                                    <option>Vehicles</option>
+                                    <option>CGST Payable</option>
+                                    <option>CST Payable</option>
+                                    <option>CST Suspense</option>
+                                    <option>GST Payable</option>
+                                    <option>GST Suspense</option>
+                                    <option>IGST Payable</option>
+                                    <option>Input CGST</option>
+                                    <option>Input CGST Tax RCM</option>
+                                    <option>Input IGST</option>
+                                    <option>Input IGST Tax RCM</option>
+                                    <option>Input Krishi Kalyan Cess</option>
+                                    <option>Input Krishi Kalyan Cess RCM</option>
+                                    <option>Input Service Tax</option>
+                                    <option>Input Service Tax RCM</option>
+                                    <option>Input SGST</option>
+                                    <option>Input SGST Tax RCM</option>
+                                    <option>Input VAT 14%</option>
+                                    <option>Input VAT 4%</option>
+                                    <option>Input VAT 5%</option>
+                                    <option>Krishi Kalyan Cess Payable</option>
+                                    <option>Krishi Kalyan Cess Suspense</option>
+                                    <option>Output CGST</option>
+                                    <option>Output CGST Tax RCM</option>
+                                    <option>Output CST 2%</option>
+                                    <option>Output IGST</option>
+                                    <option>Output IGST Tax RCM</option>
+                                    <option>Output Krishi Kalyan Cess</option>
+                                    <option>Output Krishi Kalyan Cess RCM</option>
+                                    <option>Output Service Tax</option>
+                                    <option>Output Service Tax RCM</option>
+                                    <option>Output SGST</option>
+                                    <option>Output SGST Tax RCM</option>
+                                    <option>Output VAT 14%</option>
+                                    <option>Output VAT 4%</option>
+                                    <option>Output VAT 5%</option>
+                                    <option>Service Tax Payable</option>
+                                    <option>Service Tax Suspense</option>
+                                    <option>SGST Payable</option>
+                                    <option>Swachh Bharat Cess Payable</option>
+                                    <option>Swachh Bharat Cess Suspense</option>
+                                    <option>TDS Payable</option>
+                                    <option>VAT Payable</option>
+                                    <option>VAT Suspense</option>
+                                    <option>Opening Balance Equity</option>
+                                    <option>Retained Earnings</option>
+                                    <option>Billable Expense Income</option>
+                                    <option>Consulting Income</option>
+                                    <option>Product Sales</option>
+                                    <option>Sales</option>
+                                    <option>Sales - Hardware</option>
+                                    <option>Sales - Software</option>
+                                    <option>Sales - Support and Maintenance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Cost of sales</option>
+                                    <option>Equipment Rental for Jobs</option>
+                                    <option>Freight and Shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases - Hardware for Resale</option>
+                                    <option>Purchases - Software for Resale</option>
+                                    <option>Subcontracted Services</option>
+                                    <option>Tools and Craft Supplies</option>
+                                    <option>Finance Charge Income</option>
+                                    <option>Insurance Proceeds Received</option>
+                                    <option>Interest Income</option>
+                                    <option>Proceeds from Sale of Assets</option>
+                                    <option>Shipping and Delivery Income</option>
+                                    <option>Ask My Accountant</option>
+                                    <option>CGST write-off</option>
+                                    <option>GST write-off</option>
+                                    <option>IGST write-off</option>
+                                    <option>Miscellaneous Expense</option>
+                                    <option>Political Contributions</option>
+                                    <option>SGST write-off</option>
+                                    <option>Tax write-off</option>
+                                    <option>Vehicle Expenses</option>
+                                </select>
+
+
+                                </td>
+                                <td><input type="text" name="descrptin2" value="{{ che.descrptin2 }}"
+                                           placeholder='Enter description' class="form-control"/></td>
+                                <td><input type="number" name="catqty2" value="{{ che.catqty2 }}"
+                                           placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                           class="form-control qty" step="0" min="0"/></td>
+                                <td><input type="number" name="catprice2" value="{{ che.catprice2 }}"
+                                           placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                           min="0"/></td>
+                                <td><input type="number" name="cattotal2" value="{{ che.cattotal2 }}" placeholder='0.00'
+                                           class="form-control total" readonly/></td>
+                            </tr>
+                            <tr id='addr0'>
+                                <td>3</td>
+                                <td>
+{#                                    <input type="text" name="category3" value="{{ che.category3 }}"#}
+{#                                           placeholder='Enter Category' class="form-control"/>#}
+
+                                    <select class="custom-select" name="category3"
+                                            style="background-color: #2f516f; color: white;">
+                                    <option>{{ che.category3 }}</option>
+                                    <option>Advertising/Promotional</option>
+                                    <option>Bank charges</option>
+                                    <option>Business Licenses and Permits</option>
+                                    <option>Charitable Contributions</option>
+                                    <option>Computer and Internet Expense</option>
+                                    <option>Continuing Education</option>
+                                    <option>Depreciation Expense</option>
+                                    <option>Dues and Subscriptions</option>
+                                    <option>Housekeeping Charges</option>
+                                    <option>Insurance Expense</option>
+                                    <option>Insurance Expense-General Liability Insurance</option>
+                                    <option>Insurance Expense-Health Insurance</option>
+                                    <option>Insurance Expense-Life and Disability Insurance</option>
+                                    <option>Insurance Expense-Professional Liability</option>
+                                    <option>Interest Expense</option>
+                                    <option>Meals and entertainment</option>
+                                    <option>Office Supplies</option>
+                                    <option>Postage and Delivery</option>
+                                    <option>Printing and Reproduction</option>
+                                    <option>Professional Fees</option>
+                                    <option>Purchases</option>
+                                    <option>Rent Expense</option>
+                                    <option>Repair and maintenance</option>
+                                    <option>Small Tools and Equipment</option>
+                                    <option>Swachh Bharat Cess Expense</option>
+                                    <option>Taxes - Property</option>
+                                    <option>Telephone Expense</option>
+                                    <option>Travel Expense</option>
+                                    <option>Uncategorised Expense</option>
+                                    <option>Utilities</option>
+                                    <option>Cash and cash equivalents</option>
+                                    <option>Accounts Receivable (Debtors)</option>
+                                    <option>Deferred CGST</option>
+                                    <option>Deferred GST Input Credit</option>
+                                    <option>Deferred IGST</option>
+                                    <option>Deferred Krishi Kalyan Cess Input Credit</option>
+                                    <option>Deferred Service Tax Input Credit</option>
+                                    <option>Deferred SGST</option>
+                                    <option>Deferred VAT Input Credit</option>
+                                    <option>GST Refund</option>
+                                    <option>Inventory Asset</option>
+                                    <option>Krishi Kalyan Cess Refund</option>
+                                    <option>Prepaid Insurance</option>
+                                    <option>Service Tax Refund</option>
+                                    <option>TDS Receivable</option>
+                                    <option>Uncategorised Asset</option>
+                                    <option>Undeposited Funds</option>
+                                    <option>Accumulated Depreciation</option>
+                                    <option>Buildings and Improvements</option>
+                                    <option>Furniture and Equipment</option>
+                                    <option>Land</option>
+                                    <option>Leasehold Improvements</option>
+                                    <option>Vehicles</option>
+                                    <option>CGST Payable</option>
+                                    <option>CST Payable</option>
+                                    <option>CST Suspense</option>
+                                    <option>GST Payable</option>
+                                    <option>GST Suspense</option>
+                                    <option>IGST Payable</option>
+                                    <option>Input CGST</option>
+                                    <option>Input CGST Tax RCM</option>
+                                    <option>Input IGST</option>
+                                    <option>Input IGST Tax RCM</option>
+                                    <option>Input Krishi Kalyan Cess</option>
+                                    <option>Input Krishi Kalyan Cess RCM</option>
+                                    <option>Input Service Tax</option>
+                                    <option>Input Service Tax RCM</option>
+                                    <option>Input SGST</option>
+                                    <option>Input SGST Tax RCM</option>
+                                    <option>Input VAT 14%</option>
+                                    <option>Input VAT 4%</option>
+                                    <option>Input VAT 5%</option>
+                                    <option>Krishi Kalyan Cess Payable</option>
+                                    <option>Krishi Kalyan Cess Suspense</option>
+                                    <option>Output CGST</option>
+                                    <option>Output CGST Tax RCM</option>
+                                    <option>Output CST 2%</option>
+                                    <option>Output IGST</option>
+                                    <option>Output IGST Tax RCM</option>
+                                    <option>Output Krishi Kalyan Cess</option>
+                                    <option>Output Krishi Kalyan Cess RCM</option>
+                                    <option>Output Service Tax</option>
+                                    <option>Output Service Tax RCM</option>
+                                    <option>Output SGST</option>
+                                    <option>Output SGST Tax RCM</option>
+                                    <option>Output VAT 14%</option>
+                                    <option>Output VAT 4%</option>
+                                    <option>Output VAT 5%</option>
+                                    <option>Service Tax Payable</option>
+                                    <option>Service Tax Suspense</option>
+                                    <option>SGST Payable</option>
+                                    <option>Swachh Bharat Cess Payable</option>
+                                    <option>Swachh Bharat Cess Suspense</option>
+                                    <option>TDS Payable</option>
+                                    <option>VAT Payable</option>
+                                    <option>VAT Suspense</option>
+                                    <option>Opening Balance Equity</option>
+                                    <option>Retained Earnings</option>
+                                    <option>Billable Expense Income</option>
+                                    <option>Consulting Income</option>
+                                    <option>Product Sales</option>
+                                    <option>Sales</option>
+                                    <option>Sales - Hardware</option>
+                                    <option>Sales - Software</option>
+                                    <option>Sales - Support and Maintenance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Cost of sales</option>
+                                    <option>Equipment Rental for Jobs</option>
+                                    <option>Freight and Shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases - Hardware for Resale</option>
+                                    <option>Purchases - Software for Resale</option>
+                                    <option>Subcontracted Services</option>
+                                    <option>Tools and Craft Supplies</option>
+                                    <option>Finance Charge Income</option>
+                                    <option>Insurance Proceeds Received</option>
+                                    <option>Interest Income</option>
+                                    <option>Proceeds from Sale of Assets</option>
+                                    <option>Shipping and Delivery Income</option>
+                                    <option>Ask My Accountant</option>
+                                    <option>CGST write-off</option>
+                                    <option>GST write-off</option>
+                                    <option>IGST write-off</option>
+                                    <option>Miscellaneous Expense</option>
+                                    <option>Political Contributions</option>
+                                    <option>SGST write-off</option>
+                                    <option>Tax write-off</option>
+                                    <option>Vehicle Expenses</option>
+                                </select>
+
+
+
+                                </td>
+                                <td><input type="text" name="descrptin3" value="{{ che.descrptin3 }}"
+                                           placeholder='Enter description' class="form-control"/></td>
+                                <td><input type="number" name="catqty3" value="{{ che.catqty3 }}"
+                                           placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                           class="form-control qty" step="0" min="0"/></td>
+                                <td><input type="number" name="catprice3" value="{{ che.catprice3 }}"
+                                           placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                           min="0"/></td>
+                                <td><input type="number" name="cattotal3" value="{{ che.cattotal3 }}" placeholder='0.00'
+                                           class="form-control total" readonly/></td>
+                            </tr>
+                            <tr id='addr0'>
+                                <td>4</td>
+                                <td>
+{#                                    <input type="text" name="category4" value="{{ che.category4 }}"#}
+{#                                           placeholder='Enter Category' class="form-control"/>#}
+
+                                    <select class="custom-select" name="category4"
+                                            style="background-color: #2f516f; color: white;">
+                                    <option>{{ che.category4 }}</option>
+                                    <option>Advertising/Promotional</option>
+                                    <option>Bank charges</option>
+                                    <option>Business Licenses and Permits</option>
+                                    <option>Charitable Contributions</option>
+                                    <option>Computer and Internet Expense</option>
+                                    <option>Continuing Education</option>
+                                    <option>Depreciation Expense</option>
+                                    <option>Dues and Subscriptions</option>
+                                    <option>Housekeeping Charges</option>
+                                    <option>Insurance Expense</option>
+                                    <option>Insurance Expense-General Liability Insurance</option>
+                                    <option>Insurance Expense-Health Insurance</option>
+                                    <option>Insurance Expense-Life and Disability Insurance</option>
+                                    <option>Insurance Expense-Professional Liability</option>
+                                    <option>Interest Expense</option>
+                                    <option>Meals and entertainment</option>
+                                    <option>Office Supplies</option>
+                                    <option>Postage and Delivery</option>
+                                    <option>Printing and Reproduction</option>
+                                    <option>Professional Fees</option>
+                                    <option>Purchases</option>
+                                    <option>Rent Expense</option>
+                                    <option>Repair and maintenance</option>
+                                    <option>Small Tools and Equipment</option>
+                                    <option>Swachh Bharat Cess Expense</option>
+                                    <option>Taxes - Property</option>
+                                    <option>Telephone Expense</option>
+                                    <option>Travel Expense</option>
+                                    <option>Uncategorised Expense</option>
+                                    <option>Utilities</option>
+                                    <option>Cash and cash equivalents</option>
+                                    <option>Accounts Receivable (Debtors)</option>
+                                    <option>Deferred CGST</option>
+                                    <option>Deferred GST Input Credit</option>
+                                    <option>Deferred IGST</option>
+                                    <option>Deferred Krishi Kalyan Cess Input Credit</option>
+                                    <option>Deferred Service Tax Input Credit</option>
+                                    <option>Deferred SGST</option>
+                                    <option>Deferred VAT Input Credit</option>
+                                    <option>GST Refund</option>
+                                    <option>Inventory Asset</option>
+                                    <option>Krishi Kalyan Cess Refund</option>
+                                    <option>Prepaid Insurance</option>
+                                    <option>Service Tax Refund</option>
+                                    <option>TDS Receivable</option>
+                                    <option>Uncategorised Asset</option>
+                                    <option>Undeposited Funds</option>
+                                    <option>Accumulated Depreciation</option>
+                                    <option>Buildings and Improvements</option>
+                                    <option>Furniture and Equipment</option>
+                                    <option>Land</option>
+                                    <option>Leasehold Improvements</option>
+                                    <option>Vehicles</option>
+                                    <option>CGST Payable</option>
+                                    <option>CST Payable</option>
+                                    <option>CST Suspense</option>
+                                    <option>GST Payable</option>
+                                    <option>GST Suspense</option>
+                                    <option>IGST Payable</option>
+                                    <option>Input CGST</option>
+                                    <option>Input CGST Tax RCM</option>
+                                    <option>Input IGST</option>
+                                    <option>Input IGST Tax RCM</option>
+                                    <option>Input Krishi Kalyan Cess</option>
+                                    <option>Input Krishi Kalyan Cess RCM</option>
+                                    <option>Input Service Tax</option>
+                                    <option>Input Service Tax RCM</option>
+                                    <option>Input SGST</option>
+                                    <option>Input SGST Tax RCM</option>
+                                    <option>Input VAT 14%</option>
+                                    <option>Input VAT 4%</option>
+                                    <option>Input VAT 5%</option>
+                                    <option>Krishi Kalyan Cess Payable</option>
+                                    <option>Krishi Kalyan Cess Suspense</option>
+                                    <option>Output CGST</option>
+                                    <option>Output CGST Tax RCM</option>
+                                    <option>Output CST 2%</option>
+                                    <option>Output IGST</option>
+                                    <option>Output IGST Tax RCM</option>
+                                    <option>Output Krishi Kalyan Cess</option>
+                                    <option>Output Krishi Kalyan Cess RCM</option>
+                                    <option>Output Service Tax</option>
+                                    <option>Output Service Tax RCM</option>
+                                    <option>Output SGST</option>
+                                    <option>Output SGST Tax RCM</option>
+                                    <option>Output VAT 14%</option>
+                                    <option>Output VAT 4%</option>
+                                    <option>Output VAT 5%</option>
+                                    <option>Service Tax Payable</option>
+                                    <option>Service Tax Suspense</option>
+                                    <option>SGST Payable</option>
+                                    <option>Swachh Bharat Cess Payable</option>
+                                    <option>Swachh Bharat Cess Suspense</option>
+                                    <option>TDS Payable</option>
+                                    <option>VAT Payable</option>
+                                    <option>VAT Suspense</option>
+                                    <option>Opening Balance Equity</option>
+                                    <option>Retained Earnings</option>
+                                    <option>Billable Expense Income</option>
+                                    <option>Consulting Income</option>
+                                    <option>Product Sales</option>
+                                    <option>Sales</option>
+                                    <option>Sales - Hardware</option>
+                                    <option>Sales - Software</option>
+                                    <option>Sales - Support and Maintenance</option>
+                                    <option>Sales Discounts</option>
+                                    <option>Sales of Product Income</option>
+                                    <option>Uncategorised Income</option>
+                                    <option>Cost of sales</option>
+                                    <option>Equipment Rental for Jobs</option>
+                                    <option>Freight and Shipping Costs</option>
+                                    <option>Merchant Account Fees</option>
+                                    <option>Purchases - Hardware for Resale</option>
+                                    <option>Purchases - Software for Resale</option>
+                                    <option>Subcontracted Services</option>
+                                    <option>Tools and Craft Supplies</option>
+                                    <option>Finance Charge Income</option>
+                                    <option>Insurance Proceeds Received</option>
+                                    <option>Interest Income</option>
+                                    <option>Proceeds from Sale of Assets</option>
+                                    <option>Shipping and Delivery Income</option>
+                                    <option>Ask My Accountant</option>
+                                    <option>CGST write-off</option>
+                                    <option>GST write-off</option>
+                                    <option>IGST write-off</option>
+                                    <option>Miscellaneous Expense</option>
+                                    <option>Political Contributions</option>
+                                    <option>SGST write-off</option>
+                                    <option>Tax write-off</option>
+                                    <option>Vehicle Expenses</option>
+                                </select>
+
+
+
+                                </td>
+                                <td><input type="text" name="descrptin4" value="{{ che.descrptin4 }}"
+                                           placeholder='Enter description' class="form-control"/></td>
+                                <td><input type="number" name="catqty4" value="{{ che.catqty4 }}"
+                                           placeholder='Enter Qty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                           class="form-control qty" step="0" min="0"/></td>
+                                <td><input type="number" name="catprice4" value="{{ che.catprice4 }}"
+                                           placeholder='Enter Unit Price' class="form-control price" step="0.00"
+                                           min="0"/></td>
+                                <td><input type="number" name="cattotal4" value="{{ che.cattotal4 }}" placeholder='0.00'
+                                           class="form-control total" readonly/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    &nbsp;<hr>
+                    &nbsp;
+                    <div class="row mt-4">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="tab_logic">
+                                        <thead>
+                                        <tr>
+                                           <th class="text-center">#</th>
+                                            <th class="text-center">PRODUCT / SERVICE</th>
+                                            <th class="text-center">HSN</th>
+                                            <th class="text-center">DESCRIPTION</th>
+                                            <th class="text-center">QTY</th>
+                                            <th class="text-center">PRICE</th>
+                                            <th class="text-center">TOTAL</th>
+                                            <th class="text-center">TAX (%)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                       <tr id='addr0'>
+                                            <td>1</td>
+                                            <td class="d-flex">
+                                                <select name='product' id="product" class="form-control"
+                                                        style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.product }}" selected>{{ che.product }}</option>
+                                                    {% for proinv in inv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.inventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in noninv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.noninventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in bun %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.bundleid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                            </td>
+                                            <td><input type="text" name='hsn' id="hsn1" value="{{ che.hsn }}" placeholder='Enter HSN Code'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="text" value="{{ che.description }}" name='description' id="description"
+                                                       placeholder='Description'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/>
+
+                                            </td>
+                                            <td><input type="number" name='qty' value="{{ che.qty }}"
+                                                       placeholder='Enter Qty' id="qty1"
+                                                       class="form-control qty" step="0" min="0"
+                                                       style="background-color: #2f516f; color: white;"/>
+                                              <span id="qtyspan" class="text-muted"></span>
+
+                                            </td>
+                                            <td><input type="text" name='price' id="unit1" value="{{ che.price }}"
+                                                       placeholder='Enter Unit Price'
+                                                       class="form-control price" step="0.00" min="0"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="number" name='total' value="{{ che.total }}" id="total1" placeholder='0.00'
+                                                       class="form-control total" readonly
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td>
+                                                <select name="tax" id="tax1" class="form-control tax" style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.tax }}" selected>{{ che.tax }}</option>
+                                                    <option value="28">28.0% GST(28%)</option>
+                                                    <option value="18">18.0% GST(18%)</option>
+                                                    <option value="12">12.0% GST(12%)</option>
+                                                    <option value="6">06.0% GST(06%)</option>
+                                                    <option value="5">05.0% GST(05%)</option>
+                                                    <option value="3">03.0% GST(03%)</option>
+                                                    <option value=".25">0.25% GST(0.25%)</option>
+                                                    <option value="0">0.0% GST(0%)</option>
+                                                    <option value="0">Exempt GST(0%)</option>
+                                                    <option value="0">Out of Scope(0%)</option>
+                                                </select>
+                                            </td>
+                                            <td style="display:none;"><input type="text" name='taxamount1' id="taxamount1"
+                                                       class="form-control taxamount"
+                                                       style="background-color: #2f516f; color: white;"/>
+                                            </td>
+                                        </tr>
+                                        <tr id='addr0'>
+                                            <td>2</td>
+                                            <td class="d-flex">
+                                                <select name="product2" id="product2" class="form-control"
+                                                        style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.product2 }}" selected>{{ che.product2 }}</option>
+                                                    {% for proinv in inv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.inventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in noninv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.noninventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in bun %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.bundleid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                            </td>
+                                            <td><input type="text" name="hsn2" value="{{ che.hsn2 }}" id="hsn2" placeholder='Enter HSN Code'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="text" name='description2' value="{{ che.description2 }}" id="description2"
+                                                       placeholder='Description'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="number" name="qty2" value="{{ che.qty2 }}"
+                                                       placeholder='Enter Qty' id="qty2"
+                                                       class="form-control qty" step="0" min="0"
+                                                       style="background-color: #2f516f; color: white;"/>
+                                                <span id="qtyspan1" class="text-muted"></span>
+                                            </td>
+                                            <td><input type="text" name="price2" id="unit2" value="{{ che.price2 }}"
+                                                       placeholder='Enter Unit Price'
+                                                       class="form-control price" step="0.00" min="0"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="number" name="total2" id="total2" value="{{ che.total2 }}" placeholder='0.00'
+                                                       class="form-control total" readonly
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td>
+                                                <select name="tax2" id="tax2" class="form-control tax" style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.tax2 }}" selected>{{ che.tax2 }}</option>
+                                                    <option value="28">28.0% GST(28%)</option>
+                                                    <option value="18">18.0% GST(18%)</option>
+                                                    <option value="12">12.0% GST(12%)</option>
+                                                    <option value="6">06.0% GST(06%)</option>
+                                                    <option value="5">05.0% GST(05%)</option>
+                                                    <option value="3">03.0% GST(03%)</option>
+                                                    <option value=".25">0.25% GST(0.25%)</option>
+                                                    <option value="0">0.0% GST(0%)</option>
+                                                    <option value="0">Exempt GST(0%)</option>
+                                                    <option value="0">Out of Scope(0%)</option>
+                                                </select>
+                                            </td>
+                                            <td style="display:none;"><input type="text" name='taxamount2' id="taxamount2"
+                                                       class="form-control taxamount"
+                                                       style="background-color: #2f516f; color: white;"/>
+                                            </td>
+                                        </tr>
+                                        <tr id='addr0'>
+                                            <td>3</td>
+                                            <td class="d-flex">
+                                                <select name="product3" id="product3" class="form-control"
+                                                        style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.product3 }}" selected>{{ che.product3 }}</option>
+                                                    {% for proinv in inv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.inventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in noninv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.noninventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in bun %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.bundleid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                            </td>
+                                            <td><input type="text" name="hsn3" value="{{ che.hsn3 }}" id="hsn3" placeholder='Enter HSN Code'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="text" name='description3' value="{{ che.description3 }}" id="description3"
+                                                       placeholder='Description'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="number" name="qty3" id="qty3" value="{{ che.qty3 }}"
+                                                       placeholder='Enter Qty'
+                                                       class="form-control qty" step="0" min="0"
+                                                       style="background-color: #2f516f; color: white;"/>
+                                                <span id="qtyspan2" class="text-muted"></span>
+                                            </td>
+                                            <td><input type="text" name="price3" id="unit3" value="{{ che.price3 }}"
+                                                       placeholder='Enter Unit Price'
+                                                       class="form-control price" step="0.00" min="0"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="number" name="total3" value="{{ che.total3 }}" id="total3" placeholder='0.00'
+                                                       class="form-control total" readonly
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td>
+                                                <select name="tax3" id="tax3" class="form-control tax" style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.tax3 }}" selected>{{ che.tax3 }}</option>
+                                                    <option value="28">28.0% GST(28%)</option>
+                                                    <option value="18">18.0% GST(18%)</option>
+                                                    <option value="12">12.0% GST(12%)</option>
+                                                    <option value="6">06.0% GST(06%)</option>
+                                                    <option value="5">05.0% GST(05%)</option>
+                                                    <option value="3">03.0% GST(03%)</option>
+                                                    <option value=".25">0.25% GST(0.25%)</option>
+                                                    <option value="0">0.0% GST(0%)</option>
+                                                    <option value="0">Exempt GST(0%)</option>
+                                                    <option value="0">Out of Scope(0%)</option>
+                                                </select>
+                                            </td>
+                                            <td style="display:none;"><input type="text" name='taxamount3' id="taxamount3"
+                                                       class="form-control taxamount"
+                                                       style="background-color: #2f516f; color: white; display: none;"/>
+                                            </td>
+                                        </tr>
+                                        <tr id='addr0'>
+                                            <td>4</td>
+                                            <td class="d-flex">
+                                                <select name="product4" id="product4" class="form-control"
+                                                        style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.product4 }}" selected>{{ che.product4 }}</option>
+                                                    {% for proinv in inv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.inventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in noninv %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.noninventoryid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in ser %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.serviceid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for proinv in bun %}
+                                                        {% if proinv.cid_id == cmp1.cid %}
+                                                            <option text="{{ proinv.bundleid }}"
+                                                                    value="{{ proinv.name }}">{{ proinv.name }} </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                                {#                                                <button type="button" class="btn btn-outline-secondary ml-1">+</button>#}
+                                            </td>
+                                            <td><input type="text" name="hsn4" value="{{ che.hsn4 }}" id="hsn4" placeholder='Enter HSN Code'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="text" name='description4' id="description4" value="{{ che.description4 }}"
+                                                       placeholder='Description'
+                                                       class="form-control"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="number" name="qty4" value="{{ che.qty4 }}"
+                                                       placeholder='Enter Qty'
+                                                       class="form-control qty" id="qty4" step="0" min="0"
+                                                       style="background-color: #2f516f; color: white;"/>
+                                                <span id="qtyspan3" class="text-muted"></span>
+                                            </td>
+                                            <td><input type="text" name="price4" id="unit4" value="{{ che.price4 }}"
+                                                       placeholder='Enter Unit Price'
+                                                       class="form-control price" step="0.00" min="0"
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td><input type="number" name="total4" value="{{ che.total4 }}" id="total4" placeholder='0.00'
+                                                       class="form-control total" readonly
+                                                       style="background-color: #2f516f; color: white;"/></td>
+                                            <td>
+                                                <select name="tax4" id="tax4" class="form-control tax" style="background-color: #2f516f; color: white;">
+                                                    <option value="{{ che.tax4 }}" selected>{{ che.tax4 }}</option>
+                                                    <option value="28">28.0% GST(28%)</option>
+                                                    <option value="18">18.0% GST(18%)</option>
+                                                    <option value="12">12.0% GST(12%)</option>
+                                                    <option value="6">06.0% GST(06%)</option>
+                                                    <option value="5">05.0% GST(05%)</option>
+                                                    <option value="3">03.0% GST(03%)</option>
+                                                    <option value=".25">0.25% GST(0.25%)</option>
+                                                    <option value="0">0.0% GST(0%)</option>
+                                                    <option value="0">Exempt GST(0%)</option>
+                                                    <option value="0">Out of Scope(0%)</option>
+                                                </select>
+                                            </td>
+                                            <td style="display:none;"><input type="text" name='taxamount4' id="taxamount4"
+                                                       class="form-control taxamount"
+                                                       style="background-color: #2f516f; color: white;"/>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row" style="margin-left: 60%">
+                                <div class="col">
+                                    <table class="table table-responsive" id="tab_logic_total" border="0">
+                                        <tbody>
+                                         <tr>
+                                            <th class="text-center">Sub Total</th>
+                                            <td class="text-center"><input type="number" name='subtotal'
+                                                                           value="{{ che.subtotal }}"
+                                                                           placeholder='0.00' class="form-control"
+                                                                           id="sub_total" readonly/></td>
+                                        </tr>
+{#                                        <tr>#}
+{#                                            <th class="text-center">Tax</th>#}
+{#                                            <td class="text-center">#}
+{#                                                <div class="input-group mb-2 mb-sm-0">#}
+{#                                                    <input type="number" name="tax" value="{{ bills.tax }}"#}
+{#                                                           class="form-control" id="tax" placeholder="0">#}
+{#                                                    <div class="input-group-addon" style="font-size: 20px;">&nbsp;&nbsp;%</div>#}
+{#                                                </div>#}
+{#                                            </td>#}
+{#                                        </tr>#}
+                                        <tr>
+                                            <th class="text-center">Tax Amount</th>
+                                            <td class="text-center"><input type="number" name='taxamount'
+                                                                           value="{{ che.taxamount }}" id="tax_amount"
+                                                                           placeholder='0.00' class="form-control"
+                                                                           readonly/></td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center">Grand Total</th>
+                                            <td class="text-center"><input type="number" name='grandtotal'
+                                                                           value="{{ che.grandtotal }}"
+                                                                           id="total_amount" placeholder='0.00'
+                                                                           class="form-control" readonly/></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-9"></div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-outline-info w-100 text-light rounded-pill" type="submit">Submit form</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+     <script>
+         $('#product').on('change', function () {
+            select = $('#product').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn1').value = json_data[key]['hsn'];
+                    document.getElementById('description').value = json_data[key]['description'];
+                    document.getElementById('qty1').value = 0;
+
+                    if(json_data[key]['initialqty'] == ''){
+                        document.getElementById('qtyspan').innerHTML = '';
+                    }else{
+                        document.getElementById('qtyspan').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit1').value = json_data[key]['price'];
+                }
+            }).fail(function () {
+                alert("failed");
+            })
+        });
+
+        $('#product2').on('change', function () {
+            select = $('#product2').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn2').value = json_data[key]['hsn2'];
+                    document.getElementById('description2').value = json_data[key]['description2'];
+                    document.getElementById('qty2').value = 0;
+                    if(json_data[key]['initialqty'] == ''){
+                        document.getElementById('qtyspan1').innerHTML = '';
+                    }else{
+                        document.getElementById('qtyspan1').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit2').value = json_data[key]['price2'];
+                }
+            }).fail(function () {
+                alert("failed");
+            })
+        });
+        $('#product3').on('change', function () {
+            select = $('#product3').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn3').value = json_data[key]['hsn3'];
+                    document.getElementById('description3').value = json_data[key]['description3'];
+                    document.getElementById('qty3').value = 0;
+                    if(json_data[key]['initialqty'] == ''){
+                        document.getElementById('qtyspan2').innerHTML = '';
+                    }else{
+                        document.getElementById('qtyspan2').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit3').value = json_data[key]['price3'];
+                }
+            }).fail(function () {
+                alert("failed");
+            })
+        });
+        $('#product4').on('change', function () {
+            select = $('#product4').val();
+            $.ajax({
+                type: "GET",
+                url: "{% url 'getitems' %}",
+                data: {id: select}
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('hsn4').value = json_data[key]['hsn4'];
+                    document.getElementById('description4').value = json_data[key]['description4'];
+                    document.getElementById('qty4').value = 0;
+                    if(json_data[key]['initialqty'] == ''){
+                        document.getElementById('qtyspan3').innerHTML = '';
+                    }else{
+                        document.getElementById('qtyspan3').innerHTML = 'Available Quantity : ' + json_data[key]['initialqty'];
+                    }
+                    document.getElementById('unit4').value = json_data[key]['price4'];
+                }
+            }).fail(function () {
+                alert("failed");
+            })
+        });
+    </script>
+     <script>
+        function showinnum(divId, element) {
+            if (element.value) {
+                document.getElementById(divId).innerHTML = "CHEQUE NO. " + element.value;
+            } else {
+                document.getElementById(divId).innerHTML = "CHEQUE NO. ";
+            }
+        }
+    </script>
+{% endblock %}

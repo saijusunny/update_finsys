@@ -1,0 +1,636 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">RECIEVE PAYMENT</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <form action="paymentcreate" method="post" class="post-form">
+            {% csrf_token %}
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div id="invoice">
+
+                        <header>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <center><h2>Fin sYs</h2></center>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="row mt-5">
+                            <div class="col-md-4">
+                                <label class="scol-form-label">Customer</label>
+                                <div class="d-flex">
+                                    <select name="customer" id="select" class="form-control" style="width: 95%;">
+                                        <option value="NIL" disabled selected>Select Customer</option>
+                                        {% for cust in customers %}
+                                            {% if cust.cid_id == cmp1.cid %}
+                                                <option text="{{ cust.customerid }}"
+                                                        value="{{ cust.firstname }} {{ cust.lastname }}">{{ cust.firstname }} {{ cust.lastname }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <a href="{% url 'goaddcustpayment' %}">
+                                        <button type="button" class="btn btn-outline-secondary ml-1">+</button>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="scol-form-label">Email</label><br>
+                                <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="scol-form-label">Find by invoice number</label><br>
+                                <input type="fbin" name="findinvoice" id="fbin" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="col-form-label">Payment Date</label>
+                                <input type="text" name="paymdate" value="{{ tod }}" class="form-control">
+                            </div>
+                            <div class="col-md-8"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="col-form-label">Payment Method</label>
+                                <select name="pmethod" id="paymeth" onclick="showinp('newmethod', this)"
+                                        class="form-control">
+                                    <option id="newmth"></option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Credit Card">Credit Card</option>
+                                    <option value="Add New">Add New</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Deposit to</label>
+                                <div class="d-flex">
+                                    <select name="depto" id="" class="form-control" style="width: 95%;">
+                                        {% for acc in accoun %}
+                                            <option value="{{ acc.name }}">{{ acc.name }}</option>
+                                        {% endfor %}
+                                        <option value="Deferred CGST">Deferred CGST</option>
+                                        <option value="Deferred GST Input Credit">Deferred GST Input Credit</option>
+                                        <option value="Deferred IGST">Deferred IGST</option>
+                                        <option value="Deferred Krishi Kalyan Cess Input Credit">Deferred Krishi
+                                            Kalyan
+                                            Cess Input Credit
+                                        </option>
+                                        <option value="Deferred SGST">Deferred SGST</option>
+                                        <option value="Deferred Service Tax Input Credit">Deferred Service Tax Input
+                                            Credit
+                                        </option>
+                                        <option value="Deferred VAT Input Credit">Deferred VAT Input Credit</option>
+                                        <option value="GST Refund">GST Refund</option>
+                                        <option value="Inventory Asset">Inventory Asset</option>
+                                        <option value="Krishi Kalyan Cess Refund">Krishi Kalyan Cess Refund</option>
+                                        <option value="Prepaid Insurance">Prepaid Insurance</option>
+                                        <option value="Service Tax Refund">Service Tax Refund</option>
+                                        <option value="TDS Receivable">TDS Receivable</option>
+                                        <option value="Uncategorised Asset">Uncategorised Asset</option>
+                                        <option value="Undeposited Fund">Undeposited Fund</option>
+                                    </select>
+                                    <a href="{% url 'paymentcoacreate' %}"><button type="button" class="btn btn-outline-secondary ml-1">+</button></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <input type="text" id="newmethod" onchange="addtemopt(this)" class="form-control"
+                                       style="display: none;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Amount Recieved</label>
+                                <input type="number" onchange="showinnum('amre', this)" id="amtrcvd"
+                                       class="form-control"
+                                       name="amtreceived">
+                            </div>
+                        </div>
+                        <div class="row mt-4 mb-4">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <h5 class="text-grey">AMOUNT RECIEVED</h5>
+                                <h5 class="text-light" id="amre">0.00</h5>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-12 table-responsive-md">
+                                <table class="table table-bordered table-hover" id="tab_logic">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center"> #</th>
+                                        <th class="text-center"> DESCRIPTION</th>
+                                        <th class="text-center"> DUE DATE</th>
+                                        <th class="text-center"> ORIGINAL AMOUNT</th>
+                                        <th class="text-center"> OPEN BALANCE</th>
+                                        <th class="text-center"> PAYMENT</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody id='invoicedata'>
+
+                                    <tr id='addr1' style="display: none;">
+                                        <td>1</td>
+                                        <td><input type="text" name="descrip" id="descrip"
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate' id="duedate" placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt'
+                                                   placeholder='Enter original amount' id="orgamt"
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal' id="openbal"
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment' onchange="addagain()" id="payment"
+                                                   placeholder='0.00'
+                                                   class="form-control total" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr2' style="display: none;">
+                                        <td>2</td>
+                                        <td><input type="text" name='descrip1' id='descrip1'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate1' id='duedate1' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt1' id='orgamt1'
+                                                   placeholder='Enter original amount'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal1' id='openbal1'
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment1' id="payment1" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr3' style="display: none;">
+                                        <td>3</td>
+                                        <td><input type="text" name='descrip2' id='descrip2'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate2' id='duedate2' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt2' id='orgamt2'
+                                                   placeholder='Enter original amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal2' id='openbal2'
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment2' id="payment2" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr4' style="display: none;">
+                                        <td>4</td>
+                                        <td><input type="text" name='descrip3' id='descrip3'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate3' id='duedate3' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt3' id='orgamt3'
+                                                   placeholder='Enter original amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal3' id='openbal3'
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment3' id="payment3" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr5' style="display: none;">
+                                        <td>5</td>
+                                        <td><input type="text" name="descrip4" id="descrip4"
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate4' id="duedate4" placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt4'
+                                                   placeholder='Enter original amount' id="orgamt4"
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal4' id="openbal4"
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment4' id="payment4" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr6' style="display: none;">
+                                        <td>6</td>
+                                        <td><input type="text" name='descrip5' id='descrip5'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate5' id='duedate5' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt5' id='orgamt5'
+                                                   placeholder='Enter original amount'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal5' id='openbal5'
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment5' id="payment5" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr7' style="display: none;">
+                                        <td>7</td>
+                                        <td><input type="text" name='descrip6' id='descrip6'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate6' id='duedate6' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt6' id='orgamt6'
+                                                   placeholder='Enter original amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal6' id='openbal6'
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment6' id="payment6" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr8' style="display: none;">
+                                        <td>8</td>
+                                        <td><input type="text" name='descrip7' id='descrip7'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate7' id='duedate7' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt7' id='orgamt7'
+                                                   placeholder='Enter original amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal7' id='openbal7'
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment7' id="payment7" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr9' style="display: none;">
+                                        <td>9</td>
+                                        <td><input type="text" name="descrip8" id="descrip8"
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate8' id="duedate8" placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt8'
+                                                   placeholder='Enter original amount' id="orgamt8"
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal8' id="openbal8"
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment8' id="payment8" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    <tr id='addr10' style="display: none;">
+                                        <td>10</td>
+                                        <td><input type="text" name='descrip9' id='descrip9'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="text" name='duedate9' id='duedate9' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="text" name='orgamt9' id='orgamt9'
+                                                   placeholder='Enter original amount'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" name='openbal9' id='openbal9'
+                                                   placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" name='payment9' id="payment9" placeholder='0.00'
+                                                   class="form-control total" onchange="addagain()" value="0"/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row clearfix mt-4">
+                            <div class="col-md-7"></div>
+                            <div class="col-md-5 table-responsive-md">
+                                <table class="table table-bordered table-hover" id="tab_logic_total">
+                                    <tbody>
+                                    <tr>
+                                        <th class="text-center">Amount to Apply</th>
+                                        <td class="text-center"><input type="number" name='amtapply' id="amtoapply"
+                                                                       placeholder='0.00'
+                                                                       class="form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Amount to Credit</th>
+                                        <td class="text-center"><input type="number" name='amtcredit' id="amtcredit"
+                                                                       placeholder='0.00'
+                                                                       class="form-control"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-10"></div>
+                            <div class="col-md-2">
+                                <button type="submit"
+                                        onclick="alert('Are you sure you wants to save the payment?\nNo corrections after submission')"
+                                        class="btn btn-outline-info rounded-pill w-100 text-grey pull-left">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-10">
+                                <div class="notices">
+                                    <div class="text-muted">NOTICE:</div>
+                                    <div class="notice text-muted">
+                                        Fin sYs Terms and Conditions Apply
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+        function showinp(divId, element) {
+            if (element.value == 'Add New') {
+                document.getElementById(divId).style.display = 'block';
+            } else {
+                document.getElementById(divId).style.display = 'none';
+            }
+        }
+
+        function showinnum(divId, element) {
+            if (element.value) {
+                var opnbal = parseFloat(document.getElementById('openbal').value)
+                document.getElementById(divId).innerHTML = element.value;
+                if (opnbal >= parseFloat(element.value)) {
+                    document.getElementById('payment').value = parseFloat(element.value)
+                } else if (openbal == '0.0') {
+                    document.getElementById('payment').value = '0'
+                } else {
+                    document.getElementById('payment').value = opnbal
+                }
+                var bal = parseFloat(element.value) - parseFloat(document.getElementById('payment').value);
+                var opnbal1 = parseFloat(document.getElementById('openbal1').value)
+                if (opnbal1 >= bal) {
+                    document.getElementById('payment1').value = bal
+                } else if (openbal1 == '0.0') {
+                    document.getElementById('payment1').value = '0'
+                } else {
+                    document.getElementById('payment1').value = opnbal1
+                }
+                var payment = parseFloat(document.getElementById('payment').value)
+                var payment1 = parseFloat(document.getElementById('payment1').value);
+                var bal1 = parseFloat(element.value) - (payment + payment1);
+                var opnbal2 = parseFloat(document.getElementById('openbal2').value)
+                if (opnbal2 >= bal1) {
+                    document.getElementById('payment2').value = bal1
+                } else {
+                    document.getElementById('payment2').value = opnbal2
+                }
+                var payment2 = parseFloat(document.getElementById('payment2').value)
+                var bal2 = parseFloat(element.value) - (payment + payment1 + payment2)
+                var opnbal3 = parseFloat(document.getElementById('openbal3').value)
+                if (opnbal3 >= bal2) {
+                    document.getElementById('payment3').value = bal2
+                } else {
+                    document.getElementById('payment3').value = opnbal3
+                }
+                var payment3 = parseFloat(document.getElementById('payment3').value)
+                var bal3 = parseFloat(element.value) - (payment + payment1 + payment2 + payment3)
+                var opnbal4 = parseFloat(document.getElementById('openbal4').value)
+                if (opnbal4 >= bal3) {
+                    document.getElementById('payment4').value = bal3
+                } else {
+                    document.getElementById('payment4').value = opnbal4
+                }
+                var payment4 = parseFloat(document.getElementById('payment4').value)
+                var bal4 = parseFloat(element.value) - (payment + payment1 + payment2 + payment3 + payment4)
+                var opnbal5 = parseFloat(document.getElementById('openbal5').value)
+                if (opnbal5 >= bal4) {
+                    document.getElementById('payment5').value = bal4
+                } else {
+                    document.getElementById('payment5').value = opnbal5
+                }
+                var payment5 = parseFloat(document.getElementById('payment5').value)
+                var bal5 = parseFloat(element.value) - (payment + payment1 + payment2 + payment3 + payment4 + payment5)
+                var opnbal6 = parseFloat(document.getElementById('openbal6').value)
+                if (opnbal6 >= bal5) {
+                    document.getElementById('payment6').value = bal5
+                } else {
+                    document.getElementById('payment6').value = opnbal6
+                }
+                var payment6 = parseFloat(document.getElementById('payment6').value)
+                var bal6 = parseFloat(element.value) - (payment + payment1 + payment2 + payment3 + payment4 + payment5 + payment6)
+                var opnbal7 = parseFloat(document.getElementById('openbal7').value)
+                if (opnbal7 >= bal6) {
+                    document.getElementById('payment7').value = bal6
+                } else {
+                    document.getElementById('payment7').value = opnbal7
+                }
+                var payment7 = parseFloat(document.getElementById('payment7').value)
+                var bal7 = parseFloat(element.value) - (payment + payment1 + payment2 + payment3 + payment4 + payment5 + payment6 + payment7)
+                var opnbal8 = parseFloat(document.getElementById('openbal8').value)
+                if (opnbal8 >= bal7) {
+                    document.getElementById('payment8').value = bal7
+                } else {
+                    document.getElementById('payment8').value = opnbal8
+                }
+                var payment8 = parseFloat(document.getElementById('payment8').value)
+                var bal8 = parseFloat(element.value) - (payment + payment1 + payment2 + payment3 + payment4 + payment5 + payment6 + payment7 + payment8)
+                var opnbal9 = parseFloat(document.getElementById('openbal9').value)
+                if (opnbal9 >= bal8) {
+                    document.getElementById('payment9').value = bal8
+                } else {
+                    document.getElementById('payment9').value = opnbal9
+                }
+                var payment9 = parseFloat(document.getElementById('payment9').value)
+                var paymentlistunsorted = [payment, payment1, payment2, payment3, payment4, payment5, payment6, payment7, payment8, payment9]
+                var paymentlist = []
+                for (i in paymentlistunsorted) {
+                    if (isNaN(paymentlistunsorted[i]) == false) {
+                        paymentlist.push(paymentlistunsorted[i])
+                    }
+                }
+                
+                var sumpaym = 0
+                for (i in paymentlist) {
+                    sumpaym += paymentlist[i]
+                }
+                amtcred = parseFloat(element.value) - sumpaym
+                document.getElementById('amtoapply').value = sumpaym;
+                document.getElementById('amtcredit').value = amtcred;
+            } else {
+                document.getElementById(divId).innerHTML = "0.00";
+            }
+        }
+
+        function addtemopt(element) {
+            var opt = document.getElementById('newmth');
+            if (element.value) {
+                opt.value = element.value;
+                opt.innerHTML = element.value;
+            } else {
+                pass
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#select').on('change', function () {
+                console.log('hai');
+                select = $('#select').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getdata1' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    console.log(response, 'hai')
+                    var json_data = JSON.parse(response);
+                    var lis = []
+                    var credlis = []
+                    for (key in json_data) {
+                        lis.push(json_data[key]['invoiceno'], json_data[key]['invoicedate'], json_data[key]['duedate'], json_data[key]['grandtotal'], json_data[key]['baldue'])
+                    }
+                    document.getElementById('email').value = json_data[key]['email']
+                    document.getElementById('descrip').value = lis[0] + ' ' + lis[1];
+                    document.getElementById('duedate').value = lis[2]
+                    document.getElementById('orgamt').value = lis[3]
+                    document.getElementById('openbal').value = lis[4]
+                    document.getElementById('descrip1').value = lis[5] + ' ' + lis[6]
+                    document.getElementById('duedate1').value = lis[7]
+                    document.getElementById('orgamt1').value = lis[8]
+                    document.getElementById('openbal1').value = lis[9]
+                    document.getElementById('descrip2').value = lis[10] + ' ' + lis[11]
+                    document.getElementById('duedate2').value = lis[12]
+                    document.getElementById('orgamt2').value = lis[13]
+                    document.getElementById('openbal2').value = lis[14]
+                    document.getElementById('descrip3').value = lis[15] + ' ' + lis[16]
+                    document.getElementById('duedate3').value = lis[17]
+                    document.getElementById('orgamt3').value = lis[18]
+                    document.getElementById('openbal3').value = lis[19]
+                    document.getElementById('descrip4').value = lis[20] + ' ' + lis[21];
+                    document.getElementById('duedate4').value = lis[22]
+                    document.getElementById('orgamt4').value = lis[23]
+                    document.getElementById('openbal4').value = lis[24]
+                    document.getElementById('descrip5').value = lis[25] + ' ' + lis[26]
+                    document.getElementById('duedate5').value = lis[27]
+                    document.getElementById('orgamt5').value = lis[28]
+                    document.getElementById('openbal5').value = lis[29]
+                    document.getElementById('descrip6').value = lis[30] + ' ' + lis[31]
+                    document.getElementById('duedate6').value = lis[32]
+                    document.getElementById('orgamt6').value = lis[33]
+                    document.getElementById('openbal6').value = lis[34]
+                    document.getElementById('descrip7').value = lis[35] + ' ' + lis[36]
+                    document.getElementById('duedate7').value = lis[37]
+                    document.getElementById('orgamt7').value = lis[38]
+                    document.getElementById('openbal7').value = lis[39]
+                    document.getElementById('descrip8').value = lis[40] + ' ' + lis[41];
+                    document.getElementById('duedate8').value = lis[42]
+                    document.getElementById('orgamt8').value = lis[43]
+                    document.getElementById('openbal8').value = lis[44]
+                    document.getElementById('descrip9').value = lis[45] + ' ' + lis[46]
+                    document.getElementById('duedate9').value = lis[47]
+                    document.getElementById('orgamt9').value = lis[48]
+                    document.getElementById('openbal9').value = lis[49]
+                    if (lis[0] == undefined) {
+                        document.getElementById('addr1').style.display = 'none';
+                    } else {
+                        document.getElementById('addr1').style.display = 'table-row';
+                    }
+                    if (lis[5] == undefined) {
+                        document.getElementById('addr2').style.display = 'none';
+                    } else {
+                        document.getElementById('addr2').style.display = 'table-row';
+                    }
+                    if (lis[10] == undefined) {
+                        document.getElementById('addr3').style.display = 'none';
+                    } else {
+                        document.getElementById('addr3').style.display = 'table-row';
+                    }
+                    if (lis[15] == undefined) {
+                        document.getElementById('addr4').style.display = 'none';
+                    } else {
+                        document.getElementById('addr4').style.display = 'table-row';
+                    }
+                    if (lis[20] == undefined) {
+                        document.getElementById('addr5').style.display = 'none';
+                    } else {
+                        document.getElementById('addr5').style.display = 'table-row';
+                    }
+                    if (lis[25] == undefined) {
+                        document.getElementById('addr6').style.display = 'none';
+                    } else {
+                        document.getElementById('addr6').style.display = 'table-row';
+                    }
+                    if (lis[30] == undefined) {
+                        document.getElementById('addr7').style.display = 'none';
+                    } else {
+                        document.getElementById('addr7').style.display = 'table-row';
+                    }
+                    if (lis[35] == undefined) {
+                        document.getElementById('addr8').style.display = 'none';
+                    } else {
+                        document.getElementById('addr8').style.display = 'table-row';
+                    }
+                    if (lis[40] == undefined) {
+                        document.getElementById('addr9').style.display = 'none';
+                    } else {
+                        document.getElementById('addr9').style.display = 'table-row';
+                    }
+                    if (lis[45] == undefined) {
+                        document.getElementById('addr10').style.display = 'none';
+                    } else {
+                        document.getElementById('addr10').style.display = 'table-row';
+                    }
+                }).fail(function () {
+                    alert("failed");
+                })
+            })
+        })
+
+        function addagain() {
+            var payment = parseFloat(document.getElementById('payment').value)
+            var payment1 = parseFloat(document.getElementById('payment1').value)
+            var payment2 = parseFloat(document.getElementById('payment2').value)
+            var payment3 = parseFloat(document.getElementById('payment3').value)
+            var payment4 = parseFloat(document.getElementById('payment4').value)
+            var payment5 = parseFloat(document.getElementById('payment5').value)
+            var payment6 = parseFloat(document.getElementById('payment6').value)
+            var payment7 = parseFloat(document.getElementById('payment7').value)
+            var payment8 = parseFloat(document.getElementById('payment8').value)
+            var payment9 = parseFloat(document.getElementById('payment9').value)
+            var paymentlistunsorted = [payment, payment1, payment2, payment3, payment4, payment5, payment6, payment7, payment8, payment9]
+            var paymentlist = []
+            for (i in paymentlistunsorted) {
+                if (isNaN(paymentlistunsorted[i]) == false) {
+                    paymentlist.push(paymentlistunsorted[i])
+                }
+            }
+            var sumpaym = 0
+            for (i in paymentlist) {
+                sumpaym += paymentlist[i]
+            }
+            var amtrcd = parseFloat(document.getElementById('amtrcvd').value)
+            if (sumpaym > amtrcd) {
+                document.getElementById('amtrcvd').value = sumpaym;
+                document.getElementById('amtoapply').value = sumpaym;
+                document.getElementById('amre').innerHTML = sumpaym;
+                document.getElementById('amtcredit').value = 0;
+            } else {
+                document.getElementById('amtrcvd').value = sumpaym;
+                document.getElementById('amtoapply').value = sumpaym;
+                document.getElementById('amre').innerHTML = sumpaym;
+                document.getElementById('amtcredit').value = 0;
+            }
+
+        }
+    </script>
+{% endblock %}

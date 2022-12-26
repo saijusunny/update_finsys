@@ -1,0 +1,204 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+    <style>
+    .custom-select1{
+        display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #ffffff
+
+    }
+    </style>
+<div class="page-content">
+
+               <div class="card radius-15">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <center><h3 class="mb-0">Edit GST Settings</h3></center>
+                            </div>
+                            <hr/>
+                        </div>
+                    </div>
+               <div class="card radius-15">
+                   <div class="card-body">
+                      <div class="row">
+                                <div class="col-12 col-lg-12 col-xl-12">
+
+                                </div>
+                            </div>
+
+                            <form action="addpandse" method="post"  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <form method = "post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-row">
+                                            <label for="validationCustom03" style="color: white;">Start of tax period</label>
+                                               <select  class="custom-select1" id="month" required style="background-color: #2a4964; color: white;width: 100%">
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                     &nbsp;
+                                    <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-row">
+                                            <label for="validationCustom01" style="color: white;">GSTIN</label>
+                                            <input type="text" name="sku" class="form-control" id="validationCustom01" placeholder="For e.g, 29AKPCL2987F1Z1" required style="background-color: #2f516f;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    &nbsp;
+
+                                    <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-row">
+                                            <h6>Not yet GST registered? Register at </h6>
+
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                     <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-row">
+
+                                            <p><a href="https://www.gst.gov.in">https://www.gst.gov.in</a></p>
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                      &nbsp;
+
+                                   <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-row">
+                                            <label for="validationCustom01" style="color: white;">GST Registration type</label>
+
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                           <div class="form-check">
+                                              <input class="form-check-input" type="radio" name="exampleRadiosfir" id="exampleRadios13" value="option1" checked>
+                                              <label class="form-check-label" for="exampleRadios13">
+                                                Regular Scheme
+                                              </label>
+                                            </div>
+
+                                            <div class="form-check">
+                                              <input class="form-check-input" type="radio" name="exampleRadiosfir" id="exampleRadios23" value="option2">
+                                              <label class="form-check-label" for="exampleRadios23">
+                                                Composition Scheme
+                                              </label>
+                                            </div>
+
+
+                                    &nbsp;
+
+                                     <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-row">
+                                            <label for="validationCustom01" style="color: white;">Filing Frequency</label>
+                                         </div>
+                                    </div>
+                                </div>
+
+
+
+                                           <div class="form-check">
+                                              <input class="form-check-input" type="radio" name="exampleRadiossec" id="exampleRadios11" value="option1" checked>
+                                              <label class="form-check-label" for="exampleRadios11">
+                                                Monthly
+                                              </label>
+                                            </div>
+
+                                            <div class="form-check">
+                                              <input class="form-check-input" type="radio" name="exampleRadiossec" id="exampleRadios22" value="option2">
+                                              <label class="form-check-label" for="exampleRadios22">
+                                                Quarterly
+                                              </label>
+                                            </div>
+
+                                   &nbsp;
+
+                                     <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-row">
+                                            <label for="validationCustom01" style="color: white;">Accounting Method</label>
+                                         </div>
+                                    </div>
+                                </div>
+
+                                           <div class="form-check">
+                                              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                              <label class="form-check-label" for="exampleRadios1">
+                                                Accrual
+                                              </label>
+                                            </div>
+
+                                            <div class="form-check">
+                                              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+                                              <label class="form-check-label" for="exampleRadios2">
+                                                Cash
+                                              </label>
+                                            </div>
+
+                                                &nbsp;
+                                                 &nbsp;
+                                                 &nbsp;
+                                                 &nbsp;
+                                                 &nbsp;
+                                                 &nbsp;
+
+
+
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-row">
+                                            <button class="btn btn-primary" type="submit" style="width: 100%;border-radius: 10px;">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </form>
+                            </form>
+
+                            </div>
+                        </div>
+                    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    var d = new Date();
+    var month = d.getMonth() + 1;
+    var year = d.getFullYear();
+
+    $("#month").val(month);
+    $("#year").val(year);
+
+});
+</script>
+
+{% endblock %}

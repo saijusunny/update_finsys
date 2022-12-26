@@ -1,0 +1,284 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .tr{
+            cursor:pointer;
+        }
+    </style>
+
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="card-title">
+                <center><h2 class="mb-0">BALANCE SHEET</h2></center>
+            </div>
+            <hr>
+        </div>
+    </div>
+    <div class="card radius-15 p-3">
+        <form action="{% url 'balancesheet2' %}" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label style="text-align:left ">Report period</label><br>
+                        <select class="form-control" id="filterstyle" onchange="filterDate(this)" list="hosting-plan"
+                                name="reportperiod" type="text">
+                            <option><span class="bx bx-right-arrow-alt"></span>All dates</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>Custom</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>Today</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>This month</option>
+                            <option><span class="bx bx-right-arrow-alt"></span>This financial year</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4" id="frdate" style="display: none;">
+                        <label for="from">From</label>
+                        <input type="date" class="form-control" name="fper"
+                               style="background-color: #2f516f;color: white;">
+                    </div>
+                    <div class="col-sm-4" id="todate" style="display: none;">
+                        <label for="from">To</label>
+                        <input type="date" class="form-control" name="tper"
+                               style="background-color: #2f516f;color: white;">
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 mt-3"></div>
+                    <div class="col-md-2 mt-3">
+                        <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-light">Run
+                            report
+                        </button>
+                    </div>
+                    <div class="col-md-2 mt-3">
+                        <a href="{% url 'gocoa' %}">
+                            <button type="button" class="btn btn-outline-info rounded-pill w-100 text-light">
+                                Back
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card radius-15 p-5" style="margin-bottom: 50px;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="rectangle"
+                         style=" overflow: scroll; background-color: white;width: 100%;height:2000px;border: 3px white;padding: 50px;">
+                        <div class="rectangle"
+                             style="background-image: linear-gradient(dodgerblue, black); width: 100%; height: 200px; margin-top: 20px;">
+                            <div class="img-container"
+                                 style="width: 140px; height: 140px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); border-radius: 50%; background-color: white; transform: translate(23%, 90%);">
+                                <img src="{{ cmp1.cimg.url }}"
+                                     style="width: 140px; height: 140px; border-radius: 50%;">
+                            </div>
+                            <h2 style="margin-left: 200px;">{{ cmp1.cname }}</h2>
+                        </div>
+
+                        <div class="table-responsive" style="margin-top: 100px;">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th class="center font-weight-bolder border-secondary"
+                                        style="color: black; width: 85%;">ACCOUNT</th>
+                                    <th class="center font-weight-bolder border-secondary" style="color: black;">TOTAL
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td style="color: black;"><b>Assets</b></td>
+                                    <td style="color: black;"><b></b></td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 30px;"><b>Current Assets</b></td>
+                                    <td style="color: black; padding-left: 30px;"><b></b></td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;"><b>Cash/Bank</b></td>
+                                    <td style="color: black; padding-left: 60px;"><b></b></td>
+                                </tr>
+                                {% for i in ca %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.account }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.account }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for Cash/Bank</b>
+                                    </td>
+                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
+                                        {{ asset }}
+                                    </td>
+                                </tr>
+                            
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary">
+                                        <b>Account Receivable(Debtors)</b>
+                                    </td>
+                                    <td style="color: black; padding-left: 50px;" class="border-secondary"><b></b></td>
+                                </tr>
+                                {% for i in ar %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.account }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.account }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total Account Receivable(Debtors)</b></td>
+                                    <td style="color: black;"
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ accrece }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>Tax Receivable</b></td>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b></td>
+                                </tr>
+                                {% for i in cas %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.account }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.account }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for Tax Receivable</b>
+                                    </td>
+                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
+                                        {{ taxrece }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 30px; width: 85%;" class="border-secondary">
+                                        <b>Total Current Assets</b></td>
+                                    <td style="color: black;"
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ tca }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; width: 85%;" class="border-secondary"><b>Total Assets</b>
+                                    </td>
+                                    <td style="color: black;"
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ tca }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <hr class="bg-secondary">
+                            <hr class="bg-secondary">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="color: black; width: 85%;">Liabilities and Equity</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td style="color: black; padding-left: 30px;"><b>Current Liabilities</b></td>
+                                </tr>
+                                
+                                {% for i in ap %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.account }} ';">
+                                            <td class="center"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.account }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>Tax Payable</b></td>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b></td>
+                                </tr>
+                                {% for i in cl %}
+                                    {% if i.payments != '0' %}
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.account }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.account }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for Tax Payable</b>
+                                    </td>
+                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
+                                        {{ taxpy }}
+                                    </td>
+                                </tr>
+                
+                                <tr>
+                                    <td style="color: black; padding-left: 30px; width: 85%;" class="border-secondary">
+                                        <b>Total Current Liabilities</b></td>
+                                    <td style="color: black;"
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ tcl }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 30px; width: 85%" class="border-secondary">
+                                        <b>Equity</b>
+                                    </td>
+                                    <td class="center font-weight-light font-weight-bold border-secondary"></td>
+                                </tr>
+                        
+                                <tr class="tr" onclick="window.location='profitandloss';">
+                                    <td style="color: black; padding-left: 60px; width: 85%">Profit for the year
+                                    </td>
+                                    <td class="center font-weight-light" style="color: black;"><b>{{ pandl }}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 30px; width: 85%" class="border-secondary">
+                                        <b>Total Equity</b>
+                                    </td>
+                                    <td class="center border-secondary" style="color: black;"><b>{{ tequity }}</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; width: 85%" class="border-secondary"><b>Total Liabilities
+                                        and Equity</b>
+                                    </td>
+                                    <td class="center border-secondary" style="color: black;"><b>{{ tlande }}</b></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterDate(element) {
+            if (element.value == 'Custom') {
+                document.getElementById('frdate').style.display = 'block';
+                document.getElementById('todate').style.display = 'block';
+            } else {
+                document.getElementById('frdate').style.display = 'none';
+                document.getElementById('todate').style.display = 'none';
+            }
+        }
+    </script>
+
+{% endblock %}

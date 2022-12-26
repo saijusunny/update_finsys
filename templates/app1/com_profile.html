@@ -1,0 +1,170 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    <style>
+    .nav-tabs .nav-link.active {
+                                    background: #143250;
+                                    color: white;
+                                }
+
+                                .nav-tabs .nav-link {
+                                    background: #243e54;
+                                    font-size: 24px;
+                                }
+    </style>
+
+    <div class="page-content">
+        <div class="card p-5">
+            <div class="card-body">
+                <div class="card-title">
+<div class="box" style="text-align: center;font-size: 24px;">
+
+
+<center>
+    <h3 class="mb-0" style="font-weight: bolder;">COMPANY PROFILE</h3>
+    <img src="{{ cmp1.cimg.url }}" class="img img-fluid m-3"
+         style="width: 150px; height: 150px; border-radius: 50%">
+</center>
+</div>
+<hr><br>
+    <form method="post" action="{% url 'update_cprofile' %}" enctype="multipart/form-data"
+        class="needs-validation mb-5" novalidate>
+        {% csrf_token %}
+        
+<center>
+  
+    
+    <div class="input-group w-50">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroupFileAddon01">Company Logo</span>
+      </div>
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="inputGroupFile01"
+          aria-describedby="inputGroupFileAddon01" name="img1">
+        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+      </div>
+    </div><br>
+    </center>
+       
+                        <div class="row m-6">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="cname">Company Name</label>
+                                <input type="text" name="cname" id="cname" value="{{ cmp1.cname }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="caddress">Company Address</label>
+                                <input type="text" name="caddress" id="caddress" value="{{ cmp1.caddress }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="city">City</label>
+                                <input type="text" name="city" id="city" value="{{ cmp1.city }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="state">State</label>
+                                <input type="text" name="state" id="state" value="{{ cmp1.state }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="pincode">Pincode</label>
+                                <input type="text" name="pincode" id="pincode" value="{{ cmp1.pincode }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="cemail">Email</label>
+                                <input type="email" name="cemail" id="cemail" value="{{ cmp1.cemail }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="phone">Phone Number</label>
+                                <input type="text" name="phone" id="phone" pattern="^\d{10}$" value="{{ cmp1.phone }}"
+                                       class="form-control">
+                            </div>
+                            <br>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="bname">Legal Business Name</label>
+                                <input type="text" name="bname" id="bname" value="{{ cmp1.bname }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="industry">Your Industry</label>
+                                {#                                <input type="text" name="industry" id="industry" value="{{ cmp1.industry }}"#}
+                                {#                                       class="form-control">#}
+                                <select name="industry" id="industry" class="form-control">
+                                    <option>{{ cmp1.industry }}</option>
+                                    <option value="Accounting Services">Accounting Services</option>
+                                    <option value="Consultants, doctors, Lawyers and similar">Consultants, doctors,
+                                        Lawyers and
+                                        similar
+                                    </option>
+                                    <option value="Information Tecnology">Information Tecnology</option>
+                                    <option value="Manufacturing">Manufacturing</option>
+                                    <option value="Professional Scientific and Technical Services">Professional,
+                                        Scientific and
+                                        Technical Services
+                                    </option>
+                                    <option value="Restaurant/Bar and similar">Restaurant/Bar and similar</option>
+                                    <option value="Retail and Smilar">Retail and Smilar</option>
+                                    <option value="Other Finanacial Services">Other Finanacial Services</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <label for="ctype">Company Type</label>
+                                {#                                <input type="text" name="ctype" id="ctype" value="{{ cmp1.ctype }}"#}
+                                {#                                       class="form-control">#}
+                                <select name="ctype" id="ctype" class="form-control">
+                                    <option>{{ cmp1.ctype }}</option>
+                                    <option value="Private Limited Company">Private Limited Company</option>
+                                    <option value="Public Limited Company">Public Limited Company</option>
+                                    <option value="Joint-Venture Company">Joint-Venture Company</option>
+                                    <option value="Partnership Firm Company">Partnership Firm Company</option>
+                                    <option value="One Person Company">One Person Company</option>
+                                    <option value="Branch Office Company">Branch Office Company</option>
+                                    <option value="Non Government Organization">Non Government Organization</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row m-6">
+                            <div class="col-lg-12 col-md-6 col-sm-12 ">
+                                <label for="bname">GST No</label>
+                                <input type="text" name="gstno" id="gstno" value="{{ cmp1.gstno }}"
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info rounded-pill w-100 text-light" type="submit">UPDATE
+                                    PROFILE
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

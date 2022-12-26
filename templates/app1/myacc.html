@@ -1,0 +1,88 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+
+</head>
+<body>
+
+<!-- Trigger/Open The Modal -->
+<div class="page-content">
+    <div class="card radius-15">
+        <div class="card-body">
+            <div class="card-title">
+                <center><h2 class="mb-0">My Accountant</h2></center>
+            </div>
+        </div>
+    </div>
+    <div class="card radius-15">
+        <div class="card-body">
+            <div>
+    &nbsp;<br>
+    &nbsp;<br>
+</div>
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-5"></div>
+    <div class=col-md-3"><a href="{% url 'goacc' %}">
+        <center><button id="myBtn" class="btn btn-primary" style="width: 100%; margin-left: 50%;">&nbsp;Invite&nbsp;</button></center></a>
+    </div>
+</div>&nbsp;
+ <br>
+&nbsp;<br>
+
+
+<table class="table">
+  <tbody>
+  {% for adda in addac %}
+    <tr>
+          <td>{{ adda.acname }}</td>
+          <td>{{ adda.email }}</td>
+          <td>{{ adda.usertype }}</td>
+          <td>{{ adda.dateadded }}</td>
+          <td><a href="editmyac/{{ adda.id }}" style="color: #ff0000; font-size: 15px;" >EDIT</a><br>
+          <a href="deletemyac/{{ adda.id }}" style="color: red; font-size: 15px;" >DELETE</a><br></td>
+
+    </tr>
+
+ {% endfor %}
+  </tbody>
+
+
+
+</table>
+
+    <script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+        </div>
+    </div>
+</div>
+</body>
+
+{% endblock %}
+

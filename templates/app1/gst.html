@@ -1,0 +1,267 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+    {% if user.is_authenticated %}
+
+        </head>
+        <body>
+
+        <!-- Trigger/Open The Modal -->
+        <div class="page-content">
+
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-5"><h2 style="padding-left: 80px;">GST</h2></div>
+                        <div class=col-md-3" style="padding-left: 50px;"><a href="{% url 'addtax' %}">
+                            <button id="myBtn" class="btn btn-outline-info text-light">Add Tax</button>
+                        </a>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+            <div class="card radius-15" style="background-color: #243e54;">
+                <div class="card-body">
+
+
+                    <div class="row">
+                        <div class="col" style="border-right:solid 1px gray; margin-top: 20px; margin-bottom: 20px;">
+                            <div class="row">
+                                <div class="col">
+                                    {% if exp1.cid_id == cmp1.cid %}
+                                        <center><label style="font-size: 30px;" id="gst">{{ payable }}</label></center>
+                                    {% endif %}
+                                    <center><label style="font-size: 15px;" id="sd"></label><span> - </span><label
+                                            style="font-size: 15px;" id="ed"></label></center>
+
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <center><label style="font-size: 30px;" id="igst">{{ igst }}</label></center>
+                                    <center><label style="font-size: 15px;">IGST</label></center>
+                                </div>
+                                <div class="col">
+                                    <center><label style="padding-top: 35px;font-size: 30px;">+</label></center>
+                                </div>
+                                <div class="col">
+                                    {% if exp1.cid_id == cmp1.cid %}
+                                        <center><label style="font-size: 30px;" id="cgst">{{ cgst }}</label></center>
+                                    {% endif %}
+
+                                    <center><label style="font-size: 15px;">CGST</label></center>
+                                </div>
+
+                                <div class="col">
+                                    <center><label style="padding-top: 35px;font-size: 30px;">+</label></center>
+                                </div>
+
+                                <div class="col">
+                                    {% if exp1.cid_id == cmp1.cid %}
+                                        <center><label style="font-size: 30px;" id="sgst">{{ sgst }}</label></center>
+                                    {% endif %}
+
+                                    <center><label style="font-size: 15px;">SGST</label></center>
+                                </div>
+                            </div>
+                            &nbsp;
+                        </div>
+
+                        <div class="col-4">
+
+                            <div class="row" style="margin-top: 100px;">
+
+
+                                <div class="col">
+                                    {% if exp1.cid_id == cmp1.cid %}
+                                        <center><span style="font-size: 30px;">&#8377;  </span><label
+                                                style="font-size: 30px;" id="bgst">{{ payable }}</label></center>
+                                    {% endif %}
+                                    <center><label style="font-size: 15px;">PAYABLE BALANCE</label></center>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    &nbsp;
+
+                    <div class="card radius-15">
+                        <div class="card-body">
+                            <div>
+                                &nbsp;<br>
+
+                            </div>
+                            <style>
+                                .nav-tabs .nav-link.active {
+                                    background: #143250;
+                                    color: white;
+                                }
+
+                                .nav-tabs .nav-link {
+                                    background: #243e54;
+                                }
+                            </style>
+
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="Returns"><a class="nav-link active" id="Returns-tab"
+                                                                       data-toggle="tab" href="#Returns" role="tab"
+                                                                       aria-controls="Returns"
+                                                                       aria-selected="true">Returns</a></li>
+                                <li class="nav-item" role="Paymenthistory"><a class="nav-link" id="Paymenthistory-tab"
+                                                                              data-toggle="tab" href="#Paymenthistory"
+                                                                              role="tab" aria-controls="Paymenthistory"
+                                                                              aria-selected="false">Payment History</a>
+                                </li>
+                            </ul>
+
+
+                            <div class="tab-content card-body" id="myTabContent">
+                                <div class="tab-pane fade show active" id="Returns" role="tabpanel"
+                                     aria-labelledby="Returns-tab">
+                                    <br><br>
+
+                                    <table class="table table-responsive-md text-center">
+                                        <tbody>
+                                        <tr>
+                                            <th>START DATE</th>
+                                            <th>END DATE</th>
+                                            <th>PAYMENT DATE</th>
+                                            <th>ANNUAL DUE</th>
+                                            <th>PAYMENTS</th>
+                                            <th>BALANCE</th>
+                                            <th>STATUS</th>
+
+                                        </tr>
+                                        </tbody>
+                                        <tbody>
+                                        <tr>
+                                            <td id="fd"></td>
+                                            <td id="ld"></td>
+                                            <td></td>
+                                            <td id="ad"></td>
+                                            <td>&#8377; 0.0</td>
+                                            <td id="bal"></td>
+                                            <td>Open</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="tab-pane fade" id="Paymenthistory" role="tabpanel"
+                                     aria-labelledby="Paymenthistory-tab">
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-10"></div>
+                                        <div class="col-md-2"><a href="{% url 'gotaxpaymentgst' %}">
+                                            <button id="myBtn" class="btn btn-outline-info text-light">Record Payment
+                                            </button>
+                                        </a>
+                                        </div>
+                                    </div>
+                                    <table class="table table-responsive-md text-center">
+                                        <tbody>
+                                        <tr>
+                                            <th> DATE</th>
+                                            <th>TYPE</th>
+                                            <th>TAX PERIOD</th>
+                                            <th>AMOUNT</th>
+                                            <th>MEMO</th>
+
+                                        </tr>
+                                        </tbody>
+                                        <tbody>
+                                        <tr>
+                                            {% for repays in repay %}
+                                                {% if repays.cid_id == cmp1.cid %}
+                                                    <tr>
+                                                        <td>{{ repays.paymentdate }}</td>
+                                                        <td>{{ repays.textname }}</td>
+                                                        <td>{{ repays.paymentdate }}</td>
+                                                        <td>{{ repays.recordamount }}</td>
+                                                        <td>{{ repays.recordmemo }}</td>
+
+
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                        </tr>
+
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <script>
+                        // Get the modal
+                        var modal = document.getElementById("myModal");
+
+                        // Get the button that opens the modal
+                        var btn = document.getElementById("myBtn");
+
+                        // Get the <span> element that closes the modal
+                        var span = document.getElementsByClassName("close")[0];
+
+                        // When the user clicks the button, open the modal
+                        btn.onclick = function () {
+                            modal.style.display = "block";
+                        }
+
+                        // When the user clicks on <span> (x), close the modal
+                        span.onclick = function () {
+                            modal.style.display = "none";
+                        }
+
+                        // When the user clicks anywhere outside of the modal, close it
+                        window.onclick = function (event) {
+                            if (event.target == modal) {
+                                modal.style.display = "none";
+                            }
+                        }
+                    </script>
+
+
+                    <script src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.js"></script>
+                    <script>
+                        $(document).ready(function () {
+                            var cgst = parseFloat('{{ cgst }}');
+
+                            var sgst = parseFloat('{{ sgst }}');
+
+                            var igst = parseFloat('{{ igst }}');
+
+                            var dt = new Date('{{ isgst.asof }}')
+                            var month = dt.getMonth(), year = dt.getFullYear();
+                            var fd = new Date(year, month, 1);
+                            var fdd = fd.toDateString("dd/mm/yyyy");
+                            var ld = new Date(year, month + 1, 0);
+                            var ldd = ld.toDateString("dd/mm/yyyy");
+
+                            document.getElementById('ad').innerHTML = "&#8377; " + '{{ payable }}'
+                            document.getElementById('bal').innerHTML = "&#8377; " + '{{ payable }}'
+                            document.getElementById('fd').innerHTML = fdd
+                            document.getElementById('ld').innerHTML = ldd
+                            document.getElementById('sd').innerHTML = fdd
+                            document.getElementById('ed').innerHTML = ldd
+                        });
+                    </script>
+
+
+                </div>
+            </div>
+
+        </body>
+    {% endif %}
+
+{% endblock %}

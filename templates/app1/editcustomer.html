@@ -1,0 +1,320 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">EDIT CUSTOMER</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <div class="card-title">
+                    <h4 class="mb-0">Customer Information</h4>
+                </div>
+                <hr/>
+                <form action="updatecustomer/{{ customer.customerid }}" method="post" class="needs-validation"
+                      novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom01">Title</label>
+                            <input type="text" name="title" value="{{ customer.title }}" class="form-control"
+                                   id="validationCustom01" required
+                                   style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom02">First name</label>
+                            <input type="text" class="form-control" value="{{ customer.firstname }}"
+                                   id="validationCustom02" name="firstname" required
+                                   style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom02">Last name</label>
+                            <input type="text" class="form-control" value="{{ customer.lastname }}"
+                                   id="validationCustom02" name="lastname" required
+                                   style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Company</label>
+                            <input type="text" class="form-control" value="{{ customer.company }}"
+                                   id="validationCustom03" name="company" 
+                                   style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Location</label>
+                            <input type="text" class="form-control" value="{{ customer.location }}"
+                                   id="validationCustom03" name="location" 
+                                   style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom04">GST type</label>
+                            <select class="custom-select" id="validationCustom04" onclick="hidinput('hello', this)"
+                                    name="gsttype" 
+                                    style="background-color: #243e54; color: white;">
+                                <option>{{ customer.gsttype }}</option>
+                                <option>GST registered- Regular</option>
+                                <option>GST registered- Composition</option>
+                                <option>GST unregistered</option>
+                                <option>Consumer</option>
+                                <option>Overseas</option>
+                                <option>SEZ</option>
+                                <option>Deemed exports - EOU's STP's EHTP's etc</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a valid registration type.</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <div class="form-row" id="hello">
+                                <label for="validationCustom05">GSTIN</label>
+                                <input type="text" class="form-control" onchange="checkgst(this)"
+                                       value="{{ customer.gstin }}"
+                                       id="validationCustom05" name="gstin"
+                                       style="background-color: #2f516f;color: white;">
+                                <div id="warngst" class="text-danger"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">PAN NO</label>
+                            <input type="text" class="form-control" onchange="checkpan(this)"
+                                   value="{{ customer.panno }}"
+                                   id="validationCustom03" name="panno" 
+                                   style="background-color: #2f516f;color: white;">
+                            <div id="warnpan" class="text-danger"></div>
+                        </div>
+                        <div class="col-md-4 mt-3" >
+                            <div >
+                                <label for="validationCustom05">OPENING BALANCE</label>
+                                <input type="text" class="form-control"  name="openbalance" value="{{ customer.opening_balance}}"
+                                       
+                                       style="background-color: #2f516f;color: white;"
+                                       >
+                                <div class="text-danger m-2" ></div>
+                            </div>
+                        </div>
+                    </div>
+                    &nbsp;
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Email</label>
+                            <input type="email" class="form-control" value="{{ customer.email }}"
+                                   id="validationCustom03" name="email" 
+                                   style="background-color: #2f516f;color: white;">
+                            <div class="invalid-feedback">Please provide a valid Email</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Website</label>
+                            <input type="text" class="form-control" value="{{ customer.website }}"
+                                   id="validationCustom03" onchange="checkweb(this)" name="website"
+                                   style="background-color: #2f516f;color: white;">
+                            <div id="warnweb" class="text-danger"></div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom01">Mobile</label>
+                            <input type="text" class="form-control" onchange="checkphone(this)"
+                                   value="{{ customer.mobile }}"
+                                   id="validationCustom01" name="mobile" 
+                                   style="background-color: #2f516f;color: white;">
+                            <div id="warnphone" class="text-danger"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6 mt-5">
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <h5>Billing Address</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <label for="street">Street</label>
+                                    <textarea class="form-control" id="street" name="street" 
+                                              style="background-color: #2f516f;color: white;">{{ customer.street }}</textarea>
+                                    <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="city">City</label>
+                                    <input type="text" class="form-control" value="{{ customer.city }}"
+                                           id="city" name="city" 
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid City</div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="state">State</label>
+                                    <input type="text" class="form-control" value="{{ customer.state }}"
+                                           id="state" name="state" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid State</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="pinco">Pin Code</label>
+                                    <input type="text" class="form-control" value="{{ customer.pincode }}"
+                                           id="pinco" name="pincode" 
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="country">Country</label>
+                                    <input type="text" class="form-control" value="{{ customer.country }}"
+                                           id="country" name="country" 
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid Country</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-5">
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <h5>Shipping Address</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <label for="shipstreet">Street</label>
+                                    <textarea class="form-control" id="shipstreet" name="shipstreet"
+                                              
+                                              style="background-color: #2f516f;color: white;">{{ customer.shipstreet }}</textarea>
+                                    <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="shipcity">City</label>
+                                    <input type="text" class="form-control" value="{{ customer.shipcity }}"
+                                           id="shipcity" name="shipcity" 
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid City</div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="shipstate">State</label>
+                                    <input type="text" class="form-control" value="{{ customer.shipstate }}"
+                                           id="shipstate" name="shipstate" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid State</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="shippinco">Pin Code</label>
+                                    <input type="text" class="form-control" value="{{ customer.shippincode }}"
+                                           id="shippinco" name="shippincode" 
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="shipcountry">Country</label>
+                                    <input type="text" class="form-control" value="{{ customer.shipcountry }}"
+                                           id="shipcountry" name="shipcountry" 
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="invalid-feedback">Please provide a valid Country</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>&nbsp;
+
+                    <center>
+                        <button class="btn btn-outline-info rounded-pill text-grey w-25 mt-3 mb-3" type="submit">Submit
+                            form
+                        </button>
+                    </center>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function hidinput(divId, element) {
+            if (element.value == 'GST unregistered' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+        }
+
+        function checkgst(element) {
+            var gstinput = element.value;
+            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+            if (gstinput.match(gstregexp)) {
+                document.getElementById('warngst').innerHTML = '';
+            } else {
+                document.getElementById('warngst').innerHTML = 'Please provide a valid GST Number';
+                alert('Please provide a valid GST Number');
+            }
+        }
+
+        function checkpan(element) {
+            var paninput = element.value;
+            var panregexp = ["[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}"]
+            if (paninput.match(panregexp)) {
+                document.getElementById('warnpan').innerHTML = '';
+            } else {
+                document.getElementById('warnpan').innerHTML = 'Please provide a valid PAN Number';
+                alert('Please provide a valid PAN Number')
+            }
+        }
+
+        function checkweb(element) {
+            var webinput = element.value;
+            var webregexp = "www."
+            if (webinput.startsWith(webregexp)) {
+                document.getElementById('warnweb').innerHTML = '';
+            } else {
+                document.getElementById('warnweb').innerHTML = 'Please provide a valid Website Address';
+                alert('Please provide a valid Website Address')
+            }
+        }
+
+        function checkphone(element) {
+            var phoneinput = element.value;
+            var phoneregexp = "[0-9]{10}";
+            if (phoneinput.match(phoneregexp)) {
+                document.getElementById('warnphone').innerHTML = '';
+            } else {
+                document.getElementById('warnphone').innerHTML = 'Please provide a valid Phone Number';
+                alert('Please provide a valid Phone Number')
+            }
+        }
+    </script>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+{% endblock %}

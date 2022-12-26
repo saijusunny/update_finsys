@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- Mirrored from codervent.com/syntrans/demo/horizontal/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 07 Jan 2021 05:00:52 GMT -->
+
+<head>
+  {% load static %}
+  <!-- Required meta tags -->
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Reset styles -->
+    <link rel="stylesheet" href="https://unpkg.com/modern-css-reset/dist/reset.min.css" />
+    <!-- Google Fonts Muli -->
+    <link href="https://fonts.googleapis.com/css2?family=Muli:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>Fin sYs</title>
+    <!--favicon-->
+    <link rel="icon" href="{% static 'assets/images/favicon-32x32.png' %}" type="image/png"/>
+    <!-- Vector CSS -->
+    <link href="{% static 'assets/plugins/vectormap/jquery-jvectormap-2.0.2.css' %}" rel="stylesheet"/>
+    <!--plugins-->
+    <link href="{% static 'assets/plugins/simplebar/css/simplebar.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/plugins/metismenu/css/metisMenu.min.css' %}" rel="stylesheet"/>
+    <!-- loader-->
+    <link href="{% static 'assets/css/pace.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'assets/js/pace.min.js' %}"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}"/>
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}"/>
+    <!-- App CSS -->
+
+    
+    <link rel="stylesheet" href="{% static 'assets/css/app.css' %}"/>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  
+      
+    
+  <style>
+    .a {
+      font-family: "Poppins", sans-serif;
+    }
+    li {
+      list-style: none;
+      padding-top: 10px;
+}
+    .one {
+      border-collapse: separate;
+      white-space: normal;
+      line-height: normal;
+      font-weight: normal;
+      font-size: medium;
+      font-style: normal;
+      color: -internal-quirk-inherit;
+      text-align: start;
+      border-spacing: 0px!important;
+      font-variant: normal;   }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var $select1 = $('#select1'),
+        $select2 = $('#select2'),
+        $select3 = $('#name'),
+        $options = $select2.find('option'),
+        $options1 = $select3.find('option');
+      $select1.on('change', function() {
+        $select2.html($options.filter('[text="' + this.value + '"]'));
+        $select3.html($options1.filter('[text="' + this.value + '"]'));
+      }).trigger('change');
+    });
+  </script>
+</head>
+
+<body style="background-color: #2f516f;">
+  <!-- wrapper -->
+  <div class="wrapper">
+    <!--header-->
+    <div class="wrapper">
+      <!--header-->
+      <header class="top-header" style="background-color: #213b52;">
+        <nav class="navbar navbar-expand">
+          <div class="sidebar-header">
+            <div class="d-none d-lg-flex">
+              <img src="{% static 'assets/images/logo-icon.png' %}" class="logo-icon-2" alt="" />
+            </div>
+            <div class="a">
+              <h4><b>Fin sYs</b></h4>
+            </div>
+            <a href="javascript:;" class="toggle-btn ml-lg-auto"> <i class="bx bx-menu"></i>
+            </a>
+          </div>
+          <div class="flex-grow-1 search-bar">
+            <div class="input-group">
+              <div class="input-group-prepend search-arrow-back">
+                <button class="btn btn-search-back" type="button"><i class="bx bx-arrow-back"></i>
+                </button>
+              </div>
+              <input type="text" autocomplete="off" id="myInput" onkeyup="filter(this);" onclick="myFunction1()" class="form-control" placeholder="search" />
+              <div class="input-group-append">
+                <button class="btn btn-search" type="button"><i class="lni lni-search-alt"></i>
+                </button>
+              </div>
+              <div class=" mt-5" id="myDIV" style="z-index:1;position:absolute; 
+              background-color: #213b52;width:550px;height:1px;">
+              
+                 <ul id="myList" class="one" style="background-color: #213b52;">
+                  <li><a href="{% url 'godash' %}">Dashboard</a></li>
+                  <li><a href="{% url 'goitem' %}">Item</a></li>
+                  <li><a href="{% url 'goonlinebank' %}">Online Banking</a></li>
+                  <li><a href="{% url 'goofflinebank' %}">Offline Banking</a></li>
+                    <li><a href="{% url 'gobankrecon' %}">Bank Reconcilation</a></li>
+                      <li><a href="{% url 'gosalesrecords' %}">Sales Records</a></li>
+                        <li><a href="{% url 'goinvoices' %}">Invoices</a></li>
+                          <li><a href="{% url 'gocustomers' %}">Customers</a></li>
+                            <li><a href="{% url 'gopands' %}">Product and Services</a></li>
+                              <li><a href="{% url 'goexpences' %}">Expenses</a></li>
+                                <li><a href="{% url 'gosupplies' %}">Suppliers</a></li>
+                                  <li><a href="{% url 'gocoa' %}">Chart of Accounts</a></li>
+                                    <li><a href="{% url 'gorecon' %}">Reconcile</a></li>
+                                      <li><a href="{% url 'cashposition' %}">Cash Position</a></li>
+                                        <li><a href="{% url 'gorecon' %}">Reconcile</a></li>
+                                          <li><a href="{% url 'gorecon' %}">Cash Position</a></li>
+                                            <li><a href="{% url 'govendor' %}">Vendor</li>
+                                              <li><a href="{% url 'gopurchaseorder' %}">Purchase Order</li>
+                                              <li><a href="{% url 'gobilling' %}">Bill</li>
+
+        
+                 </ul>
+                 </div>
+
+
+              
+            </div>
+          </div>
+          <div class="right-topbar ml-auto">
+            <ul class="navbar navbar-expand" style="list-style-type: none; margin: 0; padding: 0;">
+              <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="javascript:;" data-toggle="dropdown" style=" display: block; padding: 8px 16px; text-decoration: none;">
+                <i class="fa fa-gear" style="font-size:24px"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <ul class="a" style=" list-style-type: none; margin: 0; padding: 0; width: 200px;">
+                  <li><a href="{% url 'C_profile' %}" style="display: block; padding: 8px 16px; text-decoration: none">Company Profile</a></li>
+                  <li><a href="{% url 'view_users' %}" style="display: block; padding: 8px 16px; text-decoration: none">Users</a></li>
+                  <li><a href="{% url 'godash' %}" style="display: block; padding: 8px 16px; text-decoration: none">Branches</a></li>
+                  <li><a href="{% url 'Currencies' %}" style="display: block; padding: 8px 16px; text-decoration: none">Currencies</a></li>
+                  <li><a href="{% url 'gotax' %}" style="display: block; padding: 8px 16px; text-decoration: none">Tax</a></li>
+                  <li><a href="{% url 'gotemplates' %}" style="display: block; padding: 8px 16px; text-decoration: none">Templates</a></li>
+                  <li><a href="editaccounts/{{ user.id }}" style="display: block; padding: 8px 16px; text-decoration: none">Accounts and Settings</a></li>
+                  <li><a href="{% url 'customstyle' %}" style="display: block; padding: 8px 16px; text-decoration: none">Customize Form Style</a></li>
+                  <li><a href="{% url 'gocoa' %}" style="display: block; padding: 8px 16px; text-decoration: none">Chart of Accounts</a></li>
+                </ul>
+              </div>
+            </ul>
+          </div>
+          <div class="right-topbar ml-auto">
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown dropdown-lg">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="javascript:;" data-toggle="dropdown"> <i class="bx bx-bell vertical-align-middle"></i>
+                  <span class="msg-count">5</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a href="javascript:;">
+                    <div class="msg-header">
+                      <h6 class="msg-header-title">5 New</h6>
+                      <p class="msg-header-subtitle">Application Notifications</p>
+                    </div>
+                  </a>
+                  <div class="header-notifications-list">
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="media align-items-center">
+                        <div class="notify bg-light-primary text-primary"><i class="bx bx-group"></i>
+                        </div>
+                        <div class="media-body">
+                          <h6 class="msg-name">New Customers<span class="msg-time float-right">14 Sec
+                              ago</span></h6>
+                          <p class="msg-info">5 new user registered</p>
+                        </div>
+                      </div>
+                    </a>
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="media align-items-center">
+                        <div class="notify bg-light-danger text-danger"><i class="bx bx-cart-alt"></i>
+                        </div>
+                        <div class="media-body">
+                          <h6 class="msg-name">New Orders <span class="msg-time float-right">2 min
+                              ago</span></h6>
+                          <p class="msg-info">You have recived new orders</p>
+                        </div>
+                      </div>
+                    </a>
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="media align-items-center">
+                        <div class="notify bg-light-shineblue text-shineblue"><i class="bx bx-file"></i>
+                        </div>
+                        <div class="media-body">
+                          <h6 class="msg-name">24 PDF File<span class="msg-time float-right">19 min
+                              ago</span></h6>
+                          <p class="msg-info">The pdf files generated</p>
+                        </div>
+                      </div>
+                    </a>
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="media align-items-center">
+                        <div class="notify bg-light-shineblue text-shineblue"><i class="bx bx-file"></i>
+                        </div>
+                        <div class="media-body">
+                          <h6 class="msg-name">24 PDF File<span class="msg-time float-right">19 min
+                              ago</span></h6>
+                          <p class="msg-info">The pdf files generated</p>
+                        </div>
+                      </div>
+                    </a>
+                    <a class="dropdown-item" href="javascript:;">
+                      <div class="media align-items-center">
+                        <div class="notify bg-light-cyne text-cyne"><i class="bx bx-send"></i>
+                        </div>
+                        <div class="media-body">
+                          <h6 class="msg-name">Time Response <span class="msg-time float-right">28 min
+                              ago</span></h6>
+                          <p class="msg-info">5.1 min avarage time response</p>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                  <a href="javascript:;">
+                    <div class="text-center msg-footer">View All Notifications</div>
+                  </a>
+                </div>
+              </li>
+              <li class="nav-item dropdown dropdown-user-profile">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-toggle="dropdown">
+                  {% if user.is_authenticated %}
+                  <div class="media user-box align-items-center">
+                    <div class="media-body user-info">
+                      <p class="user-name mb-0">
+                        {% if user.is_authenticated %}
+                        {% csrf_token %}
+                        <label style="text-align: center; font-size: 15px;">{{ cmp1.cname }}</label>
+                        {% endif %}
+                      </p>
+                      <p class="designattion mb-0">Online</p>
+                    </div>
+                    <img src="{{ cmp1.cimg.url }}" class="user-img">
+
+                  </div>
+                  {% endif %}
+                </a>
+                {% if user.is_authenticated %}
+                <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="/app1/userprofile/{{ user.id }}"><i class="bx bx-user"></i><span>Profile</span></a>
+                  <a class="dropdown-item" href="{% url 'godash' %}"><i class="bx bx-tachometer"></i><span>Dashboard</span></a>
+                  <div class="dropdown-divider mb-0"></div>
+                  <a class="dropdown-item" href="{% url 'logout' %}"><i class="bx bx-power-off"></i><span>Logout</span></a>
+                </div>
+                {% endif %}
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!--end header-->
+
+      
+      <!--navigation-->
+      {% if user.is_authenticated %}
+      <div id="nav1" class="nav-container" style="background-color: #213b52;">
+        <nav class="topbar-nav">
+          <ul class="metismenu" id="menu">
+            <li>
+              <a href="{% url 'godash' %}">
+                <div class="menu-title">Dashboard</div>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+              <div class="parent-icon"><i class='bx bxs-package' ></i>
+              </div>
+              <div class="menu-title">Item</div>
+            </a>
+            <ul>
+              <li><a href="{% url 'goitem' %}"><i class="bx bx-right-arrow-alt"></i>Items</a>
+              </li>
+              <li><a href="{% url 'gostock_adjust' %}"><i class="bx bx-right-arrow-alt"></i>Stock
+                  Adjustments</a>
+              </li>
+             
+            </ul>
+             
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-home-alt"></i>
+                </div>
+                <div class="menu-title">Banking</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'goonlinebank' %}"><i class="bx bx-right-arrow-alt"></i>Online
+                    Banking</a>
+                </li>
+                <li><a href="{% url 'bnnk' %}"><i class="bx bx-right-arrow-alt"></i>Offline
+                    Banking</a>
+                </li>
+                <li><a href="{% url 'gobankrecon' %}"><i class="bx bx-right-arrow-alt"></i>Bank
+                    Reconcilation</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-file"></i>
+                </div>
+                <div class="menu-title">Sales</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'gocustomers' %}"><i class="bx bx-right-arrow-alt"></i>Customers</a>
+                </li>
+
+                <li><a href="{% url 'goestimate' %}"><i class="bx bx-right-arrow-alt"></i>Estimate</a>
+                </li>
+                <li><a href="{% url 'gosalesorder' %}"><i class="bx bx-right-arrow-alt"></i>Sales Order</a>
+                </li>
+                <!-- <li><a href="{% url 'gosalesrecords' %}"><i class="bx bx-right-arrow-alt"></i>Sales
+                    Records</a>
+                </li> -->
+                <li><a href="{% url 'goinvoices' %}"><i class="bx bx-right-arrow-alt"></i>Invoices</a>
+                </li>
+              </li>
+              <li>
+                <a href="{% url 'credit_note' %}"><i class="bx bx-right-arrow-alt"></i>Credit note</a>
+              </li>
+                <li><a href="{% url 'gopayment_received' %}"><i class="bx bx-right-arrow-alt"></i>Payments Received</a>
+                </li>
+                
+                <!-- <li><a href="{% url 'gopands' %}"><i class="bx bx-right-arrow-alt"></i>Product and
+                    Services</a> -->
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-briefcase-alt'></i>
+                </div>
+                <div class="menu-title">Purchase</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'govendor' %}"><i class="bx bx-right-arrow-alt"></i>Vendor</a>
+                </li>
+                <li><a href="{% url 'gopurchaseorder' %}"><i class="bx bx-right-arrow-alt"></i>Purchase Order</a>
+                </li>
+                <li><a href="{% url 'gobilling' %}"><i class="bx bx-right-arrow-alt"></i>Bill</a>
+                </li>
+                <li><a href="{% url 'goexpenses' %}"><i class="bx bx-right-arrow-alt"></i>Expense</a>
+                </li>
+                <li><a href="{% url 'gopurchasepymnt' %}"><i class="bx bx-right-arrow-alt"></i>Payment</a>
+                </li>
+                <li><a href="{% url 'gopurchasedebit' %}"><i class="bx bx-right-arrow-alt"></i>Debit Note</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-briefcase-alt'></i>
+                </div>
+                <div class="menu-title">E-Way Bill</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'goewaybill' %}"><i class="bx bx-right-arrow-alt"></i>e-way bills</a>
+                </li>
+                <li><a href="{% url 'view_eway_inv' %}"><i class="bx bx-right-arrow-alt"></i>Bill Format</a>
+                </li>
+              
+              </ul>
+            </li>
+           
+            <!-- <li>
+              <a href="javascript:;" class="has-arrow">
+
+                <div class="parent-icon"><i class='bx bx-briefcase-alt'></i>
+                </div>
+                <div class="menu-title">Expenses</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'goexpences' %}"><i class="bx bx-right-arrow-alt"></i>Expenses</a>
+                </li>
+                <li><a href="{% url 'gosupplies' %}"><i class="bx bx-right-arrow-alt"></i>Suppliers</a>
+                </li>
+              </ul>
+            </li> -->
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-wallet'></i>
+                </div>
+                <div class="menu-title">Payroll</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'goemployee' %}"><i class="bx bx-right-arrow-alt"></i>Employee</a>
+                </li>
+                <li><a href="{% url 'gopayslip' %}"><i class="bx bx-right-arrow-alt"></i>Payslip</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-comment-edit"></i>
+                </div>
+                <div class="menu-title">Report</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'profitandloss' %}"><i class="bx bx-right-arrow-alt"></i>Profit and
+                  loss</a>
+              </li>
+                <li><a href="{% url 'balancesheet1' %}"><i class="bx bx-right-arrow-alt"></i>Balance
+                    sheet</a>
+                </li>
+                <li><a href="{% url 'trial_balance' %}"><i class="bx bx-right-arrow-alt"></i>Trial Balance</a>
+                </li>
+                <li><a href="{% url 'accreceivables' %}"><i class="bx bx-right-arrow-alt"></i>Accounts
+                    receivables</a>
+                </li>
+                <li><a href="{% url 'accpayables' %}"><i class="bx bx-right-arrow-alt"></i>Accounts
+                    payables</a>
+                </li>
+                <li><a href="{% url 'stocksummary' %}"><i class="bx bx-right-arrow-alt"></i>Stock
+                  Summary </a>
+              </li>
+              <li><a href="{% url 'stockvaluation' %}"><i class="bx bx-right-arrow-alt"></i>Stock
+                  Valuation</a>
+              </li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-wallet'></i>
+                </div>
+                <div class="menu-title">Taxes</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'gogst' %}"><i class="bx bx-right-arrow-alt"></i>GST</a>
+                </li>
+                <li><a href="{% url 'gstr1' %}"><i class="bx bx-right-arrow-alt"></i>GSTR-1</a>
+                </li>
+                
+                <li><a href="{% url 'gstr3b' %}"><i class="bx bx-right-arrow-alt"></i>GSTR-3B</a>
+                </li>
+
+                <li><a href="{% url 'gotax' %}"><i class="bx bx-right-arrow-alt"></i>New...</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-line-chart"></i>
+                </div>
+                <div class="menu-title">Accounting</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'gocoa' %}"><i class="bx bx-right-arrow-alt"></i>Chart of
+                    Accounts</a>
+                </li>
+                <li><a href="{% url 'gomjoural' %}"><i class="bx bx-right-arrow-alt"></i>Manual Journal
+                </a>
+            </li>
+                <li><a href="{% url 'gorecon' %}"><i class="bx bx-right-arrow-alt"></i>Reconcile</a>
+                </li>
+              </ul>
+            </li>
+            <a href="#nav2" role="button" onclick="document.getElementById('nav2').style.display='flex'">
+              <span class="carousel-control-next-icon" style="color: #2F5D6D;width:10px"></span>
+              <span class="carousel-control-next-icon" style="color: #2F5D6D;width:10px"></span>
+            </a>
+          </ul>
+        </nav>
+      </div>
+      <div id="nav2" class="nav-container" style="background-color: #213b52; display: none">
+        <nav class="topbar-nav">
+          <ul class="metismenu" id="menu">
+            <a href="#nav1" role="button" onclick="document.getElementById('nav2').style.display='none'">
+              <span class="carousel-control-prev-icon" style="color: #2F5D6D;width:10px"></span>
+              <span class="carousel-control-prev-icon" style="color: #2F5D6D;width:10px"></span>
+            </a>
+            <li>
+              <a href="{% url 'gomyacc' %}">
+                <div class="menu-title">My Accountant</div>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="menu-title">Cash Management</div>
+              </a>
+              <ul>
+                <li><a href="{% url 'cashposition' %}"><i class="bx bx-right-arrow-alt"></i>Cash
+                    Position</a>
+                </li>
+                <li><a href="#"><i class="bx bx-right-arrow-alt"></i>Cash Flow Analyzer</a>
+                </li>
+                <li><a href="#"><i class="bx bx-right-arrow-alt"></i>Check Cash Flow</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="menu-title">Production</div>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="menu-title">Quality Managment</div>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:;" class="has-arrow">
+                <div class="menu-title">Project Management</div>
+              </a>
+            </li>
+            <li>
+              <a class="has-arrow" href="javascript:;">
+                <div class="menu-title">Usage Decisions</div>
+              </a>
+            </li>
+            <li>
+              <a class="has-arrow" href="javascript:;">
+                <div class="menu-title">Accounts and Payable</div>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      {% endif %}
+      <div class="page-wrapper">
+        <div class="page-content-wrapper" style="background-color: #2f516f;">
+          <div class="container pt-3">
+            {% for message in messages %}
+            {% if message %}
+            <div class="alert" onclick="this.parentElement.style.display='none';">
+              <div class="row d-flex">
+                <div class="col-md-12">
+                  <center>
+                    <h5 style="color: goldenrod;">{{ message }}</h5>
+                  </center>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+<div></div>
+          
+          {% block body %}
+
+          {% endblock %}
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <script>
+
+$(document).ready(function(){
+  $("#myList li").hide();
+
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    if (value !== '' ) {
+    $("#myList li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });   
+    } else {
+      $("#myList li").hide();   
+    }    
+  });
+});
+
+   
+   
+ </script>
+
+
+  <!-- end wrapper -->
+  <!-- JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="{% static 'assets/js/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/js/popper.min.js' %}"></script>
+  <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+  <!--plugins-->
+  <script src="{% static 'assets/plugins/simplebar/js/simplebar.min.js' %}"></script>
+  <script src="{% static 'assets/plugins/metismenu/js/metisMenu.min.js' %}"></script>
+  <script src="{% static 'assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+  <!-- Vector map JavaScript -->
+  <script src="{% static 'assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js' %}"></script>
+  <script src="{% static 'assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+  <script src="{% static 'assets/plugins/vectormap/jquery-jvectormap-in-mill.js' %}"></script>
+  <script src="{% static 'assets/plugins/vectormap/jquery-jvectormap-us-aea-en.js' %}"></script>
+  <script src="{% static 'assets/plugins/vectormap/jquery-jvectormap-uk-mill-en.js' %}"></script>
+  <script src="{% static 'assets/plugins/vectormap/jquery-jvectormap-au-mill.js' %}"></script>
+  <script src="{% static 'assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
+  <script src="{% static 'assets/js/index.js' %}"></script>
+  <!-- App JS -->
+  <script src="{% static 'assets/js/app.js' %}"></script>
+
+  <script>
+    new PerfectScrollbar('.dashboard-social-list');
+    new PerfectScrollbar('.dashboard-top-countries');
+  </script>
+</body>
+
+
+<!-- Mirrored from codervent.com/syntrans/demo/horizontal/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 07 Jan 2021 05:00:53 GMT -->
+
+</html>

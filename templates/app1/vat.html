@@ -1,0 +1,217 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+
+</head>
+<body>
+
+<!-- Trigger/Open The Modal -->
+<div class="page-content">
+
+       <div class="card radius-15">
+                        <div class="card-body">
+                           <div class="row">
+                                <div class="col-md-4"></div>
+                               <div class="col-md-5"><h2 style="padding-left: 80px;">VAT</h2></div>
+                                <div class=col-md-3" style="padding-left: 50px;"><a href="{% url 'addtax' %}">
+                                <button id="myBtn" class="btn btn-outline-info text-light">Add Tax</button></a>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+       </div>
+
+     <div class="card radius-15" style="background-color: #243e54;">
+                            <div class="card-body">
+
+
+                                    <div class="row">
+
+                                        <div class="col" style="border-right:solid 1px gray; margin-top: 20px; margin-bottom: 20px;">
+
+                                            <div class="row">
+
+
+                                                <div class="col">
+                                                    <center><label style="padding-top: 25px;font-size: 30px;">&#8377; 0.0</label></center>
+                                                     <center><label style="font-size: 15px;">01/09/2021 - 30/09/2021</label></center>
+
+                                                </div>
+                                            </div>
+                                            &nbsp;
+                                            <div class="row">
+                                                <div class="col">
+
+                                                     <center><label style="padding-top: 25px;font-size: 30px;">&#8377; 0.0</label></center>
+
+                                                    <center><label style="font-size: 15px;">COLLECTED ON SALES</label></center>
+
+                                                </div>
+
+                                                <div class="col">
+                                                    <center><label style="padding-top: 35px;font-size: 30px;">-</label></center>
+
+                                                </div>
+
+                                                <div class="col">
+                                                    <center><label style="padding-top: 25px;font-size: 30px;">&#8377; 0.0</label></center>
+
+                                                    <center><label style="font-size: 15px;">PAID ON PURCHASES</label></center>
+                                                </div>
+
+                                                 <div class="col">
+                                                    <center><label style="padding-top: 35px;font-size: 30px;">-</label></center>
+                                                 </div>
+
+
+                                              <div class="col">
+                                                    <center><label style="padding-top: 25px;font-size: 30px;">&#8377; 0.0</label></center>
+
+                                                    <center><label style="font-size: 15px;">ADJUSTMENTS</label></center>
+                                               </div>
+                                            </div>
+                                            &nbsp;
+                                        </div>
+
+                                         <div class="col-4">
+
+                                              <div class="row" style="margin-top: 100px;">
+
+
+                                                <div class="col">
+                                                    <center><label style="font-size: 30px;">&#8377; 0.0</label></center>
+                                                     <center><label style="font-size: 15px;">PAYABLE BALANCE</label></center>
+
+                                                </div>
+                                            </div>
+
+                                         </div>
+                                    </div>
+                                &nbsp;
+
+                                <div class="card radius-15">
+                                     <div class="card-body">
+                                        <div>
+                                            &nbsp;<br>
+
+                                        </div>
+                                         <style>
+                                              .nav-tabs .nav-link.active {
+                                                    background: #143250;
+                                                    color: white;
+                                              }
+                                              .nav-tabs .nav-link {
+                                                  background: #243e54;
+                                              }
+                                         </style>
+
+                                         <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                             <li class="nav-item" role="Returns"> <a class="nav-link active" id="Returns-tab" data-toggle="tab" href="#Returns" role="tab" aria-controls="Returns" aria-selected="true">Returns</a> </li>
+                                             <li class="nav-item" role="Paymenthistory"> <a class="nav-link" id="Paymenthistory-tab" data-toggle="tab" href="#Paymenthistory" role="tab" aria-controls="Paymenthistory" aria-selected="false">Payment History</a> </li>
+                                        </ul>
+
+
+
+
+
+                                         <div class="tab-content card-body" id="myTabContent">
+                                         <div class="tab-pane fade show active" id="Returns" role="tabpanel" aria-labelledby="Returns-tab">
+                                        <br><br>
+
+                                             <table class="table table-hover table-responsive-md">
+                                                 <tbody>
+                                                 <tr>
+                                                     <th>START DATE</th>
+                                                     <th>END DATE</th>
+                                                     <th>PAYMENT DATE</th>
+                                                     <th>ANNUAL DUE</th>
+                                                     <th>PAYMENTS</th>
+                                                     <th>BALANCE</th>
+                                                     <th>STATUS</th>
+                                                     <th>ACTIONS</th>
+                                                 </tr>
+                                                 </tbody>
+                                                  <tbody>
+                                                 <tr>
+                                                     <td>01/09/2021</td>
+                                                     <td>30/09/2021</td>
+                                                     <td></td>
+                                                     <td>&#8377; 0.0</td>
+                                                     <td>&#8377; 0.0</td>
+                                                     <td>&#8377; 0.0</td>
+                                                     <td>Open</td>
+                                                     <td>ACTIONS</td>
+                                                 </tr>
+                                                 </tbody>
+                                             </table>
+                                         </div>
+
+                                          <div class="tab-pane fade" id="Paymenthistory" role="tabpanel" aria-labelledby="Paymenthistory-tab">
+                                           <br>
+                                              <div class="row">
+                                                    <div class="col-md-10"></div>
+                                                    <div class="col-md-2"><a href="{% url 'goaddemp' %}">
+                                                         <button id="myBtn" class="btn btn-outline-info text-light">Record Payment</button></a>
+                                                    </div>
+                                              </div>
+                                              <table class="table table-hover table-responsive-md mt-4">
+                                                 <tbody>
+                                                 <tr>
+                                                     <th>DATE</th>
+                                                     <th>TYPE</th>
+                                                     <th>TAX PERIOD</th>
+                                                     <th>AMOUNT</th>
+                                                     <th>MEMO</th>
+                                                     <th>ACTIONS</th>
+                                                 </tr>
+                                                 </tbody>
+                                                <tbody>
+                                                 <tr>
+                                                     <th colspan="6"> You haven't made any payment yet</th>
+
+                                                 </tr>
+
+                                                 </tbody>
+
+
+                                             </table>
+                                         </div>
+                                         </div>
+
+                                     </div>
+                                </div>
+
+
+    <script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+        </div>
+</div>
+
+</body>
+
+{% endblock %}

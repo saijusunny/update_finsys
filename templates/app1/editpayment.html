@@ -1,0 +1,344 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            var i = 1;
+            $("#add_row").click(function () {
+                b = i - 1;
+                $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+                $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+                i++;
+            });
+            $("#delete_row").click(function () {
+                if (i > 1) {
+                    $("#addr" + (i - 1)).html('');
+                    i--;
+                }
+                calc();
+            });
+
+            $('#tab_logic tbody').on('keyup change', function () {
+                calc();
+            });
+            $('#tax').on('keyup change', function () {
+                calc_total();
+            });
+
+
+        });
+
+        function calc() {
+            $('#tab_logic tbody tr').each(function (i, element) {
+                var html = $(this).html();
+                if (html != '') {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    $(this).find('.total').val(qty * price);
+
+                    calc_total();
+                }
+            });
+        }
+
+        function calc_total() {
+            total = 0;
+            $('.total').each(function () {
+                total += parseInt($(this).val());
+            });
+            $('#subtotal').val(total.toFixed(2));
+            taxsum = total / 100 * $('#tax').val();
+            $('#taxamnt').val(taxsum.toFixed(2));
+            $('#grndtot').val((taxsum + total).toFixed(2));
+        }
+    </script>
+
+    <style>
+        input {
+            background-color: #2f516f;
+            border: 0;
+            border-radius: 5px;
+            color: white;
+        }
+    </style>
+    <div class="page-content">
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">RECIEVE PAYMENT</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <form action="updatepayment/{{ payment.paymentid }}" method="post" class="post-form">
+            {% csrf_token %}
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div id="invoice">
+                        <header>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <center><h2>Fin sYs</h2></center>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="row mt-5">
+                            <div class="col-md-4">
+                                <label class="scol-form-label">Customer</label>
+                                <div class="d-flex">
+                                    <input name="customer" value="{{ payment.customer }}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="scol-form-label">Email</label><br>
+                                <input type="email" name="email" value="{{ payment.email }}" class="form-control"
+                                       placeholder="Email">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="scol-form-label">Find by invoice number</label><br>
+                                <input type="fbin" name="findinvoice" value="{{ payment.findinvoice }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="col-form-label">Payment Date</label>
+                                <input type="date" name="paymdate" value="{{ payment.paymdate }}"
+                                       class="form-control">
+                            </div>
+                            <div class="col-md-8"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="col-form-label">Payment Method</label>
+                                <select name="pmethod" value="{{ payment.pmethod }}" id="paymeth"
+                                        onclick="showinp('newmethod', this)" class="form-control">
+                                    <option id="newmth"></option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Credit Card">Credit Card</option>
+                                    <option value="Add New">Add New</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Reference No.</label>
+                                <input type="text" name="refno" value="{{ payment.refno }}" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Deposit to</label>
+                                <div class="d-flex">
+                                    <select name="depto" id="" value="{{ payment.depto }}" class="form-control"
+                                            style="width: 95%;">
+                                        <option value="Deferred CGST">Deferred CGST</option>
+                                        <option value="Deferred GST Input Credit">Deferred GST Input Credit</option>
+                                        <option value="Deferred IGST">Deferred IGST</option>
+                                        <option value="Deferred Krishi Kalyan Cess Input Credit">Deferred Krishi
+                                            Kalyan
+                                            Cess Input Credit
+                                        </option>
+                                        <option value="Deferred SGST">Deferred SGST</option>
+                                        <option value="Deferred Service Tax Input Credit">Deferred Service Tax Input
+                                            Credit
+                                        </option>
+                                        <option value="Deferred VAT Input Credit">Deferred VAT Input Credit</option>
+                                        <option value="GST Refund">GST Refund</option>
+                                        <option value="Inventory Asset">Inventory Asset</option>
+                                        <option value="Krishi Kalyan Cess Refund">Krishi Kalyan Cess Refund</option>
+                                        <option value="Prepaid Insurance">Prepaid Insurance</option>
+                                        <option value="Service Tax Refund">Service Tax Refund</option>
+                                        <option value="TDS Recievable">TDS Recievable</option>
+                                        <option value="Uncategorizes Asset">Uncategorizes Asset</option>
+                                        <option value="Undeposited Fund">Undeposited Fund</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary ml-1">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="newmethod" onchange="addtemopt(this)"
+                                       style="display: none;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <label class="col-form-label">Amount Received</label>
+                                <input type="text" class="form-control" onchange="showinnum('amre', this)"
+                                       value="{{ payment.amtreceived }}"
+                                       name="amtreceived">
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <h3 class="text-grey">AMOUNT RECEIVED</h3>
+                                <h5 class="text-grey" id="amre">{{ payment.amtreceived }}</h5>
+                            </div>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-12 table-responsive-md">
+                                <table class="table table-bordered table-hover" id="tab_logic">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center"> #</th>
+                                        <th class="text-center"> DESCRIPTION</th>
+                                        <th class="text-center"> DUE DATE</th>
+                                        <th class="text-center"> ORIGINAL AMOUNT</th>
+                                        <th class="text-center"> OPEN BALANCE</th>
+                                        <th class="text-center"> PAYMENT</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr id='addr0'>
+                                        <td>1</td>
+                                        <td><input type="text" value="{{ payment.descrip }}" name='descrip'
+                                                   placeholder='Enter description' class="form-control"/>
+                                        </td>
+                                        <td><input type="date" value="{{ payment.duedate }}" name='duedate'
+                                                   placeholder='Enter duedate' class="form-control"/></td>
+                                        <td><input type="number" value="{{ payment.orgamt }}" name='orgamt'
+                                                   placeholder='Enter original amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.openbal }}"
+                                                   name='openbal' placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.payment }}"
+                                                   name='payment' placeholder='0.00'
+                                                   class="form-control total" readonly/></td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>2</td>
+                                        <td><input type="text" value="{{ payment.descrip1 }}"
+                                                   name='descrip1' placeholder='Enter description'
+                                                   class="form-control"/></td>
+                                        <td><input type="date" value="{{ payment.duedate1 }}"
+                                                   name='duedate1' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="number" value="{{ payment.orgamt1 }}"
+                                                   name='orgamt1'
+                                                   placeholder='Enter original amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.openbal1 }}"
+                                                   name='openbal1' placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.payment1 }}"
+                                                   name='payment1' placeholder='0.00'
+                                                   class="form-control total" readonly/></td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>3</td>
+                                        <td><input type="text" value="{{ payment.descrip2 }}"
+                                                   name='descrip2' placeholder='Enter description'
+                                                   class="form-control"/></td>
+                                        <td><input type="date" value="{{ payment.duedate2 }}"
+                                                   name='duedate2' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="number" value="{{ payment.orgamt2 }}"
+                                                   name='orgamt2'
+                                                   placeholder='Enter original amount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.openbal2 }}"
+                                                   name='openbal2' placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.payment2 }}"
+                                                   name='payment2' placeholder='0.00'
+                                                   class="form-control total" readonly/></td>
+                                    </tr>
+                                    <tr id='addr0'>
+                                        <td>4</td>
+                                        <td><input type="text" value="{{ payment.descrip3 }}"
+                                                   name='descrip3' placeholder='Enter description'
+                                                   class="form-control"/></td>
+                                        <td><input type="date" value="{{ payment.duedate3 }}"
+                                                   name='duedate3' placeholder='Enter duedate'
+                                                   class="form-control"/></td>
+                                        <td><input type="number" value="{{ payment.orgamt3 }}"
+                                                   name='orgamt3'
+                                                   placeholder='Enter original amount'
+                                                   class="form-control qty" step="0" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.openbal3 }}"
+                                                   name='openbal3' placeholder='Enter open balance'
+                                                   class="form-control price" step="0.00" min="0"/></td>
+                                        <td><input type="number" value="{{ payment.payment3 }}"
+                                                   name='payment3' placeholder='0.00'
+                                                   class="form-control total" readonly/></td>
+                                    </tr>
+                                    </tbody>&nbsp;
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row clearfix" style="margin-top:20px">
+                            <div class="col-md-7"></div>
+                            <div class="col-md-5 table-responsive-md">
+                                <table class="table table-bordered table-hover" id="tab_logic_total">
+                                    <tbody>
+                                    <tr>
+                                        <th class="text-center">Ampunt to Apply</th>
+                                        <td class="text-center"><input type="number"
+                                                                       value="{{ payment.amtapply }}"
+                                                                       name='amtapply' placeholder='0.00'
+                                                                       class="form-control" id="subtotal">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Amount to Credit</th>
+                                        <td class="text-center"><input type="number"
+                                                                       value="{{ payment.amtcredit }}"
+                                                                       name='amtcredit' id="tax"
+                                                                       placeholder='0.00'
+                                                                       class="form-control"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-10"></div>
+                            <div class="col-md-2">
+                                <button type="submit"
+                                        class="btn btn-outline-info rounded-pill w-100 text-grey pull-left">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        function showinp(divId, element) {
+            if (element.value == 'Add New') {
+                document.getElementById(divId).style.display = 'block';
+            } else {
+                document.getElementById(divId).style.display = 'none';
+            }
+        }
+
+        function showinnum(divId, element) {
+            if (element.value) {
+                document.getElementById(divId).innerHTML = element.value;
+            } else {
+                document.getElementById(divId).innerHTML = "0.00";
+            }
+        }
+
+        function addtemopt(element) {
+            var opt = document.getElementById('newmth');
+            if (element.value) {
+                opt.value = element.value;
+                opt.innerHTML = element.value;
+            } else {
+                pass
+            }
+        }
+    </script>
+{% endblock %}

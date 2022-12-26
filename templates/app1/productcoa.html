@@ -1,0 +1,250 @@
+{% extends 'app1/base.html' %}
+
+{% block body %}
+    <div class="page-content">
+        <div class="card radius-15 h-25">
+            <div class="row">
+                <div class="col-md-12">
+                    <center><h2 class="mt-3">ACCOUNT CREATE</h2></center>
+                    <hr style="width:95%">
+                </div>
+            </div>
+        </div>
+        <div class="card p-3 radius-15 p-4">
+            <form method="post" action="productacccreate">
+                {% csrf_token %}
+                <div class="row mt-2 mb-2">
+                    <div class="col-md-6">
+                        <label for="acctyp">Account Type</label>
+                        <select name="acctype" id="select1"
+                                class="custom-select-md form-control w-100">
+                            <option value="2">Current Assets</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="name">*Name</label>
+                        <input name="name" id="name"
+                               class="custom-select-md form-control w-100">
+                    </div>
+                </div>
+                <div class="row mt-2 mb-2">
+                    <div class="col-md-6">
+                        <label for="detype">*Detail Type</label>
+                        <select name="detype" id="select3"
+                                class="custom-select-md form-control w-100"
+                                onchange="nameinput(this)">
+                            <option value="Inventory">Inventory</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="description">Description</label>
+                        <input type="text" name="description" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <textarea class="form-control mt-2" name="Type details" cols="20"
+                                  rows="10" style="font-size: small;" disabled>Use Cash and Cash Equivalents to track cash or assets that can be converted into cash immediately. For example, marketable securities and Treasury bills.</textarea>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" name="issub"
+                                   type="checkbox"
+                                   id="issub">
+                            <label class="form-check-label" for="issub">
+                                Is sub-account
+                            </label>
+                        </div>
+                        <div class="mt-2">
+                            <select name="gst" id="gst"
+                                    class="custom-select-md form-control w-100" disabled>
+                                <option></option>
+                                <option value="Deferred CGST">Deferred CGST</option>
+                                <option value="Deferred GST Input Credit">Deferred GST Input
+                                    Credit
+                                </option>
+                                <option value="Deferred IGST">Deferred IGST</option>
+                                <option value="Deferred Krishi Kalyan Cess
+                                                                Input Credit">Deferred Krishi Kalyan Cess
+                                    Input Credit
+                                </option>
+                                <option value="Deferred Service Tax Input
+                                                                Credit">Deferred Service Tax Input
+                                    Credit
+                                </option>
+                                <option value="Deferred SGST">Deferred SGST</option>
+                                <option value="Deferred VAT Input Credit">Deferred VAT Input
+                                    Credit
+                                </option>
+                                <option value="GST Refund">GST Refund</option>
+                                <option value="Inventory Asset">Inventory Asset</option>
+                                <option value="Paid Insurance">Paid Insurance</option>
+                                <option value="Service Tax Refund">Service Tax Refund
+                                </option>
+                                <option value="TDS Receivable">TDS Receivable</option>
+                                <option value="Uncategorised Asset">Uncategorised Asset
+                                </option>
+                                <option value="Accumulated Depreciation">Accumulated
+                                    Depreciation
+                                </option>
+                                <option value="Buildings and Improvements">Buildings and
+                                    Improvements
+                                </option>
+                                <option value="Furniture and Equipment">Furniture and
+                                    Equipment
+                                </option>
+                                <option value="Land">Land</option>
+                                <option value="Leasehold Improvements">Leasehold
+                                    Improvements
+                                </option>
+                                <option value="CGST Payable">CGST Payable</option>
+                                <option value="CST Payable">CST Payable</option>
+                                <option value="CST Suspense">CST Suspense</option>
+                                <option value="GST Payable">GST Payable</option>
+                                <option value="GST Suspense">GST Suspense</option>
+                                <option value="IGST Payable">IGST Payable</option>
+                                <option value="Input CGST">Input CGST</option>
+                                <option value="Input CGST Tax RCM">Input CGST Tax RCM
+                                </option>
+                                <option value="Input IGST">Input IGST</option>
+                                <option value="Input IGST Tax RCM">Input IGST Tax RCM
+                                </option>
+                                <option value="Input Krishi Kalyan Cess">Input Krishi Kalyan
+                                    Cess
+                                </option>
+                                <option value="Input Krishi Kalyan Cess
+                                                                RCM">Input Krishi Kalyan Cess
+                                    RCM
+                                </option>
+                                <option value="Input Service Tax">Input Service Tax</option>
+                                <option value="Input Service Tax RCM">Input Service Tax RCM
+                                </option>
+                                <option value="Input SGST">Input SGST</option>
+                                <option value="Input SGST Tax RCM">Input SGST Tax RCM
+                                </option>
+                                <option value="Input VAT 14%">Input VAT 14%</option>
+                                <option value="Input VAT 4%">Input VAT 4%</option>
+                                <option value="Input VAT 5%">Input VAT 5%</option>
+                                <option value="Krishi Kalyan Cess Payable">Krishi Kalyan
+                                    Cess Payable
+                                </option>
+                                <option value="Krishi Kalyan Cess
+                                                                Suspense">Krishi Kalyan Cess
+                                    Suspense
+                                </option>
+                                <option value="Output CGST">Output CGST</option>
+                                <option value="Output CGST Tax RCM">Output CGST Tax RCM
+                                </option>
+                                <option value="Output CST 2%">Output CST 2%</option>
+                                <option value="Output IGST">Output IGST</option>
+                                <option value="Output IGST Tax RCM">Output IGST Tax RCM
+                                </option>
+                                <option value="Output Krishi Kalyan Cess">Output Krishi
+                                    Kalyan Cess
+                                </option>
+                                <option value="Output Krishi Kalyan Cess
+                                                                RCM">Output Krishi Kalyan Cess
+                                    RCM
+                                </option>
+                                <option value="Output Service Tax">Output Service Tax
+                                </option>
+                                <option value="Output Service Tax RCM">Output Service Tax
+                                    RCM
+                                </option>
+                                <option value="Output SGST">Output SGST</option>
+                                <option value="Output SGST Tax RCM">Output SGST Tax RCM
+                                </option>
+                                <option value="Output VAT 14%">Output VAT 14%</option>
+                                <option value="Output VAT 4%">Output VAT 4%</option>
+                                <option value="Output VAT 5%">Output VAT 5%</option>
+                                <option value="Service Tax Payable">Service Tax Payable
+                                </option>
+                                <option value="Service Tax Suspense">Service Tax Suspense
+                                </option>
+                                <option value="SGST Payable">SGST Payable</option>
+                                <option value="SGST Suspense">SGST Suspense</option>
+                                <option value="Swachh Bharat Cess Payable">Swachh Bharat
+                                    Cess Payable
+                                </option>
+                                <option value="Swachh Bharat Cess
+                                                                Suspense">Swachh Bharat Cess
+                                    Suspense
+                                </option>
+                                <option value="TDS Payable">TDS Payable</option>
+                                <option value="VAT Payable">VAT Payable</option>
+                                <option value="VAT Suspense">VAT Suspense</option>
+                                <option value="Opening Balance">Opening Balance</option>
+                                <option value="Equity">Equity</option>
+                            </select>
+                        </div>
+                        <div class="mt-2">
+                            <label for="deftaxcode">Default Tax Code</label>
+                            <select name="deftaxcode" id="deftaxcode"
+                                    class="custom-select-md form-control w-100">
+                                <option value="{{ account1s.deftaxcode }}">{{ account1s.deftaxcode }}</option>
+                                <option value="18.0% IGST">18.0% IGST</option>
+                                <option value="14.00% ST">14.00% ST</option>
+                                <option value="0% IGST">0% IGST</option>
+                                <option value="Out of Scope">Out of Scope</option>
+                                <option value="0% GST">0% GST</option>
+                                <option value="14.5% ST">14.5% ST</option>
+                                <option value="14.0% VAT">14.0% VAT</option>
+                                <option value="6.0% IGST">6.0% IGST</option>
+                                <option value="28.0% IGST">28.0% IGST</option>
+                                <option value="15.0% ST">15.0% ST</option>
+                                <option value="28.0% GST">28.0% GST</option>
+                                <option value="12.0% GST">12.0% GST</option>
+                                <option value="18.0% GST">18.0% GST</option>
+                                <option value="3.0% GST">3.0% GST</option>
+                                <option value="0.2% IGST">0.2% IGST</option>
+                                <option value="5.0% GST">5.0% GST</option>
+                                <option value="6.0% GST">6.0% GST</option>
+                                <option value="0.2% GST">0.2% GST</option>
+                                <option value="Exempt IGST">Exempt IGST</option>
+                                <option value="3.0% IGST">3.0% IGST</option>
+                                <option value="4.0% VAT">4.0% VAT</option>
+                                <option value="5.0% IGST">5.0% IGST</option>
+                                <option value="12.36% ST">12.36% ST</option>
+                                <option value="5.0% VAT">5.0% VAT</option>
+                                <option value="Exempt GST">Exempt GST</option>
+                                <option value="12.0% IGST">12.0% IGST</option>
+                                <option value="2.0% CST">2.0% CST</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4 mt-4 mb-4">
+                        <button type="submit" class="btn btn-outline-info rounded-pill w-100">Create
+                        </button>
+                    </div>
+                    <div class="col-md-4"></div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var $checkBox = $('#issub'), $select = $('#gst');
+        $(document).ready(function () {
+            $checkBox.on('change', function (e) {
+                if ($(this).is(':checked')) {
+                    $select.removeAttr('disabled');
+                } else {
+                    $select.attr('disabled', 'disabled');
+                }
+            });
+        });
+    </script>
+    <script>
+        function nameinput(element) {
+            if (element.value) {
+                document.getElementById('name').value = element.value;
+            } else {
+                document.getElementById('name').value = '';
+            }
+        }
+    </script>
+{% endblock %}

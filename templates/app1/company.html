@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        /*custom font*/
+        @import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+        /*basic reset*/
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            height: 100%;
+            background: #213b52; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to left, #213b52, #2a0845); /* Chrome 10-25, Safari 5.1-6 */
+        }
+
+        body {
+            font-family: montserrat, arial, verdana;
+            background: transparent;
+        }
+
+        /*form styles*/
+        #msform {
+            text-align: center;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        #msform fieldset {
+            background: white;
+            border: 0 none;
+            border-radius: 0px;
+            box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+            padding: 20px 30px;
+            box-sizing: border-box;
+            width: 80%;
+            margin: 0 10%;
+
+            /*stacking fieldsets above each other*/
+            position: relative;
+        }
+
+        /*Hide all except first fieldset*/
+        #msform fieldset:not(:first-of-type) {
+            display: none;
+        }
+
+        /*inputs*/
+        #msform input, #msform textarea, #msform select {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            font-size: 13px;
+        }
+
+        #msform input:focus, #msform textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid #213b52;
+            outline-width: 0;
+            transition: All 0.5s ease-in;
+            -webkit-transition: All 0.5s ease-in;
+            -moz-transition: All 0.5s ease-in;
+            -o-transition: All 0.5s ease-in;
+        }
+
+        /*buttons*/
+        #msform .action-button {
+            width: 100px;
+            background: #213b52;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 25px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px;
+        }
+
+        #msform .action-button:hover, #msform .action-button:focus {
+            box-shadow: 0 0 0 2px white, 0 0 0 3px #213b52;
+        }
+
+        #msform .action-button-previous {
+            width: 100px;
+            background: #213b52;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 25px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px;
+        }
+
+        #msform .action-button-previous:hover, #msform .action-button-previous:focus {
+            box-shadow: 0 0 0 2px white, 0 0 0 3px #213b52;
+        }
+
+        /*headings*/
+        .fs-title {
+            font-size: 18px;
+            text-transform: uppercase;
+            color: #2C3E50;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .fs-subtitle {
+            font-weight: normal;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+
+        /* Not relevant to this form */
+        .dme_link {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .dme_link a {
+            background: #FFF;
+            font-weight: bold;
+            color: #ee0979;
+            border: 0 none;
+            border-radius: 25px;
+            cursor: pointer;
+            padding: 5px 25px;
+            font-size: 12px;
+        }
+
+        .dme_link a:hover, .dme_link a:focus {
+            background: #C5C5F1;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<!-- MultiStep Form -->
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <form id="msform" action="register/{{ member.id }}" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <!-- fieldsets -->
+            <fieldset>
+                <h2 class="mb-4">We're Happy you're Here!</h2>
+                <input type="text" name="cname" placeholder="Company Name"/>
+                <input type="text" name="caddress" placeholder="Company Address"/>
+                <input type="text" name="city" placeholder="City"/>
+                <select type="text" id="plosu" name="state" style="background-color: white;">
+                    <option value="" selected>Choose</option>
+                    <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                    <option value="Andhra Predhesh">Andhra Predhesh</option>
+                    <option value="Arunachal Predesh">Arunachal Predesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chandigarh">Chandigarh</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                    <option value="Damn anad Diu">Damn anad Diu</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Predesh">Himachal Predesh</option>
+                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Ladakh">Ladakh</option>
+                    <option value="Lakshadweep">Lakshadweep</option>
+                    <option value="Madhya Predesh">Madhya Predesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Puducherry">Puducherry</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Predesh">Uttar Predesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="Other Territory">Other Territory</option>
+                </select>
+                <input type="number" name="pincode" placeholder="Pincode"/>
+                <input type="email" name="cemail" placeholder="Email"/>
+                <input type="number" name="phone" placeholder="Phone Number"/>
+                <input type="file" name="img1"/>
+                <input type="button" name="next" class="next action-button" value="Next"/>
+            </fieldset>
+            <fieldset>
+                <h2 class="mb-4">Let's Start Building Your FinsYs</h2>
+                <input type="text" name="bname" placeholder="Legal Business Name" required/>
+                <label for="industry" style="float: left;">Your Industry</label>
+                <select name="industry" id="industry" class="was-validated" required>
+                    <option value="Accounting Services">Accounting Services</option>
+                    <option value="Consultants, doctors, Lawyers and similar">Consultants, doctors, Lawyers and
+                        similar
+                    </option>
+                    <option value="Information Tecnology">Information Tecnology</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Professional Scientific and Technical Services">Professional, Scientific and
+                        Technical Services
+                    </option>
+                    <option value="Restaurant/Bar and similar">Restaurant/Bar and similar</option>
+                    <option value="Retail and Smilar">Retail and Smilar</option>
+                    <option value="Other Finanacial Services">Other Finanacial Services</option>
+                </select>
+                <label for="ctype" style="float: left;">Company type</label>
+                <select name="ctype" id="ctype" class="was-validated" required/>
+                <option value="Private Limited Company">Private Limited Company</option>
+                <option value="Public Limited Company">Public Limited Company</option>
+                <option value="Joint-Venture Company">Joint-Venture Company</option>
+                <option value="Partnership Firm Company">Partnership Firm Company</option>
+                <option value="One Person Company">One Person Company</option>
+                <option value="Branch Office Company">Branch Office Company</option>
+                <option value="Non Government Organization">Non Government Organization</option>
+                </select>
+                <label for="abt" style="float: left;">Do you have an Accountant, Bookkeeper or Tax Pro ?</label>
+
+                <input type="radio" id="abt" name="abt" value="Yes" required/>
+                <label for="abt">Yes</label>
+                <input type="radio" id="abt" name="abt" value="No" required/>
+                <label for="abt">No</label><br>
+
+
+                <label style="float: left;">How do you like to get paid?</label>
+                <select name="paid" class="was-validated" required/>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Credit card/Debit card">Credit card/Debit card</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Paypal/Other service">Paypal/Other service</option>
+                </select>
+
+                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                <input type="submit" name="submit" class="next action-button" value="Submit"/>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<script>
+
+    //jQuery time
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var left, opacity, scale; //fieldset properties which we will animate
+    var animating; //flag to prevent quick multi-click glitches
+
+    $(".next").click(function () {
+
+        if (animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        next_fs = $(this).parent().next();
+
+        //activate next step on progressbar using the index of next_fs
+        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+        //show the next fieldset
+        next_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function (now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale current_fs down to 80%
+                scale = 1 - (1 - now) * 0.2;
+                //2. bring next_fs from the right(50%)
+                left = (now * 50) + "%";
+                //3. increase opacity of next_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({
+                    'transform': 'scale(' + scale + ')',
+                    'position': 'absolute'
+                });
+                next_fs.css({'left': left, 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function () {
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+    $(".previous").click(function () {
+        if (animating) return false;
+        animating = true;
+
+        current_fs = $(this).parent();
+        previous_fs = $(this).parent().prev();
+
+        //de-activate current step on progressbar
+        $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+        //show the previous fieldset
+        previous_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+            step: function (now, mx) {
+                //as the opacity of current_fs reduces to 0 - stored in "now"
+                //1. scale previous_fs from 80% to 100%
+                scale = 0.8 + (1 - now) * 0.2;
+                //2. take current_fs to the right(50%) - from 0%
+                left = ((1 - now) * 50) + "%";
+                //3. increase opacity of previous_fs to 1 as it moves in
+                opacity = 1 - now;
+                current_fs.css({'left': left});
+                previous_fs.css({'transform': 'scale(' + scale + ')', 'opacity': opacity});
+            },
+            duration: 800,
+            complete: function () {
+                current_fs.hide();
+                animating = false;
+            },
+            //this comes from the custom easing plugin
+            easing: 'easeInOutBack'
+        });
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% if user.is_authenticated %}
+        {% load static %}
+
+        <style type="text/css">
+            input {
+                background-color: #2f516f;
+                border: 0;
+                border-radius: 5px;
+                color: white;
+            }
+        </style>
+        <div class="page-content">
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-lg-12 col-xl-12">
+                            <div class="card" style="background-color: #2a4964;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8 mt-4 mb-4">
+                                        <center>
+                                            <h5 class="card-title"><h3>NEW JOURNAL</h3></h5>
+                                        </center>
+                                    </div><br>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form action="{% url 'create_mjournal' %}" method="post" id="form" enctype="multipart/form-data" class="needs-validation" validate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12 mx-0">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="col-form-label">Date*</label>
+                                                <div class="d-flex">
+                                                    <input type="date" required  name="dateto1" id="date" class="form-control" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="col-form-label">Journal no * </label>
+                                                <input type="text" class="form-control"   id="jno" name="jnum"  required> </div>
+                                            <div class="col-md-3">
+                                                <label class="col-form-label">Reference no  </label>
+                                                <input type="text" class="form-control"  id="rjno" name="rjnum">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-12 mx-0">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <label class="col-form-label">Notes *</label>
+                                                                <textarea class="form-control" rows="3" id="notes" name="jnotes" required></textarea>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="col-form-label">Currency</label>
+                                                                <select class="form-control"  id="currency" name="jcurrency" required>
+                                                                    <option value="INR-Indian Rupee">INR-Indian Rupee</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6 mt-3">
+                                                               
+                                                            </div>
+                                                           
+                                                        </div>
+                                                        
+                                        <div class="row">
+                                            <div class="col-md-4" >
+                            
+                                                <label class="col-form-label">Journal Type </label>
+                                                <input style="margin-left:90px;" type="checkbox" 
+                                                       name="jtype">
+                                                       <label class="col-form-label">Cash based journal</label>
+                                            </div>
+                                    </div><br>
+                                        <div class="row">
+                                            <div class="col-md-12 table-responsive-md">
+                                                <table class="table table-bordered table-hover" id="tab_logic">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center"> #</th>
+                                                        <th class="text-center">Select Account</th>
+                                                        <th class="text-center">Description</th>
+                                                        <th>Contact(INR)</th>
+                                                        <th>Debits</th>
+                                                        <th>Credits</th>
+                                                        <th></th>
+                                                        <th style="display: none;"></th>
+                                                        <th style="display: none;"></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="items-table-body">
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>
+                                                            <select name='account[]' id="account" class="form-control" required>
+                                                                <option value="" selected disabled required>Select Account</option>
+                                                                {% for a in acc %}
+                                                                        <option   value="{{ a.name }}">{{ a.name }} </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                        <td><input type="text" name='jdesc[]' id="jdesc1"
+                                                                   placeholder='Enter Description' class="form-control" >
+                                                        </td>
+                                                        <td>
+                                                            <select name='jcontact[]' id="jcontact1" class="form-control" >
+                                                                <option value="null"  >Select Contact</option>
+                                                                {% for a in cust %}
+                                                                    <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
+                                                                {% endfor %}
+                                                                {% for a in vend %}
+                                                                    <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" name='jdebit[]' id="jdebit1"
+                                                                   class="form-control debit" value="0" step="0" min="0"/>
+                                                                   <span id="qtyspan" class="text-muted"></span>
+                                                        </td>
+                                                        <td><input type="number" name='jcredit[]' value="0" id="jcredit1"
+                                                                   class="form-control credit" step="0.00"
+                                                                   min="0"/>
+                                                        </td>
+                                                        <td style="display: none;"><input type="number" class="form-control total"></td>
+                                                        <td style="display: none;"><input type="number" class="form-control total1"></td>
+                                                        <td><input type="checkbox" name="record"></td>
+                                                    </tr>    
+                                                    <tr id="#addr0">
+                                                        <td>2</td>
+                                                        <td>
+                                                            <select name='account[]' id="account1" class="form-control" required>
+                                                                <option value="" selected disabled>Select Account</option>
+                                                                {% for a in acc %}
+                                                                        <option   value="{{ a.name }}">{{ a.name }} </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                        <td><input type="text" name='jdesc[]' id="jdesc2"
+                                                                   placeholder='Enter Description' class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <select name='jcontact[]' id="jcontact2" class="form-control">
+                                                                <option value="null"  >Select Contact</option>
+                                                                {% for a in cust %}
+                                                                    <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
+                                                                {% endfor %}
+                                                                {% for a in vend %}
+                                                                    <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" name='jdebit[]' value="0" id="jdebit2"
+                                                                   class="form-control debit" step="0" min="0"/>
+                                                        </td>
+                                                        <td><input type="number" name='jcredit[]' value="0" id="jcredit2"
+                                                                   class="form-control credit" step="0.00"
+                                                                   min="0"/>
+                                                        </td>
+                                                        <td style="display: none;"><input type="number" class="form-control total"></td>
+                                                        <td style="display: none;"><input type="number" class="form-control total1"></td>
+                                                        
+                                                        <td><input type="checkbox" name="record"></td>
+                                                    
+                                                    </tr>
+                                                    </tbody>
+                                                    <tr>
+                                                        <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="add_item_row()">+</a></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><button type="button" id="rm" class="btn btn-outline-secondary ml-1 delete-row">-</button></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix" style="margin-top:20px">
+                                            <div class="col-md-6">
+                                                <label for="formFileMultiple" class="form-label">Attach File(s)</label><br>
+                                                <input  type="file" name="pic" id="formFileMultiple" multiple />
+                                            </div>
+                                            <div class="col-md-6 table-responsive-md">
+                                                <table class="table table-bordered table-hover"
+                                                       id="tab_logic_total">
+                                                    <tbody>
+                                                    <tr>
+                                                        <th class="text-center">Sub Total</th>
+                                                        <td class="text-center"><input
+                                                            type="number"
+                                                                                       name='sub_total'
+                                                                                       placeholder='0.00'
+                                                                                       class="form-control"
+                                                                                       id="subtotal" />
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                            type="number"
+                                                                                       name='sub_total1'
+                                                                                       placeholder='0.00'
+                                                                                       class="form-control"
+                                                                                       id="sub_total" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center">Total Amount</th>
+                                                        <td class="text-center"><input type="number"
+                                                                                       name='total_amount'
+                                                                                       id="tax_amount"
+                                                                                       placeholder='0.00'
+                                                                                       class="form-control"
+                                                                                       />
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" name='total_amount1' placeholder='0.00' class="form-control"
+                                                            id="sub_total" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center"> Difference</th>
+                                                        <td><input type="number" name='differ' id="diff" placeholder='0.00'
+                                                            class="form-control diff"/>
+                                                        </td>
+                                                        <td><input type="number" name='differ' id="diff1" placeholder='0.00'
+                                                            class="form-control diff1"/>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                    </div>
+                                    <div class="row mt-5 mb-5">
+                                        <div class="col-md-4">
+                                            <a href="{% url 'gomjoural' %}"class="btn btn-outline-info rounded-pill w-25 text-light"
+                                            >
+                                            BACK
+                                         </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-info rounded-pill w-100 text-light"
+                                                    type="submit">SAVE
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                       
+                                        <div class="row mt-5 mb-5">
+                                            <div class="notices">
+                                                <div class="text-muted">NOTICE:</div>
+                                                <div class="notice text-muted">
+                                                    Fin sYs Terms and Conditions Apply
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            $('#date').val(new Date().toJSON().slice(0,10));
+        </script>
+
+        <script>
+            var item_row_counter = 2
+
+            function add_item_row() {
+                old_item_row_count = item_row_counter
+                item_row_counter++;
+
+                $('#items-table-body >tr:last').clone(true).insertAfter('#items-table-body >tr:last');
+                $('#items-table-body >tr:last input').val('');
+
+                $('#items-table-body >tr:last td')[0].innerHTML = item_row_counter
+                update_amounts($('#items-table-body input[name=jcredit2]:last'));
+            }
+
+            function setup_rows() {
+                $("#addrow").click(function(event) {
+                event.preventDefault();
+                add_item_row();
+                });
+
+                for (var i = 0; i <= 4; i++) {
+                    add_item_row();
+                }
+            }
+
+            $(document).ready(function(){
+                $(".delete-row").click(function(){
+                    $("table tbody").find('input[name="record"]').each(function(){
+            	        if($(this).is(":checked")){
+                            $(this).parents("tr").remove();
+                        }
+                    });
+                });
+            });   
+        </script>
+
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('#tab_logic tbody').on('keyup change', function() {
+                    calc();
+                });
+
+                function calc() {
+                    $('#tab_logic tbody tr').each(function() {
+                        var html = $(this).html();
+                        if (html != '') {
+                            var debit = $(this).find('.debit').val();
+                            var credit = $(this).find('.credit').val();
+                        
+                            $(this).find('.total').val(parseFloat(+debit));
+                            $(this).find('.total1').val(parseFloat(+credit));
+                            
+                            calc_total();
+                        }
+                    });
+                }
+                function calc_total() {
+                    total = 0;
+                    total1 = 0;
+                    $('.total').each(function() {
+                        total += parseFloat($(this).val());
+                    });
+                    $('.total1').each(function() {
+                        total1 += parseFloat($(this).val());
+                    });
+
+                    $('#subtotal').val(parseFloat(total.toFixed(2)));
+                    $('#sub_total').val(parseFloat(total1.toFixed(2)));
+                    calc_diff();
+                }
+                function calc_diff() {
+                    $('.subtotal').each(function() {
+                        subtotal += parseFloat($(this).val());
+                    });
+                    $('.sub_total').each(function() {
+                        sub_total += parseFloat($(this).val());
+                    });
+
+                    x=0
+                    if (subtotal === sub_total) {
+                        $('#diff').val(parseFloat(x.toFixed(2)));
+                        $('#diff1').val(parseFloat(x.toFixed(2)));
+                    } else if (subtotal > sub_total) {
+
+                        $('#diff').val(parseFloat(x.toFixed(2)));
+                    } else {
+                    // do something if the first input is less than the secongvgd
+                    }
+                }
+                
+            }); 
+        </script>
+        <!-- <script>
+            $('#form').submit(function() {
+                var match = $('#subtotal').text() == $('#sub_total').text();
+                // var id1 = $('#jdebit1').text();
+                // var id2 = $('jcredit2').text();
+                if (match) {
+                    alert('Please ensure that the debit and credit are equal');
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            });
+        </script> -->
+       
+    {% endif %}
+{% endblock %}
+
+
+

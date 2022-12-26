@@ -1,0 +1,796 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load social_share %}
+
+    {% load static %}
+    {% if user.is_authenticated %}
+
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'assets/css/estimate.css' %}"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
+   
+
+
+<style>
+
+
+hr {
+    border: 0;
+    clear:both;
+    display:block;
+    width: 96%;               
+    background-color:#000000;
+    height: 1px;
+  }
+.spaced>li {
+    color:black;
+    font-size:10px;
+}
+
+.table1{
+    font-size:10px;
+    width:100% ;
+    color:black;
+
+}
+.label-lg {
+        padding: .3em .6em .4em;
+        font-size: 12px;
+        color:black;
+        line-height: 1.1;
+        height: 24px
+}
+.widget-header{
+    background-color:#444;
+    color:white;
+    font-size:14px;
+}
+.widget-header:after,
+.widget-header:before {
+        content: "";
+        display: table;
+        line-height: 0
+}
+.widget-header:after {
+        clear: right
+}
+.widget-box.collapsed>.widget-header {
+        border-bottom-width: 0
+    }
+    
+    .collapsed.fullscreen>.widget-header {
+        border-bottom-width: 1px
+    }
+    
+    .collapsed>.widget-body {
+        display: none
+    }
+    
+    .widget-header-flat {
+        background: #F7F7F7
+    }
+    
+    .widget-header-large {
+        min-height: 49px;
+        padding-left: 18px
+    }
+    
+
+    
+    .widget-header-small {
+        min-height: 31px;
+        padding-left: 10px
+    }
+    
+    .widget-header>.widget-title {
+        line-height: 36px;
+        padding: 0;
+        margin: 0;
+        display: inline;
+        font-size:13px;
+    }
+    
+    
+    
+    .widget-toolbar {
+        display: inline-block;
+        padding: 0 10px;
+        line-height: 37px;
+        float: right;
+        position: relative;
+    }
+    
+    
+    
+    
+    
+   
+    
+    .widget-body {
+        background-color: #FFF
+    }
+    
+    .widget-main {
+        padding: 12px
+    }
+    
+   
+    
+</style>
+<script>
+
+
+    async function generatePDF() {
+        // document.getElementById("downloadButton").innerHTML = "Currently downloading, please wait";
+
+        //Downloading
+        var downloading = document.getElementById("whatToPrint");
+        var doc = new jsPDF('l', 'pt');
+
+        await html2canvas(downloading, {
+            //allowTaint: true,
+            //useCORS: true,
+            // width: 600
+            
+        }).then((canvas) => {
+            //Canvas (convert to PNG)
+            doc.addImage(canvas.toDataURL("image/png"), 'PNG', 15, 10, 700, 850);
+        })
+
+        
+
+        doc.save("Document.pdf");
+
+
+        //End of downloading
+
+        // document.getElementById("downloadButton").innerHTML = "Click to download";
+    }
+
+    
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" ></script>
+
+ 
+
+    <script type="text/javascript">
+    $(document).ready(function($) 
+    { 
+
+        $(document).on('click', '.btn_print', function(event) 
+        {
+            event.preventDefault();
+
+            //credit : https://ekoopmans.github.io/html2pdf.js
+            
+            var element = document.getElementById('whatToPrint'); 
+
+            //easy
+            //html2pdf().from(element).save();
+
+            //custom file name
+            //html2pdf().set({filename: 'code_with_mark_'+js.AutoCode()+'.pdf'}).from(element).save();
+
+
+            //more custom settings
+            var opt = 
+            {
+              margin:       1,
+              filename:     'pageContent_'+'.pdf',
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2 },
+              jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // New Promise-based usage:
+            html2pdf().set(opt).from(element).save();
+
+             
+        });
+
+ 
+ 
+    });
+    </script>
+
+
+
+
+
+
+
+
+<script>
+
+function uplodfile(){
+
+    async function generatePDF() {
+        // document.getElementById("downloadButton").innerHTML = "Currently downloading, please wait";
+
+        //Downloading
+        var downloading = document.getElementById("whatToPrint");
+        var doc = new jsPDF('l', 'pt');
+
+        await html2canvas(downloading, {
+            //allowTaint: true,
+            //useCORS: true,
+            // width: 600
+            
+        }).then((canvas) => {
+            //Canvas (convert to PNG)
+            doc.addImage(canvas.toDataURL("image/png"), 'PNG', 15, 10, 700, 850);
+        })
+
+        
+
+        data=doc.save("Document.pdf");
+
+
+        //End of downloading
+
+        // document.getElementById("downloadButton").innerHTML = "Click to download";
+    }
+
+    $.ajax({
+        method: "POST",
+        url : "/estimate_pdf/",
+        processData :false,
+        contentType :false,
+        data : data,
+        success:function(res){
+            console.log(res)
+        }
+
+
+    })
+}
+   
+</script>
+	
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    
+
+    
+
+    <div class="page-content" >
+
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0">EXPENSE VIEW</h2> <h4></h4></center>
+                    <hr>
+                </div>
+                <div class="btn-group" style="float: right; ">
+
+                    
+                <a href="#" class=" fa fa-pencil" data-dismiss="modal" data-target="#edit_expl" data-toggle="modal" style="padding: 10px; cursor: pointer;"> Edit</a>
+
+                
+                <a   style="padding: 10px; margin-top: -5px; cursor: pointer;" > 
+
+                 <form  action="{%url 'deleteexp' exp_dat.bnkpymid%} "> 
+                    <i class="fa fa-trash-o delete"> Delete</i>
+                    <input name="_method" type="hidden" value="DELETE">
+                    
+                    </form> </a>
+                
+                    
+            </div>    
+            </div>
+        </div>
+        
+
+        
+        <div  id="whatToPrint">
+            
+            <div class="my-5 page " size="A4" >
+                <div class="py-5">
+                    <div class="container">
+                      <div class="row hidden-md-up">
+                        <div class="col-md-8" style="margin: auto;" >
+                          <div class="card">
+                            <div class="card-block">
+                              <div class="card-body">
+                                <div class="container bootdey">
+                                    <div class="row">
+                                            <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
+                                                <div class="widget-box">
+                                                    <div class="widget-header widget-header-large" >
+                                                        <h6 class="widget-title ">
+                                                            Expense Details
+                                                        </h6>
+                                    
+                                                      
+                                                    </div>
+                                    
+                                                    <div class="widget-body">
+                                                        <div class="widget-main padding-24">
+                                                            <div class="row"  style="padding:20px;" >
+                                                                <div class="col-sm-12">
+                                                                    <div class="col-6">
+                                                                        <div style="width:30px;">
+                                                                            <img src="/media/images/default.png">
+                                                                          </div>
+                                                      
+                                                                    </div>
+                                    
+                                                                    <div class="col-6">
+                                                                        <h5 style="font-size:14px;color:black;">{{cmp1.cname}}<br>
+                                                                          {{cmp1.pincode}}<br>
+                                                                             {{cmp1.state}}, <br>
+                                                                             {{cmp1.cemail}}
+                                                                            <br>
+                                                                            {{cmp1.phone}} <br>
+                                                                        
+                                                                    </h5>
+                                                                       
+                                                                    </div>
+                                                                     <hr>
+                                                                </div><!-- /.col -->
+                                                               
+                                                              
+                                                            </div><!-- /.row -->
+                                   
+                                                            <div class="row col-12">
+                                                                <div class="col-8">
+                                                                    <h5 style="font-size:14px;color:black;">
+                                                                        Expense Vendor : {{exp_dat.vendor}}<br><br>
+                                                                        Expense date : {{exp_dat.date}}<br><br>
+                                                                        expense account : {{exp_dat.expenseaccount}}<br><br>
+                                                                        reference no. : {{exp_dat.reference}}<br><br>
+                                                                        Description : {{exp_dat.des}}<br><br</h5>
+                                                                
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    <p style="background-color:green;text-align:center;">&nbsp &nbspAmount<br>
+                                                                        &nbsp ₹ {{exp_dat.amount_received}}</p>
+                                                                </div>
+                                                               
+                                                            </div><br>
+                                    
+                                                            <div class="hr hr8 hr-double hr-dotted"></div>
+                                    
+                                                           
+                                                            </div>
+                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>    
+                            
+                              
+                             
+                            </div>
+                          </div>
+                        </div>
+                       
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+            </div>
+
+                <div class="modal fade" id="edit_expl">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" style="background-color: #213b52;">
+                            <div class="modal-header">
+                                <h3 class="m-3">Edit Expense</h3>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card p-3 m-3">
+                                    <form method="post" action="{% url 'exp_edit' exp_dat.bnkpymid%}">
+                                        {% csrf_token %}
+                                        <div class="row mt-2 mb-2">
+                                            <div class="col-md-6">
+                                                <label for="acctyp">Expense Account</label>
+                                                <select class="form-control" name="acc_type">
+                                                <option>{{exp_dat.expenseaccount}}</option>  
+                                                <option>Advertising and Marketing</option>
+                                                <option>Audit Fee</option>
+                                                <option>Automobile Expense</option>
+                                                <option>Bad Debt</option>
+                                                <option>Bank Fee And Charges </option>
+                                                <option>Automobile charges</option>
+                                                <option>Deprieciation Expenses</option>
+                                                <option>Documentation Charges</option>
+                                                <option>Electricity Expenses </option>
+                                                <option>Food Expenses</option>
+                                                <option>IT And Internet charges</option>
+                                                <option>Labour Charges</option>
+                                                <option>Miscellaneous Expenses</option>
+                                                <option>Printing And Stationary</option>
+                                               </select>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label for="name">*Vendor</label>
+                                                <select class="form-control" name="vendor_nm">
+                                                    <option value="NIL" disabled selected>{{exp_dat.customer}}</option>
+                                                    {% for vend in vendors %}
+                                                    {% if vend.cid_id == cmp1.cid %}
+                                                    
+                                                    <option text="{{ vend.vendorid }}" value="{{ vend.firstname }} {{ vend.lastname }}">{{ vend.firstname }} {{ vend.lastname }}</option>
+                                                    
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                
+                                        </div>
+                                        <div class="row mt-2 mb-2">
+                                            <div class="col-md-6">
+                                                <a href="" data-dismiss="modal" data-target="#newaccmodelbank"
+                                                data-toggle="modal" class="btn btn-info ">+</a>
+                                                <a>Add New </a>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label for="description">Amount</label>
+                                                <input type="text" value={{exp_dat.amount_received}} name="amount" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Description</label>
+                                        <textarea class="form-control mt-2" type="text"  name="Type details" cols="20" class="form-control"
+                                                  rows="10" style="font-size: small;" >{{exp_dat.des}}</textarea>
+                                            </div>
+                                           
+                                            <div class="col-md-6 mt-2">
+                                                <div >
+                                                    <div>
+                                                      
+                                                    <label for="detype">Date </label>
+                                                    <input type="date" placeholder="dd-mm-yyyy" name='dt_exp' value="{{exp_dat.date  | date:'Y-m-d' }}"  class="form-control">
+                                                        
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mt-2">
+                                                   <label>#Reference</label>
+                                                   <input type="text" name="ref_no" value={{exp_dat.reference}} class="form-control">
+                                                </div><br>
+                                                <div class="mt-2">
+                                                    
+                                                 </div>
+                                                <div class="mt-2">
+                                                    <label></label>
+                                                    <input type="file" name="pic" value={{exp_dat.file}}  class="form-control">
+                                                 </div>
+                                                
+                                                    <div class="mt-2">
+                                                        <label for="cust">Customer</label>
+                                                        <input type="text" name="balance" value={{exp_dat.customer}} id="balance"
+                                                               class="form-control">
+                                                    </div>
+                                                   
+                                               
+                
+                                            </div>
+                                        </div>
+                                        <div class="mt-3" style="text-align: center;">
+                                            
+                                            <button type="submit" class="btn btn-outline-info">Save Update
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="newaccmodelbank">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content" style="background-color: #213b52;">
+                            <div class="modal-header">
+                                <h3 class="m-3">New Expense</h3>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card p-3 m-3">
+                                    <form method="post" action="">
+                                        {% csrf_token %}
+                                        <div class="row mt-2 mb-2">
+                                            <div class="col-md-6">
+                                                <label for="acctyp">Account Type</label>
+                                               <input type="text" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="name">*Name</label>
+                                                <input name="name" id="name"
+                                                       class="custom-select-md form-control w-100">
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2 mb-2">
+                                            <div class="col-md-6">
+                                                <label for="detype">*Detail Type</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="description">Description</label>
+                                                <input type="text" name="description" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                        <textarea class="form-control mt-2" name="Type details" cols="20"
+                                                  rows="10" style="font-size: small;" disabled>Use Cash and Cash Equivalents to track cash or assets that can be converted into cash immediately. For example, marketable securities and Treasury bills.</textarea>
+                                            </div>
+                                            <div class="col-md-6 mt-2">
+                                                <div class="form-check">
+                                                    <div>
+                                                        <input class="form-check-input" name="issub"
+                                                               type="checkbox"
+                                                               value="is sub account"
+                                                               id="issub">
+                                                        <label class="form-check-label" for="issub">
+                                                            Is sub-account
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <select name="gst" id="gst"
+                                                            class="custom-select-md form-control w-100"
+                                                           >
+                                                        <option value="Deferred CGST">Deferred CGST</option>
+                                                        <option value="Deferred GST Input Credit">Deferred
+                                                            GST Input Credit
+                                                        </option>
+                                                        <option value="Deferred IGST">Deferred IGST</option>
+                                                        <option value="Deferred Krishi Kalyan Cess
+                                                    Input Credit">Deferred Krishi Kalyan Cess
+                                                            Input Credit
+                                                        </option>
+                                                        <option value="Deferred Service Tax Input
+                                                    Credit">Deferred Service Tax Input
+                                                            Credit
+                                                        </option>
+                                                        <option value="Deferred SGST">Deferred SGST</option>
+                                                        <option value="Deferred VAT Input Credit">Deferred
+                                                            VAT
+                                                            Input
+                                                            Credit
+                                                        </option>
+                                                        <option value="GST Refund">GST Refund</option>
+                                                        <option value="Inventory Asset">Inventory Asset
+                                                        </option>
+                                                        <option value="Paid Insurance">Paid Insurance
+                                                        </option>
+                                                        <option value="Service Tax Refund">Service Tax
+                                                            Refund
+                                                        </option>
+                                                        <option value="TDS Receivable">TDS Receivable
+                                                        </option>
+                                                        <option value="Uncategorised Asset">Uncategorised
+                                                            Asset
+                                                        </option>
+                                                        <option value="Accumulated Depreciation">Accumulated
+                                                            Depreciation
+                                                        </option>
+                                                        <option value="Buildings and Improvements">Buildings
+                                                            and
+                                                            Improvements
+                                                        </option>
+                                                        <option value="Furniture and Equipment">Furniture
+                                                            and
+                                                            Equipment
+                                                        </option>
+                                                        <option value="Land">Land</option>
+                                                        <option value="Leasehold Improvements">Leasehold
+                                                            Improvements
+                                                        </option>
+                                                        <option value="CGST Payable">CGST Payable</option>
+                                                        <option value="CST Payable">CST Payable</option>
+                                                        <option value="CST Suspense">CST Suspense</option>
+                                                        <option value="GST Payable">GST Payable</option>
+                                                        <option value="GST Suspense">GST Suspense</option>
+                                                        <option value="IGST Payable">IGST Payable</option>
+                                                        <option value="Input CGST">Input CGST</option>
+                                                        <option value="Input CGST Tax RCM">Input CGST Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Input IGST">Input IGST</option>
+                                                        <option value="Input IGST Tax RCM">Input IGST Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Input Krishi Kalyan Cess">Input
+                                                            Krishi
+                                                            Kalyan
+                                                            Cess
+                                                        </option>
+                                                        <option value="Input Krishi Kalyan Cess
+                                                    RCM">Input Krishi Kalyan Cess
+                                                            RCM
+                                                        </option>
+                                                        <option value="Input Service Tax">Input Service Tax
+                                                        </option>
+                                                        <option value="Input Service Tax RCM">Input Service
+                                                            Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Input SGST">Input SGST</option>
+                                                        <option value="Input SGST Tax RCM">Input SGST Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Input VAT 14%">Input VAT 14%</option>
+                                                        <option value="Input VAT 4%">Input VAT 4%</option>
+                                                        <option value="Input VAT 5%">Input VAT 5%</option>
+                                                        <option value="Krishi Kalyan Cess Payable">Krishi
+                                                            Kalyan
+                                                            Cess Payable
+                                                        </option>
+                                                        <option value="Krishi Kalyan Cess
+                                                    Suspense">Krishi Kalyan Cess
+                                                            Suspense
+                                                        </option>
+                                                        <option value="Output CGST">Output CGST</option>
+                                                        <option value="Output CGST Tax RCM">Output CGST Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Output CST 2%">Output CST 2%</option>
+                                                        <option value="Output IGST">Output IGST</option>
+                                                        <option value="Output IGST Tax RCM">Output IGST Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Output Krishi Kalyan Cess">Output
+                                                            Krishi
+                                                            Kalyan Cess
+                                                        </option>
+                                                        <option value="Output Krishi Kalyan Cess
+                                                    RCM">Output Krishi Kalyan Cess
+                                                            RCM
+                                                        </option>
+                                                        <option value="Output Service Tax">Output Service
+                                                            Tax
+                                                        </option>
+                                                        <option value="Output Service Tax RCM">Output
+                                                            Service
+                                                            Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Output SGST">Output SGST</option>
+                                                        <option value="Output SGST Tax RCM">Output SGST Tax
+                                                            RCM
+                                                        </option>
+                                                        <option value="Output VAT 14%">Output VAT 14%
+                                                        </option>
+                                                        <option value="Output VAT 4%">Output VAT 4%</option>
+                                                        <option value="Output VAT 5%">Output VAT 5%</option>
+                                                        <option value="Service Tax Payable">Service Tax
+                                                            Payable
+                                                        </option>
+                                                        <option value="Service Tax Suspense">Service Tax
+                                                            Suspense
+                                                        </option>
+                                                        <option value="SGST Payable">SGST Payable</option>
+                                                        <option value="SGST Suspense">SGST Suspense</option>
+                                                        <option value="Swachh Bharat Cess Payable">Swachh
+                                                            Bharat
+                                                            Cess Payable
+                                                        </option>
+                                                        <option value="Swachh Bharat Cess
+                                                    Suspense">Swachh Bharat Cess
+                                                            Suspense
+                                                        </option>
+                                                        <option value="TDS Payable">TDS Payable</option>
+                                                        <option value="VAT Payable">VAT Payable</option>
+                                                        <option value="VAT Suspense">VAT Suspense</option>
+                                                        <option value="Opening Balance">Opening Balance
+                                                        </option>
+                                                        <option value="Equity">Equity</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <label for="deftaxcode">Default Tax Code</label>
+                                                    <select name="deftaxcode" id="deftaxcode"
+                                                            class="custom-select-md form-control w-100">
+                                                        <option value="0">Choose</option>
+                                                        <option value="18.0% IGST">18.0% IGST</option>
+                                                        <option value="14.00% ST">14.00% ST</option>
+                                                        <option value="0% IGST">0% IGST</option>
+                                                        <option value="Out of Scope">Out of Scope</option>
+                                                        <option value="0% GST">0% GST</option>
+                                                        <option value="14.5% ST">14.5% ST</option>
+                                                        <option value="14.0% VAT">14.0% VAT</option>
+                                                        <option value="6.0% IGST">6.0% IGST</option>
+                                                        <option value="28.0% IGST">28.0% IGST</option>
+                                                        <option value="15.0% ST">15.0% ST</option>
+                                                        <option value="28.0% GST">28.0% GST</option>
+                                                        <option value="12.0% GST">12.0% GST</option>
+                                                        <option value="18.0% GST">18.0% GST</option>
+                                                        <option value="3.0% GST">3.0% GST</option>
+                                                        <option value="0.2% IGST">0.2% IGST</option>
+                                                        <option value="5.0% GST">5.0% GST</option>
+                                                        <option value="6.0% GST">6.0% GST</option>
+                                                        <option value="0.2% GST">0.2% GST</option>
+                                                        <option value="Exempt IGST">Exempt IGST</option>
+                                                        <option value="3.0% IGST">3.0% IGST</option>
+                                                        <option value="4.0% VAT">4.0% VAT</option>
+                                                        <option value="5.0% IGST">5.0% IGST</option>
+                                                        <option value="12.36% ST">12.36% ST</option>
+                                                        <option value="5.0% VAT">5.0% VAT</option>
+                                                        <option value="Exempt GST">Exempt GST</option>
+                                                        <option value="12.0% IGST">12.0% IGST</option>
+                                                        <option value="2.0% CST">2.0% CST</option>
+                                                    </select>
+                                                </div>
+                                                <div class="row mt-2" style="display: inline-flex;">
+                                                    <div class="col-md-6">
+                                                        <label for="balance">Balance</label>
+                                                        <input type="text" name="balance" id="balance"
+                                                               class="form-control">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="asof">Date</label>
+                                                        <input type="date" name="asof" id="asof"
+                                                               class="form-control" value="{{ tod }}"
+                                                               required>
+                                                    </div>
+                                                </div>
+                
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            
+                                            <button type="submit" class="btn btn-outline-info">Save and
+                                                close
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        
+            </div>
+
+
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+        
+        $('.delete').click(function(event) {
+            var form =  $(this).closest("form");
+            var name = $(this).data("name");
+            event.preventDefault();
+            swal({
+                title: `Are you sure you want to delete this record?`,
+                text: "If you delete this, it will be gone forever.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Your imaginary file has been deleted!", {
+                    icon: "success" ,
+              
+                    });
+                    form.submit();
+        
+                    
+                    
+                    
+                    }
+            });
+        });
+        
+            </script> 
+
+
+
+    {% endif %}
+    {% endblock %}    

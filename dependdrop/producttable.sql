@@ -1,0 +1,16 @@
+INSERT INTO `producttable` (`Pid`, `Pname`) VALUES
+(1, 'Account Receivable(Debtors)'),
+(2, 'Current Assets'),
+(3, 'Bank'),
+(4, 'Fixed Assets'),
+(5, 'Non-Current Assets'),
+(6, 'Accounts Payable(Creditors)'),
+(7, 'Credit Card'),
+(8, 'Current Liabilities'),
+(9, 'Non-Current Liabilities'),
+(10, 'Equity'),
+(11, 'Income'),
+(12, 'Other Income'),
+(13, 'Cost of Goods Sold'),
+(14, 'Expenses'),
+(15, 'Other Expenses');

@@ -1,0 +1,529 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+{% load static %}
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+
+
+
+
+<style>
+  input {
+    background-color: #2f516f;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+  }
+  
+</style>
+{% for a in stock %}
+<form action="{% url 'update_stock_adjustment' a.id %}" method="post" class="needs-validation" enctype="multipart/form-data"  validate >{% csrf_token %}
+        
+    <div class="page-content">
+        <h2 id="hel"></h2>
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h2 class="mb-0" id="estno">EDIT ADJUSTMENT</h2></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <!-- <center><h2>Fin sYs</h2></center> -->
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                     
+                        <label for="validationCustom01"
+                        style="color: white;">Mode of Adjustment</label>
+                 <select name="mode" class="form-control" 
+                           style="background-color: #2a4964; color: white;"
+                           required>
+                           <option selected  value="{{ a.mode }}">{{ a.mode }}</option>
+                         <option value="Quandity">Quandity Adjustment</option>
+                     <option value="Value">Value Adjustment</option></select>
+                    </div>
+                    
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <label class="col-form-label">Reference Number</label>
+                   
+                        <input class="form-control" value="{{ a.ref_no }}" type="text" id="bname" name="refno">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3 mt-2">
+                        <label for="">Date *</label>
+                        <input type="date" value="{{ a.date }}" class="form-control" id="date" name="date" placeholder="">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="col-form-label">Account *</label>
+                        <select name="account" class="form-control" 
+                           style="background-color: #2a4964; color: white;"
+                           required>
+                           <option selected  value="{{ a.account }}">{{ a.account }}</option>
+                           {% for a in acc %}
+                         <option value="{{ a.name }}">{{ a.name }}</option>
+                         {% endfor %}
+                    
+                    </select>
+                    
+                    </div>
+                    <div class="col-md-3 ">
+                        <label class="col-form-label">Reason * </label>
+                        <div class="d-flex">
+                        <select name="reason" class="form-control" 
+                        style="background-color: #2a4964; color: white;"
+                        required>
+                        <option selected  value="{{ a.reason }}">{{ a.reason }}</option>
+                        {% for a in reason %}
+                      <option value="{{ a.reason }}">{{ a.reason }}</option>
+                      {% endfor %}
+                      <option value="Stock on fire">Stock on fire</option>
+                      <option value="Stolen goods">Stolen goods</option>
+                      <option value="Damaged goods">Damaged goods</option>
+                      <option value="Stock Written off">Stock Written off</option>
+                      <option value="Inventory Revaluation">Inventory Revaluation</option>
+                 
+                 </select>
+                 <a href="#">
+                    <button type="button" class="btn btn-outline-secondary ml-1" 
+                    data-target="#newreason" data-toggle="modal">+</button>
+                </a>
+            </div>
+        </div>
+    </div>
+          <div class="row">
+            <div class="col-md-3 mt-3">
+              <label class="col-form-label">Description</label>
+             <textarea name="desc" rows="5" class="form-control" value="{{ a.description }}"  ></textarea>
+            </div>
+            <div class="col-md-3 mt-3"></div>
+            <div class="col-md-3 mt-3"></div>
+            <div class="col-md-3 mt-3"></div>
+          </div>
+          <div class="row clearfix">
+            <div class="col-md-12 table-responsive-md mt-3">
+              <table class="table table-bordered table-hover mt-3" id="tab_logic">
+                <thead>
+                  <tr id>
+                    <th  class="text-center" >#</th>
+                    <th class="text-center" >Item details</th>
+                    <th class="text-center">Quandity Available</th>
+                    <th class="text-center">New Quandity on hand</th>
+                    <th class="text-center">Quandity Adjusted</th>
+                  <th></th>
+                  </tr>
+                </thead>
+                <tbody id="items-table-body">
+                  <tr >
+                    <td>1</td>
+                    <td style="width: 20%;">
+                      <div class="d-flex">
+                        <select name="item1" id="itemss" class="form-control" style="background-color: #2f516f; color: white; " required>
+                        <option value="{{ a.item1 }}" selected  >{{ a.item1 }}</option>
+                        {% for i in item %}
+                        <option value="{{ i.name  }}">{{ i.name  }} </option>
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </td>
+                    <td><input type="text" value="{{ a.qty1 }}" id="qty" name="qty1"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
+                    <td><input type="text" value="{{ a.qty_hand1 }}" id="qty_hand" name="qty_hand1" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" required></td>
+                    <td><input type="number" value="{{ a.new_qty1 }}" id="nqty" name="new_qty1" class="form-control qty" style="background-color: #2f516f; color: white;" readonly></td>
+                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv()" >+</a></td>
+                  </tr>
+
+                  <!-------------------ROW 1---------------------------->
+                  {% if a.item2 == none %}
+                  <p></p>
+                  {% else %}
+                  <tr class="row1">
+                    <td>2</td>
+                    <td style="width: 20%;">
+                      <div class="d-flex">
+                        <select name="item2" id="itemss1" class="form-control" style="background-color: #2f516f; color: white; " >
+                        <option value=" " selected >{{ a.item2 }}</option>
+                        {% for i in item %}
+                        <option value="{{ i.name  }}">{{ i.name  }} </option>
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </td>
+                    <td><input type="text" value="{{ a.qty2 }}" id="qty1" name="qty2"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
+                    <td><input type="text" value="{{ a.qty_hand2 }}" id="qty_hand1" name="qty_hand2" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" ></td>
+                    <td><input type="number" value="{{ a.new_qty2 }}"  id="nqty1" name="new_qty2" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
+                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv1()" >+</a></td>
+                  </tr>
+                    {% endif %}
+                   <!-------------------ROW 2---------------------------->
+                   {% if a.item3 == none %}
+                   <p></p>
+                   {% else %}
+                  <tr class="row2">
+                   
+                    <td>3</td>
+                    <td style="width: 20%;">
+                      <div class="d-flex">
+                        <select name="item3" id="itemss2" class="form-control" style="background-color: #2f516f; color: white; ">
+                        <option value=" " selected >{{ a.item3 }}</option>
+                        {% for i in item %}
+                        <option value="{{ i.name  }}">{{ i.name  }} </option>
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </td>
+                    <td><input type="text" value="{{ a.qty3 }}" id="qty2" name="qty3"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
+                    <td><input type="text" value="{{ a.qty_hand3 }}" id="qty_hand2" name="qty_hand3" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" ></td>
+                    <td><input type="number" value="{{ a.new_qty3 }}" id="nqty2" name="new_qty3" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
+                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv2()" >+</a></td>
+                  </tr>
+                  {% endif %}
+                   <!-------------------ROW 3---------------------------->
+                   {% if a.item4 == none %}
+                  <p></p>
+                  {% else %}
+
+                  <tr class="row3">
+                    <td>4</td>
+                    <td style="width: 20%;">
+                      <div class="d-flex">
+                        <select name="item4" id="itemss3" class="form-control" style="background-color: #2f516f; color: white; ">
+                        <option value=" " selected >{{ a.item4 }}</option>
+                        {% for i in item %}
+                        <option value="{{ i.name  }}">{{ i.name  }} </option>
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </td>
+                    <td><input type="text" value="{{ a.qty4 }}" id="qty3" name="qty4"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
+                    <td><input type="text" value="{{ a.qty_hand4 }}" id="qty_hand3" name="qty_hand4" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" /></td>
+                    <td><input type="number" value="{{ a.new_qty4 }}" id="nqty3" name="new_qty4" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
+                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv3()">+</a></td>
+                  </tr>
+                  {% endif %}
+
+                   <!-------------------ROW 4---------------------------->
+                   {% if a.item5 == none %}
+                  <p></p>
+                  {% else %}
+
+                  <tr class="row4">
+                    <td>5</td>
+                    <td style="width: 20%;">
+                      <div class="d-flex">
+                        <select name="item5" id="itemss4" class="form-control" style="background-color: #2f516f; color: white; ">
+                        <option value=" " selected >{{ a.item5 }}</option>
+                        {% for i in item %}
+                        <option value="{{ i.name  }}">{{ i.name  }} </option>
+                        {% endfor %}
+                        </select>
+                      </div>
+                    </td>
+                    <td><input type="text" value="{{ a.qty5 }}"  id="qty4" name="qty5"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
+                    <td><input type="text" value="{{ a.qty_hand5 }}" id="qty_hand4" name="qty_hand5" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" /></td>
+                    <td><input type="number" value="{{ a.new_qty5 }}" id="nqty4" name="new_qty5" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
+                    
+                  </tr>
+                  {% endif %}
+
+
+                  
+                </tbody>
+              </table>
+              
+
+            </div>
+          </div>
+          <div class="row clearfix" style="margin-top:20px">
+            <div class="col-md-6">
+
+                <input type="file" name="file"  style="margin-top: 10px; width: 70%;">
+            </div>
+
+           
+        </div>
+
+
+        
+          <div class="row">
+            <div class="col-md-10 mt-3"></div>
+            <div class="col-md-2 mt-3">
+              <button type="submit" class="btn btn-outline-info rounded-pill w-100 text-grey pull-left">
+                Save To Draft
+              </button>
+            </div>
+          </div>
+          <div class="notices mt-3">
+            <div class="text-muted">NOTICE:</div>
+            <div class="text-muted">
+              Fin sYs Terms and Conditions Apply
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endfor %}
+
+
+
+
+
+
+<!---------------------------------------------ADD REASON MODAL ----------------------------------------------->
+
+<div class="modal fade" id="newreason">
+    <div class="modal-dialog">
+   
+        <div class="modal-content" style="background-color: #213b52;">
+            <form action="{% url 'create_reason' %}" method="post" class="needs-validation"  validate>
+                {% csrf_token %}
+            <div class="modal-header">
+                <h3 class="m-3">Add Reason</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              
+              
+                <div>
+                    <div class="form-check">
+                        <label class="form-check-label">Reason *</label> 
+                        <input type="text" class="form-control" name="reason1">
+                       
+                    </div>
+
+    
+                </div>
+           
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-info" >Save</button>
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+        </div>
+ 
+    </div>
+</div>            
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+
+
+
+
+            <script>
+                $(document).ready(function () {
+                    $('#itemss').on('change', function () {
+                        select = $('#itemss').val();
+                        $.ajax({
+                            type: "GET",
+                            url: "{% url 'getit' %}",
+                            data: {id: select}
+                        }).done(function (response) {
+                            var json_data = JSON.parse(response);
+                            for (key in json_data) {
+                                document.getElementById('qty').value = json_data[key]['stock']
+                               
+                            }
+                        }).fail(function () {
+                            alert("failed");
+                        })
+                    })
+                })
+            </script>
+            <script>
+              $(document).ready(function () {
+                  $('#itemss1').on('change', function () {
+                      select = $('#itemss1').val();
+                      $.ajax({
+                          type: "GET",
+                          url: "{% url 'getit' %}",
+                          data: {id: select}
+                      }).done(function (response) {
+                          var json_data = JSON.parse(response);
+                          for (key in json_data) {
+                              document.getElementById('qty1').value = json_data[key]['stock']
+                             
+                          }
+                      }).fail(function () {
+                          alert("failed");
+                      })
+                  })
+              })
+          </script>
+          <script>
+            $(document).ready(function () {
+                $('#itemss2').on('change', function () {
+                    select = $('#itemss2').val();
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'getit' %}",
+                        data: {id: select}
+                    }).done(function (response) {
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            document.getElementById('qty2').value = json_data[key]['stock']
+                           
+                        }
+                    }).fail(function () {
+                        alert("failed");
+                    })
+                })
+            })
+        </script>
+        <script>
+          $(document).ready(function () {
+              $('#itemss4').on('change', function () {
+                  select = $('#itemss4').val();
+                  $.ajax({
+                      type: "GET",
+                      url: "{% url 'getit' %}",
+                      data: {id: select}
+                  }).done(function (response) {
+                      var json_data = JSON.parse(response);
+                      for (key in json_data) {
+                          document.getElementById('qty4').value = json_data[key]['stock']
+                         
+                      }
+                  }).fail(function () {
+                      alert("failed");
+                  })
+              })
+          })
+      </script>
+      <script>
+        $(document).ready(function () {
+            $('#itemss3').on('change', function () {
+                select = $('#itemss3').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'getit' %}",
+                    data: {id: select}
+                }).done(function (response) {
+                    var json_data = JSON.parse(response);
+                    for (key in json_data) {
+                        document.getElementById('qty3').value = json_data[key]['stock']
+                       
+                    }
+                }).fail(function () {
+                    alert("failed");
+                })
+            })
+        })
+    </script>
+
+
+            <script>
+              $(document).ready(function(){
+                $("#qty,#qty_hand").keyup(function(){
+
+                  var total = 0;
+                  var x = Number($("#qty").val());
+                  var y = Number($("#qty_hand").val());
+                  var total = y - x;
+                  $("#nqty").val(total);
+                });
+              });
+            </script>
+            <script>
+              $(document).ready(function(){
+                $("#qty1,#qty_hand1").keyup(function(){
+
+                  var total = 0;
+                  var x = Number($("#qty1").val());
+                  var y = Number($("#qty_hand1").val());
+                  var total = y - x;
+                  $("#nqty1").val(total);
+                });
+              });
+            </script>
+            <script>
+              $(document).ready(function(){
+                $("#qty2,#qty_hand2").keyup(function(){
+
+                  var total = 0;
+                  var x = Number($("#qty2").val());
+                  var y = Number($("#qty_hand2").val());
+                  var total = y - x;
+                  $("#nqty2").val(total);
+                });
+              });
+            </script>
+            <script>
+              $(document).ready(function(){
+                $("#qty3,#qty_hand3").keyup(function(){
+
+                  var total = 0;
+                  var x = Number($("#qty3").val());
+                  var y = Number($("#qty_hand3").val());
+                  var total = y - x;
+                  $("#nqty3").val(total);
+                });
+              });
+            </script>
+            <script>
+              $(document).ready(function(){
+                $("#qty4,#qty_hand4").keyup(function(){
+
+                  var total = 0;
+                  var x = Number($("#qty4").val());
+                  var y = Number($("#qty_hand4").val());
+                  var total = y - x;
+                  $("#nqty4").val(total);
+                });
+              });
+            </script>
+
+            
+            <script>
+            function showDiv() {
+
+              document.querySelector(".row1").style.display = "table-row";
+              
+            }
+           
+            
+          </script>
+          <script>
+            function showDiv1() {
+
+              document.querySelector(".row2").style.display = "table-row";
+              
+            }
+          </script>
+          <script>
+           
+            function showDiv2() {
+
+              document.querySelector(".row3").style.display = "table-row";
+              
+            }
+          </script>
+          <script>
+           
+            function showDiv3() {
+
+              document.querySelector(".row4").style.display = "table-row";
+              
+            }
+          </script>
+{% endblock %}

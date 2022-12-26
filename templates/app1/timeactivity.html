@@ -1,0 +1,237 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <!--<h1>Taxes</h1>-->
+
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="card radius-15">
+            <div class="card-body">
+                <div class="card-title">
+                    <center><h3 class="mb-0">TIME ACTIVITY</h3></center>
+                </div>
+                <hr/>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <div class="card radius-15" style="background-color: #243e54;">
+            <div class="card-body">
+                <form action="timectivity" method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-3 p-3">
+                            <img src="{% static 'assets/img/time.png' %}" width="100%" height="100%">
+                        </div>
+                        <div class="col">
+                            &nbsp;
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="validationCustom02">Date</label>
+                                    <input type="date" name="timdate" class="form-control" id="validationCustom02"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="validationCustom02">Name</label>
+                                    <input type="text" name="timename" class="form-control" id="validationCustom02"
+                                           required style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <label for="validationCustom02">Customer </label>
+                                    {#                                                <input type="text" name="timecust" class="form-control" id="validationCustom02" required style="background-color: #2f516f;color: white;">#}
+                                    <select name="timecust" class="form-control">
+                                        <option value="NIL" selected>Select Customer</option>
+                                        {% for cust in customers %}
+                                            {% if cust.cid_id == cmp1.cid %}
+                                                <option value="{{ cust.firstname }}">{{ cust.firstname }} {{ cust.lastname }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label for="validationCustom03">Billable(/hr)</label>&nbsp;
+                                        &nbsp;&nbsp;
+                                        <select id="selgst" onchange="changegst()" class="custom-select"
+                                                name="timecheck"
+                                                style="background-color: #243e54; color: white; width: 6cm">
+                                            <option></option>
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+                                        <div class="col" id="aa">
+                                            <div class="form-row">
+                                                <label for="validationCustom03"></label>
+                                                <input type="number" class="form-control" placeholder="0.00"
+                                                       id="validationCustom05" name="timebill"
+                                                       style="background-color: #2f516f;color: white;width:5.5cm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                &nbsp;
+
+                            </div>
+                            &nbsp;
+                            <div>
+                                <div class="col">
+                                    <div class="row">
+
+                                        <label for="validationCustom03">Enter start and end time</label>&nbsp;
+
+                                        <select id="seltim" onchange="changetime()" class="custom-select"
+                                                name="timecheckk"
+                                                style="background-color: #243e54; color: white;width: 2cm">
+                                            <option></option>
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+
+                                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+                                        <div class="col" id="aaa">
+                                            <div class="row">
+
+                                                <label for="validationCustom03">Start time</label>
+                                                &nbsp;
+                                                <input type="time" class="form-control" id="validationCustom05"
+                                                       name="timestart"
+                                                       style="background-color: #2f516f;color: white;width: 5cm">
+                                                &nbsp;
+                                                <label for="validationCustom03">End time</label>
+                                                &nbsp;
+
+                                                <input type="time" class="form-control" id="validationCustom05"
+                                                       name="timeend"
+                                                       style="background-color: #2f516f;color: white;width: 5cm">
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> &nbsp;
+
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Time </label>
+                                    <input type="time" name="tyme" class="form-control" id="validationCustom02" required
+                                           style="background-color: #2f516f;color: white;">
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col">
+                                    <label for="validationCustom02">Description </label>
+                                    <textarea name="timedes" class="form-control" id="validationCustom01" required
+                                              style="background-color: #2f516f;color: white;"></textarea>
+                                    <div class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-5 mb-4">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-info rounded-pill text-light" type="submit" style="width: 100%;">Submit
+                                form
+                            </button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </form>
+            </div>
+
+            <script>
+                // Example starter JavaScript for disabling form submissions if there are invalid fields
+                (function () {
+                    'use strict';
+                    window.addEventListener('load', function () {
+                        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                        var forms = document.getElementsByClassName('needs-validation');
+                        // Loop over them and prevent submission
+                        var validation = Array.prototype.filter.call(forms, function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (form.checkValidity() === false) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+                                form.classList.add('was-validated');
+                            }, false);
+                        });
+                    }, false);
+                })();
+            </script>
+        </div>
+    </div>
+    </div>
+    <script>
+        function myFunction() {
+            var checkBox = document.getElementById("myCheck");
+            var text = document.getElementById("bill");
+            if (checkBox.checked == true) {
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        function show() {
+            var checkBox = document.getElementById("Check");
+            var abc = document.getElementById("sad");
+            var def = document.getElementById("happy");
+            if (checkBox.checked == true) {
+                abc.style.display = "block";
+                def.style.display = "block";
+            } else {
+                abc.style.display = "none";
+                def.style.display = "none";
+            }
+        }
+    </script>
+
+    <script>
+        function changegst() {
+            var status = document.getElementById("selgst");
+            if (status.value == "No") {
+                document.getElementById("aa").style.visibility = "hidden";
+            } else if (status.value == "Overseas") {
+                document.getElementById("aa").style.visibility = "hidden";
+            } else {
+                document.getElementById("aa").style.visibility = "visible";
+            }
+        }
+    </script>
+    <script>
+        function changetime() {
+            var status = document.getElementById("seltim");
+            if (status.value == "No") {
+                document.getElementById("aaa").style.visibility = "hidden";
+            } else if (status.value == "Overseas") {
+                document.getElementById("aaa").style.visibility = "hidden";
+            } else {
+                document.getElementById("aaa").style.visibility = "visible";
+            }
+        }
+
+        function showinnum(divId, element) {
+            if (element.value) {
+                document.getElementById(divId).innerHTML = "INVOICE NO. " + element.value;
+            } else {
+                document.getElementById(divId).innerHTML = "INVOICE NO. ";
+            }
+        }
+
+    </script>
+{% endblock %}
