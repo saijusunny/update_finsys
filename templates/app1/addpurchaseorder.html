@@ -303,10 +303,11 @@
                                                     <option value=0 text=" ">Out of Scope(0%)</option>
                                               </select>
                                             </td> 
+                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td> 
                                             <td><input type="number" name='amount[]' id="total1" class="form-control total" 
                                                 placeholder="0" step="any" readonly>
                                             </td> 
-                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>   
+                                              
                                         </tr>
                                         
                                         
@@ -1976,7 +1977,8 @@
                         </td>                
                         <td>
                             <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Rate' class="form-control price" step="0.00" min="0">
-                        </td>                                            
+                        </td>  
+                        <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"></td>                                          
                         <td>
                             <select name="tax[]" id="tax${roinc+1}" class="form-control tax">
                                 <option id="ta1${roinc}" value=0 text={{ cmp1.state }}>Choose</option>
@@ -2006,7 +2008,7 @@
                         <td>
                             <input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" step="any" readonly>
                         </td>                    
-                        <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"></td>
+                        
                         <td><button type="button" id="${roinc}" class="btn btn-outline-secondary ml-1 remove_row">-</button></td>
                     </tr>
                                                 

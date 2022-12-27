@@ -32970,6 +32970,44 @@ def viewbill(request,id):
         return render(request,'app1/viewpurchasebill.html',{'cmp1': cmp1,'pbill':pbill,'bitem':bitem})
     return redirect('gobilling')
 
+def render_pdfbill_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+   
+
+    pbill=purchasebill.objects.get(billid=id)
+    bitem = purchasebill_item.objects.all().filter(bill=id)
+
+    total = pbill.grand_total
+    words_total = num2words(total)
+    template_path = 'app1/pdfbill.html'
+    context ={
+        'pbill':pbill,
+        'cmp1':cmp1,
+        'bitem':bitem,
+
+    }
+    fname=pbill.billid
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
 @login_required(login_url='regcomp')
 def bill_add_file(request,id):
     cmp1 = company.objects.get(id=request.session['uid'])
@@ -33737,8 +33775,51 @@ def viewpurchasepymnt(request,id):
         cmp1 = company.objects.get(id=request.session['uid'])
         paymt=purchasepayment.objects.get(pymntid=id)
         paymt1 = purchasepayment1.objects.all().filter(pymnt=id)
-        return render(request,'app1/viewpurchasepymnt.html',{'cmp1': cmp1,'paymt':paymt,'py':paymt1})
+
+        prl=purchasebill.objects.filter(bill_no=paymt.reference)
+        return render(request,'app1/viewpurchasepymnt.html',{'cmp1': cmp1,'paymt':paymt,'py':paymt1,'prl':prl,})
     return redirect('gopurchasepymnt')
+
+
+def render_pdfpurpym_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+
+    paymt=purchasepayment.objects.get(pymntid=id)
+    paymt1 = purchasepayment1.objects.all().filter(pymnt=id)
+    prl=purchasebill.objects.filter(bill_no=paymt.reference)
+   
+
+    total = paymt.amtreceived
+    words_total = num2words(total)
+    template_path = 'app1/pdfpayment2.html'
+    context ={
+        'paymt':paymt,
+        'cmp1':cmp1,
+        'paymt1':paymt1,
+        'prl':prl,
+
+    }
+    fname=paymt.pymntid
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
 
 @login_required(login_url='regcomp')
 def goeditpurchasepymnt(request,id):

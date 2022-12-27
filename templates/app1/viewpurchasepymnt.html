@@ -59,7 +59,7 @@
                                     </div>
                                 </li> -->
                                 <li class="nav-item">
-                                    <a class="nav-link text-light btn" role="button" id="cmd">
+                                    <a class="nav-link text-light btn" role="button" href="{%url 'render_pdfpurpym_view' paymt.pymntid %}">
                                         <i class="fa fa-file-pdf-o">&nbsp;Pdf</i>
                                     </a>
                                 </li>
@@ -196,13 +196,13 @@
                                     <!-- <td width="13%" align="center"><strong>payments</strong></td> -->
                                     </tr>
                                     
-                                    {% for p in py %}
+                                    {% for p in prl %}
                                         <tr style=" font-size:13px; color:#000; padding:5px; font-family: 'Muli', sans-serif;">
                                             <td height="30" align="center">{{ forloop.counter }}</td>
-                                            <td align="center">{{ p.billdate }}</td>
-                                            <td align="center">{{ p.billno }}</td>
-                                            <td align="center">{{ p.billamount }}</td>
-                                            <td align="center">{{ p.amountdue }}</td>
+                                            <td align="center">{{ p.date }}</td>
+                                            <td align="center">{{ p.bill_no }}</td>
+                                            <td align="center">{{ p.grand_total }}</td>
+                                            <td align="center">{{ p.balance_due }}</td>
                                             <!-- <td align="center">{{ p.payments }}</td> -->
                                         </tr>
                                     {% endfor %} 
@@ -220,7 +220,7 @@
                                         <td align="center" style="border: none;">&nbsp;</td>
                                         <td align="center" style="border: none;">&nbsp;</td>
                                         <td align="center" style="border: none;">&nbsp;</td>
-                                        <td align="center" style="font-size: 20px; background-color: #e24d4d;">&nbsp; <strong>Amount Paid <br> ₹ {{ paymt.paymentamount }}</strong></td>
+                                        
                                         <!-- <td align="end" style="border: none;">&nbsp;<strong></strong></td> -->
                                     
                                     </tr>

@@ -1,0 +1,144 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fin sYs</title>
+    <link rel="icon" href="static/assets/images/favicon-32x32.png" type="image/png"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    
+</head>
+<style>
+    .table1
+    {
+       
+        font-size: 1.2em;
+        text-align: left;
+       
+    }
+    .table1 tr{
+        padding: 4px;
+    }
+    .table1 tr td{
+        padding: 2px;
+        margin-top: 5px;
+        margin-left: 4px;
+    }
+    
+    
+    .table2
+    {
+        text-align: center;
+        padding-top: 6px;
+        font-size: 1.1em;
+        background-color:azure
+       
+    }
+    
+    .table-head
+    {
+        color: rgb(52, 49, 58);
+        
+       
+    }
+    .table2 .tbody tr 
+    {
+       margin-bottom: 3px;
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12" style="text-align: right;">
+                <h2>Payment Made</h2>
+                <h3>Payment : {{ paymt.pymntid }}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p style="font-size:14px;color:black;">{{cmp1.cname}}<br>
+                    {{cmp1.pincode}}<br>
+                       {{cmp1.state}}, <br>
+                       {{cmp1.cemail}}
+                      <br>
+                      {{cmp1.phone}} <br></p>
+            </div>
+        </div>
+    
+        <hr>
+        
+        <div class="row">
+            <div class="col-sm-8" >
+                <table style="font-size: 14px;">
+                    <th>
+                        Paid To : {{ paymt.vendor }}<br>
+                        reference no. : {{ paymt.reference }}
+
+                    </th>
+                    <th>
+                        payment date : {{ paymt.paymentdate |date:'d-m-Y' }}<br>
+                        Payment Method : {{ paymt.paymentmethod }}
+                    </th>
+                </table>
+                
+            </div>
+            <div class="col-sm-4" style="margin-left: 600px; margin-top: -100px;">
+                <p style="background-color: green; font-size: 14px;color: white; text-align: center;" >&nbsp &nbspAmount<br>
+                &nbsp ₹ {{ paymt.amtcredit }}</p>
+            </div>
+        </div>
+        
+        
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table2" style="font-size: 14px;">
+                    <thead class="table-head" >
+                        <tr>
+                            <td  align="center"><strong>S.N</strong></td>
+                            <td  align="center"><strong>Bill Date</strong></td>
+                            <td  align="center"><strong>Bill Number</strong></td>
+                            <td  align="center"><strong>Total Amount</strong></td>
+                            <td  align="center"><strong>Balance Due</strong></td>
+                        </tr>
+                    </thead>
+                 
+                    <tbody>
+        
+                        {% for p in prl %}
+                        <tr>
+                            <td height="30" align="center">{{ forloop.counter }}</td>
+                            <td align="center">{{ p.date }}</td>
+                            <td align="center">{{ p.bill_no }}</td>
+                            <td align="center">{{ p.grand_total }}</td>
+                            <td align="center">{{ p.balance_due }}</td>
+                         
+                        </tr>
+                        {% endfor %}
+                        
+                        
+                    </tbody>
+                </table><br><br><br><br><br><br>
+                <table >
+                    <td style="text-align: left; font-size: 14px;">Authorised Signature</td>
+                    <td style="text-align: right;font-size: 14px;">For : Online Reciept</td>
+                </table>
+            </div>
+        </div>
+    </div>
+      
+    
+    
+</body>
+
+</html>

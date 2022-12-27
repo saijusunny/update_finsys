@@ -271,7 +271,7 @@
                                     {% endif %}
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-light btn" role="button" href="javascript:generatePDF()">
+                                    <a class="nav-link text-light btn" role="button" href="{%url 'render_pdfbill_view' pbill.billid %}">
                                         <i class="fa fa-file-pdf-o">Pdf</i>
                                     </a>
                                 </li>

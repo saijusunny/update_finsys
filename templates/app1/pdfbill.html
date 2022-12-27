@@ -50,17 +50,17 @@
     <div class="my-5 page" size="A4" >
         <div class="p-5">
             <div id="ember2512" class="tooltip-container ember-view ribbon text-ellipsis">
-                <div class="ribbon-inner ribbon-open" style="background-color: #268ddd; margin-right: 600px; color: white; text-align: center; padding-top: 10px;">{{estimate.status}}<!----></div></div>
+                <div class="ribbon-inner ribbon-open" style="background-color: #268ddd; margin-right: 600px; color: white; text-align: center; padding-top: 10px;">{{pbill.status}}<!----></div></div>
             <section class="top-content bb d-flex justify-content-between">
                 <div class="logo">
                     <!-- <img src="logo.png" alt="" class="img-fluid"> -->
                 </div>
                 <div class="top-left">
                     <div class="graphic-path" style="text-align: right;padding-top: 10px;background-color:#22b8d1;margin-left: 550px; text-align: center; color :rgb(0, 0, 0)">
-                        <p>Purchase Order</p>
+                        <p>Bill</p>
                     </div>
                     <div class="position-relative" style="margin-left: 550px;text-align: center">
-                        <p>PO No. <span>{{estimate.puchaseorder_no }}</span></p>
+                        <p> Bill NO : <span>{{pbill.bill_no }}</span></p>
                     </div>
                 </div>
             </section>
@@ -74,11 +74,11 @@
                     </tr>
                     <tr>
                         <td>{{cmp1.cname }}</td>
-                        <td>{{estimate.vendor_name}}</td>
+                        <td>{{pbill.vendor_name}}</td>
                     </tr>
                     <tr>
                         <td>{{cmp1.caddress}}<br>{{cmp1.city}}<br>{{cmp1.state}}<br>{{cmp1.pincode}}</td>
-                        <td style="width: 200px;">{{ estimate.billing_address}}</td>
+                        <td style="width: 200px;">{{ pbill.billing_address}} </td>
                     </tr>
                     
                 </tbody>
@@ -90,13 +90,14 @@
                     <tr>
                         <th>
                             <p>Deliver To Details: </p>
-                            <p>{{estimate.contact_name}}</p>
-                            <p class="address col-6" style="padding-left: 15px;padding-right: 15px;"> {{ estimate.deliverto}} </p>
+                            <p>{{pbill.contact_name}}</p>
+                            <p class="address col-6" style="padding-left: 15px;padding-right: 15px;"> {{ pbill.deliverto}} </p>
                         </th>
                     
                         <th>
-                            <p>Date : {{ estimate.date | date:'d-m-Y' }}</p>
-                            <p>Excpected Date : {{ estimate.deliver_date | date:'d-m-Y' }}</p>
+                            <p>Date : {{ pbill.date | date:'d-m-Y' }}</p>
+                            <p>Excpected Date : {{ pbill.deliver_date | date:'d-m-Y' }}</p>
+                            <p>Total Quantity : <span> {{ tot6.t2 }}</span></p>
                         </th>
                     </tr>
                 </table>
@@ -111,7 +112,7 @@
                         <tr>
                             <tr>
                                 <td>Items</td>
-                                <td>HSN Code</td>
+                                <td>HSN Number</td>
                                 <td>Quantity</td>
                                 <td>Rate</td>
                                 <td>Tax</td>
@@ -121,16 +122,15 @@
                     </thead>
                     <tbody>
 
-                        {% for pordr in pitem %}
-                        <tr>
-                            <td class="text-center" style="color:#000">{{ pordr.items }}</td>
-                            <td class="text-center" style="color:#000">{{ pordr.hsn }}</td>
-                            <td class="text-center" style="color:#000">{{ pordr.quantity }}</td>
-                            <td class="text-center" style="color:#000">{{ pordr.rate  }}</td>
-                            <td class="text-center" style="color:#000">{{ pordr.tax  }}</td>
-                            <td class="text-center" style="color:#000">{{ pordr.amount }}</td>
-                        </tr>
-                                    
+                        {% for pbill in bitem %}
+                            <tr>
+                                <td class="text-center" style="color:#000">{{ pbill.items }}</td>
+                                <td class="text-center" style="color:#000">{{ pbill.hsn }}</td>
+                                <td class="text-center" style="color:#000">{{ pbill.quantity }}</td>
+                                <td class="text-center" style="color:#000">{{ pbill.rate  }}</td>
+                                <td class="text-center" style="color:#000">{{ pbill.tax  }}</td>
+                                <td class="text-center" style="color:#000">{{ pbill.amount }}</td>
+                            </tr>
                         {% endfor %} 
    
                     </tbody>
@@ -144,48 +144,48 @@
                         <table class="table3 border-0 table-hover"  >
                             <tr >
                                 <td style="color:black">Sub Total :</td>
-                                <td style="color:black;">{{estimate.sub_total}}</td>
+                                <td style="color:black">{{pbill.sub_total}}</td>
                             </tr>
-                            {% if estimate.discount != "0" %}
+                            {% if pbill.discount != "0.00" %}
                             <tr>
                                 <td style="color:black">Discount</td>
-                                <td style="color:black">{{estimate.discount}}</td>
+                                <td style="color:black">{{pbill.discount}}</td>
                             </tr>
                             {% endif %}
-                            {% if estimate.igst != "0" %}
+                            {% if pbill.igst != "0" %}
                             <tr>
                                 <td style="color:black">IGST :</td>
-                                <td style="color:black">{{estimate.igst}}</td>
+                                <td style="color:black">{{pbill.igst}}</td>
                             </tr>
                             {% endif %}
-                            {% if estimate.cgst != "0" %}
+                            {% if pbill.cgst != "0" %}
                             <tr>
                                 <td style="color:black">CGST :</td>
-                                <td style="color:black">{{estimate.cgst}}</td>
+                                <td style="color:black">{{pbill.cgst}}</td>
                             </tr>
                             {% endif %}
-                            {% if estimate.sgst != "0" %}
+                            {% if pbill.sgst != "0" %}
                             <tr>
                                 <td style="color:black">SGST :</td>
-                                <td style="color:black">{{estimate.sgst}}</td>
+                                <td style="color:black">{{pbill.sgst}}</td>
                             </tr>
                             {% endif %}
-                            {% if estimate.tcs != "0.00" %}
+                            {% if pbill.tcs != "0.00" %}
                             <tr>
                                 <td style="color:black">TCS:</td>
-                                <td style="color:black">{{estimate.tcs}}</td>
+                                <td style="color:black">{{pbill.tcs}}</td>
                             </tr>
                             {% endif %}
                             <tfoot>
                                 <tr>
                                     <td style="color:black">Grand Total:</td>
-                                    <td style="color:black ;">{{estimate.grand_total}}</td>
+                                    <td style="color:black ;">{{pbill.grand_total}}</td>
                                 </tr>
                             </tfoot>
                         </table>
                         <div class="col-8">
                         <p class="m-0 font-weight-bold" style="color:black"> Note: </p>
-                        <p style="color:black">{{estimate.note}}</p>
+                        <p style="color:black">{{pbill.note}}</p>
                         </div>
 
                       

@@ -809,9 +809,10 @@ urlpatterns = [
     path('render_pdfestimate_view/<int:id>', views.render_pdfestimate_view, name='render_pdfestimate_view'),
     path('render_pdfsalesorder_view/<int:id>', views.render_pdfsalesorder_view, name='render_pdfsalesorder_view'),
     path('render_pdfpurchase_view/<int:id>', views.render_pdfpurchase_view, name='render_pdfpurchase_view'),
+    path('render_pdfbill_view/<int:id>', views.render_pdfbill_view, name='render_pdfbill_view'),
 
+    path('render_pdfpurpym_view/<int:id>', views.render_pdfpurpym_view, name='render_pdfpurpym_view'),
     
-
 
 
     # Forgot Password ---------
