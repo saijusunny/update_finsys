@@ -78,7 +78,7 @@
                                 <a class="nav-link text-light btn" role="button" onclick="printDiv()"><i class="fa fa-print">&nbsp;Print</i><span class="sr-only">(current)</span></a>
                               </li>
                               <li class="nav-item">
-                                  <a class="nav-link text-light btn" role="button" id="cmd">
+                                  <a class="nav-link text-light btn" role="button" href="{% url 'render_pdfdebit_view' pdebt.pdebitid %}">
                                     <i class="fa fa-file-pdf-o">&nbsp;Pdf</i>
                                   </a>
                               </li>
@@ -127,7 +127,7 @@
                                         </tbody>
                                     </table>
                                 
-                                    <table style="width:100%;table-layout:fixed;color:black;font-size:8px;">
+                                    <table style="width:100%;table-layout:fixed;color:black;font-size:14px;">
                                         <tbody>
                                             <tr>
                                                 <td style="width:50%;vertical-align:bottom;">
@@ -141,19 +141,19 @@
                                                     <table style="float:right;table-layout: fixed;word-wrap: break-word;width: 100%;" border="0" cellspacing="0" cellpadding="0">
                                                         <tbody>
                                                             <tr>
-                                                                <td style="text-align:right;padding:5px 10px 5px 0px;font-size:8pt;">
+                                                                <td style="text-align:right;padding:5px 10px 5px 0px;font-size:14pt;">
                                                                     <span class="pcs-label">Credit Date :</span>
                                                                 </td>
                                                                 <td style="text-align:right;">
-                                                                    <span id="tmp_entity_date">06/10/2022</span>
+                                                                    <span id="tmp_entity_date">{{ pdebt.address }}</span>
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td style="text-align:right;padding:5px 10px 5px 0px;font-size: 8pt;">
+                                                                <td style="text-align:right;padding:5px 10px 5px 0px;font-size: 14pt;">
                                                                     <span class="pcs-label">Ref# :</span>
                                                                 </td>
                                                                 <td style="text-align:right;">
-                                                                    <span id="tmp_ref_number">SO-17</span>
+                                                                    <span id="tmp_ref_number">{{ pdebt.debit_no }}</span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -163,7 +163,7 @@
                                         </tbody>
                                     </table>
                                 
-                                    <table style="width:100%;margin-top:20px;table-layout:fixed;color:black;font-size:8px;" class="pcs-itemtable" border="0" cellspacing="0" cellpadding="0">
+                                    <table style="width:100%;margin-top:20px;table-layout:fixed;color:black;font-size:14px;" class="pcs-itemtable" border="0" cellspacing="0" cellpadding="0">
                                         <thead>
                                             <tr style="background-color:black;color:white;">
                                                 <td style="width: 5%;text-align: center;" id="" class="pcs-itemtable-header pcs-itemtable-breakword">
@@ -209,8 +209,8 @@
                                             {% endfor %}
                                         </tbody>
                                     </table>
-                                    <div style="width: 100%;margin-top: 1px;color:black;font-size:8px;">
-                                        <div style="width: 40%;padding: 3px 10px 3px 3px;font-size: 8px;float: left;">
+                                    <div style="width: 100%;margin-top: 1px;color:black;font-size:14px;">
+                                        <div style="width: 40%;padding: 3px 10px 3px 3px;font-size: 14px;float: left;">
                                             <div style="white-space: pre-wrap;"></div>
                                         </div>
                                         <div style="width: 60%;float:right;">
@@ -238,7 +238,7 @@
                                     <div style="clear: both;"></div>
                                 </div>
                                 
-                                <div style="width: 100%;margin-top: 10px;color:black;font-size:8px;">
+                                <div style="width: 100%;margin-top: 10px;color:black;font-size:14px;">
                                     <table cellspacing="0" border="0" width="100%">
                                         <tbody>
                                             <tr>
@@ -250,11 +250,11 @@
                                     <div style="clear: both;"></div>
                                 </div>
                                 
-                                <div style="clear:both;margin-top:30px;width:100%;font-size:8px;color:black;">
+                                <div style="clear:both;margin-top:30px;width:100%;font-size:14px;color:black;">
                                     <label class="pcs-label">Terms &amp; Conditions</label><br>
                                     <p style="margin-top:7px;white-space: pre-wrap;word-wrap: break-word;" class="pcs-terms">Your company's Terms and Conditions will be displayed here. You can add it in the DeliveryChallan Preferences page under Settings.</p>
                                 </div>
-                                <div style="margin-top:30px;font-size:8px;color:black;">
+                                <div style="margin-top:30px;font-size:14px;color:black;">
                                     <label style="display: table-cell;padding-right: 5px;" class="pcs-label">Authorized Signature</label>
                                     <div style="display: table-cell;">
                                         <div style="display: inline-block;width: 200px;border-bottom: 1px solid #000;"></div>

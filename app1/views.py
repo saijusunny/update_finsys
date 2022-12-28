@@ -34238,6 +34238,45 @@ def viewpurchasedebit(request,id):
         return render(request,'app1/viewpurchasedebit.html',{'cmp1': cmp1,'pdebt':pdebt,'pdeb':pdebt1})
     return redirect('gopurchasedebit')
 
+def render_pdfdebit_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+
+    pdebt=purchasedebit.objects.get(pdebitid=id)
+    pdebt1 = purchasedebit1.objects.all().filter(pdebit=id)
+   
+
+    total = pdebt.grandtotal
+    words_total = num2words(total)
+    template_path = 'app1/pdfdebit.html'
+    context ={
+        'pdebt':pdebt,
+        'cmp1':cmp1,
+        'pdeb':pdebt1,
+    
+
+    }
+    fname=pdebt.pdebitid
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
 @login_required(login_url='regcomp')
 def goeditpurchasedebit(request,id):
     if 'uid' in request.session:
@@ -34248,10 +34287,12 @@ def goeditpurchasedebit(request,id):
         cmp1 = company.objects.get(id=request.session['uid'])
         pdebt=purchasedebit.objects.get(pdebitid=id)
         pdebt1 = purchasedebit1.objects.all().filter(pdebit=id)
+        item = itemtable.objects.filter(cid=cmp1).all()
         context = {
                     'cmp1': cmp1,
                     'pdebt':pdebt,
-                    'pdebt1':pdebt1         
+                    'pdebt1':pdebt1,
+                    'item':item        
                 }
         return render(request,'app1/editpurchasedebit.html',context)
     return redirect('/')

@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fin sYs</title>
+    <link rel="icon" href="static/assets/images/favicon-32x32.png" type="image/png"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    
+</head>
+<style>
+    .table3{
+        width:75px;
+        text-align: right;
+        font-size: 14px;
+    }
+    .table1
+    {
+       
+        font-size: 1.2em;
+        text-align: left;
+       
+    }
+    .table1 tr{
+        padding: 4px;
+    }
+    .table1 tr td{
+        padding: 2px;
+        margin-top: 5px;
+        margin-left: 4px;
+    }
+    
+    
+    .table2
+    {
+        text-align: center;
+        padding-top: 6px;
+        font-size: 1.1em;
+        background-color:azure
+       
+    }
+    
+    .table-head
+    {
+        color: rgb(52, 49, 58);
+        
+       
+    }
+    .table2 .tbody tr 
+    {
+       margin-bottom: 3px;
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12" style="text-align: right;">
+                <h2>VENDOR CREDIT</h2>
+                <h3>DN - {{ pdebt.debit_no }}</h3>
+                <h3>Credits remaining</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p style="font-size:14px;color:black;">{{cmp1.cname}}<br>
+                    {{cmp1.pincode}}<br>
+                       {{cmp1.state}}, <br>
+                       {{cmp1.cemail}}
+                      <br>
+                      {{cmp1.phone}} <br></p>
+            </div>
+        </div>
+    
+        <hr>
+        
+        <div class="row">
+            <div class="col-sm-8" >
+                <table style="font-size: 14px;">
+                    <th>
+                        Bill To:<br>
+                        {{ pdebt.address }}
+
+                    </th>
+                    <th>
+                        Credit Date : : {{ pdebt.debitdate |date:'d-m-Y' }}<br>
+                        Ref# : {{ pdebt.debit_no }}
+                    </th>
+                </table>
+                
+            </div>
+            
+        </div>
+        
+        
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table2" style="font-size: 14px;">
+                    <thead class="table-head" >
+                        <tr>
+                            <td  align="center"><strong>#</strong></td>
+                            <td  align="center"><strong>Item</strong></td>
+                            <td  align="center"><strong>HSN</strong></td>
+                            <td  align="center"><strong>Quantity</strong></td>
+                            <td  align="center"><strong>Price</strong></td>
+                            <td  align="center"><strong>Total</strong></td>
+                        </tr>
+                    </thead>
+                 
+                    <tbody>
+        
+                        {% for p in pdeb %}
+                        <tr class="breakrow-inside breakrow-after">
+                            <td valign="top" >{{ forloop.counter }}</td>
+                            <td valign="top">
+                                <div><span >{{ p.items }}</span><br></div>
+                            </td>
+                            <td valign="top">
+                                <div><span >{{ p.hsn }}</span><br></div>
+                            </td>
+                            <td valign="top"  >
+                                <span >{{ p.quantity }}</span>
+                            </td>
+                            <td valign="top"  >
+                                <span>{{ p.price }}</span>
+                            </td>
+                            <td valign="top"  >
+                                <span>{{ p.total }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                        
+                        
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table3 border-0 table-hover">
+                            <tr>
+                                <td ></td>
+                                <td valign="middle" align="right" ></td>
+                            </tr>
+                            <tr>
+                                <td >Sub Total</td>
+                                <td valign="middle" align="right" >{{ pdebt.subtotal }}</td>
+                            </tr>
+                            <tr>
+                                <td >Tax Amount</td>
+                                <td valign="middle" align="right" >{{ pdebt.taxamount }}</td>
+                            </tr>
+                            
+                            <tfoot>
+                                <tr>
+                                    <td >Grand Total</td>
+                                <td valign="middle" align="right" >{{ pdebt.grandtotal }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <br><br><br><br><br><br>
+                <table >
+                    <td style="text-align: left; font-size: 14px;"><div style="clear:both;margin-top:30px;width:100%;font-size:14px;color:black;">
+                        <label class="pcs-label">Terms &amp; Conditions</label><br>
+                        <p style="margin-top:7px;white-space: pre-wrap;word-wrap: break-word;" class="pcs-terms">Your company's Terms and Conditions will be displayed here. You can add it in the DeliveryChallan Preferences page under Settings.</p>
+                    </div></td>
+                    <td style="text-align: right;font-size: 14px;">Authorized Signature</td>
+                </table>
+            </div>
+        </div>
+    </div>
+      
+    
+    
+</body>
+
+</html>

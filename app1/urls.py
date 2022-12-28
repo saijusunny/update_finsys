@@ -812,6 +812,7 @@ urlpatterns = [
     path('render_pdfbill_view/<int:id>', views.render_pdfbill_view, name='render_pdfbill_view'),
 
     path('render_pdfpurpym_view/<int:id>', views.render_pdfpurpym_view, name='render_pdfpurpym_view'),
+    path('render_pdfdebit_view/<int:id>', views.render_pdfdebit_view, name='render_pdfdebit_view'),
     
 
 

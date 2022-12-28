@@ -16,13 +16,13 @@
     </script>
     <script>
         $(document).ready(function(){
-            var roinc = 0
+            var roinc = parseInt(document.getElementById("tab_logic").rows.length)-2
             $('#addrow').click(function(){
                 roinc++
                 $('#items-table-body').append(
                     `
                         <tr id='addr0${roinc}'>
-                            <td>${roinc+1}</td>
+                            <td>${roinc}</td>
                             <td style="width: 20%;">
                                 <div class="d-flex">
                                     <select name='items1[]' id="product${roinc}" class="form-control">
@@ -84,6 +84,7 @@
             $(document).on('click','.remove_row',function(){
                 var row_id = $(this).attr("id");
                 $('#addr0'+row_id+'').remove();
+                calc()
             });
     
             var place = document.getElementById('plosu').value;
@@ -853,7 +854,7 @@
                                     </thead>
                                     <tbody id="items-table-body">
                                         {% for p in bitem %}
-                                        <tr>
+                                        <tr id='addr0{{ forloop.counter }}'>
                                             <td>{{ forloop.counter }}
                                                 <input type="text" name="id[]" value="{{p.id}}" hidden>
                                             </td>
@@ -907,7 +908,8 @@
                                             <td><input type="number" value="{{ p.amount }}" name='amount[]' id="total1" class="form-control total" 
                                                 placeholder="0" step="any" readonly>
                                             </td> 
-                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>   
+                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>  
+                                            <td><button type="button" id="{{ forloop.counter }}" class="btn btn-outline-secondary ml-1 remove_row">-</button></td> 
                                         </tr> 
                                         {% endfor %}   
                                     </tbody>

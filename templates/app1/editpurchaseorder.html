@@ -16,13 +16,13 @@
     </script>
     <script>
         $(document).ready(function(){
-            var roinc = 0
+            var roinc = parseInt(document.getElementById("tab_logic").rows.length)-2
             $('#addrow').click(function(){
                 roinc++
                 $('#items-table-body').append(
                     `
                         <tr id='addr0${roinc}'>
-                            <td>${roinc+1}</td>
+                            <td>${roinc}</td>
                             <td style="width: 20%;">
                                 <div class="d-flex">
                                     <select name='items1[]' id="product${roinc}" class="form-control">
@@ -85,7 +85,11 @@
     
             $(document).on('click','.remove_row',function(){
                 var row_id = $(this).attr("id");
+                
                 $('#addr0'+row_id+'').remove();
+               
+
+                calc()
             });
     
             var place = document.getElementById('plosu').value;
@@ -164,7 +168,7 @@
                         document.getElementById('hsn12').value = data
                         
                         document.getElementById('unit12').value = data2            
-                        if (supply == '{{ cmp1.state }}')
+                        if (place == '{{ cmp1.state }}')
                             {
                                 document.getElementById('ta12').innerHTML = data3 + ' % GST';
                                 document.getElementById('ta12').value=data3
@@ -193,7 +197,7 @@
                         document.getElementById('hsn13').value = data
                         
                         document.getElementById('unit13').value = data2
-                        if (supply == '{{ cmp1.state }}')
+                        if (place == '{{ cmp1.state }}')
                         {
                             document.getElementById('ta13').innerHTML = data3 + ' % GST';
                             document.getElementById('ta13').value=data3
@@ -903,7 +907,7 @@
                                     <tbody id="items-table-body">
                                         
                                         {% for p in pitem %}
-                                        <tr>
+                                        <tr id='addr0{{ forloop.counter }}'>
                                             <td>{{ forloop.counter }}</td>
                                             <td style="width: 20%;">
                                                 
@@ -957,6 +961,7 @@
                                             <td><input type="number" value="{{ p.amount }}" name='amount[]' id="total1" class="form-control total" 
                                                 placeholder="0" step="any" readonly>
                                             </td> 
+                                            <td><button type="button" id="{{ forloop.counter }}" class="btn btn-outline-secondary ml-1 remove_row">-</button></td>
                                         </tr>
                                         
                                         {% endfor %}   
