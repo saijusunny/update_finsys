@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fin sYs</title>
+   
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+    
+</head>
+<style>
+    
+    
+    .table2
+    {
+        text-align: center;
+        padding-top: 6px;
+        font-size: 1.1em;
+        background-color:azure
+       
+    }
+    
+    .table-head
+    {
+        color: rgb(52, 49, 58);
+        
+       
+    }
+    .table2 .tbody tr 
+    {
+       margin-bottom: 3px;
+    }
+    .table3{
+        width:75px;
+        text-align: right;
+        font-size: 14px;
+    }
+    body{
+        font-size: 14px;
+    }
+    
+</style>
+
+<body>
+
+    <div class="my-5 page" size="A4" >
+        <div class="p-5">
+            <div id="ember2512" class="tooltip-container ember-view ribbon text-ellipsis">
+                </div>
+            <section class="top-content bb d-flex justify-content-between">
+                <div class="logo">
+                    <!-- <img src="logo.png" alt="" class="img-fluid"> -->
+                </div>
+                <div class="top-left">
+                    <div class="graphic-path" style="text-align: right;padding-top: 10px;background-color:#22b8d1;margin-left: 550px; text-align: center; color :rgb(0, 0, 0)">
+                        <p>Credit Note</p>
+                    </div>
+                    <div class="position-relative" style="margin-left: 550px;text-align: center">
+                        <p>CN - <span>{{ pcrd.credit_no }}</span></p>
+                    </div>
+                </div>
+            </section>
+            <hr>
+            <table class="table1">
+                
+                <tbody>
+                    <tr style="font-weight: bolder;">
+                        <td>From,</td>
+                        <td>To,</td>
+                    </tr>
+                    <tr>
+                        <td>{{cmp1.cname }}</td>
+                        <td>{{pcrd.customer}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{cmp1.caddress}}<br>{{cmp1.city}}<br>{{cmp1.state}}<br>{{cmp1.pincode}}</td>
+                        <td style="width: 200px;">{{ pcrd.address}}</td>
+                    </tr>
+                    
+                </tbody>
+
+            </table>
+            <hr>
+            <section class="store-user mt-5">
+                <table class="table1" style="margin: 25px;">
+                    <tr>
+                        <th>
+                            <p>Credit Date : {{ pcrd.creditdate }}</p>
+                            
+                        </th>
+                    
+                        <th>
+                            <p>Ref# : <span>{{ pcrd.billno }}</span></p>
+                            
+                        </th>
+                    </tr>
+                </table>
+                
+                    
+                
+            </section>
+
+            <section class="product-area mt-4">
+                <table class="table2 table-hover">
+                    <thead>
+                        <tr>
+                            <tr>
+                                <td>Items</td>
+                                <td>HSN Code</td>
+                                <td>Quantity</td>
+                                <td>Rate</td>
+                                <td>Tax</td>
+                                <td>Total</td>
+                            </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for pordr in pcrd1 %}
+                            <tr>
+                                <td class="text-center" style="color:#000">{{ pordr.items }}</td>
+                                <td class="text-center" style="color:#000">{{ pordr.hsn }}</td>
+                                <td class="text-center" style="color:#000">{{ pordr.quantity }}</td>
+                                <td class="text-center" style="color:#000">{{ pordr.price  }}</td>
+                                <td class="text-center" style="color:#000">{{ pordr.tax  }}%</td>
+                                <td class="text-center" style="color:#000">{{ pordr.total }}</td>
+                            </tr>
+                        {% endfor %} 
+   
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="balance-info">
+                <div class="row">
+                    
+                    <div class="col-4" >
+                        <table class="table3 border-0 table-hover"  >
+                            <tr >
+                                <td style="color:black">Sub Total :</td>
+                                <td style="color:black">{{pcrd.subtotal}}</td>
+                            </tr>
+                       
+                            <tr>
+                                <td style="color:black">Tax Amount</td>
+                                <td style="color:black">{{pcrd.taxamount}}</td>
+                            </tr>
+                            <tfoot>
+                                <tr>
+                                    <td style="color:black">Grand Total:</td>
+                                    <td style="color:black ;">{{pcrd.grandtotal}}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="col-8">
+                        <p class="m-0 font-weight-bold" style="color:black"> Note: </p>
+                        <p style="color:black">{{pcrd.note}}</p>
+                        </div>
+
+                      
+                    </div>
+                    <div style="text-align: right;">
+                        Authorized Signature
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cart BG -->
+            <img src="cart.jpg" class="img-fluid cart-bg" alt="">
+
+            
+        </div>
+    </div>
+      
+    
+    
+</body>
+
+</html>

@@ -60,9 +60,9 @@
                             </thead>
                             <tbody>
                             {% for p in pdebit %}
-                                <tr>
-                                    <th>{{ p.creditdate |date:'d-m-Y' }}</th>
-                                    <td>CN - {{ p.credit_no }}</td>
+                                <tr >
+                                    <td>{{ p.creditdate |date:'d-m-Y' }}</td>
+                                    <td><a href="{%url 'viewcredit'  p.screditid%} "> CN - {{ p.credit_no }}</a></td>
                                     <td>{{ p.customer }}</a></td>
                                     <td>{{ p.taxamount }}</td>
                                     <td>{{ p.grandtotal }}</td>

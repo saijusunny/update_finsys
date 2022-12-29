@@ -3,11 +3,6 @@
 {% load static %}
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-
-
-
-
-
 <style>
   input {
     background-color: #2f516f;
@@ -19,7 +14,7 @@
     display:none;
   }
 </style>
-<form action="create_stock_adjustment" method="post" class="needs-validation" enctype="multipart/form-data"  validate >{% csrf_token %}
+<form action="create_stock_adjustment" method="post" class="needs-validation" enctype="multipart/form-data" autocomplete="off"  validate >{% csrf_token %}
         
     <div class="page-content">
         <h2 id="hel"></h2>
@@ -44,7 +39,6 @@
                         <label for="validationCustom01"
                         style="color: white;">Mode of Adjustment</label>
                  <select name="mode" class="form-control" 
-                           style="background-color: #2a4964; color: white;"
                            required>
                            <option selected disabled value="">Choose...</option>
                          <option value="Quandity">Quandity Adjustment</option>
@@ -70,7 +64,6 @@
                     <div class="col-md-3">
                         <label class="col-form-label">Account *</label>
                         <select name="account" class="form-control" 
-                           style="background-color: #2a4964; color: white;"
                            required>
                            <option selected disabled value="">Choose...</option>
                            {% for a in acc %}
@@ -84,7 +77,6 @@
                         <label class="col-form-label">Reason * </label>
                         <div class="d-flex">
                         <select name="reason" class="form-control" 
-                        style="background-color: #2a4964; color: white;"
                         required>
                         <option selected disabled value="">Choose...</option>
                         {% for a in reason %}
@@ -127,11 +119,11 @@
                   </tr>
                 </thead>
                 <tbody id="items-table-body">
-                  <tr >
+                  <tr id="row1">
                     <td>1</td>
                     <td style="width: 20%;">
                       <div class="d-flex">
-                        <select name="item1" id="itemss" class="form-control" style="background-color: #2f516f; color: white; " required>
+                        <select name="item1" id="itemss" class="form-control">
                         <option value=" " selected disabled >Select Product</option>
                         {% for i in item %}
                         <option value="{{ i.name  }}">{{ i.name  }} </option>
@@ -139,19 +131,22 @@
                         </select>
                       </div>
                     </td>
-                    <td><input type="text"  id="qty" name="qty1"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
-                    <td><input type="text" id="qty_hand" name="qty_hand1" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" required></td>
-                    <td><input type="number"  id="nqty" name="new_qty1" class="form-control qty" style="background-color: #2f516f; color: white;" readonly></td>
-                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv()" >+</a></td>
+                    <td><input type="text"  id="qty" name="qty1"  class="form-control" style="text-align:right;"></td>
+                    <td><input type="text" id="qty_hand" name="qty_hand1" class="form-control" style="text-align:right;" required></td>
+                    <td><input type="number"  id="nqty" name="new_qty1" class="form-control qty"></td>
+                    <td style="border: none;">
+                      <a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv()" >+</a>
+                      <a role="button" class="btn btn-outline-secondary ml-1" onclick = "remove1()">-</a>
+                    </td>
                   </tr>
 
                   <!-------------------ROW 1---------------------------->
 
-                  <tr class="row1">
+                  <tr class="row1" id="row2">
                     <td>2</td>
                     <td style="width: 20%;">
                       <div class="d-flex">
-                        <select name="item2" id="itemss1" class="form-control" style="background-color: #2f516f; color: white; " >
+                        <select name="item2" id="itemss1" class="form-control">
                         <option value=" " selected disabled>Select Product</option>
                         {% for i in item %}
                         <option value="{{ i.name  }}">{{ i.name  }} </option>
@@ -159,20 +154,24 @@
                         </select>
                       </div>
                     </td>
-                    <td><input type="text"  id="qty1" name="qty2"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
-                    <td><input type="text" id="qty_hand1" name="qty_hand2" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" ></td>
-                    <td><input type="number"  id="nqty1" name="new_qty2" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
-                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv1()" >+</a></td>
+                    <td><input type="text"  id="qty1" name="qty2"  class="form-control" style="text-align:right;"></td>
+                    <td><input type="text" id="qty_hand1" name="qty_hand2" class="form-control" style="text-align:right;" ></td>
+                    <td><input type="number"  id="nqty1" name="new_qty2" class="form-control qty"></td>
+                    <td style="border: none;">
+                      <a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv1()" >+</a>
+                      <a role="button" class="btn btn-outline-secondary ml-1" onclick = "remove2()">-</a>
+                    </td>
+                    
                   </tr>
 
                    <!-------------------ROW 2---------------------------->
 
-                  <tr class="row2">
+                  <tr class="row2" id="row3">
                   
                     <td>3</td>
                     <td style="width: 20%;">
                       <div class="d-flex">
-                        <select name="item3" id="itemss2" class="form-control" style="background-color: #2f516f; color: white; ">
+                        <select name="item3" id="itemss2" class="form-control">
                         <option value=" " selected disabled>Select Product</option>
                         {% for i in item %}
                         <option value="{{ i.name  }}">{{ i.name  }} </option>
@@ -180,19 +179,23 @@
                         </select>
                       </div>
                     </td>
-                    <td><input type="text"  id="qty2" name="qty3"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
-                    <td><input type="text" id="qty_hand2" name="qty_hand3" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" ></td>
-                    <td><input type="number"  id="nqty2" name="new_qty3" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
-                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv2()" >+</a></td>
+                    <td><input type="text"  id="qty2" name="qty3"  class="form-control" style="text-align:right;"></td>
+                    <td><input type="text" id="qty_hand2" name="qty_hand3" class="form-control" style="text-align:right;" ></td>
+                    <td><input type="number"  id="nqty2" name="new_qty3" class="form-control qty"></td>
+                    <td style="border: none;">
+                      <a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv2()" >+</a>
+                      <a role="button" class="btn btn-outline-secondary ml-1" onclick = "remove3()">-</a>
+                    </td>
+                    
                   </tr>
 
                    <!-------------------ROW 3---------------------------->
 
-                  <tr class="row3">
+                  <tr class="row3" id="row4">
                     <td>4</td>
                     <td style="width: 20%;">
                       <div class="d-flex">
-                        <select name="item4" id="itemss3" class="form-control" style="background-color: #2f516f; color: white; ">
+                        <select name="item4" id="itemss3" class="form-control">
                         <option value=" " selected disabled>Select Product</option>
                         {% for i in item %}
                         <option value="{{ i.name  }}">{{ i.name  }} </option>
@@ -200,19 +203,22 @@
                         </select>
                       </div>
                     </td>
-                    <td><input type="text"  id="qty3" name="qty4"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
-                    <td><input type="text" id="qty_hand3" name="qty_hand4" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" /></td>
-                    <td><input type="number"  id="nqty3" name="new_qty4" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
-                    <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv3()">+</a></td>
+                    <td><input type="text"  id="qty3" name="qty4"  class="form-control" style="text-align:right;"></td>
+                    <td><input type="text" id="qty_hand3" name="qty_hand4" class="form-control" style="text-align:right;" /></td>
+                    <td><input type="number"  id="nqty3" name="new_qty4" class="form-control qty"></td>
+                    <td style="border: none;">
+                      <a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="showDiv3()">+</a>
+                      <a role="button" class="btn btn-outline-secondary ml-1" onclick = "remove4()">-</a>
+                    </td>
                   </tr>
 
                    <!-------------------ROW 4---------------------------->
 
-                  <tr class="row4">
+                  <tr class="row4" id="row5">
                     <td>5</td>
                     <td style="width: 20%;">
                       <div class="d-flex">
-                        <select name="item5" id="itemss4" class="form-control" style="background-color: #2f516f; color: white; ">
+                        <select name="item5" id="itemss4" class="form-control">
                         <option value=" " selected disabled>Select Product</option>
                         {% for i in item %}
                         <option value="{{ i.name  }}">{{ i.name  }} </option>
@@ -220,14 +226,11 @@
                         </select>
                       </div>
                     </td>
-                    <td><input type="text"  id="qty4" name="qty5"  class="form-control" style="background-color: #2f516f; color: white;text-align:right;" readonly></td>
-                    <td><input type="text" id="qty_hand4" name="qty_hand5" class="form-control" style="background-color: #2f516f; color: white;text-align:right;" /></td>
-                    <td><input type="number"  id="nqty4" name="new_qty5" class="form-control qty" style="background-color: #2f516f; color: white;" ></td>
-                    
+                    <td><input type="text"  id="qty4" name="qty5"  class="form-control" style="text-align:right;"></td>
+                    <td><input type="text" id="qty_hand4" name="qty_hand5" class="form-control" style="text-align:right;" /></td>
+                    <td><input type="number"  id="nqty4" name="new_qty5" class="form-control qty"></td>
+                    <td><button type="button" class="btn btn-outline-secondary ml-1" onclick = "remove5()">-</button></td>
                   </tr>
-
-
-                  
                 </tbody>
               </table>
               
@@ -307,215 +310,194 @@
             </div>
         </form>
         </div>
- 
     </div>
-</div>            
+  </div>            
 
 
 
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-
-
-
-            <script>
-                $('#date').val(new Date().toJSON().slice(0,10));
-            </script>
-
-
-            <script>
-                $(document).ready(function () {
-                    $('#itemss').on('change', function () {
-                        select = $('#itemss').val();
-                        $.ajax({
-                            type: "GET",
-                            url: "{% url 'getit' %}",
-                            data: {id: select}
-                        }).done(function (response) {
-                            var json_data = JSON.parse(response);
-                            for (key in json_data) {
-                                document.getElementById('qty').value = json_data[key]['stock']
-                               
-                            }
-                        }).fail(function () {
-                            alert("failed");
-                        })
-                    })
-                })
-            </script>
-            <script>
-              $(document).ready(function () {
-                  $('#itemss1').on('change', function () {
-                      select = $('#itemss1').val();
-                      $.ajax({
-                          type: "GET",
-                          url: "{% url 'getit' %}",
-                          data: {id: select}
-                      }).done(function (response) {
-                          var json_data = JSON.parse(response);
-                          for (key in json_data) {
-                              document.getElementById('qty1').value = json_data[key]['stock']
-                             
-                          }
-                      }).fail(function () {
-                          alert("failed");
-                      })
-                  })
-              })
-          </script>
-          <script>
-            $(document).ready(function () {
-                $('#itemss2').on('change', function () {
-                    select = $('#itemss2').val();
-                    $.ajax({
-                        type: "GET",
-                        url: "{% url 'getit' %}",
-                        data: {id: select}
-                    }).done(function (response) {
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            document.getElementById('qty2').value = json_data[key]['stock']
-                           
-                        }
-                    }).fail(function () {
-                        alert("failed");
-                    })
-                })
-            })
-        </script>
-        <script>
-          $(document).ready(function () {
-              $('#itemss4').on('change', function () {
-                  select = $('#itemss4').val();
-                  $.ajax({
-                      type: "GET",
-                      url: "{% url 'getit' %}",
-                      data: {id: select}
-                  }).done(function (response) {
-                      var json_data = JSON.parse(response);
-                      for (key in json_data) {
-                          document.getElementById('qty4').value = json_data[key]['stock']
-                         
-                      }
-                  }).fail(function () {
-                      alert("failed");
-                  })
-              })
-          })
-      </script>
-      <script>
-        $(document).ready(function () {
-            $('#itemss3').on('change', function () {
-                select = $('#itemss3').val();
-                $.ajax({
-                    type: "GET",
-                    url: "{% url 'getit' %}",
-                    data: {id: select}
-                }).done(function (response) {
-                    var json_data = JSON.parse(response);
-                    for (key in json_data) {
-                        document.getElementById('qty3').value = json_data[key]['stock']
-                       
-                    }
-                }).fail(function () {
-                    alert("failed");
-                })
-            })
-        })
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      $('#date').val(new Date().toJSON().slice(0,10));
     </script>
-
-
-            <script>
-              $(document).ready(function(){
-                $("#qty,#qty_hand").keyup(function(){
-
-                  var total = 0;
-                  var x = Number($("#qty").val());
-                  var y = Number($("#qty_hand").val());
-                  var total = y - x;
-                  $("#nqty").val(total);
-                });
-              });
-            </script>
-            <script>
-              $(document).ready(function(){
-                $("#qty1,#qty_hand1").keyup(function(){
-
-                  var total = 0;
-                  var x = Number($("#qty1").val());
-                  var y = Number($("#qty_hand1").val());
-                  var total = y - x;
-                  $("#nqty1").val(total);
-                });
-              });
-            </script>
-            <script>
-              $(document).ready(function(){
-                $("#qty2,#qty_hand2").keyup(function(){
-
-                  var total = 0;
-                  var x = Number($("#qty2").val());
-                  var y = Number($("#qty_hand2").val());
-                  var total = y - x;
-                  $("#nqty2").val(total);
-                });
-              });
-            </script>
-            <script>
-              $(document).ready(function(){
-                $("#qty3,#qty_hand3").keyup(function(){
-
-                  var total = 0;
-                  var x = Number($("#qty3").val());
-                  var y = Number($("#qty_hand3").val());
-                  var total = y - x;
-                  $("#nqty3").val(total);
-                });
-              });
-            </script>
-            <script>
-              $(document).ready(function(){
-                $("#qty4,#qty_hand4").keyup(function(){
-
-                  var total = 0;
-                  var x = Number($("#qty4").val());
-                  var y = Number($("#qty_hand4").val());
-                  var total = y - x;
-                  $("#nqty4").val(total);
-                });
-              });
-            </script>
-
-            
-            <script>
-            function showDiv() {
-
-              document.querySelector(".row1").style.display = "table-row";
-              
+    <script>
+      $(document).ready(function () {
+        $('#itemss').on('change', function () {
+          select = $('#itemss').val();
+          $.ajax({
+            type: "GET",
+            url: "{% url 'getit' %}",
+            data: {id: select}
+          }).done(function (response) {
+            var json_data = JSON.parse(response);
+            for (key in json_data) {
+              document.getElementById('qty').value = json_data[key]['stock']
             }
-           
-            
-          </script>
-          <script>
-            function showDiv1() {
-
-              document.querySelector(".row2").style.display = "table-row";
-              
+          }).fail(function () {
+            alert("failed");
+          })
+        })
+      })
+    </script>
+    <script>
+      $(document).ready(function () {
+        $('#itemss1').on('change', function () {
+          select = $('#itemss1').val();
+          $.ajax({
+            type: "GET",
+            url: "{% url 'getit' %}",
+            data: {id: select}
+          }).done(function (response) {
+            var json_data = JSON.parse(response);
+            for (key in json_data) {
+              document.getElementById('qty1').value = json_data[key]['stock']
             }
-          </script>
-          <script>
-           
-            function showDiv2() {
-
-              document.querySelector(".row3").style.display = "table-row";
-              
+          }).fail(function () {
+            alert("failed");
+          })
+        })
+      })
+    </script>
+    <script>
+      $(document).ready(function () {
+        $('#itemss2').on('change', function () {
+          select = $('#itemss2').val();
+          $.ajax({
+          type: "GET",
+          url: "{% url 'getit' %}",
+          data: {id: select}
+        }).done(function (response) {
+          var json_data = JSON.parse(response);
+            for (key in json_data) {
+              document.getElementById('qty2').value = json_data[key]['stock']
             }
-          </script>
-          <script>
-           
-            function showDiv3() {
-
-              document.querySelector(".row4").style.display = "table-row";
-              
-            }
-          </script>
+          }).fail(function () {
+            alert("failed");
+        })
+      })
+    })
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#itemss4').on('change', function () {
+        select = $('#itemss4').val();
+        $.ajax({
+        type: "GET",
+        url: "{% url 'getit' %}",
+        data: {id: select}
+      }).done(function (response) {
+        var json_data = JSON.parse(response);
+          for (key in json_data) {
+            document.getElementById('qty4').value = json_data[key]['stock']
+          }
+        }).fail(function () {
+          alert("failed");
+        })
+      })
+    })
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#itemss3').on('change', function () {
+        select = $('#itemss3').val();
+        $.ajax({
+        type: "GET",
+        url: "{% url 'getit' %}",
+        data: {id: select}
+      }).done(function (response) {
+        var json_data = JSON.parse(response);
+          for (key in json_data) {
+            document.getElementById('qty3').value = json_data[key]['stock']
+          }
+        }).fail(function () {
+          alert("failed");
+        })
+      })
+    })
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#qty,#qty_hand").keyup(function(){
+        var total = 0;
+        var x = Number($("#qty").val());
+        var y = Number($("#qty_hand").val());
+        var total = y - x;
+        $("#nqty").val(total);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#qty1,#qty_hand1").keyup(function(){
+        var total = 0;
+        var x = Number($("#qty1").val());
+        var y = Number($("#qty_hand1").val());
+        var total = y - x;
+        $("#nqty1").val(total);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#qty2,#qty_hand2").keyup(function(){
+        var total = 0;
+        var x = Number($("#qty2").val());
+        var y = Number($("#qty_hand2").val());
+        var total = y - x;
+        $("#nqty2").val(total);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#qty3,#qty_hand3").keyup(function(){
+        var total = 0;
+        var x = Number($("#qty3").val());
+        var y = Number($("#qty_hand3").val());
+        var total = y - x;
+        $("#nqty3").val(total);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function(){
+      $("#qty4,#qty_hand4").keyup(function(){
+        var total = 0;
+        var x = Number($("#qty4").val());
+        var y = Number($("#qty_hand4").val());
+        var total = y - x;
+        $("#nqty4").val(total);
+      });
+    });
+  </script>
+  <script>
+    function showDiv() {
+      document.querySelector(".row1").style.display = "table-row";
+    }
+    function showDiv1() {
+      document.querySelector(".row2").style.display = "table-row";
+    }
+    function showDiv2() {
+      document.querySelector(".row3").style.display = "table-row";
+    }
+    function showDiv3() {
+      document.querySelector(".row4").style.display = "table-row";
+    }
+  </script>
+  <script>
+    function remove1() {
+      $("#row1").remove();
+    }
+    function remove2() {
+      $("#row2").remove();
+    }
+    function remove3() {
+      $("#row3").remove();
+    }
+    function remove4() {
+      $("#row4").remove();
+    }
+    function remove5() {
+      $("#row5").remove();
+    }
+  </script>          
 {% endblock %}

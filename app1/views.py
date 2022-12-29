@@ -35558,4 +35558,191 @@ def create_credit(request):
         return redirect('credit_note')
     return redirect('/') 
 
+
+@login_required(login_url='regcomp')
+def viewcredit(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        pcrd=salescreditnote.objects.get(screditid=id)
+        pcrd1 = salescreditnote1.objects.all().filter(scredit=id)
+        print("sdfdfds")
+        return render(request,'app1/viewcreditnote.html',{'cmp1': cmp1,'pcrd':pcrd,'pdeb':pcrd1})
+    return redirect('credit_note')
+
+def render_pdf_credit(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
     
+
+    pcrd=salescreditnote.objects.get(screditid=id)
+    pcrd1 = salescreditnote1.objects.all().filter(scredit=id)
+
+    total = pcrd.grandtotal
+    words_total = num2words(total)
+    template_path = 'app1/pdfcredit.html'
+    context ={
+        'pcrd':pcrd,
+        'cmp1':cmp1,
+        'pcrd1':pcrd1,
+
+    }
+    fname=pcrd.screditid
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+def editcreditnote(request, id):
+    pcrd=salescreditnote.objects.get(screditid=id)
+    pcrd1 = salescreditnote1.objects.all().filter(scredit=id)
+    context={
+        'pcrd':pcrd,
+        'pcrd1':pcrd1
+    }
+    return render(request,'app1/editcreditnote.html', context)
+
+def editcreditfun(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            pdebt.pdebt=salescreditnote.objects.get(screditid=id)
+            pdebt.customer = request.POST['vendor'],
+            pdebt.address = request.POST['address'],
+            pdebt.email=request.POST['email'],
+            pdebt.creditdate=request.POST['debitdate'],
+            pdebt.supply=request.POST['supply'],
+            pdebt.billno=request.POST['billno'],
+            pdebt.subtotal=request.POST['subtotal'],
+            pdebt.taxamount=request.POST['taxamount'],
+            pdebt.grandtotal=request.POST['grandtotal'],
+         
+
+            pdebt.save()
+
+            pl3=profit_loss.objects.get(cid=cmp1,pdebit=pdebt)
+            pl3.details = pdebt.vendor
+            pl3.cid = cmp1
+            pl3.acctype = "Cost of Goods Sold"
+            pl3.transactions = "Vendor Credits"
+            pl3.accname = "Cost of Goods Sold"
+            pl3.pdebit = pdebt
+            pl3.details1 = pdebt.debit_no
+            pl3.date = pdebt.debitdate
+            pl3.payments = pdebt.subtotal
+            pl3.save()
+
+            bs3=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Accounts Payable(Creditors)')
+            bs3.details = pdebt.vendor
+            bs3.cid = cmp1
+            bs3.acctype = "Accounts Payable(Creditors)"
+            bs3.transactions = "Vendor Credits"
+            bs3.account = "Accounts Payable(Creditors)"
+            bs3.debit = pdebt
+            bs3.details1 = pdebt.debit_no
+            bs3.date = pdebt.debitdate
+            bs3.payments = pdebt.grandtotal
+            bs3.save()
+
+            supply=request.POST['supply']
+            if supply == cmp1.state:
+                bs4=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Input CGST')
+                bs4.details = pdebt.vendor
+                bs4.cid = cmp1
+                bs4.acctype = "Current Assets"
+                bs4.transactions = "Vendor Credits"
+                bs4.account = "Input CGST"
+                bs4.debit = pdebt
+                bs4.details1 = pdebt.debit_no
+                bs4.date = pdebt.debitdate
+                bs4.payments = pdebt.cgst
+                bs4.save()
+
+                bs5=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Input SGST')
+                bs5.details = pdebt.vendor
+                bs5.cid = cmp1
+                bs5.acctype = "Current Assets"
+                bs5.transactions = "Vendor Credits"
+                bs5.account = "Input SGST"
+                bs5.debit = pdebt
+                bs5.details1 = pdebt.debit_no
+                bs5.date = pdebt.debitdate
+                bs5.payments = pdebt.sgst
+                bs5.save()
+            else:
+                bs6=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Input IGST')
+                bs6.details = pdebt.vendor
+                bs6.cid = cmp1
+                bs6.acctype = "Current Assets"
+                bs6.transactions = "Vendor Credits"
+                bs6.account = "Input IGST"
+                bs6.debit = pdebt
+                bs6.details1 = pdebt.debit_no
+                bs6.date = pdebt.debitdate
+                bs6.payments = pdebt.igst
+                bs6.save()
+
+            items = request.POST.getlist("items[]")
+            hsn = request.POST.getlist("hsn[]")
+            quantity = request.POST.getlist("quantity[]")
+            price = request.POST.getlist("price[]")
+            tax = request.POST.getlist("tax[]")
+            total = request.POST.getlist("total[]")
+
+            pdebid = request.POST.getlist("id[]")
+
+            pdebitid=salescreditnote.objects.get(screditid=id)
+
+            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total)==len(pdebid) and items and hsn and quantity and price and tax and total and pdebid:
+                mapped=zip(items,hsn,quantity,price,tax,total,pdebid)
+                mapped=list(mapped)
+                for ele in mapped:
+                    created = salescreditnote1.objects.filter(scredit=ele[6]).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
+                    tax=ele[4],total=ele[5])
+
+            return redirect('viewcredit',id)
+        return redirect('viewcredit',id)
+        
+    return redirect('/') 
+
+@login_required(login_url='regcomp')
+def deletecredit(request, id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        pdebt=salescreditnote.objects.get(screditid=id)
+        pdebt1 = salescreditnote1.objects.all().filter(debit=id)
+        bs = balance_sheet.objects.all().filter(debit=id)
+        pl = profit_loss.objects.all().filter(pdebit=id)
+        pdebt.delete() 
+        pdebt1.delete() 
+        bs.delete() 
+        pl.delete() 
+        return redirect('viewcredit',id)
+    return redirect('viewcredit',id)

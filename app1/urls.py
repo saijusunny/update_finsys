@@ -813,6 +813,10 @@ urlpatterns = [
 
     path('render_pdfpurpym_view/<int:id>', views.render_pdfpurpym_view, name='render_pdfpurpym_view'),
     path('render_pdfdebit_view/<int:id>', views.render_pdfdebit_view, name='render_pdfdebit_view'),
+    path('viewcredit/<int:id>', views.viewcredit, name='viewcredit'),
+    path('render_pdf_credit/<int:id>', views.render_pdf_credit, name='render_pdf_credit'),
+    path('editcreditnote/<int:id>', views.editcreditnote, name='editcreditnote'),
+    path('deletecredit/<int:id>', views.deletecredit, name='deletecredit'),
     
 
 

@@ -1,0 +1,2121 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <!--<h1>Taxes</h1>-->
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var i = 1;
+            $("#add_row").click(function () {
+                b = i - 1;
+                $('#addr' + i).html($('#addr' + b).html()).find('td:first-child').html(i + 1);
+                $('#tab_logic').append('<tr id="addr' + (i + 1) + '"></tr>');
+                i++;
+            });
+            $("#delete_row").click(function () {
+                if (i > 1) {
+                    $("#addr" + (i - 1)).html('');
+                    i--;
+                }
+                calc();
+            });
+
+            $('#tab_logic tbody').on('keyup change', function () {
+                calc();
+            });
+
+            $('#tax').on('keyup change', function () {
+                calc_total();
+            });
+        });
+
+        function calc() {
+            $('#tab_logic tbody tr').each(function () {
+                var html = $(this).html();
+                if (html != '') {
+                    var qty = $(this).find('.qty').val();
+                    var price = $(this).find('.price').val();
+                    var tax = $(this).find('.tax').val();
+                    $(this).find('.total').val(qty * price);
+                    $(this).find('.taxamount').val((qty * price) * (tax / 100));
+                    calc_total();
+                }
+            });
+        }
+
+        function calc_total() {
+            total = 0;
+            $('.total').each(function () {
+                total += parseFloat($(this).val());
+            });
+            taxamount = 0;
+            $('.taxamount').each(function () {
+                taxamount += parseFloat($(this).val());
+            });
+            $('#sub_total').val(total.toFixed(2));
+            $('#tax_amount').val(taxamount.toFixed(2));
+            $('#grandtotal').val((taxamount + total).toFixed(2));
+            $('#baldue').val((taxamount + total).toFixed(2));
+
+            test()
+        }
+
+        function test(){
+            var bc = document.getElementById("plosu").value
+            d=0
+            if (bc == "{{ cmp1.state }}"  ) {
+                gst = taxamount/2
+                $('#cgst').val(parseFloat(gst.toFixed(2)));
+                $('#sgst').val(parseFloat(gst.toFixed(2)));
+                $('#igst').val(parseFloat(d.toFixed(2)));
+            }
+                
+            if (bc != "{{ cmp1.state }}"  ) {
+                $('#igst').val(taxamount.toFixed(2));
+                $('#cgst').val(d.toFixed(2));
+                $('#sgst').val(d.toFixed(2));
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        function state(element) {
+            if (element.value == "Kerala" ) {
+                document.getElementById('cgst1').style.display = 'flex';
+                document.getElementById('sgst1').style.display = 'flex';
+                document.getElementById('igst1').style.display = 'none'; 
+            } else {
+                document.getElementById('cgst1').style.display = 'none';
+                document.getElementById('sgst1').style.display = 'none';
+                document.getElementById('igst1').style.display = 'flex';
+            }
+        }
+    </script>
+    </script>
+    <script>
+        function showinnum(divId, element) {
+            if (element.value) {
+                document.getElementById(divId).innerHTML = "Debit Note " + element.value;
+            } else {
+                document.getElementById(divId).innerHTML = "Debit Note";
+            }
+        }
+
+    </script>
+    <!-- <script>
+        var item_row_counter = 1
+
+        function add_item_row() {
+            old_item_row_count = item_row_counter
+            item_row_counter++;
+
+            $('#items-table-body >tr:last').clone(true).insertAfter('#items-table-body >tr:last');
+            $('#items-table-body >tr:last input').val('');
+
+            $('#items-table-body >tr:last td')[0].innerHTML = item_row_counter
+            update_amounts($('#items-table-body input[name=tax1]:last'));
+        }
+
+        function setup_rows() {
+            $("#addrow").click(function(event) {
+            event.preventDefault();
+            add_item_row();
+            });
+
+            for (var i = 0; i <= 4; i++) {
+                add_item_row();
+            }
+        }
+    </script> -->
+
+    <form action="{% url 'create_credit'%}" method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="page-content">
+            <!--breadcrumb-->
+            <div class="card radius-15">
+                <div class="card-body">
+                    <div class="card-title">
+                        <center><h3 class="mb-0" id="invnumb">CREDIT NOTE</h3></center>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
+            <!--end breadcrumb-->
+            <div class="card radius-15" style="background-color: #243e54;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-5 mt-3">
+                                    <label for="validationCustom02">Customer</label>
+                                    <div class="d-flex">
+                                        <select name="vendor" id="select" class="custom-select">
+                                            <option selected disabled>Select Customer</option>
+                                            {% for v in vndr %}
+                                            <option value="{{ v.firstname }} {{ v.lastname }}">{{ v.firstname }} {{ v.lastname }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <a class="btn btn-outline-secondary ml-1" role="button" data-target="#customercreation" data-toggle="modal">+</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 mt-3">
+                                    <label>Email</label>&nbsp;
+                                    <input type="text" id="email" name="email" placeholder='Email' class="form-control">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 mt-3">
+                                    <label for="validationCustom02">Billing address</label>
+                                    <textarea class="form-control" name="address" rows="5" id="mailaddr"></textarea>
+                                </div>
+                                <div class="col-md-5 mt-3">
+                                    <label for="validationCustom02">Credit Note Date</label>
+                                    <input type="date" class="form-control" name="debitdate" id="date">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 mt-3">
+                                    <label>Place of supply</label>&nbsp;
+                                    <select type="text" class="form-control" id="plosu" name="supply" onchange="state(this)">
+                                        <option value="{{ cmp1.state }}" selected> {{ cmp1.state }}</option>
+                                        <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads</option>
+                                        <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                        <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chandigarh">Chandigarh</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                        <option value="Damn anad Diu">Damn anad Diu</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Predesh">Himachal Predesh</option>
+                                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Ladakh">Ladakh</option>
+                                        <option value="Lakshadweep">Lakshadweep</option>
+                                        <option value="Madhya Predesh">Madhya Predesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Puducherry">Puducherry</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Predesh">Uttar Predesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                        <option value="Other Territory">Other Territory</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5 mt-3">
+                                    <label for="validationCustom02">Invoice Number</label>
+                                    <select name="billno" id="inv_no" class="form-control">
+                                        <option selected >Select Invoice</option>
+                                        
+                                        
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row" style="margin-top: 20%">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-6"><label style="font-size: 20px;">CREDIT AMOUNT</label></div>
+                                <div class="col-md-4"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-8">
+                                    <input type="text" name="creditamount" id="baldue" placeholder='0.00' class="form-control"
+                                    readonly style="font-size: 50px; background-color: #243e54; border: 0px; color: white;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin-top: 25px;">
+                
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <label style="font-size: 30px;">Item Details</label>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12 mt-3">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="tab_logic">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Item</th>
+                                        <th class="text-center">HSN</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Tax (%)</th>
+                                        <th class="text-center">Total</th>
+                                        
+                                    </tr>
+                                    </thead>
+                                    <tbody id="items-table-body">
+                                    <tr id='addr0'>
+                                        <td>1</td>
+                                        <td style="width: 20%;">
+                                            <div class="d-flex">
+                                                <select name="items[]" id="product" class="form-control">
+                                                    <option selected>Choose..</option>
+                                                    {% for i in item %}
+                                                        <option value="{{ i.name }}">
+                                                            {{ i.name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <a class="btn btn-outline-secondary ml-1" role="button" data-target="#newitem" data-toggle="modal">+</a> 
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" name='hsn[]' id="hsn1" placeholder='HSN'
+                                            class="form-control hsn"/>
+                                        </td>
+                                        <td>
+                                               
+                                            <input type="number" name='quantity[]' onchange="qtychange1(this)" style="margin-top: 21px;" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
+                                                <div><span>Available Qty :</span> <span id="qtyspan"class=''></span></div>
+                                            
+
+                                        </td>
+                                        <td>
+                                            <input type="text" name='price[]' id="unit1" placeholder='Enter Unit Price'
+                                            class="form-control price" step="0.00" min="0"/>
+                                        </td>
+                                        
+                                        <td>
+                                            <select name="tax[]" id="tax1" class="form-control tax">
+                                                <option id="ta1" value=0 text={{ cmp1.state }}></option>
+                                                <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                                                <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                                                <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                                                <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                                                <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                                                <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                                                <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                                                <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                                                <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                                                <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                                                <option id="ta5" value=0 text=" ">Choose</option>
+                                                <option value=28 text=" ">28.0% IGST(28%)</option>
+                                                <option value=18 text=" ">18.0% IGST(18%)</option>
+                                                <option value=12 text=" ">12.0% IGST(12%)</option>
+                                                <option value=6 text=" ">06.0% IGST(06%)</option>
+                                                <option value=5 text=" ">05.0% IGST(05%)</option>
+                                                <option value=3 text=" ">03.0% IGST(03%)</option>
+                                                <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                                                <option value=0 text=" ">0.0% IGST(0%)</option>
+                                                <option value=0 text=" ">Exempt IGST(0%)</option>
+                                                <option value=0 text=" ">Out of Scope(0%)</option>
+                                            </select>
+                                        </td>
+
+                                        <td style="display: none;">
+                                            <input type="text" name='taxamount1' id="taxamount1" class="form-control taxamount"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name='total[]' id="total1" placeholder='0.00' class="form-control total"/>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tr>
+                                        <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="add_item_row()">+</a></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7"></div>
+                        <div class="col-md-5 table-responsive-md mt-3" id="tab_logic_total" style="background-color:rgba(0,0,0,.4); border: 1px solid rgba(128, 128, 128, 0.6);">
+                            <div class="p-3">
+                                <div class="row container-fluid p-2 m-0">
+                                    <div class="col-sm-4 mt-2"><label class="text-center">Sub Total</label></div>
+                                    <div class="col-sm-1 mt-2">:</div>
+                                    <div class="col-sm-7 mt-2"><input type="number" step="any" name='subtotal' placeholder=0 
+                                        class="form-control" id="sub_total">
+                                    </div>
+                                    <div class="col-sm-4 m-0 p-0"></div>
+                                </div>
+                                <div class="row container-fluid p-2 m-0" id="igst1">
+                                    <div class="col-sm-4 mt-2"><label for="a" class="text-center">IGST</label></div>
+                                    <div class="col-sm-1 mt-2">:</div>
+                                    <div class="col-sm-7 mt-2"><input type="number" name='igst' step="any" id="igst" placeholder=0 
+                                        class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-4 m-0 p-0"></div>
+                                </div>
+                                <div class="row container-fluid p-2 m-0" style="display: none;" id="cgst1">
+                                    <div class="col-sm-4 mt-2"><label for="a" class="text-center">CGST</label></div>
+                                    <div class="col-sm-1 mt-2">:</div>
+                                    <div class="col-sm-7 mt-2"><input type="number" name='cgst' step="any" id="cgst" placeholder=0 
+                                        class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-4 m-0 p-0"></div>
+                                </div>
+                                <div class="row container-fluid p-2 m-0" style="display: none;" id="sgst1">
+                                    <div class="col-sm-4 mt-2"><label for="a" class="text-center">SGST</label></div>
+                                    <div class="col-sm-1 mt-2">:</div>
+                                    <div class="col-sm-7 mt-2"><input type="number" name='sgst' step="any" id="sgst" placeholder=0 
+                                        class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-4 m-0 p-0"></div>
+                                </div>
+                                <div class="row container-fluid p-2 m-0">
+                                    <div class="col-sm-4 mt-2"><label for="a" class="text-center">Tax Amount</label></div>
+                                    <div class="col-sm-1 mt-2">:</div>
+                                    <div class="col-sm-7 mt-2"><input type="number" name='taxamount' id="tax_amount" placeholder='0.00' 
+                                        class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-4 m-0 p-0"></div>
+                                </div>
+                                <div class="row container-fluid p-2 m-0">
+                                    <div class="col-sm-4 mt-2"><label for="a" class="text-center">Grand Total</label></div>
+                                    <div class="col-sm-1 mt-2">:</div>
+                                    <div class="col-sm-7 mt-2"><input type="number" name='grandtotal' id="grandtotal" placeholder='0.00' readonly
+                                        class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-4 m-0 p-0"></div>
+                                </div>
+                            </div>
+                            <!-- <div class="table-responsive">
+                                <table class="table table-bordered" >
+                                    <tbody>
+                                    <tr>
+                                        <th class="text-center">Sub Total</th>
+                                        <td class="text-center"><input type="number" name='subtotal'
+                                                                       placeholder='0.00' class="form-control"
+                                                                       id="sub_total" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                    <tr>
+                                        <th class="text-center">Tax Amount</th>
+                                        <td class="text-center"><input type="number" name='taxamount'
+                                                                       id="tax_amount" placeholder='0.00'
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">Grand Total</th>
+                                        <td class="text-center"><input type="number" name='grandtotal'
+                                                                       id="grandtotal" placeholder='0.00'
+                                                                       class="form-control" readonly/></td>
+                                    </tr>
+                                    </tbody>
+                                </table> -->
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="row mt-4 mb-4">
+                        <div class="col-md-9"></div>
+                        <div class="col-md-3 mt-3 mb-4">
+                            <button class="btn btn-outline-info w-100 text-light rounded-pill" type="submit">Submit
+                                form
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </form>
+
+    
+    <div class="modal fade" id="customercreation" style="overflow-y: scroll;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content" style="background-color: #213b52;">
+                    <div class="modal-header">
+                        <h3 class="m-3">Customer Create</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card p-3 m-3">
+                            <form action="{% url 'customers' %}" autocomplete="off" method="post" class="needs-validation" novalidate>
+                                {% csrf_token %}
+                                
+                                    <div class="row">
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom01">Title</label>
+                                            <select name="title" id="title" class="form-control" id="validationCustom01">
+                                                <option value="Mr">Mr</option>
+                                                <option value="Mrs">Mrs</option>
+                                                <option value="Miss">Miss</option>
+                                                <option value="Ms">Ms</option>
+                                            </select>
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom02">First name</label>
+                                            <input type="text" class="form-control" id="validationCustom02" name="firstname"
+                                                   required style="background-color: #2f516f;color: white;">
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom02">Last name</label>
+                                            <input type="text" class="form-control" id="validationCustom02" name="lastname"
+                                                   required style="background-color: #2f516f;color: white;">
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom03">Company</label>
+                                            <input type="text" class="form-control" id="validationCustom03" name="company"
+                                                   required style="background-color: #2f516f;color: white;">
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom03">Location</label>
+                                            <input type="text" class="form-control" id="validationCustom03" name="location"
+                                                   style="background-color: #2f516f;color: white;">
+                                            <div class="valid-feedback">Looks good!</div>
+                                        </div>
+                                        <div class="col-md-4 mt-3"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom04">GST type</label>
+                                            <select class="custom-select" id="validationCustom04" name="gsttype"
+                                                    onclick="hidinput('hello', this),disinput('hai', this) ,disinput2('hai1', this)   "
+                                                    
+                                                    required
+                                                    style="background-color: #243e54; color: white;">
+                                                <option selected disabled value="">Choose...</option>
+                                                <option>GST registered- Regular</option>
+                                                <option>GST registered- Composition</option>
+                                                <option>GST unregistered</option>
+                                                <option>Consumer</option>
+                                                <option>Overseas</option>
+                                                <option>SEZ</option>
+                                                <option>Deemed exports - EOU's STP's EHTP's etc</option>
+                                            </select>
+                                            <div class="invalid-feedback">Please select a valid registration type.</div>
+                                        </div>
+            
+                                        <div class="col-md-4 mt-3" id="hello" style="display: none;">
+                                            <div >
+                                                <label for="validationCustom05">GSTIN</label>
+                                                <input type="text" class="form-control" onchange="checkgst(this)"
+                                                       id="validationCustom05" name="gstin"
+                                                       style="background-color: #2f516f;color: white;"
+                                                       value=""
+                                                       placeholder="29APPCK7465F1Z1">
+                                                       <a data-toggle="modal" href="#exampleModal"
+                                                style="color:#3dd5f3">Get Taxpayer Details</a>
+                                                <div class="text-danger m-2" id="warngst"></div>
+                                            </div>
+                                        </div>
+            
+                                        
+                                        <!-- <div class="col-md-4 mt-3" id="hai">
+                                            <div >
+                                                <label for="validationCustom05">BUSINESS LEGAL NAME</label>
+                                                <input type="text" class="form-control" 
+                                                       
+                                                       style="background-color: #2f516f;color: white;"
+                                                       >
+                                                <div class="text-danger m-2" id="warngst"></div>
+                                            </div>
+                                        </div>
+            
+                                        <div class="col-md-4 mt-3" id="hai1">
+                                            <div >
+                                                <label for="validationCustom05">BUSINESS TRADE NAME</label>
+                                                <input type="text" class="form-control" 
+                                                       
+                                                       style="background-color: #2f516f;color: white;"
+                                                       >
+                                                <div class="text-danger m-2" id="warngst"></div>
+                                            </div>
+                                        </div> -->
+                                        
+                                    
+            
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom03">PAN NO</label>
+                                            <input type="text" class="form-control" id="validationCustom03" name="panno"
+                                                    style="background-color: #2f516f;color: white;"
+                                                   onchange="checkpan(this)" placeholder="APPCK7465F">
+                                            <div class="text-danger m-2" id="warnpan"></div>
+                                        </div>
+        
+                                        <div class="col-md-4 mt-3" >
+                                            <div >
+                                                <label for="validationCustom05">OPENING BALANCE</label>
+                                                <input type="text" class="form-control" value=""  name="openbalance"
+                                                       
+                                                       style="background-color: #2f516f;color: white;"
+                                                       >
+                                                <div class="text-danger m-2" ></div>
+                                            </div>
+                                        </div>
+            
+                                        <!-- <div class="col-md-4 mt-3" id="hai1">
+                                            <div >
+                                                <label for="validationCustom05">PLACE OF SUPPLY</label>
+                                                <input type="text" class="form-control" 
+                                                       
+                                                       style="background-color: #2f516f;color: white;"
+                                                       >
+                                                <div class="text-danger m-2" id="warngst"></div>
+                                            </div>
+                                        </div>
+            
+                                        <div class="col-md-4 mt-3" id="hai1">
+                                            <div >
+                                                <label for="validationCustom05">TAX PERFERENCE</label>
+                                                <input type="text" class="form-control" 
+                                                       
+                                                       style="background-color: #2f516f;color: white;">
+                                                <div class="text-danger m-2" id="warngst"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mt-3" >
+                                            <div>
+                                                <label for="validationCustom05">TAX RETURNS</label><br>
+                                                <input type="radio" name="Returns" 
+                                                       
+                                                       style="background-color: #2f516f;color: white;"> Taxable
+                                                       <input type="radio" name="Returns"  
+                                                       style="background-color: #2f516f;color: white;"> Non Taxable
+                                                <div class="text-danger m-2" id="warngst"></div>
+                                            </div>
+                                        </div> -->
+                                    </div>
+            
+                                    
+            
+                                    
+            
+                                    <div class="row">
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom03">Email</label>
+                                            <input type="email" class="form-control" id="validationCustom03" name="email"
+                                                    style="background-color: #2f516f;color: white;"
+                                                   placeholder="finsys@mail.com">
+                                            <div class="invalid-feedback">Please provide a valid Email</div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom03">Website</label>
+                                            <input type="text" class="form-control" id="validationCustom03"
+                                                   placeholder="www.finsys.com" onchange="checkweb(this)" name="website"
+                                                   style="background-color: #2f516f;color: white;">
+                                            <div id="warnweb" class="text-danger"></div>
+                                        </div>
+                                        <div class="col-md-4 mt-3">
+                                            <label for="validationCustom01">Mobile</label>
+                                            <input type="text" class="form-control" id="validationCustom01"
+                                                   onchange="checkphone(this)" name="mobile"
+                                                   style="background-color: #2f516f;color: white;">
+                                            <div class="text-danger m-2" id="warnphone"></div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-6 mt-5">
+                                            <div class="row">
+                                                <div class="col-md-12 card-title">
+                                                    <h5 class="mb-0">Billing Address</h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="street">Street</label>
+                                                        <textarea class="form-control street" id="streets" name="street"
+                                                                 
+                                                                  style="background-color: #2f516f;color: white;"></textarea>
+                                                        <div class="invalid-feedback">Please provide a valid Street</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="city">City</label>
+                                                        <input type="text" class="form-control" id="citys"
+                                                               name="city"
+                                                              
+                                                               style="background-color: #2f516f;color: white;" placeholder="City">
+                                                        <div class="invalid-feedback">Please provide a valid City</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="state">State</label>
+                                                        <select type="text" class="form-control" id="states" name="state"
+                                                            required style="background-color: #2f516f; color: white;">
+                                                            <option value="" disabled selected>Choose</option>
+                                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                                            </option>
+                                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                                            <option value="Assam">Assam</option>
+                                                            <option value="Bihar">Bihar</option>
+                                                            <option value="Chandigarh">Chandigarh</option>
+                                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                            <option value="Damn anad Diu">Damn anad Diu</option>
+                                                            <option value="Delhi">Delhi</option>
+                                                            <option value="Goa">Goa</option>
+                                                            <option value="Gujarat">Gujarat</option>
+                                                            <option value="Haryana">Haryana</option>
+                                                            <option value="Himachal Predesh">Himachal Predesh</option>
+                                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                            <option value="Jharkhand">Jharkhand</option>
+                                                            <option value="Karnataka">Karnataka</option>
+                                                            <option value="Kerala">Kerala</option>
+                                                            <option value="Ladakh">Ladakh</option>
+                                                            <option value="Lakshadweep">Lakshadweep</option>
+                                                            <option value="Madhya Predesh">Madhya Predesh</option>
+                                                            <option value="Maharashtra">Maharashtra</option>
+                                                            <option value="Manipur">Manipur</option>
+                                                            <option value="Meghalaya">Meghalaya</option>
+                                                            <option value="Mizoram">Mizoram</option>
+                                                            <option value="Nagaland">Nagaland</option>
+                                                            <option value="Odisha">Odisha</option>
+                                                            <option value="Puducherry">Puducherry</option>
+                                                            <option value="Punjab">Punjab</option>
+                                                            <option value="Rajasthan">Rajasthan</option>
+                                                            <option value="Sikkim">Sikkim</option>
+                                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                                            <option value="Telangana">Telangana</option>
+                                                            <option value="Tripura">Tripura</option>
+                                                            <option value="Uttar Predesh">Uttar Predesh</option>
+                                                            <option value="Uttarakhand">Uttarakhand</option>
+                                                            <option value="West Bengal">West Bengal</option>
+                                                            <option value="Other Territory">Other Territory</option>
+                                                        </select>
+                                                        <div class="invalid-feedback">Please provide a valid State</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="pinco">Pin Code</label>
+                                                        <input type="text" class="form-control" id="pincoss"
+                                                               name="pincode"
+                                                                style="background-color: #2f516f;color: white;"
+                                                               placeholder="PIN code">
+                                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="country">Country</label>
+                                                        <input type="text" class="form-control" id="countrys"
+                                                               name="country"
+                                                                style="background-color: #2f516f;color: white;"
+                                                               placeholder="Country">
+                                                        <div class="invalid-feedback">Please provide a valid Country</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-5">
+                                            <div class="row">
+                                                <div class="col-md-12 d-flex">
+                                                    <h5>Shipping Address</h5>
+                                                    <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                                           name="okay">
+                                                    <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
+                                                </div Address>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="shipstreet">Street</label>
+                                                        <textarea class="form-control"  id="shipstreets"
+                                                                  name="shipstreet" 
+                                                                  
+                                                                  style="background-color: #2f516f;color: white;"></textarea>
+                                                        <div class="invalid-feedback">Please provide a valid Street</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="shipcity">City</label>
+                                                        <input type="text" class="form-control" id="shipcitys"
+                                                               name="shipcity"
+                                                               
+                                                               style="background-color: #2f516f;color: white;" placeholder="City">
+                                                        <div class="invalid-feedback">Please provide a valid City</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="shipstate">State</label>
+                                                        <select type="text" class="form-control" id="plosu" name="shipstate"
+                                                                style="background-color: #2f516f; color: white;">
+                                                            <option id="shipsts" selected>Choose</option>
+                                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                                            </option>
+                                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                                            <option value="Assam">Assam</option>
+                                                            <option value="Bihar">Bihar</option>
+                                                            <option value="Chandigarh">Chandigarh</option>
+                                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                            <option value="Damn anad Diu">Damn anad Diu</option>
+                                                            <option value="Delhi">Delhi</option>
+                                                            <option value="Goa">Goa</option>
+                                                            <option value="Gujarat">Gujarat</option>
+                                                            <option value="Haryana">Haryana</option>
+                                                            <option value="Himachal Predesh">Himachal Predesh</option>
+                                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                            <option value="Jharkhand">Jharkhand</option>
+                                                            <option value="Karnataka">Karnataka</option>
+                                                            <option value="Kerala">Kerala</option>
+                                                            <option value="Ladakh">Ladakh</option>
+                                                            <option value="Lakshadweep">Lakshadweep</option>
+                                                            <option value="Madhya Predesh">Madhya Predesh</option>
+                                                            <option value="Maharashtra">Maharashtra</option>
+                                                            <option value="Manipur">Manipur</option>
+                                                            <option value="Meghalaya">Meghalaya</option>
+                                                            <option value="Mizoram">Mizoram</option>
+                                                            <option value="Nagaland">Nagaland</option>
+                                                            <option value="Odisha">Odisha</option>
+                                                            <option value="Puducherry">Puducherry</option>
+                                                            <option value="Punjab">Punjab</option>
+                                                            <option value="Rajasthan">Rajasthan</option>
+                                                            <option value="Sikkim">Sikkim</option>
+                                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                                            <option value="Telangana">Telangana</option>
+                                                            <option value="Tripura">Tripura</option>
+                                                            <option value="Uttar Predesh">Uttar Predesh</option>
+                                                            <option value="Uttarakhand">Uttarakhand</option>
+                                                            <option value="West Bengal">West Bengal</option>
+                                                            <option value="Other Territory">Other Territory</option>
+                                                        </select>
+                                                        <div class="invalid-feedback">Please provide a valid State</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="shippinco">Pin Code</label>
+                                                        <input type="text" class="form-control" id="shippincos"
+                                                               name="shippincode"
+                                                               required style="background-color: #2f516f;color: white;"
+                                                               placeholder="PIN code">
+                                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mt-3">
+                                                    <div class="form-row">
+                                                        <label for="shipcountry">Country</label>
+                                                        <input type="text" class="form-control" id="shipcountrys"
+                                                               name="shipcountry"
+                                                                style="background-color: #2f516f;color: white;"
+                                                               placeholder="Country">
+                                                        <div class="invalid-feedback">Please provide a valid Country</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required
+                                                       style="background-color: #2f516f;">
+                                                <label>Agree to terms and conditions</label>
+                                                <div class="invalid-feedback">You must agree before submitting.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                                    type="submit">
+                                                Submit form
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $('#date').val(new Date().toJSON().slice(0,10));
+    </script>
+
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+    </div>
+    </div>
+    </div>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+    </div>
+    </div>
+    </div>
+    <script>
+        function myFunction() {
+            var checkBox = document.getElementById("myCheck");
+            var text = document.getElementById("bill");
+            if (checkBox.checked == true) {
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        function show() {
+            var checkBox = document.getElementById("Check");
+            var abc = document.getElementById("sad");
+            var def = document.getElementById("happy");
+            if (checkBox.checked == true) {
+                abc.style.display = "block";
+                def.style.display = "block";
+            } else {
+                abc.style.display = "none";
+                def.style.display = "none";
+            }
+        }
+    
+        $(document).ready(function () {
+            $('#select').on('change', function() {
+                select = $('#select').val();
+                $.ajax({
+                type: "GET",
+                url: "{% url 'getcustdata' %}",
+                data: {
+                    id: select
+                }
+                }).done(function(response) {
+                var json_data = JSON.parse(response);
+                for (key in json_data) {
+                    document.getElementById('email').value = json_data[key]['email'];
+                    document.getElementById('mailaddr').value = json_data[key]['street'] + '\n' + json_data[key]['city'] + '\n' + json_data[key]['state'] + '\n' + json_data[key]['pincode'] + '\n' + json_data[key]['country'];
+                    var invdrop=document.getElementById('inv_no');
+                    var option=document.createElement("option");
+                    
+                    
+                    option.text=json_data[key]['invdata'];
+                    invdrop.add(option,invdrop[0]);
+                    
+                    
+
+                    
+                }
+                })
+            });
+
+            var $select1 = $('#plosu'),
+            $select2 = $('#tax1'),
+            $select3 = $('#tax2'),
+            $select4 = $('#tax3'),
+            $select5 = $('#tax4'),
+            $options = $select2.find('option'),
+            $options1 = $select3.find('option'),
+            $options2 = $select4.find('option'),
+            $options3 = $select5.find('option');
+            if ($options1.value == '{{ cmp1.state }}') {
+                $options1.text = "{{ cmp1.state }}"
+            }
+            $select1.on('change', function() {
+                if (this.value == "{{ cmp1.state }}") {
+                    $select2.html($options.filter('[text="' + this.value + '"]'));
+                    $select3.html($options1.filter('[text="' + this.value + '"]'));
+                    $select4.html($options2.filter('[text="' + this.value + '"]'));
+                    $select5.html($options3.filter('[text="' + this.value + '"]'));
+                } 
+                else {
+                    $select2.html($options.filter('[text="' + " " + '"]'));
+                    $select3.html($options1.filter('[text="' + " " + '"]'));
+                    $select4.html($options2.filter('[text="' + " " + '"]'));
+                    $select5.html($options3.filter('[text="' + " " + '"]'));
+                }
+            }).trigger('change');
+        })
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#tab_logic").on('click', '.demo', function() {
+                var currentRow = $(this).closest("tr");
+                var col1=currentRow.find("td:eq(2)").text();
+                alert(col1);
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            var roinc = 0
+            $('#addrow').click(function(){
+                roinc++
+                $('#items-table-body').append(
+                    `
+                        <tr id='addr0${roinc}'>
+                            <td>${roinc+1}</td>
+                            <td style="width: 20%;">
+                                <div class="d-flex">
+                                    <select name='items1[]' id="product${roinc}" class="form-control">
+                                        <option value=" " selected>Select Item</option>
+                                        {% for i in item %}
+                                            <option value="{{ i.name }}">{{ i.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <a href="#">
+                                        <button type="button" class="btn btn-outline-secondary ml-1" data-target="#newitem" data-toggle="modal">+</button>
+                                    </a>                    
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" name='hsn[]' id="hsn1${roinc}" placeholder='Enter HSN Code' class="form-control"/>
+                            </td>                
+                            <td><input type="number" name='quantity[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" style="margin-top: 21px;" class="form-control qty" step=0 min=0>
+                                <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class=''></span></div>
+                            </td>                
+                            <td>
+                                <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0">
+                            </td>                
+                                                            
+                            <td>
+                                <select name="tax[]" id="tax${roinc+1}" class="form-control tax">
+                                    <option id="ta1${roinc}" value=0 text={{ cmp1.state }}></option>
+                                    <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                                    <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                                    <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                                    <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                                    <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                                    <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                                    <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                                    <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                                    <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                                    <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                                    <option id="ta5${roinc}" value=0 text=" ">Choose</option>
+                                    <option value=28 text=" ">28.0% IGST(28%)</option>
+                                    <option value=18 text=" ">18.0% IGST(18%)</option>
+                                    <option value=12 text=" ">12.0% IGST(12%)</option>
+                                    <option value=6 text=" ">06.0% IGST(06%)</option>
+                                    <option value=5 text=" ">05.0% IGST(05%)</option>
+                                    <option value=3 text=" ">03.0% IGST(03%)</option>
+                                    <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                                    <option value=0 text=" ">0.0% IGST(0%)</option>
+                                    <option value=0 text=" ">Exempt IGST(0%)</option>
+                                    <option value=0 text=" ">Out of Scope(0%)</option>
+                                </select>
+                            </td>        
+                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"></td>
+                            <td>
+                                <input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any">
+                            </td>        
+                            
+                            <td><button type="button" id="${roinc}" class="btn btn-danger remove_row">-</button></td>
+                            
+                        </tr>
+                                                    
+                    `
+                );
+            });
+
+            $(document).on('click','.remove_row',function(){
+                var row_id = $(this).attr("id");
+                $('#addr0'+row_id+'').remove();
+            });
+
+            var place = document.getElementById('plosu').value;
+            $(document).on('click','#product',function(){
+                
+                select = $('#product').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    
+                    
+                    success:function(response){
+                        
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            
+                            document.getElementById('hsn1').value = data;
+                            document.getElementById('qtyspan').innerHTML = data2;
+                            document.getElementById('unit1').value = data3;
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta1').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta1').value=data4;
+                            } 
+                            document.getElementById('ta5').innerHTML  = data5 + ' % IGST';
+                            ocument.getElementById('ta5').value=data5;
+                        }
+                    }
+                });
+            });     
+                
+            $(document).on('click','#product1',function(){
+                select = $('#product1').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn11').value = data
+                            document.getElementById('qtyspan1').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan1').style.color="red";
+                            }
+                            else{
+                            pass
+                            }  
+                            document.getElementById('unit11').value = data3
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta11').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta11').value=data4
+                            }
+                            document.getElementById('ta51').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta51').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product2',function(){
+                select = $('#product2').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn12').value = data
+                            document.getElementById('qtyspan2').innerHTML = data2;
+                            document.getElementById('unit12').value = data3 
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan2').style.color="red";
+                            }
+                            else{
+                            pass
+                            }  
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan3').style.color="red";
+                            }
+                            else{
+                            pass
+                            }       
+                            if (supply == '{{ cmp1.state }}')
+                                {
+                                    document.getElementById('ta12').innerHTML = data3 + ' % GST';
+                                    document.getElementById('ta12').value=data3
+                                } 
+                                document.getElementById('ta52').innerHTML  = data4 + ' % IGST';
+                                document.getElementById('ta52').value=data4
+                            }
+                        }
+                });
+            });
+
+            $(document).on('click','#product3',function(){
+                select = $('#product3').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn13').value = data
+                            document.getElementById('qtyspan3').innerHTML = data2;
+                            document.getElementById('unit13').value = data3
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan3').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            if (supply == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta13').innerHTML = data3 + ' % GST';
+                                document.getElementById('ta13').value=data3
+                            }          
+                            document.getElementById('ta53').innerHTML  = data4 + ' % IGST';
+                            document.getElementById('ta53').value=data4
+                        }
+                    }
+                });
+            });
+            
+            $(document).on('click','#product4',function(){
+                select = $('#product4').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn14').value = data
+                            document.getElementById('qtyspan4').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan4').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit14').value = data3
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta14').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta14').value=data4
+                            } 
+                            document.getElementById('ta54').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta54').value=data5       
+                        }
+                    }
+                });          
+            });
+
+            $(document).on('click','#product5',function(){
+                select = $('#product5').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn15').value = data
+                            document.getElementById('qtyspan5').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan5').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit15').value = data3
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta15').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta15').value=data4
+                            }    
+                            document.getElementById('ta55').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta55').value=data5
+                        }
+                        }
+                });
+            });
+
+            $(document).on('click','#product6',function(){
+                select = $('#product6').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn16').value = data
+                            document.getElementById('qtyspan6').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan6').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit16').value = data3
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta16').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta16').value=data4
+                            } 
+                            document.getElementById('ta56').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta56').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product7',function(){
+                select = $('#product7').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn17').value = data 
+                            document.getElementById('qtyspan7').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan7').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit17').value = data3
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta17').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta17').value=data4
+                            } 
+                            document.getElementById('ta57').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta57').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product8',function(){
+                select = $('#product8').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];        
+                            document.getElementById('hsn18').value = data        
+                            document.getElementById('qtyspan8').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan8').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit18').value = data3
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta18').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta18').value=data4
+                            }         
+                            document.getElementById('ta58').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta58').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product9',function(){
+                select = $('#product9').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];  
+                            document.getElementById('hsn19').value = data   
+                            document.getElementById('qtyspan9').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan9').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit19').value = data3        
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta19').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta19').value=data4
+                            }         
+                            document.getElementById('ta59').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta59').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product10',function(){
+                select = $('#product10').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];      
+                            document.getElementById('hsn110').value = data
+                            document.getElementById('qtyspan10').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan10').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit110').value = data3        
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta110').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta110').value=data4    
+                            }         
+                            document.getElementById('ta510').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta510').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product11',function(){
+                select = $('#product11').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];                     
+                            document.getElementById('hsn111').value = data
+                            document.getElementById('qtyspan11').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan11').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit111').value = data3        
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta111').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta111').value=data4
+                            }         
+                            document.getElementById('ta511').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta511').value=data5   
+                        }     
+                    }
+                });
+            });
+
+            $(document).on('click','#product12',function(){
+                select = $('#product12').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn112').value = data
+                            document.getElementById('qtyspan12').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan12').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit112').value = data3
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta112').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta112').value=data4
+                            } 
+                            document.getElementById('ta512').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta512').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product13',function(){
+                select = $('#product13').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];      
+                            document.getElementById('hsn113').value = data
+                            document.getElementById('qtyspan13').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan13').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit113').value = data3        
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta113').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta113').value=data4
+                            }        
+                            document.getElementById('ta513').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta513').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product14',function(){
+                select = $('#product14').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];       
+                            document.getElementById('hsn114').value = data
+                            document.getElementById('qtyspan14').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan14').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit114').value = data3        
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta114').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta114').value=data4
+                            }        
+                            document.getElementById('ta514').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta514').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product15',function(){
+                select = $('#product15').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn115').value = data
+                            document.getElementById('description15').value = data1
+                            document.getElementById('qtyspan15').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan15').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit115').value = data3
+                            if (place == '{{ cmp1.state }}'){
+                                document.getElementById('ta115').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta115').value=data4
+                            } 
+                            document.getElementById('ta515').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta515').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product16',function(){
+                select = $('#product16').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];       
+                            document.getElementById('hsn116').value = data
+                            document.getElementById('qtyspan16').innerHTML = data2;
+
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan16').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit116').value = data3        
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta116').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta116').value=data4
+                            }        
+                            document.getElementById('ta516').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta516').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product17',function(){
+                select = $('#product17').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn117').value = data
+                            document.getElementById('qtyspan17').innerHTML = data2;
+
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan17').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit117').value = data3
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta117').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta117').value=data4
+
+                            } 
+                            document.getElementById('ta517').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta517').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product18',function(){
+                select = $('#product18').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];       
+                            document.getElementById('hsn118').value = data
+                            document.getElementById('qtyspan18').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan18').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit118').value = data3        
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta118').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta118').value=data4
+                            }         
+                            document.getElementById('ta518').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta518').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product19',function(){
+                select = $('#product19').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];  
+                            document.getElementById('hsn119').value = data
+                            document.getElementById('qtyspan19').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan19').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit119').value = data3        
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta119').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta119').value=data4
+                            }         
+                            document.getElementById('ta519').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta519').value=data5
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click','#product120',function(){
+                select = $('#product120').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        var json_data = JSON.parse(response);
+                        for (key in json_data) {
+                            data = json_data[key]['hsn'];
+                            data2 = json_data[key]['qty'];
+                            data3 = json_data[key]['price'];
+                            data4 = json_data[key]['gst'];
+                            data5 = json_data[key]['sgst'];
+                            document.getElementById('hsn120').value = data
+                            document.getElementById('qtyspan20').innerHTML = data2;
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan20').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
+                            document.getElementById('unit120').value = data3
+                            if (place == '{{ cmp1.state }}')
+                            {
+                                document.getElementById('ta120').innerHTML = data4 + ' % GST';
+                                document.getElementById('ta120').value=data4
+                            } 
+                            document.getElementById('ta520').innerHTML  = data5 + ' % IGST';
+                            document.getElementById('ta520').value=data5
+                        }
+
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        function poppins() {
+            var chkbtn = document.getElementById('okay');
+            if (chkbtn.checked == true) {
+                document.getElementById('shipstreet').value = document.getElementById('street').value;
+                document.getElementById('shipcity').value = document.getElementById('city').value;
+                document.getElementById('shippinco').value = document.getElementById('pinco').value;
+                document.getElementById('shipcountry').value = document.getElementById('country').value;
+                document.getElementById('shipst').value = document.getElementById('state').value;
+                document.getElementById('shipst').innerHTML = document.getElementById('state').value;
+            } else {
+                document.getElementById('shipstreet').value = '';
+                document.getElementById('shipcity').value = '';
+                document.getElementById('shipstate').value = '';
+                document.getElementById('shippinco').value = '';
+                document.getElementById('shipcountry').value = '';
+            }
+        }
+    </script>
+
+    <script>
+        function hidinput(divId, element) {
+            if (element.value == 'unregistered Business' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+        }
+
+        function checkgst(element) {
+            var gstinput = element.value;
+            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+            if (gstinput.match(gstregexp)) {
+                document.getElementById('warngst').innerHTML = '';
+            } else {
+                document.getElementById('warngst').innerHTML = 'Please provide a valid GSTIN';
+                alert('Please provide a valid GSTIN');
+            }
+        }
+
+        function checkpan(element) {
+            var paninput = element.value;
+            var panregexp = ["[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}"]
+            if (paninput.match(panregexp)) {
+                document.getElementById('warnpan').innerHTML = '';
+            } else {
+                document.getElementById('warnpan').innerHTML = 'Please provide a valid PAN Number';
+                alert('Please provide a valid PAN Number')
+            }
+        }
+
+        function checkweb(element) {
+            var webinput = element.value;
+            var webregexp = "www."
+            if (webinput.startsWith(webregexp)) {
+                document.getElementById('warnweb').innerHTML = '';
+            } else {
+                document.getElementById('warnweb').innerHTML = 'Please provide a valid Website Address';
+                alert('Please provide a valid Website Address')
+            }
+        }
+
+        function checkphone(element) {
+            var phoneinput = element.value;
+            var phoneregexp = "[0-9]{10}";
+            if (phoneinput.match(phoneregexp)) {
+                document.getElementById('warnphone').innerHTML = '';
+            } else {
+                document.getElementById('warnphone').innerHTML = 'Please provide a valid Phone Number';
+                alert('Please provide a valid Phone Number')
+            }
+        }
+    </script>
+
+    <script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>    
+    <script>
+        function insertValue() {
+            var select = document.getElementById("select"),
+            txtVal = document.getElementById("val").value,
+            newOption = document.createElement("OPTION"),
+            newOptionval = document.createTextNode(txtVal);
+            newOption.appendChild(newOptionval);
+            select.insertBefore(newOption, select.lastChild);
+        }
+        
+        $('.datepicker').pickadate({
+            selectMonths: true,
+            selectYears: true
+        }),
+        $('.timepicker').pickatime()
+        
+        $(function () {
+            $('#date-time').bootstrapMaterialDatePicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
+            $('#date').bootstrapMaterialDatePicker({
+                time: false
+            });
+            $('#time').bootstrapMaterialDatePicker({
+                date: false,
+                format: 'HH:mm'
+            });
+        });
+        
+        $(document).ready(function () {
+            var current_fs, next_fs, previous_fs; //fieldsets
+            var opacity;
+            $(".next").click(function () {
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                next_fs.show();
+                current_fs.animate({opacity: 0}, {
+                    step: function (now) {
+                        opacity = 1 - now;
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                    },
+                    duration: 600
+                });
+            });
+            $(".previous").click(function () {
+                current_fs = $(this).parent();
+                previous_fs = $(this).parent().prev();
+                $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+                previous_fs.show();
+                current_fs.animate({opacity: 0}, {
+                    step: function (now) {
+                        opacity = 1 - now;
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        previous_fs.css({'opacity': opacity});
+                    },
+                    duration: 600
+                });
+            });
+
+            $('.radio-group .radio').click(function () {
+                $(this).parent().find('.radio').removeClass('selected');
+                $(this).addClass('selected');
+            });
+        });
+            // $('#tax').on('change', function () {
+            //     alert(" INFORMATION \n\n Change saleprice before changing tax.\n Never mind if already done.")
+            //     tax = parseFloat($('#tax').val());
+            //     saleprice = parseFloat($('#saleprice').val());
+            //     if ($("#inclusive").prop('checked') == true) {
+            //         taxm = 1 + (tax / 100)
+            //         salep = saleprice / taxm
+            //         document.getElementById('saleprice').value = salep.toFixed(2)
+            //     }
+            // });
+
+        
+        function ShowHideDiv(track) {
+            var inventorytrack = document.getElementById("inventorytrack");
+            inventorytrack.style.display = track.checked ? "flex" : "none";
+        } 
+    </script>
+{% endblock %}
