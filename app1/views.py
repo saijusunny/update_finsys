@@ -32240,8 +32240,10 @@ def itemdata(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
+        print(cmp1.state)
         id = request.GET.get('id')
-
+        print("asdsadas")
+        print(id)
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
         # to = toda.strftime("%d-%m-%Y")
@@ -32252,7 +32254,8 @@ def itemdata(request):
         price = item.purchase_cost
         gst = item.intra_st
         sgst = item.inter_st
-        return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'price':price,'gst':gst,'sgst':sgst})
+        places=cmp1.state
+        return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'places':places,'price':price,'gst':gst,'sgst':sgst})
     return redirect('/')
 
 def getperiod(request):
@@ -35613,12 +35616,29 @@ def render_pdf_credit(request,id):
 
 
 def editcreditnote(request, id):
+    print("welcome")
+    cmp1 = company.objects.get(id=request.session['uid'])
     pcrd=salescreditnote.objects.get(screditid=id)
     pcrd1 = salescreditnote1.objects.all().filter(scredit=id)
+    vndr = customer.objects.all()  
+    pbill = purchasebill.objects.all()  
+    item = itemtable.objects.all() 
+
+    cgst=float(pcrd.taxamount)/2
+    sgst=float(pcrd.taxamount)/2
     context={
         'pcrd':pcrd,
-        'pcrd1':pcrd1
+        'pcrd1':pcrd1,
+        'vndr':vndr,
+        'pbill':pbill,
+        'item':item,
+        'cgst':cgst,
+        'sgst':sgst,
+        'cmp1':cmp1,
+
+
     }
+  
     return render(request,'app1/editcreditnote.html', context)
 
 def editcreditfun(request,id):
@@ -35629,7 +35649,7 @@ def editcreditfun(request,id):
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
         if request.method == 'POST':
-            pdebt.pdebt=salescreditnote.objects.get(screditid=id)
+            pdebt=salescreditnote.objects.get(screditid=id)
             pdebt.customer = request.POST['vendor'],
             pdebt.address = request.POST['address'],
             pdebt.email=request.POST['email'],
@@ -35638,11 +35658,13 @@ def editcreditfun(request,id):
             pdebt.billno=request.POST['billno'],
             pdebt.subtotal=request.POST['subtotal'],
             pdebt.taxamount=request.POST['taxamount'],
+            
+            
             pdebt.grandtotal=request.POST['grandtotal'],
-         
-
+            print(request.POST['grandtotal'])
+            
             pdebt.save()
-
+            
             pl3=profit_loss.objects.get(cid=cmp1,pdebit=pdebt)
             pl3.details = pdebt.vendor
             pl3.cid = cmp1

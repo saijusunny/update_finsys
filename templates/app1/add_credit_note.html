@@ -153,6 +153,7 @@
                                     <label for="validationCustom02">Customer</label>
                                     <div class="d-flex">
                                         <select name="vendor" id="select" class="custom-select">
+                                            
                                             <option selected disabled>Select Customer</option>
                                             {% for v in vndr %}
                                             <option value="{{ v.firstname }} {{ v.lastname }}">{{ v.firstname }} {{ v.lastname }}</option>
@@ -168,7 +169,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-5 mt-3">
-                                    <label for="validationCustom02">Billing address</label>
+                                    <label for="validationCustom02">Address</label>
                                     <textarea class="form-control" name="address" rows="5" id="mailaddr"></textarea>
                                 </div>
                                 <div class="col-md-5 mt-3">
@@ -1097,19 +1098,17 @@
                     url: "{% url 'itemdata' %}",
                     data: {
                     id: select
+                    
                     },
                     
                     
                     success:function(response){
-                        
-                        console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
+                            console.log(response)
+                            data = response.hsn
+                            data2 = response.qty
+                            data3 = response.price
+                            data4 = response.gst
+                            data5 = response.sgst
                             
                             document.getElementById('hsn1').value = data;
                             document.getElementById('qtyspan').innerHTML = data2;
@@ -1121,7 +1120,7 @@
                             document.getElementById('ta5').innerHTML  = data5 + ' % IGST';
                             ocument.getElementById('ta5').value=data5;
                         }
-                    }
+                    
                 });
             });     
                 
@@ -1134,25 +1133,15 @@
                     id: select
                     },
                     success:function(response){
-                        console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
+                            console.log(response)
+                            data = response.hsn
+                            data2 = response.qty
+                            data3 = response.price
+                            data4 = response.gst
+                            data5 = response.sgst
                             document.getElementById('hsn11').value = data
                             document.getElementById('qtyspan1').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan1').style.color="red";
-                            }
-                            else{
-                            pass
-                            }  
+                              
                             document.getElementById('unit11').value = data3
                             if (place == '{{ cmp1.state }}')
                             {
@@ -1161,58 +1150,54 @@
                             }
                             document.getElementById('ta51').innerHTML  = data5 + ' % IGST';
                             document.getElementById('ta51').value=data5
+                            if (data2<1)
+                            {
+                            
+                            
+                            document.getElementById('qtyspan1').style.color="red";
+                            }
+                            else{
+                            pass
+                            }
                         }
-                    }
-                });
+                    });
+                
             });
 
             $(document).on('click','#product2',function(){
                 select = $('#product2').val();
+                
                 $.ajax({
+                    
                     type: "GET",
                     url: "{% url 'itemdata' %}",
                     data: {
                     id: select
                     },
+                    
                     success:function(response){
+                        
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn12').value = data
-                            document.getElementById('qtyspan2').innerHTML = data2;
-                            document.getElementById('unit12').value = data3 
-                            if (data2<1)
-                            {
+                        data = response.hsn
+                        data1 = response.qty
+                        data2 = response.price
+                        data3 = response.gst
+                        data4 = response.sgst
+                        
+                        document.getElementById('hsn12').value = data
+                        document.getElementById('qtyspan2').innerHTML = data1;
+                        document.getElementById('unit12').value = data2            
+                        if (place == '{{ cmp1.state }}')
+                        {   
                             
                             
-                            document.getElementById('qtyspan2').style.color="red";
-                            }
-                            else{
-                            pass
-                            }  
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan3').style.color="red";
-                            }
-                            else{
-                            pass
-                            }       
-                            if (supply == '{{ cmp1.state }}')
-                                {
-                                    document.getElementById('ta12').innerHTML = data3 + ' % GST';
-                                    document.getElementById('ta12').value=data3
-                                } 
-                                document.getElementById('ta52').innerHTML  = data4 + ' % IGST';
-                                document.getElementById('ta52').value=data4
-                            }
-                        }
+                            document.getElementById('ta12').innerHTML = data3 + ' % GST';
+                            document.getElementById('ta12').value=data3
+                        } 
+                        document.getElementById('ta52').innerHTML  = data4 + ' % IGST';
+                        document.getElementById('ta52').value=data4
+                        
+                    }
                 });
             });
 
@@ -1226,33 +1211,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn13').value = data
-                            document.getElementById('qtyspan3').innerHTML = data2;
-                            document.getElementById('unit13').value = data3
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan3').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            if (supply == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta13').innerHTML = data3 + ' % GST';
-                                document.getElementById('ta13').value=data3
-                            }          
-                            document.getElementById('ta53').innerHTML  = data4 + ' % IGST';
-                            document.getElementById('ta53').value=data4
-                        }
+                        data = response.hsn
+                        data1 = response.qty
+                        data2 = response.price
+                        data3 = response.gst
+                        data4 = response.sgst
+                        document.getElementById('hsn13').value = data
+                        document.getElementById('qtyspan3').innerHTML = data1;
+                        document.getElementById('unit13').value = data2
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta13').innerHTML = data3 + ' % GST';
+                            document.getElementById('ta13').value=data3
+                        }          
+                        document.getElementById('ta53').innerHTML  = data4 + ' % IGST';
+                        document.getElementById('ta53').value=data4
                     }
                 });
             });
@@ -1267,33 +1240,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn14').value = data
-                            document.getElementById('qtyspan4').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan4').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit14').value = data3
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta14').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta14').value=data4
-                            } 
-                            document.getElementById('ta54').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta54').value=data5       
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn14').value = data
+                        document.getElementById('qtyspan4').innerHTML = data2;
+                        document.getElementById('unit14').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta14').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta14').value=data4
+                        } 
+                        document.getElementById('ta54').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta54').value=data5       
                     }
                 });          
             });
@@ -1308,33 +1269,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn15').value = data
-                            document.getElementById('qtyspan5').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan5').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit15').value = data3
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta15').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta15').value=data4
-                            }    
-                            document.getElementById('ta55').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta55').value=data5
-                        }
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn15').value = data
+                        document.getElementById('qtyspan5').innerHTML = data2;
+                        document.getElementById('unit15').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta15').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta15').value=data4
+                        }    
+                        document.getElementById('ta55').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta55').value=data5
+                    }
                 });
             });
 
@@ -1348,32 +1297,20 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn16').value = data
-                            document.getElementById('qtyspan6').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan6').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit16').value = data3
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta16').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta16').value=data4
-                            } 
-                            document.getElementById('ta56').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta56').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn16').value = data
+                        document.getElementById('qtyspan6').innerHTML = data2;
+                        document.getElementById('unit16').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta16').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta16').value=data4
+                        } 
+                        document.getElementById('ta56').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta56').value=data5
                     }
                 });
             });
@@ -1388,32 +1325,20 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn17').value = data 
-                            document.getElementById('qtyspan7').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan7').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit17').value = data3
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta17').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta17').value=data4
-                            } 
-                            document.getElementById('ta57').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta57').value=data5
-                        }
+                        data = response.hsn  
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn17').value = data 
+                        document.getElementById('qtyspan7').innerHTML = data2;
+                        document.getElementById('unit17').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta17').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta17').value=data4
+                        } 
+                        document.getElementById('ta57').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta57').value=data5
                     }
                 });
             });
@@ -1428,32 +1353,20 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];        
-                            document.getElementById('hsn18').value = data        
-                            document.getElementById('qtyspan8').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan8').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit18').value = data3
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta18').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta18').value=data4
-                            }         
-                            document.getElementById('ta58').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta58').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst        
+                        document.getElementById('hsn18').value = data        
+                        document.getElementById('qtyspan8').innerHTML = data2;
+                        document.getElementById('unit18').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta18').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta18').value=data4
+                        }         
+                        document.getElementById('ta58').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta58').value=data5
                     }
                 });
             });
@@ -1467,32 +1380,22 @@
                     id: select
                     },
                     success:function(response){
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];  
-                            document.getElementById('hsn19').value = data   
-                            document.getElementById('qtyspan9').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan9').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit19').value = data3        
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta19').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta19').value=data4
-                            }         
-                            document.getElementById('ta59').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta59').value=data5
-                        }
+                                console.log(response)
+                                data = response.hsn
+                                
+                                data2 = response.qty
+                                data3 = response.price
+                                data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn19').value = data   
+                        document.getElementById('qtyspan9').innerHTML = data2;
+                        document.getElementById('unit19').value = data3        
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta19').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta19').value=data4
+                        }         
+                        document.getElementById('ta59').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta59').value=data5
                     }
                 });
             });
@@ -1507,32 +1410,20 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];      
-                            document.getElementById('hsn110').value = data
-                            document.getElementById('qtyspan10').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan10').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit110').value = data3        
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta110').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta110').value=data4    
-                            }         
-                            document.getElementById('ta510').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta510').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn110').value = data
+                        document.getElementById('qtyspan10').innerHTML = data2;
+                        document.getElementById('unit110').value = data3        
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta110').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta110').value=data4    
+                        }         
+                        document.getElementById('ta510').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta510').value=data5
                     }
                 });
             });
@@ -1547,32 +1438,20 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];                     
-                            document.getElementById('hsn111').value = data
-                            document.getElementById('qtyspan11').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan11').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit111').value = data3        
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta111').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta111').value=data4
-                            }         
-                            document.getElementById('ta511').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta511').value=data5   
-                        }     
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst                      
+                        document.getElementById('hsn111').value = data
+                        document.getElementById('qtyspan11').innerHTML = data2;
+                        document.getElementById('unit111').value = data3        
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta111').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta111').value=data4
+                        }         
+                        document.getElementById('ta511').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta511').value=data5        
                     }
                 });
             });
@@ -1587,33 +1466,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn112').value = data
-                            document.getElementById('qtyspan12').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan12').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit112').value = data3
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta112').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta112').value=data4
-                            } 
-                            document.getElementById('ta512').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta512').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn112').value = data
+                        document.getElementById('qtyspan12').innerHTML = data2;
+                        document.getElementById('unit112').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta112').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta112').value=data4
+                        } 
+                        document.getElementById('ta512').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta512').value=data5
                     }
                 });
             });
@@ -1628,33 +1495,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];      
-                            document.getElementById('hsn113').value = data
-                            document.getElementById('qtyspan13').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan13').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit113').value = data3        
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta113').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta113').value=data4
-                            }        
-                            document.getElementById('ta513').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta513').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn113').value = data
+                        document.getElementById('qtyspan13').innerHTML = data2;
+                        document.getElementById('unit113').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta113').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta113').value=data4
+                        }        
+                        document.getElementById('ta513').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta513').value=data5
                     }
                 });
             });
@@ -1669,33 +1524,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];       
-                            document.getElementById('hsn114').value = data
-                            document.getElementById('qtyspan14').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan14').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit114').value = data3        
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta114').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta114').value=data4
-                            }        
-                            document.getElementById('ta514').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta514').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst       
+                        document.getElementById('hsn114').value = data
+                        document.getElementById('qtyspan14').innerHTML = data2;
+                        document.getElementById('unit114').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta114').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta114').value=data4
+                        }        
+                        document.getElementById('ta514').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta514').value=data5
                     }
                 });
             });
@@ -1710,33 +1553,22 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn115').value = data
-                            document.getElementById('description15').value = data1
-                            document.getElementById('qtyspan15').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan15').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit115').value = data3
-                            if (place == '{{ cmp1.state }}'){
-                                document.getElementById('ta115').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta115').value=data4
-                            } 
-                            document.getElementById('ta515').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta515').value=data5
-                        }
+                        data = response.hsn
+                        data1 = response.desp
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn115').value = data
+                        document.getElementById('description15').value = data1
+                        document.getElementById('qtyspan15').innerHTML = data2;
+                        document.getElementById('unit115').value = data3
+                        if (place == '{{ cmp1.state }}'){
+                            document.getElementById('ta115').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta115').value=data4
+                        } 
+                        document.getElementById('ta515').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta515').value=data5
                     }
                 });
             });
@@ -1751,34 +1583,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];       
-                            document.getElementById('hsn116').value = data
-                            document.getElementById('qtyspan16').innerHTML = data2;
-
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan16').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit116').value = data3        
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta116').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta116').value=data4
-                            }        
-                            document.getElementById('ta516').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta516').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst        
+                        document.getElementById('hsn116').value = data
+                        document.getElementById('qtyspan16').innerHTML = data2;
+                        document.getElementById('unit116').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta116').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta116').value=data4
+                        }        
+                        document.getElementById('ta516').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta516').value=data5
                     }
                 });
             });
@@ -1793,35 +1612,22 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn117').value = data
-                            document.getElementById('qtyspan17').innerHTML = data2;
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn117').value = data
+                        document.getElementById('qtyspan17').innerHTML = data2;
+                        document.getElementById('unit117').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta117').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta117').value=data4
 
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan17').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit117').value = data3
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta117').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta117').value=data4
-
-                            } 
-                            document.getElementById('ta517').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta517').value=data5
-                        }
+                        } 
+                        document.getElementById('ta517').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta517').value=data5
                     }
                 });
             });
@@ -1836,33 +1642,21 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];       
-                            document.getElementById('hsn118').value = data
-                            document.getElementById('qtyspan18').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan18').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit118').value = data3        
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta118').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta118').value=data4
-                            }         
-                            document.getElementById('ta518').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta518').value=data5
-                        }
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst        
+                        document.getElementById('hsn118').value = data
+                        document.getElementById('qtyspan18').innerHTML = data2;
+                        document.getElementById('unit118').value = data3        
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta118').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta118').value=data4
+                        }         
+                        document.getElementById('ta518').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta518').value=data5
                     }
                 });
             });
@@ -1876,34 +1670,22 @@
                     id: select
                     },
                     success:function(response){
-                        console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];  
+                            console.log(response)
+                            data = response.hsn
+                            data2 = response.qty
+                            data3 = response.price
+                            data4 = response.gst
+                            data5 = response.sgst   
                             document.getElementById('hsn119').value = data
                             document.getElementById('qtyspan19').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan19').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
                             document.getElementById('unit119').value = data3        
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta119').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta119').value=data4
-                            }         
-                            document.getElementById('ta519').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta519').value=data5
-                        }
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta119').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta119').value=data4
+                        }         
+                        document.getElementById('ta519').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta519').value=data5
                     }
                 });
             });
@@ -1918,37 +1700,26 @@
                     },
                     success:function(response){
                         console.log(response)
-                        var json_data = JSON.parse(response);
-                        for (key in json_data) {
-                            data = json_data[key]['hsn'];
-                            data2 = json_data[key]['qty'];
-                            data3 = json_data[key]['price'];
-                            data4 = json_data[key]['gst'];
-                            data5 = json_data[key]['sgst'];
-                            document.getElementById('hsn120').value = data
-                            document.getElementById('qtyspan20').innerHTML = data2;
-                            if (data2<1)
-                            {
-                            
-                            
-                            document.getElementById('qtyspan20').style.color="red";
-                            }
-                            else{
-                            pass
-                            }
-                            document.getElementById('unit120').value = data3
-                            if (place == '{{ cmp1.state }}')
-                            {
-                                document.getElementById('ta120').innerHTML = data4 + ' % GST';
-                                document.getElementById('ta120').value=data4
-                            } 
-                            document.getElementById('ta520').innerHTML  = data5 + ' % IGST';
-                            document.getElementById('ta520').value=data5
-                        }
-
+                        data = response.hsn
+                        data2 = response.qty
+                        data3 = response.price
+                        data4 = response.gst
+                        data5 = response.sgst
+                        document.getElementById('hsn120').value = data
+                        document.getElementById('qtyspan20').innerHTML = data2;
+                        document.getElementById('unit120').value = data3
+                        if (place == '{{ cmp1.state }}')
+                        {
+                            document.getElementById('ta120').innerHTML = data4 + ' % GST';
+                            document.getElementById('ta120').value=data4
+                        } 
+                        document.getElementById('ta520').innerHTML  = data5 + ' % IGST';
+                        document.getElementById('ta520').value=data5
                     }
                 });
-            });
+            
+            
+        });
         });
     </script>
 

@@ -817,6 +817,7 @@ urlpatterns = [
     path('render_pdf_credit/<int:id>', views.render_pdf_credit, name='render_pdf_credit'),
     path('editcreditnote/<int:id>', views.editcreditnote, name='editcreditnote'),
     path('deletecredit/<int:id>', views.deletecredit, name='deletecredit'),
+    path('editcreditfun/<int:id>', views.editcreditfun, name='editcreditfun'),
     
 
 
