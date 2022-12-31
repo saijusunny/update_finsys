@@ -279,7 +279,7 @@
                                         <td>1</td>
                                         <td style="width: 20%;">
                                             <div class="d-flex">
-                                                <select name="items[]" id="product" class="form-control">
+                                                <select name='items[]' id="product" class="form-control">
                                                     <option selected>{{pro.items}}</option>
                                                     {% for i in item %}
                                                         <option value="{{ i.name }}">
@@ -307,7 +307,7 @@
                                         </td>
                                         
                                         <td>
-                                            <select name="tax[]" id="tax1" class="form-control tax">
+                                            <select name='tax[]' id="tax1" class="form-control tax">
                                                
                                                 <option id="ta1" value="{{pro.tax}}" text={{ cmp1.state }}>{{pro.tax}} % GST</option>
                                                 <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
@@ -1008,18 +1008,6 @@
             }).trigger('change');
         })
     </script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $("#tab_logic").on('click', '.demo', function() {
-                var currentRow = $(this).closest("tr");
-                var col1=currentRow.find("td:eq(2)").text();
-                alert(col1);
-            });
-        });
-    </script>
-
     <script>
         $(document).ready(function(){
             var roinc = parseInt(document.getElementById("tab_logic").rows.length)-2
@@ -1031,7 +1019,7 @@
                             <td>${roinc}</td>
                             <td style="width: 20%;">
                                 <div class="d-flex">
-                                    <select name='items1[]' id="product${roinc}" class="form-control">
+                                    <select name='items[]' id="product${roinc}" class="form-control">
                                         <option value=" " selected>Select Item</option>
                                         {% for i in item %}
                                             <option value="{{ i.name }}">{{ i.name }}</option>
@@ -1053,7 +1041,7 @@
                             </td>                
                                                             
                             <td>
-                                <select name="tax[]" id="tax${roinc}" class="form-control tax">
+                                <select name='tax[]' id="tax${roinc}" class="form-control tax">
                                     <option id="ta1${roinc}" value=0 text={{ cmp1.state }}></option>
                                     <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                     <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -1749,6 +1737,19 @@
         });
         });
     </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#tab_logic").on('click', '.demo', function() {
+                var currentRow = $(this).closest("tr");
+                var col1=currentRow.find("td:eq(2)").text();
+                alert(col1);
+            });
+        });
+    </script>
+
+    
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>

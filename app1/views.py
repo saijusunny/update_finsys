@@ -35542,6 +35542,7 @@ def create_credit(request):
             pdeb=salescreditnote.objects.get(screditid=pdebit.screditid)
 
             if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total) and items and hsn and quantity and price and tax and total:
+                print(items)
                 mapped=zip(items,hsn,quantity,price,tax,total)
                 mapped=list(mapped)
                 for ele in mapped:
@@ -35649,83 +35650,28 @@ def editcreditfun(request,id):
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
         if request.method == 'POST':
+            vendor=request.POST['vendor']
+            address=request.POST['address']
+            email=request.POST['email']
+            supply=request.POST['supply']
+            billno=request.POST['billno']
+            subtotal=request.POST['subtotal']
+            taxamount=request.POST['taxamount']
+            grandtotal=request.POST['grandtotal']
             pdebt=salescreditnote.objects.get(screditid=id)
-            pdebt.customer = request.POST['vendor'],
-            pdebt.address = request.POST['address'],
-            pdebt.email=request.POST['email'],
-            pdebt.creditdate=request.POST['debitdate'],
-            pdebt.supply=request.POST['supply'],
-            pdebt.billno=request.POST['billno'],
-            pdebt.subtotal=request.POST['subtotal'],
-            pdebt.taxamount=request.POST['taxamount'],
-            
-            
-            pdebt.grandtotal=request.POST['grandtotal'],
-            print(request.POST['grandtotal'])
-            
+            pdebt.customer = vendor
+            pdebt.address = address
+
+            pdebt.email=email
+            # pdebt.creditdate=request.POST['debitdate'],
+            pdebt.supply=supply
+            pdebt.billno=billno
+            pdebt.subtotal=subtotal
+            pdebt.taxamount=taxamount
+            pdebt.grandtotal=grandtotal
             pdebt.save()
             
-            pl3=profit_loss.objects.get(cid=cmp1,pdebit=pdebt)
-            pl3.details = pdebt.vendor
-            pl3.cid = cmp1
-            pl3.acctype = "Cost of Goods Sold"
-            pl3.transactions = "Vendor Credits"
-            pl3.accname = "Cost of Goods Sold"
-            pl3.pdebit = pdebt
-            pl3.details1 = pdebt.debit_no
-            pl3.date = pdebt.debitdate
-            pl3.payments = pdebt.subtotal
-            pl3.save()
-
-            bs3=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Accounts Payable(Creditors)')
-            bs3.details = pdebt.vendor
-            bs3.cid = cmp1
-            bs3.acctype = "Accounts Payable(Creditors)"
-            bs3.transactions = "Vendor Credits"
-            bs3.account = "Accounts Payable(Creditors)"
-            bs3.debit = pdebt
-            bs3.details1 = pdebt.debit_no
-            bs3.date = pdebt.debitdate
-            bs3.payments = pdebt.grandtotal
-            bs3.save()
-
-            supply=request.POST['supply']
-            if supply == cmp1.state:
-                bs4=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Input CGST')
-                bs4.details = pdebt.vendor
-                bs4.cid = cmp1
-                bs4.acctype = "Current Assets"
-                bs4.transactions = "Vendor Credits"
-                bs4.account = "Input CGST"
-                bs4.debit = pdebt
-                bs4.details1 = pdebt.debit_no
-                bs4.date = pdebt.debitdate
-                bs4.payments = pdebt.cgst
-                bs4.save()
-
-                bs5=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Input SGST')
-                bs5.details = pdebt.vendor
-                bs5.cid = cmp1
-                bs5.acctype = "Current Assets"
-                bs5.transactions = "Vendor Credits"
-                bs5.account = "Input SGST"
-                bs5.debit = pdebt
-                bs5.details1 = pdebt.debit_no
-                bs5.date = pdebt.debitdate
-                bs5.payments = pdebt.sgst
-                bs5.save()
-            else:
-                bs6=balance_sheet.objects.get(cid=cmp1,debit=pdebt,account='Input IGST')
-                bs6.details = pdebt.vendor
-                bs6.cid = cmp1
-                bs6.acctype = "Current Assets"
-                bs6.transactions = "Vendor Credits"
-                bs6.account = "Input IGST"
-                bs6.debit = pdebt
-                bs6.details1 = pdebt.debit_no
-                bs6.date = pdebt.debitdate
-                bs6.payments = pdebt.igst
-                bs6.save()
+            
 
             items = request.POST.getlist("items[]")
             hsn = request.POST.getlist("hsn[]")
@@ -35735,13 +35681,21 @@ def editcreditfun(request,id):
             total = request.POST.getlist("total[]")
 
             pdebid = request.POST.getlist("id[]")
-
+            print("ids")
+            print(id)
             pdebitid=salescreditnote.objects.get(screditid=id)
-
-            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total)==len(pdebid) and items and hsn and quantity and price and tax and total and pdebid:
+            
+            
+            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total):
+                print("welcomesssss")
+                
                 mapped=zip(items,hsn,quantity,price,tax,total,pdebid)
+                
                 mapped=list(mapped)
+                
+                
                 for ele in mapped:
+                    print("vhgfg")
                     created = salescreditnote1.objects.filter(scredit=ele[6]).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
                     tax=ele[4],total=ele[5])
 
@@ -35749,6 +35703,31 @@ def editcreditfun(request,id):
         return redirect('viewcredit',id)
         
     return redirect('/') 
+
+
+    # product = request.POST.getlist("product[]")
+    #     hsn  = request.POST.getlist("hsn[]")
+    #     description = request.POST.getlist("description[]")
+    #     qty = request.POST.getlist("qty[]")
+    #     price = request.POST.getlist("price[]")
+        
+    #     tax = request.POST.getlist("tax[]")
+    #     total = request.POST.getlist("total[]")
+
+    #     itemid = request.POST.getlist("id[]")
+
+    #     saleid=salesorder.objects.get(id =upd.id)
+    #     # import pdb; pdb.set_trace()
+    #     if len(product)==len(hsn)==len(description)==len(qty)==len(price)==len(tax)==len(total)==len(itemid) and product and hsn and description and qty and price and tax and total and itemid:
+    #         mapped=zip(product,hsn,description,qty,price,tax,total,itemid)
+    #         mapped=list(mapped)
+           
+    #         for ele in mapped:
+    #             created = sales_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
+    #             qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+
+
+    #     return redirect('gosalesorder')
 
 @login_required(login_url='regcomp')
 def deletecredit(request, id):
