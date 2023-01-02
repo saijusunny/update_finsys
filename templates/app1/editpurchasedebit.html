@@ -214,74 +214,79 @@
                                     </tr>
                                     </thead>
                                     <tbody id="items-table-body">
-                                        {% for p in pdebt1 %}
-                                        <tr id='addr0{{ forloop.counter }}'>
-                                            <td>{{ forloop.counter }}
-                                                <input type="text" name="id[]" value="{{p.id}}" hidden>
-                                            </td>
-                                            <td style="width: 20%;">
-                                                <select name="items[]" id="product" class="form-control">
-                                                    <option value="{{ p.items }}">{{ p.items }}</option>
+                                    {%for pro in pdebt1%}
+                                    <tr id='addr0{{forloop.counter}}'>
+                                        <td>{{forloop.counter}}</td>
+                                        <td style="width: 20%;">
+                                            <div class="d-flex">
+                                                <select name='items[]' id="product" class="form-control">
+                                                    <option selected>{{pro.items}}</option>
                                                     {% for i in item %}
-                                                        <option value="{{ i.name }}">{{ i.name }}</option>
+                                                        <option value="{{ i.name }}">
+                                                            {{ i.name }}
+                                                        </option>
                                                     {% endfor %}
                                                 </select>
-                                            </td>
-                                            <td>
-                                                <input type="text" name='hsn[]' id="hsn1" value="{{ p.hsn }}"
-                                                class="form-control hsn"/>
-                                            </td>
-                                            <td>
-                                                <input type="number" name='quantity[]' id="qty1" value="{{ p.quantity }}" step="any"
-                                                class="form-control qty" min=0/>
-                                            </td>
-                                            <td>
-                                                <input type="text" name='price[]' id="unit1" value="{{ p.price }}"
-                                                class="form-control price" step="0.00" min="0"/>
-                                            </td>
+                                                <a class="btn btn-outline-secondary ml-1" role="button" data-target="#newitem" data-toggle="modal">+</a> 
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" name='hsn[]' id="hsn1" value="{{pro.hsn}}" placeholder='HSN'
+                                            class="form-control hsn"/>
+                                        </td>
+                                        <td>
+                                               
+                                            <input type="number" name='quantity[]' value="{{pro.quantity}}"  onchange="qtychange1(this)" style="margin-top: 21px;" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
+                                                <div><span>Available Qty :</span> <span id="qtyspan"class=''></span></div>
                                             
-                                            
-                                            <td>
-                                                <select name="tax[]" id="tax1" class="form-control tax">
-                                                    <option id="ta1" value="{{ p.tax }}" text={{ cmp1.state }}>{{ p.tax }} % GST</option>
-                                                    <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
-                                                    <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
-                                                    <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
-                                                    <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
-                                                    <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
-                                                    <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
-                                                    <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
-                                                    <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
-                                                    <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
-                                                    <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
-                                                    <option id="ta5" value="{{ pdeb1.tax }}" text=" ">{{ pdeb1.tax }} % IGST</option>
-                                                    <option value=28 text=" ">28.0% IGST(28%)</option>
-                                                    <option value=18 text=" ">18.0% IGST(18%)</option>
-                                                    <option value=12 text=" ">12.0% IGST(12%)</option>
-                                                    <option value=6 text=" ">06.0% IGST(06%)</option>
-                                                    <option value=5 text=" ">05.0% IGST(05%)</option>
-                                                    <option value=3 text=" ">03.0% IGST(03%)</option>
-                                                    <option value=.25 text=" ">0.25% IGST(0.25%)</option>
-                                                    <option value=0 text=" ">0.0% IGST(0%)</option>
-                                                    <option value=0 text=" ">Exempt IGST(0%)</option>
-                                                    <option value=0 text=" ">Out of Scope(0%)</option>
-                                                </select>
-                                            </td>
-                                            <td style="display: none;">
-                                                <input type="text" name='taxamount1' id="taxamount1" class="form-control taxamount"/>
-                                            </td>
-                                            <td>
-                                                <input type="number" name='total[]' id="total1" value="{{ p.total }}" class="form-control total"/>
-                                            </td>
-                                            <td><button type="button" id="{{ forloop.counter }}" class="btn btn-danger remove_row">-</button></td>
-                                            
-                                        </tr>
 
-                                        </tbody>
-                                        <tr>
-                                            <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="add_item_row()">+</a></td>
-                                        </tr>
-                                    {% endfor %}   
+                                        </td>
+                                        <td>
+                                            <input type="text" name='price[]' id="unit1" placeholder='Enter Unit Price' value="{{pro.price}}"
+                                            class="form-control price" step="0.00" min="0"/>
+                                        </td>
+                                        
+                                        <td>
+                                            <select name='tax[]' id="tax1" class="form-control tax">
+                                               
+                                                <option id="ta1" value="{{pro.tax}}" text={{ cmp1.state }}>{{pro.tax}} % GST</option>
+                                                <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
+                                                <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
+                                                <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
+                                                <option value=6 text={{ cmp1.state }}>06.0% GST(06%)</option>
+                                                <option value=5 text={{ cmp1.state }}>05.0% GST(05%)</option>
+                                                <option value=3 text={{ cmp1.state }}>03.0% GST(03%)</option>
+                                                <option value=.25 text={{ cmp1.state }}>0.25% GST(0.25%)</option>
+                                                <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
+                                                <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
+                                                <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
+                                                <option id="ta5" value="{{ pro.tax }}" text=" ">{{ pro.tax }} % IGST</option>
+                                                <option value=28 text=" ">28.0sss% IGST(28%)</option>
+                                                <option value=18 text=" ">18.0% IGST(18%)</option>
+                                                <option value=12 text=" ">12.0% IGST(12%)</option>
+                                                <option value=6 text=" ">06.0% IGST(06%)</option>
+                                                <option value=5 text=" ">05.0% IGST(05%)</option>
+                                                <option value=3 text=" ">03.0% IGST(03%)</option>
+                                                <option value=.25 text=" ">0.25% IGST(0.25%)</option>
+                                                <option value=0 text=" ">0.0% IGST(0%)</option>
+                                                <option value=0 text=" ">Exempt IGST(0%)</option>
+                                                <option value=0 text=" ">Out of Scope(0%)</option>
+                                            </select>
+                                        </td>
+
+                                        <td style="display: none;">
+                                            <input type="text" name='taxamount1' value="{{pro.tax}}" id="taxamount1" class="form-control taxamount"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name='total[]' id="total1" value="{{pro.total}}"  placeholder='0.00' class="form-control total"/>
+                                        </td>
+                                        <td><button type="button" id="{{forloop.counter}}" class="btn btn-danger remove_row">-</button></td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    <tr>
+                                        <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="addrow" onclick="add_item_row()">+</a></td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
@@ -405,7 +410,7 @@
 
     <script>
         $(document).ready(function(){
-            var roinc =parseInt(document.getElementById("tab_logic").rows.length)-2;
+            var roinc = parseInt(document.getElementById("tab_logic").rows.length)-2
             $('#addrow').click(function(){
                 roinc++
                 $('#items-table-body').append(
@@ -414,7 +419,7 @@
                             <td>${roinc}</td>
                             <td style="width: 20%;">
                                 <div class="d-flex">
-                                    <select name='items1[]' id="product${roinc}" class="form-control">
+                                    <select name='items[]' id="product${roinc}" class="form-control">
                                         <option value=" " selected>Select Item</option>
                                         {% for i in item %}
                                             <option value="{{ i.name }}">{{ i.name }}</option>
@@ -428,15 +433,15 @@
                             <td>
                                 <input type="text" name='hsn[]' id="hsn1${roinc}" placeholder='Enter HSN Code' class="form-control"/>
                             </td>                
-                            <td><input type="number" name='quantity[]' onchange="qtychange1(this)" style='margin-top:21px' placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
-                                <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class='text-muted'></span></div>
+                            <td><input type="number" name='quantity[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" style="margin-top: 21px;" class="form-control qty" step=0 min=0>
+                                <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class=''></span></div>
                             </td>                
                             <td>
                                 <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0">
                             </td>                
-                                                          
+                                                            
                             <td>
-                                <select name="tax[]" id="tax${roinc+1}" class="form-control tax">
+                                <select name='tax[]' id="tax${roinc}" class="form-control tax">
                                     <option id="ta1${roinc}" value=0 text={{ cmp1.state }}></option>
                                     <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                     <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -460,12 +465,14 @@
                                     <option value=0 text=" ">Exempt IGST(0%)</option>
                                     <option value=0 text=" ">Out of Scope(0%)</option>
                                 </select>
-                            </td>                
+                            </td>        
                             <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"></td>
                             <td>
                                 <input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any">
-                            </td>  
+                            </td>        
+                            
                             <td><button type="button" id="${roinc}" class="btn btn-danger remove_row">-</button></td>
+                            
                         </tr>
                                                     
                     `

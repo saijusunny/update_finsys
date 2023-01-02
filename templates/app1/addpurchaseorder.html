@@ -253,7 +253,7 @@
                                             <td>1</td>
                                             <td style="width: 20%;">
                                                 <div class="d-flex">
-                                                    <select name="items[]" id="product" class="form-control">
+                                                    <select name='items[]' id="product" class="form-control">
                                                         <option selected disabled>Choose..</option>
                                                         {% for i in item %}
                                                             <option value="{{ i.name }}">
@@ -278,7 +278,7 @@
                                                 class="form-control price" step="0.00" min="0">
                                             </td> 
                                             <td>
-                                                <select name="tax[]" id="tax1" class="form-control tax">
+                                                <select name='tax[]' id="tax1" class="form-control tax">
                                                     <option id="ta1" value=0 text={{ cmp1.state }}></option>
                                                     <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                                     <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -1939,16 +1939,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
-        $("#tab_logic").on('click', '.demo', function() {
-            var currentRow = $(this).closest("tr");
-            var col1=currentRow.find("td:eq(2)").text();
-            alert(col1);
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function(){
         var roinc = 0
         $('#addrow').click(function(){
             roinc++
@@ -1958,7 +1948,7 @@
                         <td>${roinc+1}</td>
                         <td style="width: 20%;">
                             <div class="d-flex">
-                                <select name='items1[]' id="product${roinc}" class="form-control">
+                                <select name='items[]' id="product${roinc}" class="form-control">
                                     <option value=" " selected>Select Item</option>
                                     {% for i in item %}
                                         <option value="{{ i.name }}">{{ i.name }}</option>
@@ -1976,11 +1966,11 @@
                             
                         </td>                
                         <td>
-                            <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Rate' class="form-control price" step="0.00" min="0">
+                            <input type="number" name='rate[]' id="unit1${roinc}" placeholder='Enter Rate' class="form-control price" step="0.00" min="0">
                         </td>  
                         <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"></td>                                          
                         <td>
-                            <select name="tax[]" id="tax${roinc+1}" class="form-control tax">
+                            <select name='tax[]' id="tax${roinc+1}" class="form-control tax">
                                 <option id="ta1${roinc}" value=0 text={{ cmp1.state }}>Choose</option>
                                 <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                 <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -2006,7 +1996,7 @@
                             </select>
                         </td>
                         <td>
-                            <input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" step="any" readonly>
+                            <input type="number" name='amount[]' id="total1" placeholder=0 class="form-control total" step="any" readonly>
                         </td>                    
                         
                         <td><button type="button" id="${roinc}" class="btn btn-outline-secondary ml-1 remove_row">-</button></td>
@@ -2096,7 +2086,7 @@
                     document.getElementById('hsn12').value = data
                     
                     document.getElementById('unit12').value = data2            
-                    if (supply == '{{ cmp1.state }}')
+                    if (place == '{{ cmp1.state }}')
                         {
                             document.getElementById('ta12').innerHTML = data3 + ' % GST';
                             document.getElementById('ta12').value=data3
@@ -2125,7 +2115,7 @@
                     document.getElementById('hsn13').value = data
                     
                     document.getElementById('unit13').value = data2
-                    if (supply == '{{ cmp1.state }}')
+                    if (place == '{{ cmp1.state }}')
                     {
                         document.getElementById('ta13').innerHTML = data3 + ' % GST';
                         document.getElementById('ta13').value=data3
@@ -2622,6 +2612,17 @@
         });
     });
 </script>
+<script>
+    $(document).ready(function(){
+        $("#tab_logic").on('click', '.demo', function() {
+            var currentRow = $(this).closest("tr");
+            var col1=currentRow.find("td:eq(2)").text();
+            alert(col1);
+        });
+    });
+</script>
+
+
 
     <script>
         $(document).ready(function(){

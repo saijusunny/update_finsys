@@ -269,8 +269,9 @@
                                         <th class="text-center">HSN</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-center">Price</th>
-                                        <th class="text-center">Total</th>
                                         <th class="text-center">Tax (%)</th>
+                                        <th class="text-center">Total</th>
+                                        
                                     </tr>
                                     </thead>
                                     <tbody id="items-table-body">
@@ -278,7 +279,7 @@
                                         <td>1</td>
                                         <td style="width: 20%;">
                                             <div class="d-flex">
-                                                <select name="items[]" id="product" class="form-control">
+                                                <select name='items[]' id="product" class="form-control">
                                                     <option selected>Choose..</option>
                                                     {% for i in item %}
                                                         <option value="{{ i.name }}">
@@ -293,22 +294,17 @@
                                             <input type="text" name='hsn[]' id="hsn1" placeholder='HSN'
                                             class="form-control hsn"/>
                                         </td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <input type="number" name='quantity[]' placeholder='Qty' id="qty1" step="any"
-                                                    class="form-control qty" min=0 style="width: 80px;">
-                                                <div class="form-control" style="color: rgba(255,255,255,0.6);"><span>Available Qty :</span><span id="qtyspan"></span></div>
-                                            </div>    
-                                        </td>
+                                        <td><input type="number" name='quantity[]' onchange="qtychange1(this)"  style='margin-top:21px' placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
+                                                    <div><span>Available Qty :</span> <span id="qtyspan"class='text-muted'></span></div>
+                                        </td> 
+                                        
                                         <td>
                                             <input type="text" name='price[]' id="unit1" placeholder='Enter Unit Price'
                                             class="form-control price" step="0.00" min="0"/>
                                         </td>
+                                        
                                         <td>
-                                            <input type="number" name='total[]' id="total1" placeholder='0.00' class="form-control total"/>
-                                        </td>
-                                        <td>
-                                            <select name="tax[]" id="tax1" class="form-control tax">
+                                            <select name='tax[]' id="tax1" class="form-control tax">
                                                 <option id="ta1" value=0 text={{ cmp1.state }}></option>
                                                 <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                                 <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -335,6 +331,9 @@
                                         </td>
                                         <td style="display: none;">
                                             <input type="text" name='taxamount1' id="taxamount1" class="form-control taxamount"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name='total[]' id="total1" placeholder='0.00' class="form-control total"/>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -1253,7 +1252,7 @@
                             <td>${roinc+1}</td>
                             <td style="width: 20%;">
                                 <div class="d-flex">
-                                    <select name='items1[]' id="product${roinc}" class="form-control">
+                                    <select name='items[]' id="product${roinc}" class="form-control">
                                         <option value=" " selected>Select Item</option>
                                         {% for i in item %}
                                             <option value="{{ i.name }}">{{ i.name }}</option>
@@ -1267,17 +1266,15 @@
                             <td>
                                 <input type="text" name='hsn[]' id="hsn1${roinc}" placeholder='Enter HSN Code' class="form-control"/>
                             </td>                
-                            <td><input type="number" name='quantity[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
+                            <td><input type="number" name='quantity[]' onchange="qtychange1(this)"  style='margin-top:21px' placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
                                 <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class='text-muted'></span></div>
                             </td>                
                             <td>
                                 <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0">
                             </td>                
+                                                           
                             <td>
-                                <input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any">
-                            </td>                                
-                            <td>
-                                <select name="tax[]" id="tax${roinc+1}" class="form-control tax">
+                                <select name='tax[]' id="tax${roinc+1}" class="form-control tax">
                                     <option id="ta1${roinc}" value=0 text={{ cmp1.state }}></option>
                                     <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                     <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -1303,6 +1300,9 @@
                                 </select>
                             </td>                
                             <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"></td>
+                            <td>
+                                <input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any">
+                            </td> 
                             <td><button type="button" id="${roinc}" class="btn btn-danger remove_row">-</button></td>
                         </tr>
                                                     

@@ -32362,11 +32362,11 @@ def createpurchaseorder(request):
             rate = request.POST.getlist("rate[]")
             tax = request.POST.getlist("tax[]")
             amount = request.POST.getlist("amount[]")
-
+            
             prid=purchaseorder.objects.get(porderid=porder.porderid)
 
-            if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount) and items and hsn and quantity and rate and tax and amount:
-                print("dsfdsfdsfd")
+            if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount):
+                
                 mapped=zip(items,hsn,quantity,rate,tax,amount)
                 mapped=list(mapped)
                 for ele in mapped:
@@ -34186,6 +34186,7 @@ def createpurchasedebit(request):
 
             dl=pdebit.debit_no
             dt=pdebit.debitdate
+        
 
             if len(items)==len(quantity) and items and quantity:
                 mapped=zip(items,quantity)
@@ -34193,11 +34194,15 @@ def createpurchasedebit(request):
                 for ele in mapped:
                     pAdd,created = item.objects.get_or_create(items = ele[0],qty = ele[1],transactions="Vendor Credits",details=dl,
                     date=dt,debit=pdeb,cid=cmp1)
-
-            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total) and items and hsn and quantity and price and tax and total:
+         
+            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total):
+                
                 mapped=zip(items,hsn,quantity,price,tax,total)
                 mapped=list(mapped)
+                #debit add
+               
                 for ele in mapped:
+                    
                     porderAdd,created = purchasedebit1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
                     tax=ele[4],total=ele[5],pdebit=pdeb,cid=cmp1)
 
@@ -35545,6 +35550,7 @@ def create_credit(request):
                 print(items)
                 mapped=zip(items,hsn,quantity,price,tax,total)
                 mapped=list(mapped)
+                print(mapped)
                 for ele in mapped:
                     porderAdd,created = salescreditnote1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
                     tax=ele[4],total=ele[5],scredit=pdeb)
@@ -35684,20 +35690,51 @@ def editcreditfun(request,id):
             print("ids")
             print(id)
             pdebitid=salescreditnote.objects.get(screditid=id)
+            # import pdb; pdb.set_trace()
             
             
             if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total):
                 print("welcomesssss")
+                print(items)
+                print(hsn)
+                print(quantity)
+                print(price)
+                print(tax)
+                print(total)
+                mapped=zip(items,hsn,quantity,price,tax,total)
                 
-                mapped=zip(items,hsn,quantity,price,tax,total,pdebid)
-                
-                mapped=list(mapped)
-                
-                
-                for ele in mapped:
+                mappe=list(mapped)
+                print("mappe")
+                count = salescreditnote1.objects.filter(scredit=pdebitid).count()
+                print(mappe)
+                for ele in mappe:
                     print("vhgfg")
-                    created = salescreditnote1.objects.filter(scredit=ele[6]).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
-                    tax=ele[4],total=ele[5])
+                    
+                    print(count)
+                    print(len(items))
+                    
+                    if int(len(items))>int(count):
+                        print("true")
+                        porderAdd,created = salescreditnote1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
+                        tax=ele[4],total=ele[5],scredit=pdebitid)
+
+                        # dbs=salescreditnote1.objects.get()
+                        # dbs.items = ele[0]
+                        # dbs.hsn=ele[1]
+                        # dbs.quantity=ele[2]
+                        # dbs.price=ele[3]
+                        # dbs.tax=ele[4]
+                        # dbs.total=ele[5]
+                        # dbs.scredit=pdebitid
+                        # dbs.save()
+                        
+
+                    else:
+                        print("false")
+                        print(ele)
+                        created = salescreditnote1.objects.filter(scredit=pdebitid).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
+                        tax=ele[4],total=ele[5])
+                        print(salescreditnote1.objects.filter(scredit=pdebitid).values())
 
             return redirect('viewcredit',id)
         return redirect('viewcredit',id)
@@ -35738,12 +35775,10 @@ def deletecredit(request, id):
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
         pdebt=salescreditnote.objects.get(screditid=id)
-        pdebt1 = salescreditnote1.objects.all().filter(debit=id)
-        bs = balance_sheet.objects.all().filter(debit=id)
-        pl = profit_loss.objects.all().filter(pdebit=id)
+        pdebt1 = salescreditnote1.objects.all().filter(scredit=id)
+       
         pdebt.delete() 
         pdebt1.delete() 
-        bs.delete() 
-        pl.delete() 
-        return redirect('viewcredit',id)
-    return redirect('viewcredit',id)
+      
+        return redirect('credit_note')
+    return redirect('credit_note')
