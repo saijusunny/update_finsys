@@ -756,6 +756,7 @@ urlpatterns = [
 
     re_path(r'^demo$', views.demo, name='demo'),
     re_path(r'^itemdata$', views.itemdata, name='itemdata'),
+    
     re_path(r'^payment_method$', views.payment_method, name='payment_method'),
     re_path(r'^createaccount1$', views.createaccount1, name='createaccount1'),
     re_path(r'^createaccount2$', views.createaccount2, name='createaccount2'),
@@ -818,12 +819,16 @@ urlpatterns = [
     path('editcreditnote/<int:id>', views.editcreditnote, name='editcreditnote'),
     path('deletecredit/<int:id>', views.deletecredit, name='deletecredit'),
     path('editcreditfun/<int:id>', views.editcreditfun, name='editcreditfun'),
+    re_path(r'^remove$', views.remove, name='remove'),
+    re_path(r'^removepbill$', views.removepbill, name='removepbill'),
+    re_path(r'^removedebit$', views.removedebit, name='removedebit'),
     
 
 
     # Forgot Password ---------
       path('Forgote-Password',views.password_change,name='password_change'),
       path('User-check',views.forgot_password,name='forgot_password'),
+      
   
     
 ]

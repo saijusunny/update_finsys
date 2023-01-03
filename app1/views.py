@@ -26581,21 +26581,49 @@ def updateestimate2(request, id):
         tax = request.POST.getlist("tax[]")
         amount = request.POST.getlist("total[]")
         estitemid = request.POST.getlist("id[]")
+        print("items")
+        print(items)
 
         estimateid= estimate.objects.get(estimateid=upd.estimateid)
-
-        if len(items)==len(hsn)==len(description)==len(quantity)==len(rate)==len(tax )==len(amount)==len(estitemid) and items and hsn and description and quantity and rate and tax and amount and estitemid:
+        
+        count = estimate_item.objects.filter(estimate=estimateid,cid=cmp1).count()
+        if len(items)==len(hsn)==len(description)==len(quantity)==len(rate)==len(tax )==len(amount):
                 mapped=zip(items,hsn,description ,quantity,rate,tax,amount,estitemid)
                 mapped=list(mapped)
                 print(mapped)
+                
+                
+                print("welcomes")
                 for ele in mapped:
-                    created = estimate_item.objects.filter(id=ele[7],cid=cmp1).update(item = ele[0],hsn=ele[1],description=ele[2],
-                    quantity=ele[3],rate=ele[4],tax=ele[5],total=ele[6])
+                    
+                    if int(len(items))>int(count):
+                        print("gdmorning---------------------------------")
+                    
+                        print(ele[0])
+                        print(ele[2])
+                        print(ele[3])
+                        print(ele[4])
+                        print(ele[5])
+                        print(ele[7])
+                        print(id)
+                        print(cmp1.cid)
+                        
+
+                        itemAdd,created = estimate_item.objects.get_or_create(item = ele[0],hsn=ele[1],description=ele[2],
+                        quantity=ele[3],rate=ele[4],tax=ele[5],total=ele[6] ,estimate_id=id,cid=cmp1)
+
+                    else:
+                        print("hgh")
+                        print(ele[7])
+                        print(cmp1.cid)
+                       
+                        dbs=estimate_item.objects.get(id=ele[7],cid=cmp1.cid)
+                        created = estimate_item.objects.filter(id=ele[7],cid=cmp1).update(item = ele[0],hsn=ele[1],description=ele[2],quantity=ele[3],rate=ele[4],tax=ele[5],total=ele[6])
                    
 
 
 
-        return redirect('goestimate')
+        return redirect('estimate_view',id)
     else:
         return redirect('goestimate')
 
@@ -33192,32 +33220,66 @@ def editpurchasebill(request,id):
 
             bitmid = request.POST.getlist("id[]")
 
+            
+
             billid=purchasebill.objects.get(billid=pbill.billid,cid=cmp1)
 
-            if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount)==len(bitmid) and items and hsn and quantity and rate and tax and amount and bitmid:
-                mapped=zip(items,hsn,quantity,rate,tax,amount,bitmid)
+            if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount):
+             
+                mapped=zip(items,hsn,quantity,rate,tax,amount)
                 mapped=list(mapped)
+                
+                count = purchasebill_item.objects.filter(bill=pbill.billid).count()
+                
                 for ele in mapped:
-                    created = purchasebill_item.objects.filter(id=ele[6]).update(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
-                    tax=ele[4],amount=ele[5])
+                    
+                    if int(len(items))>int(count):
 
-                    itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
-                    if itemqty.stock != 0:
-                        temp=0
-                        temp = itemqty.stock 
+                        pbillss=purchasebill.objects.get(billid=id)
+                        cmp1 = company.objects.get(id=request.session['uid'])
+                        
 
-                        temp = temp+int(ele[2])
-                        itemqty.stock =temp
-                        itemqty.save()
+                        billAdd,created = purchasebill_item.objects.get_or_create(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
+                        tax=ele[4],amount=ele[5],bill_id=pbillss.billid,cid=cmp1)
+                        
+                        itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
+                        if itemqty.stock != 0:
+                            temp=0
+                            temp = itemqty.stock 
 
-                    elif itemqty.stock == 0:
-                        temp=0
-                        temp = itemqty.stock 
-                        temp = temp+int(ele[2])
-                        itemqty.stock =temp
-                        itemqty.save()
+                            temp = temp+int(ele[2])
+                            itemqty.stock =temp
+                            itemqty.save()
 
-            return redirect('gobilling')
+                        elif itemqty.stock == 0:
+                            temp=0
+                            temp = itemqty.stock 
+                            temp = temp+int(ele[2])
+                            itemqty.stock =temp
+                            itemqty.save()
+
+                    else:
+                      
+                        dbs=purchasebill_item.objects.get(bill =pbill.billid,items = ele[0],hsn=ele[1])
+                        created = purchasebill_item.objects.filter(bill =dbs.bill,items = ele[0],hsn=ele[1]).update(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
+                        tax=ele[4],amount=ele[5])
+                        itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
+                        if itemqty.stock != 0:
+                            temp=0
+                            temp = itemqty.stock 
+
+                            temp = temp+int(ele[2])
+                            itemqty.stock =temp
+                            itemqty.save()
+
+                        elif itemqty.stock == 0:
+                            temp=0
+                            temp = itemqty.stock 
+                            temp = temp+int(ele[2])
+                            itemqty.stock =temp
+                            itemqty.save()
+
+            return redirect('viewbill',id)
         return render(request,'app1/gobilling.html',{'cmp1': cmp1})
     return redirect('/') 
 
@@ -34403,14 +34465,32 @@ def editpurchasedebit(request,id):
 
             pdebitid=purchasedebit.objects.get(pdebitid=pdebt.pdebitid)
 
-            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total)==len(pdebid) and items and hsn and quantity and price and tax and total and pdebid:
-                mapped=zip(items,hsn,quantity,price,tax,total,pdebid)
+            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total):
+                mapped=zip(items,hsn,quantity,price,tax,total)
                 mapped=list(mapped)
-                for ele in mapped:
-                    created = purchasedebit1.objects.filter(id=ele[6]).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
-                    tax=ele[4],total=ele[5])
+                # for ele in mapped:
+                #     porderAdd,created = purchasedebit1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
+                #     tax=ele[4],total=ele[5],pdebit=pdeb,cid=cmp1)
 
-            return redirect('gopurchasedebit')
+                count = purchasedebit1.objects.filter(pdebit=pdebitid).count()
+                print("myidss")
+                print(count)
+                for ele in mapped:
+                    
+                    if int(len(items))>int(count):
+                        
+                        created = purchasedebit1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
+                        tax=ele[4],total=ele[5],pdebit=pdebitid)
+
+                    else:
+                     
+                        dbs=purchasedebit1.objects.get(pdebit=pdebitid,items = ele[0],hsn=ele[1])
+                        print("myid")
+                        print(dbs.pdebit)
+                        created = purchasedebit1.objects.filter(pdebit=pdebitid,items = ele[0],hsn=ele[1]).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
+                        tax=ele[4],total=ele[5])
+
+            return redirect('viewpurchasedebit',id)
         return render(request,'app1/gopurchasedebit.html',{'cmp1': cmp1})
     return redirect('/') 
 
@@ -35685,56 +35765,36 @@ def editcreditfun(request,id):
             price = request.POST.getlist("price[]")
             tax = request.POST.getlist("tax[]")
             total = request.POST.getlist("total[]")
+         
+          
 
             pdebid = request.POST.getlist("id[]")
-            print("ids")
-            print(id)
+            
             pdebitid=salescreditnote.objects.get(screditid=id)
             # import pdb; pdb.set_trace()
             
             
             if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total):
-                print("welcomesssss")
-                print(items)
-                print(hsn)
-                print(quantity)
-                print(price)
-                print(tax)
-                print(total)
+                
                 mapped=zip(items,hsn,quantity,price,tax,total)
                 
                 mappe=list(mapped)
-                print("mappe")
+            
                 count = salescreditnote1.objects.filter(scredit=pdebitid).count()
-                print(mappe)
+             
                 for ele in mappe:
-                    print("vhgfg")
-                    
-                    print(count)
-                    print(len(items))
                     
                     if int(len(items))>int(count):
-                        print("true")
-                        porderAdd,created = salescreditnote1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
+                        
+                        created = salescreditnote1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
                         tax=ele[4],total=ele[5],scredit=pdebitid)
 
-                        # dbs=salescreditnote1.objects.get()
-                        # dbs.items = ele[0]
-                        # dbs.hsn=ele[1]
-                        # dbs.quantity=ele[2]
-                        # dbs.price=ele[3]
-                        # dbs.tax=ele[4]
-                        # dbs.total=ele[5]
-                        # dbs.scredit=pdebitid
-                        # dbs.save()
-                        
-
                     else:
-                        print("false")
-                        print(ele)
-                        created = salescreditnote1.objects.filter(scredit=pdebitid).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
+                     
+                        dbs=salescreditnote1.objects.get(scredit=pdebitid,items = ele[0],hsn=ele[1])
+                        created = salescreditnote1.objects.filter(id=dbs.id,items = ele[0],hsn=ele[1]).update(items = ele[0],hsn = ele[1],quantity=ele[2],price=ele[3],
                         tax=ele[4],total=ele[5])
-                        print(salescreditnote1.objects.filter(scredit=pdebitid).values())
+                        
 
             return redirect('viewcredit',id)
         return redirect('viewcredit',id)
@@ -35782,3 +35842,27 @@ def deletecredit(request, id):
       
         return redirect('credit_note')
     return redirect('credit_note')
+
+def remove(request):
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    dbs=salescreditnote1.objects.get(items=id,scredit=crid)
+    dbs.delete()
+    return JsonResponse({'crid':crid,})
+def removepbill(request):
+
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    dbs=purchasebill_item.objects.get(items=id,bill_id=crid)
+
+    return JsonResponse({'crid':crid,})
+
+def removedebit(request):
+    print("sadsad")
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    dbs=purchasedebit1.objects.filter(items=id,pdebit=crid)
+    dbs.delete()
+    print("fine")
+    return JsonResponse({'crid':crid,})
+ 

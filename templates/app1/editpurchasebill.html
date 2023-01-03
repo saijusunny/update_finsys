@@ -82,9 +82,33 @@
             });
     
             $(document).on('click','.remove_row',function(){
-                var row_id = $(this).attr("id");
-                $('#addr0'+row_id+'').remove();
-                calc()
+                
+                
+                const response = confirm("Are you sure you want to do that?");
+
+                if (response) {
+                    var row_id = $(this).attr("id");
+                    var rowprd = document.getElementById('product'+row_id).value
+                    var crdid='{{pbill.billid}}'
+                    
+                    
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'removepbill' %}",
+                        data: {
+                        id: rowprd,
+                        cr:crdid
+                        
+                        }});
+                    $('#addr0'+row_id+'').remove();
+                    calc()
+                } else {
+                    pass;
+                }
+
+                // var row_id = $(this).attr("id");
+                // $('#addr0'+row_id+'').remove();
+                // calc()
             });
     
             var place = document.getElementById('plosu').value;
@@ -859,7 +883,7 @@
                                                 <input type="text" name="id[]" value="{{p.id}}" hidden>
                                             </td>
                                             <td style="width: 20%;">
-                                                <select name='items[]' id="itmlst" class="form-control">
+                                                <select name='items[]' id="product{{ forloop.counter }}" class="form-control">
                                                     <option value="{{ p.items }}">{{ p.items }}</option>
                                                     {% for i in itm %}
                                                         <option value="{{ i.name }}">
@@ -869,18 +893,18 @@
                                                 </select>
                                                 <td>
                                                     <input type="number" value="{{ p.hsn }}" name='hsn[]' placeholder='Enter HSN'
-                                                id="hsn1" class="form-control hsn">
+                                                id="hsn1{{ forloop.counter }}" class="form-control hsn">
                                                 </td>
                                             <td>
                                                 <input type="number" value="{{ p.quantity }}" name='quantity[]'  onchange="qtychange1(this)" placeholder='Enter Qty'
                                                 id="qty1" class="form-control qty" step=0 min=0>
                                                 <span id="qtyspan" class='text-muted'></span>
                                             </td> 
-                                            <td><input type="number" value="{{ p.rate }}" name='rate[]' id="unit1" placeholder='Enter Rate' 
+                                            <td><input type="number" value="{{ p.rate }}" name='rate[]' id="unit1{{ forloop.counter }}" placeholder='Enter Rate' 
                                                 class="form-control price" step="0.00" min="0">
                                             </td> 
                                             <td>
-                                                <select name='tax[]' id="tax1" class="form-control tax" onchange="filtertax()">
+                                                <select name='tax[]' id="tax1{{ forloop.counter }}" class="form-control tax" onchange="filtertax()">
                                                     <option id="ta1" value={{ p.tax }} text={{ cmp1.state }}>{{ p.tax }} % GST</option>
                                                     <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                                     <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -905,10 +929,10 @@
                                                     <option value=0 text=" ">Out of Scope(0%)</option>
                                               </select>
                                             </td> 
-                                            <td><input type="number" value="{{ p.amount }}" name='amount[]' id="total1" class="form-control total" 
+                                            <td><input type="number" value="{{ p.amount }}" name='amount[]' id="total1{{ forloop.counter }}" class="form-control total" 
                                                 placeholder="0" step="any" readonly>
                                             </td> 
-                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>  
+                                            <td style="display: none;"><input type="number" step="any" name='taxamount1{{ forloop.counter }}' id="taxamount1" class="form-control taxamount"/></td>  
                                             <td><button type="button" id="{{ forloop.counter }}" class="btn btn-outline-secondary ml-1 remove_row">-</button></td> 
                                         </tr> 
                                         {% endfor %}   

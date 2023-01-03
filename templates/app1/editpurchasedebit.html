@@ -219,7 +219,7 @@
                                         <td>{{forloop.counter}}</td>
                                         <td style="width: 20%;">
                                             <div class="d-flex">
-                                                <select name='items[]' id="product" class="form-control">
+                                                <select name='items[]' id="product{{forloop.counter}}" class="form-control">
                                                     <option selected>{{pro.items}}</option>
                                                     {% for i in item %}
                                                         <option value="{{ i.name }}">
@@ -231,23 +231,23 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <input type="text" name='hsn[]' id="hsn1" value="{{pro.hsn}}" placeholder='HSN'
+                                            <input type="text" name='hsn[]' id="hsn1{{forloop.counter}}" value="{{pro.hsn}}" placeholder='HSN'
                                             class="form-control hsn"/>
                                         </td>
                                         <td>
                                                
-                                            <input type="number" name='quantity[]' value="{{pro.quantity}}"  onchange="qtychange1(this)" style="margin-top: 21px;" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
+                                            <input type="number" name='quantity[]' value="{{pro.quantity}}"  onchange="qtychange1(this)" style="margin-top: 21px;" placeholder='Enter Qty' id="qty1{{forloop.counter}}" class="form-control qty" step=0 min=0>
                                                 <div><span>Available Qty :</span> <span id="qtyspan"class=''></span></div>
                                             
 
                                         </td>
                                         <td>
-                                            <input type="text" name='price[]' id="unit1" placeholder='Enter Unit Price' value="{{pro.price}}"
+                                            <input type="text" name='price[]' id="unit1{{forloop.counter}}" placeholder='Enter Unit Price' value="{{pro.price}}"
                                             class="form-control price" step="0.00" min="0"/>
                                         </td>
                                         
                                         <td>
-                                            <select name='tax[]' id="tax1" class="form-control tax">
+                                            <select name='tax[]' id="tax1{{forloop.counter}}" class="form-control tax">
                                                
                                                 <option id="ta1" value="{{pro.tax}}" text={{ cmp1.state }}>{{pro.tax}} % GST</option>
                                                 <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
@@ -260,7 +260,7 @@
                                                 <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
                                                 <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
                                                 <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
-                                                <option id="ta5" value="{{ pro.tax }}" text=" ">{{ pro.tax }} % IGST</option>
+                                                <option id="ta5{{forloop.counter}}" value="{{ pro.tax }}" text=" ">{{ pro.tax }} % IGST</option>
                                                 <option value=28 text=" ">28.0sss% IGST(28%)</option>
                                                 <option value=18 text=" ">18.0% IGST(18%)</option>
                                                 <option value=12 text=" ">12.0% IGST(12%)</option>
@@ -275,10 +275,10 @@
                                         </td>
 
                                         <td style="display: none;">
-                                            <input type="text" name='taxamount1' value="{{pro.tax}}" id="taxamount1" class="form-control taxamount"/>
+                                            <input type="text" name='taxamount1' value="{{pro.tax}}" id="taxamount1{{forloop.counter}}" class="form-control taxamount"/>
                                         </td>
                                         <td>
-                                            <input type="number" name='total[]' id="total1" value="{{pro.total}}"  placeholder='0.00' class="form-control total"/>
+                                            <input type="number" name='total[]' id="total1{{forloop.counter}}" value="{{pro.total}}"  placeholder='0.00' class="form-control total"/>
                                         </td>
                                         <td><button type="button" id="{{forloop.counter}}" class="btn btn-danger remove_row">-</button></td>
                                     </tr>
@@ -480,9 +480,31 @@
             });
 
             $(document).on('click','.remove_row',function(){
-                var row_id = $(this).attr("id");
-                $('#addr0'+row_id+'').remove();
-                calc()
+                const response = confirm("Are you sure you want to do that?");
+
+                if (response) {
+                    var row_id = $(this).attr("id");
+                    var rowprd = document.getElementById('product'+row_id).value
+                    var crdid='{{pdebt.pdebitid}}'
+                    
+                    
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'removedebit' %}",
+                        data: {
+                        id: rowprd,
+                        cr:crdid
+                        
+                        }});
+                    $('#addr0'+row_id+'').remove();
+                    calc()
+                } else {
+                    pass;
+                }
+
+                // var row_id = $(this).attr("id");
+                // $('#addr0'+row_id+'').remove();
+                // calc()
                 
             });
 
