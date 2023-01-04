@@ -278,10 +278,10 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                   {% for j in estimateitem %}
                   <tr id='addr0{{ forloop.counter }}'>
                     <td>{{ forloop.counter }}
-                      <input type="text"  name="id[]" value="{{ j.id }}" hidden >
+                      <input type="text"  name='id[]' value="{{ j.id }}" hidden >
                     </td>
                     <td>
-                      <select name='product[]' id="product" class="form-control" style="background-color: #2f516f; color: white;">
+                      <select name='product[]' id="product{{ forloop.counter }}" class="form-control" style="background-color: #2f516f; color: white;">
 
                         <option value="{{ j.item }}" selected>{{ j.item }}</option>
                         {% for i in item %}
@@ -307,17 +307,17 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                         {% endfor %} -->
                       </select>
                     </td>
-                    <td><input type="text" name='hsn[]'  value="{{ j.hsn }}" id="hsn1" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="text" name='hsn[]'  value="{{ j.hsn }}" id="hsn1{{ forloop.counter }}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
                     <td><input type="text" name='description[]'  value="{{ j.description }}"  id="description" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" /></td>
-                    <td><input type="number" name='qty[]' value="{{ j.quantity }}" onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" />
+                    <td><input type="number" name='qty[]' value="{{ j.quantity }}" onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1{{ forloop.counter }}" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" />
                       <span id="qtyspan" class='text-muted'></span>
                     </td>
-                    <td><input type="number" name='price[]' value="{{ j.rate}}" id="unit1" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="number" name='price[]' value="{{ j.rate}}" id="unit1{{ forloop.counter }}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
                     
                     
                    
                     <td>
-                      <select name="tax[]" id="tax1" class="form-control tax" style="background-color: #2f516f; color: white;">
+                      <select name='tax[]' id="tax1{{ forloop.counter }}" class="form-control tax" style="background-color: #2f516f; color: white;">
                         <option id="ta1" value={{ j.tax }} text={{ cmp1.state }}>{{ j.tax }}
                           % GST
                         </option>
@@ -346,8 +346,8 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                         <option value=0 text=" ">Out of Scope(0%)</option>
                       </select>
                     </td>
-                    <td><input type="number" name='total[]' value="{{ j.total }}" id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
-                    <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount" />
+                    <td><input type="number" name='total[]' value="{{ j.total }}" id="total1{{ forloop.counter }}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
+                    <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1{{ forloop.counter }}" class="form-control taxamount" />
                     </td>
                     <td><button type="button" id="{{ forloop.counter }}" class="btn btn-danger remove_row">-
                     </button></td>
@@ -2215,9 +2215,30 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
  );
   });
   $(document).on('click','.remove_row',function(){
-  var row_id = $(this).attr("id");
-  $('#addr0'+row_id+'').remove();
-  calc()
+    const response = confirm("Are you sure you want to do that?");
+
+    if (response) {
+        var row_id = $(this).attr("id");
+        var rowprd = document.getElementById('product'+row_id).value
+        var crdid='{{estimate.estimateid}}'
+        
+        
+        $.ajax({
+            type: "GET",
+            url: "{% url 'removeesti' %}",
+            data: {
+            id: rowprd,
+            cr:crdid
+            
+            }});
+        $('#addr0'+row_id+'').remove();
+        calc()
+    } else {
+        pass;
+    }
+  // var row_id = $(this).attr("id");
+  // $('#addr0'+row_id+'').remove();
+  // calc()
   });
   
 

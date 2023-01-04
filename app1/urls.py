@@ -822,6 +822,10 @@ urlpatterns = [
     re_path(r'^remove$', views.remove, name='remove'),
     re_path(r'^removepbill$', views.removepbill, name='removepbill'),
     re_path(r'^removedebit$', views.removedebit, name='removedebit'),
+    re_path(r'^removeesti$', views.removeesti, name='removeesti'),
+    re_path(r'^removesales$', views.removesales, name='removesales'),
+    re_path(r'^removeinv$', views.removeinv, name='removeinv'),
+
     
 
 

@@ -26581,46 +26581,38 @@ def updateestimate2(request, id):
         tax = request.POST.getlist("tax[]")
         amount = request.POST.getlist("total[]")
         estitemid = request.POST.getlist("id[]")
-        print("items")
-        print(items)
+        
 
         estimateid= estimate.objects.get(estimateid=upd.estimateid)
         
         count = estimate_item.objects.filter(estimate=estimateid,cid=cmp1).count()
         if len(items)==len(hsn)==len(description)==len(quantity)==len(rate)==len(tax )==len(amount):
-                mapped=zip(items,hsn,description ,quantity,rate,tax,amount,estitemid)
+            try:
+                mapped=zip(items,hsn,description ,quantity,rate,tax,amount)
                 mapped=list(mapped)
-                print(mapped)
                 
-                
-                print("welcomes")
                 for ele in mapped:
                     
                     if int(len(items))>int(count):
-                        print("gdmorning---------------------------------")
-                    
-                        print(ele[0])
-                        print(ele[2])
-                        print(ele[3])
-                        print(ele[4])
-                        print(ele[5])
-                        print(ele[7])
-                        print(id)
-                        print(cmp1.cid)
                         
 
                         itemAdd,created = estimate_item.objects.get_or_create(item = ele[0],hsn=ele[1],description=ele[2],
                         quantity=ele[3],rate=ele[4],tax=ele[5],total=ele[6] ,estimate_id=id,cid=cmp1)
 
                     else:
-                        print("hgh")
-                        print(ele[7])
-                        print(cmp1.cid)
-                       
-                        dbs=estimate_item.objects.get(id=ele[7],cid=cmp1.cid)
+                        
+                        
+                      
                         created = estimate_item.objects.filter(id=ele[7],cid=cmp1).update(item = ele[0],hsn=ele[1],description=ele[2],quantity=ele[3],rate=ele[4],tax=ele[5],total=ele[6])
                    
-
+            except:
+                    mapped=zip(items,hsn,description ,quantity,rate,tax,amount,estitemid)
+                    mapped=list(mapped)
+                    
+                    for ele in mapped:
+                        dbs=estimate_item.objects.get(id=ele[7],cid=cmp1.cid)
+                        
+                        created = estimate_item.objects.filter(id=ele[7],cid=cmp1).update(item = ele[0],hsn=ele[1],description=ele[2],quantity=ele[3],rate=ele[4],tax=ele[5],total=ele[6])
 
 
         return redirect('estimate_view',id)
@@ -27234,18 +27226,47 @@ def updatesale(request, id):
 
         saleid=salesorder.objects.get(id =upd.id)
         # import pdb; pdb.set_trace()
-        if len(product)==len(hsn)==len(description)==len(qty)==len(price)==len(tax)==len(total)==len(itemid) and product and hsn and description and qty and price and tax and total and itemid:
-            mapped=zip(product,hsn,description,qty,price,tax,total,itemid)
-            mapped=list(mapped)
-           
-            for ele in mapped:
-                created = sales_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
-                qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+        if len(product)==len(hsn)==len(description)==len(qty)==len(price)==len(tax)==len(total):
+            try:
+                mapped=zip(product,hsn,description,qty,price,tax,total)
+                mapped=list(mapped)
+            
+                # for ele in mapped:
+                #     created = sales_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
+                #     qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+
+                count = sales_item.objects.filter(salesorder=saleid).count()
+                    
+                for ele in mapped:
+                    
+                    if int(len(product))>int(count):
+                        
+                        salesorderAdd,created = sales_item.objects.get_or_create(product = ele[0],hsn=ele[1],description=ele[2],
+                        qty=ele[3],price=ele[4],tax=ele[5],total=ele[6],salesorder=saleid, cid=cmp1 )
+
+                    else:
+                        print("welcome")
+                        dbs=sales_item.objects.get(salesorder=saleid,product = ele[0],hsn=ele[1])
+                        created = sales_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
+                        qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
 
 
-        return redirect('gosalesorder')
+                return redirect('sales_order_view',id)
+            except:
+                mapped=zip(product,hsn,description,qty,price,tax,total,itemid)
+                mapped=list(mapped)
+            
+                # for ele in mapped:
+                #     created = sales_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
+                #     qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+
+                count = sales_item.objects.filter(salesorder=saleid).count()
+                    
+                for ele in mapped:
+                    created = sales_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+                return redirect('sales_order_view',id)
     else:
-        return redirect('gosalesorder')
+        return redirect('sales_order_view',id)
 
 
 
@@ -28349,15 +28370,42 @@ def updateinvoice2(request, id):
 
         invoiceid=invoice.objects.get(invoiceid =invoi.invoiceid)
         # import pdb; pdb.set_trace()
-        if len(product)==len(hsn)==len(description)==len(qty)==len(price)==len(tax)==len(total)==len(itemid) and product and hsn and description and qty and price and tax and total and itemid:
-            mapped=zip(product,hsn,description,qty,price,tax,total,itemid)
-            mapped=list(mapped)
-            for ele in mapped:
-                created = invoice_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
-                qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+        count = invoice_item.objects.filter(invoice=invoiceid).count()
+        if len(product)==len(hsn)==len(description)==len(qty)==len(price)==len(tax)==len(total):
+            # mapped=zip(product,hsn,description,qty,price,tax,total,itemid)
+            # mapped=list(mapped)
+            # for ele in mapped:
+            #     created = invoice_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
+            #     qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
 
+            try:
+                mapped=zip(product,hsn,description,qty,price,tax,total)
+                mapped=list(mapped)
                 
+                for ele in mapped:
+                    
+                    if int(len(product))>int(count):
+                        
 
+                        invoiceAdd,created = invoice_item.objects.get_or_create(product = ele[0],hsn=ele[1],description=ele[2],
+                        qty=ele[3],price=ele[4],tax=ele[5],total=ele[6],invoice=invoiceid,cid=cmp1)
+
+                    else:
+                       created = invoice_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
+                        qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+                
+            except:
+                    mapped=zip(product,hsn,description,qty,price,tax,total,itemid)
+                    mapped=list(mapped)
+                    
+                    for ele in mapped:
+                        dbs=invoice_item.objects.get(id=ele[7],cid=cmp1.cid)
+                        
+                        created = invoice_item.objects.filter(id=ele[7],cid=cmp1).update(product = ele[0],hsn=ele[1],description=ele[2],
+                        qty=ele[3],price=ele[4],tax=ele[5],total=ele[6])
+                
+                   
+        return redirect('invoice_view',id)
         # product = request.POST.getlist("product[]")
         # hsn  = request.POST.getlist("hsn[]")
         # description = request.POST.getlist("description[]")
@@ -28393,7 +28441,7 @@ def updateinvoice2(request, id):
                     
         #             print(inv_item)
 
-        return redirect('invoice_view',id)
+        
     else:
         return redirect('goinvoices')
 
@@ -35858,11 +35906,38 @@ def removepbill(request):
     return JsonResponse({'crid':crid,})
 
 def removedebit(request):
-    print("sadsad")
+
     id = request.GET.get('id')
     crid = request.GET.get('cr')
     dbs=purchasedebit1.objects.filter(items=id,pdebit=crid)
     dbs.delete()
+
+    return JsonResponse({'crid':crid,})
+
+
+def removeesti(request):
+
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    dbs=estimate_item.objects.filter(item=id,estimate=crid)
+    dbs.delete()
+
+    return JsonResponse({'crid':crid,})
+
+def removesales(request):
+    print("sadsad")
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    dbs=sales_item.objects.filter(product=id,salesorder=crid)
+    dbs.delete()
     print("fine")
     return JsonResponse({'crid':crid,})
- 
+  
+def removeinv(request):
+    print("sadsad")
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    dbs=invoice_item.objects.filter(product=id,invoice=crid)
+    dbs.delete()
+    print("fine")
+    return JsonResponse({'crid':crid,})
