@@ -827,7 +827,7 @@ urlpatterns = [
     re_path(r'^removeinv$', views.removeinv, name='removeinv'),
 
     
-
+ 
 
     # Forgot Password ---------
       path('Forgote-Password',views.password_change,name='password_change'),

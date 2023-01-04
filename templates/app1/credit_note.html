@@ -8,6 +8,10 @@
             cursor: pointer;
             background-color: rgba(0, 0, 0, 0.1);
         }
+        
+        .idsr:hover{
+            color:black;
+        }
     </style>
     
 
@@ -62,8 +66,8 @@
                             {% for p in pdebit %}
                                 <tr >
                                     <td>{{ p.creditdate |date:'d-m-Y' }}</td>
-                                    <td><a href="{%url 'viewcredit'  p.screditid%} "> CN - {{ p.credit_no }}</a></td>
-                                    <td>{{ p.customer }}</a></td>
+                                    <td > CN - {{ p.credit_no }}</td>
+                                    <td ><a class="idsr" style="color:#198fed"  href="{%url 'viewcredit'  p.screditid%} ">{{ p.customer }}</a></td>
                                     <td>{{ p.taxamount }}</td>
                                     <td>{{ p.grandtotal }}</td>
                                 </tr> 
