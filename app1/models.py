@@ -1212,6 +1212,7 @@ class itemtable(models.Model):
     stock = models.IntegerField(blank=True,null=True,default='')
     stockin = models.IntegerField(default='0',blank=True,null=True)
     stockout = models.IntegerField(default='0',blank=True,null=True)
+    amount = models.IntegerField(default='0',blank=True,null=True)
     status = models.CharField(max_length=100,null=True)
 
 class unittable(models.Model):
@@ -1529,17 +1530,20 @@ class purchasedebit1(models.Model):
     tax = models.CharField(max_length=100,null=True)
     total = models.CharField(max_length=100,null=True)
 
-class item(models.Model):
+class itemstock(models.Model):
     cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     debit = models.ForeignKey(purchasedebit, on_delete=models.CASCADE,null=True)
     inv = models.ForeignKey(invoice, on_delete=models.CASCADE,null=True)
     bill = models.ForeignKey(purchasebill, on_delete=models.CASCADE,null=True)
+    stock = models.ForeignKey(stockadjust, on_delete=models.CASCADE,null=True)
     items = models.CharField(max_length=100,null=True)
     date = models.DateField(null=True)
     qty = models.IntegerField(null=True)
+    amount = models.IntegerField(null=True)
     transactions = models.CharField(max_length=100,null=True)
     details = models.CharField(max_length=100,null=True)
     details1 = models.CharField(max_length=100,blank=True,default='')
+    stocks = models.CharField(max_length=100,blank=True)
 
 class vendor_statment(models.Model):
     vendor = models.CharField(max_length=255, default='')

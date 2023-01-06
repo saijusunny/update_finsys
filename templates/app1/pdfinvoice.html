@@ -102,7 +102,7 @@
                 
             <span style="text-transform: uppercase; text-align:center">{{cmp1.cname}}</span>
             {{cmp1.caddress }}<br>
-            email id :  {{cmp1.cemail}},<br>
+            Email Id :  {{cmp1.cemail}},<br>
             GSTIN/UIN : {{cmp1.gstno}}</p>
    
         </div>
@@ -119,39 +119,39 @@
                         <p><span>Buyer/Client Name : {{invoice.customername}}</span><br>
                             <span>{{invoice.bname}}</span><br>
                             <span> GSTIN/UIN: {{cmp1.gstno}}</span> <br>
-                            <span>state:</span><br>
-                            <span>place of supply : {{invoice.placosupply}}</span>
+                            <span>State:{{invoice.placosupply}}</span><br>
+                            <span>Place of Supply : {{invoice.placosupply}}</span>
                         </p>
                     </div>
                 </td>
                 <td>
-                    <table class="table1">
+                    <table class="table1" border="1" >
                         <tr>
                         <td id="number">Invoice No: {{invoice.invoiceno}}</td>
                         <td>Dated:{{invoice.invoicedate }}</td>
                         </tr>
                         <tr>
-                        <td>Delivery note :{{invoice.note}} </td>
+                        <td>Delivery Note :{{invoice.note}} </td>
                         <td>Mode/Terms of payment</td>
                         </tr>
                         <tr>
-                        <td>Reference no & date</td>
-                        <td>Other refernces</td>
+                        <td>Reference No. & Date</td>
+                        <td>Other Refernces</td>
                         </tr>
                         <tr>
-                        <td>Buyer;s order no. {{invoice.invoice_orderno}}</td>
+                        <td>Buyers Order No. {{invoice.invoice_orderno}}</td>
                         <td>Dated:</td>
                         </tr>
                         <tr>
                         <td>Dispatch Doc No.</td>
-                        <td>Delivery note date</td>
+                        <td>Delivery Note Date</td>
                         </tr>
                         <tr>
-                        <td>Dispatch through</td>
+                        <td>Dispatch Through</td>
                         <td>Destination</td>
                         </tr>
                         <tr>
-                        <td colspan="2">Terms of delivery</td>
+                        <td colspan="2">Terms of Delivery</td>
                         </tr>
                     </table>
               
@@ -169,13 +169,13 @@
             <thead class="table-head" >
                 <tr>
                   <th >Sl no.</th>
-                  <th >description of goods</th>
+                  <th >Description of Goods</th>
                   <th >Batch name</th>
                   <th >Expiry date</th>
                   <th >HSN/SAC</th>
                   
                   <th>Qty</th>
-                  <th>rate</th>
+                  <th>Rate</th>
                   <!-- <th>per</th> -->
                    <th>GST rate</th>
                   <th>Disc %</th>

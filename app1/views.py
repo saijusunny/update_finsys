@@ -3521,7 +3521,7 @@ def invcreate2(request):
             mapped=zip(product,qty)
             mapped=list(mapped)
             for ele in mapped:
-                iAdd,created = item.objects.get_or_create(items = ele[0],qty = ele[1],transactions="Invoice",details=dl,
+                iAdd,created = itemstock.objects.get_or_create(items = ele[0],qty = ele[1],transactions="Invoice",details=dl,
                 date=dt,inv=invoiceid,cid=cmp1)
 
         if len(product)==len(hsn)==len(description)==len(qty)==len(price)==len(tax)==len(total) and product and hsn and description and qty and price and tax and total:
@@ -30758,36 +30758,13 @@ def stocksummary(request):
         cmp1 = company.objects.get(id=request.session["uid"])
 
         item = itemtable.objects.filter(cid=cmp1)
-        st1=0
-        st2=0
-        st3=0
+
+        # for i in item:
+        #     iname = i.name
+        #     st = stockadjust.objects.filter(item1=iname,cid=cmp1)
+        # st1=st
         
-        for i in item:
-            if i.stock:
-                st1+=i.stock
-            if i.stockout:
-                st2+=i.stockout
-            st3=st1-st2
-
-        qtyin1 = purchasebill_item.objects.filter().aggregate(t2=Sum('quantity'))
-
-        qtyout1=0
-        tot3=0
-        tot4=0
-
-        bitm = purchasedebit1.objects.filter()
-        for j in bitm :
-            if j.quantity:
-                tot3+=j.quantity
-
-        initm = invoice_item.objects.filter()
-        for j in initm :
-            if j.qty:
-                tot4+=j.qty
-
-        qtyout1 = tot3+tot4
-        
-        context = {'item':item,'cmp1':cmp1,'qtyin1':qtyin1,'qtyout1':qtyout1,'st3':st3}
+        context = {'item':item,'cmp1':cmp1}
         return render(request, 'app1/stocksummary.html', context)
         
 @login_required(login_url='regcomp')
@@ -30803,9 +30780,9 @@ def stocksummary1(request):
         elif filmeth == 'Custom':
             fromdate = request.POST['fper']
             todate = request.POST['tper']
-        # elif filmeth == 'This month':
-        #     fromdate = toda.strftime("%Y-%m-01")
-        #     todate = toda.strftime("%Y-%m-31")
+        elif filmeth == 'This month':
+            fromdate = toda.strftime("%Y-%m-01")
+            todate = toda.strftime("%Y-%m-31")
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
@@ -30820,25 +30797,7 @@ def stocksummary1(request):
 
         item = itemtable.objects.filter(itmdate__gte=fromdate, itmdate__lte=todate)
 
-        qtyin1 = purchasebill_item.objects.filter().aggregate(t2=Sum('quantity'))
-
-        qtyout1=0
-        tot3=0
-        tot4=0
-
-        bitm = purchasedebit1.objects.filter()
-        for j in bitm :
-            if j.quantity:
-                tot3+=j.quantity
-
-        initm = invoice_item.objects.filter()
-        for j in initm :
-            if j.qty:
-                tot4+=j.qty
-
-        qtyout1 = tot3+tot4
-        
-        context = {'item':item,'cmp1':cmp1,'qtyin1':qtyin1,'qtyout1':qtyout1}
+        context = {'item':item,'cmp1':cmp1}
         return render(request, 'app1/stocksummary.html', context)
 
 def streport(request,id):
@@ -30854,7 +30813,7 @@ def streport(request,id):
 
         to=toda.strftime("%d-%m-%Y")
 
-        acc = item.objects.filter(items=id,cid=cmp1)
+        acc = itemstock.objects.filter(items=id,cid=cmp1)
 
         debit=0
         credit=0
@@ -30877,6 +30836,19 @@ def streport(request,id):
         context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total}
         return render(request, 'app1/streport.html', context)
     return redirect('/')  
+
+@login_required(login_url='regcomp')
+def stockvaluation(request):
+        cmp1 = company.objects.get(id=request.session["uid"])
+        item =itemtable.objects.filter(cid=cmp1)
+
+        item = itemtable.objects.filter(cid=cmp1).exclude(inventry="").annotate(total=F('stock')*F('amount'))
+        stock = stockadjust.objects.filter(cid=cmp1)
+        stock1 = purchasebill_item.objects.filter(cid=cmp1)
+        
+        context = {'item': item,'stock':stock,'cmp1':cmp1}
+        return render(request, 'app1/stockvaluation.html', context)
+
         
 @login_required(login_url='regcomp')
 def stockvaluation1(request):
@@ -30891,10 +30863,10 @@ def stockvaluation1(request):
         elif filmeth == 'Custom':
             fromdate = request.POST['fper']
             todate = request.POST['tper']
-        # elif filmeth == 'This month':
-        #     fromdate = toda.strftime("%Y-%m-01")
-        #     todate = toda.strftime("%Y-%m-31")
-        elif filmeth == 'This financial year':
+        elif filmeth == 'This Month':
+            fromdate = toda.strftime("%Y-%m-01")
+            todate = toda.strftime("%Y-%m-31")
+        elif filmeth == 'This Financial Year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
                 fromdate = f'{pyear}-03-01'
@@ -30906,20 +30878,50 @@ def stockvaluation1(request):
         else:
             return redirect('stockvaluation')
 
-        item = itemtable.objects.filter(cid=cmp1,itmdate__gte=fromdate, itmdate__lte=todate).exclude(inventry="").annotate(total=F('stock')*F('purchase_cost'))
+        item = itemtable.objects.filter(cid=cmp1,itmdate__gte=fromdate, itmdate__lte=todate).exclude(inventry="").annotate(
+            total=F('stock')*F('amount'))
         stock = stockadjust.objects.filter(cid=cmp1)
         
         context = {'item': item,'stock':stock,'cmp1':cmp1}
         return render(request, 'app1/stockvaluation.html', context)
+     
+def stkvalreport(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
 
-@login_required(login_url='regcomp')
-def stockvaluation(request):
-        cmp1 = company.objects.get(id=request.session["uid"])
-        item = itemtable.objects.filter(cid=cmp1).exclude(inventry="").annotate(total=F('stock')*F('purchase_cost'))
-        stock = stockadjust.objects.filter(cid=cmp1)
-        
-        context = {'item': item,'stock':stock,'cmp1':cmp1}
-        return render(request, 'app1/stockvaluation.html', context)
+        x = id.split()
+        x.append(" ")
+        a = x[0]
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        to=toda.strftime("%d-%m-%Y")
+
+        acc = itemstock.objects.filter(items=id,stocks='Stock Changed',cid=cmp1)
+
+        debit=0
+        credit=0
+        total =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.qty
+
+            if i.transactions =="Stock Adjust":
+                credit+=i.qty
+
+        fdate =""
+        ldate =""
+
+        total = credit+debit
+
+        context = {'acc':acc, 'cmp1':cmp1, 'itm2':id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total}
+        return render(request, 'app1/stkvalreport.html', context)
+    return redirect('/') 
      
 @login_required(login_url='regcomp')
 def deletestockadjust(request, id):
@@ -32974,12 +32976,12 @@ def createbill(request):
             ref=billed.reference
             dt=billed.date
 
-            if len(items)==len(quantity) and items and quantity:
-                mapped=zip(items,quantity)
+            if len(items)==len(quantity)==len(amount) and items and quantity and amount:
+                mapped=zip(items,quantity,amount)
                 mapped=list(mapped)
                 for ele in mapped:
-                    billAdd,created = item.objects.get_or_create(items = ele[0],qty = ele[1],transactions='Billed',details=dl,
-                    date=dt,details1=ref,bill=bll,cid=cmp1)
+                    billAdd,created = itemstock.objects.get_or_create(items = ele[0],qty = ele[1],amount = ele[2],transactions='Billed',details=dl,
+                    stocks='Stock Changed',date=dt,details1=ref,bill=bll,cid=cmp1)
 
             if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount) and items and hsn and quantity and rate and tax and amount:
                 mapped=zip(items,hsn,quantity,rate,tax,amount)
@@ -33031,6 +33033,21 @@ def createbill(request):
                         temp = int(ele[3])
                         itempcst.purchase_cost =temp
                         itempcst.save()
+
+                    itemamt = itemtable.objects.get(name=ele[0],cid=cmp1)
+                    if itemamt.amount != 0:
+                        temp=0
+                        temp = itemamt.amount
+                        temp = temp+int(ele[5])
+                        itemamt.amount =temp
+                        itemamt.save()
+
+                    elif itemamt.amount == 0:
+                        temp=0
+                        temp = itemamt.amount
+                        temp = temp+int(ele[5])
+                        itemamt.amount =temp
+                        itemamt.save()
 
             return redirect('gobilling')
         return render(request,'app1/gobilling.html',{'cmp1': cmp1})
@@ -33860,17 +33877,32 @@ def createpurchasepymnt(request):
             except:
                 pass
             # 
-            pymtbill = purchasepayment1.objects.filter()               
+            pymtbill = purchasepayment1.objects.filter() 
+
+            pymnt1.save()
+            x = pymnt1.vendor.split()
+            x.append(" ")
+            a = x[0]
+            b = x[1]
+            if x[2] is not None:
+                b = x[1] + " " + x[2]
+
             try:
                 for i in pymtbill:
-                    if purchasebill.objects.get(bill_no=i.billno) and i.billno != 'undefined':
-                        print(depositeto)
-                        pbl = purchasebill.objects.get(bill_no=i.billno)
-                        pbl.amtrecvd = int(pbl.amtrecvd) + int(i.payments)
-                        pbl.balance_due = float(i.amountdue) - float(i.payments)
-                        if pbl.balance_due == 0.0:
-                            pbl.status = "Paid"
-                        pbl.save()
+                    if i.billno != "Vendor Opening Balance":
+                        if purchasebill.objects.get(bill_no=i.billno) and i.billno != 'undefined':
+                            print(depositeto)
+                            pbl = purchasebill.objects.get(bill_no=i.billno)
+                            pbl.amtrecvd = int(pbl.amtrecvd) + int(i.payments)
+                            pbl.balance_due = float(i.amountdue) - float(i.payments)
+                            if pbl.balance_due == 0.0:
+                                pbl.status = "Paid"
+                            pbl.save()
+                    if i.billno == "Vendor Opening Balance":            
+                        if vendor.objects.get(firstname=a,lastname= b , cid=cmp1) and i.billno != 'undefined': 
+                            vndr=vendor.objects.get(firstname=a,lastname= b , cid=cmp1)
+                            vndr.opblnc_due = float(i.amountdue) - float(i.payments)
+                            vndr.save()
             except:
                 pass
             return redirect('gopurchasepymnt')
@@ -34302,7 +34334,7 @@ def createpurchasedebit(request):
                 mapped=zip(items,quantity)
                 mapped=list(mapped)
                 for ele in mapped:
-                    pAdd,created = item.objects.get_or_create(items = ele[0],qty = ele[1],transactions="Vendor Credits",details=dl,
+                    pAdd,created = itemstock.objects.get_or_create(items = ele[0],qty = ele[1],transactions="Vendor Credits",details=dl,
                     date=dt,debit=pdeb,cid=cmp1)
          
             if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total):
@@ -35640,7 +35672,6 @@ def getcustdata(request):
     return redirect('getvendordata')
 
 def create_credit(request):
-    
     if 'uid' in request.session:
         if request.session.has_key('uid'):
             uid = request.session['uid']
@@ -35663,7 +35694,6 @@ def create_credit(request):
             pdebit.save()
             pdebit.credit_no = int(pdebit.credit_no) + pdebit.screditid
             pdebit.save()
-
 
             items = request.POST.getlist("items[]")
             hsn = request.POST.getlist("hsn[]")

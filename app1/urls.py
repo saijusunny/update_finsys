@@ -753,6 +753,7 @@ urlpatterns = [
     path('bsreport/<str:id>', views.bsreport, name='bsreport'),
     path('tbreport/<str:id>', views.tbreport, name='tbreport'),
     path('streport/<str:id>', views.streport, name='streport'),
+    path('stkvalreport/<str:id>', views.stkvalreport, name='stkvalreport'),
 
     re_path(r'^demo$', views.demo, name='demo'),
     re_path(r'^itemdata$', views.itemdata, name='itemdata'),
