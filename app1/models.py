@@ -1648,3 +1648,10 @@ class salescreditnote1(models.Model):
     price = models.CharField(max_length=100,null=True)
     tax = models.CharField(max_length=100,null=True)
     total = models.CharField(max_length=100,null=True)
+
+
+
+#7-1-23 Shebin Shaji ,This table for password rest
+class Otp_password(models.Model):
+    user_ckeck = models.ForeignKey(User,blank=True,null=True, on_delete=models.CASCADE)
+    otp_psw=models.IntegerField()

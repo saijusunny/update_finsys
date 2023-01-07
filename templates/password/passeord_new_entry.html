@@ -296,7 +296,7 @@
 
             .signin-signup {
                 width: 100%;
-                top: 75%;
+                top: 87%;
                 transform: translate(-50%, -100%);
                 transition: 1s 0.8s ease-in-out;
             }
@@ -340,7 +340,7 @@
             }
 
             .panel h3 {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
 
             .panel p {
@@ -428,8 +428,19 @@
             margin-bottom: 15px;
             width: 70%;
             font-size: 13px;
-            border-radius: 15px;;
+            border-radius: 15px;
         }
+        .success
+        {
+            padding: 0.70em 1.3em;
+            background-color: rgba(0, 204, 58, 0.1); /* Red */
+            color: rgb(2, 139, 0);
+            margin-bottom: 15px;
+            width: 70%;
+            font-size: 13px;
+            border-radius: 15px;
+        }
+        
 
         /* The close button */
         .closebtn {
@@ -459,23 +470,41 @@
 <div class="container">
     <div class="forms-container">
         <div class="signin-signup">
-            <form action="{% url 'forgot_password' %}" method="post" class="sign-in-form">
+            <form action="{% url 'change_to_new_password' %}" method="post" class="sign-in-form">
                 {% csrf_token %}
                 {% for message in messages %}
                     {% if message %}
+                        {% if check == 1 %}
+                        <div class="success">
+                            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                            {{ message }}
+                        </div>
+                        {% else %}
                         <div class="alert">
                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
                             {{ message }}
                         </div>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
-                <h3 class="title"> Registered email id </h3>
+                <h3 class="title"> Create New Password </h3>
                 <div class="input-field">
-                    <i class="fas fa-envelope"></i>
-                    <input type="text" placeholder="Email id" name="email" required/>
+                    <i class="fas fa-eye"></i>
+                    <input type="text" placeholder="Enter the OTP" name="otp_send" required/>
+                </div>
+                <div class="input-field">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="New Password" id="pwd" name="new_psw" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
+                </div>
+                <div class="input-field">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="Confirm Password" id="cnfpwd" name="con_psw" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
                 </div>
                
-                <button type="submit"  class="btn solid"> RESET PASSWORD</button>
+                    <span id="password-match"></span>
+             
+               
+                <button type="submit" class="btn solid"> Submit</button>
                
                 <msg></msg>
             </form>
@@ -556,5 +585,40 @@ $(document).ready(function(){
 });
 
 </script>
+
+<script>
+    // Get the password input fields and the password match message
+    const password1Input = document.getElementById("pwd");
+    const password2Input = document.getElementById("cnfpwd");
+    const passwordMatch = document.getElementById("password-match");
+
+    // Add an event listener to the password input fields to check if the passwords match when either of them is changed
+    password1Input.addEventListener("input", checkPasswords);
+    password2Input.addEventListener("input", checkPasswords);
+
+    function checkPasswords() {
+        // Get the passwords from the input fields
+        const password1 = password1Input.value;
+        const password2 = password2Input.value;
+
+        // Check if the passwords match
+        if (password1 === password2) {
+        // If the passwords match, show a message indicating that they match
+        passwordMatch.innerHTML = "Passwords match";
+        passwordMatch.style.color = "green";
+        passwordMatch.style.fontSize = "13px";
+        
+        } else {
+        // If the passwords don't match, show a message indicating that they don't match
+        passwordMatch.innerHTML = "Passwords do not match";
+        passwordMatch.style.color = "red";
+        passwordMatch.style.fontSize = "13px";
+        
+        }
+    }
+    </script>
+
+
+
 </body>
 </html>

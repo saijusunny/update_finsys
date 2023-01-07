@@ -830,10 +830,11 @@ urlpatterns = [
     
  
 
-    # Forgot Password ---------
-      path('Forgote-Password',views.password_change,name='password_change'),
-      path('User-check',views.forgot_password,name='forgot_password'),
-      
-  
+    
+      # Forgot Password --------- 07-01-23 Shebin Shaji
+        path('Forgote-Password',views.password_change,name='password_change'),
+        path('Email-check',views.forgot_password,name='forgot_password'),
+        path('Set-Password',views.change_to_new_password,name='change_to_new_password'),
+        
     
 ]
