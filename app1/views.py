@@ -36245,3 +36245,59 @@ def removeinv(request):
     dbs.delete()
     print("fine")
     return JsonResponse({'crid':crid,})
+
+
+
+#password change  07-01-23  Shebin Shaji
+
+def password_change(request):
+    return render(request,'password/password_change.html')
+
+def forgot_password(request):
+    if request.method == 'POST':
+        email= request.POST.get('email')
+        if not User.objects.filter(email=email).first():
+            messages.success(request,'No user found with this email.')
+            return redirect('password_change')
+        else:
+            otp = random.randint(100000, 999999)
+            print(otp)
+            userheck=User.objects.filter(email=email).first()
+            opp_psw=Otp_password()
+            opp_psw.user_ckeck=userheck
+            opp_psw.otp_psw=otp
+            opp_psw.save()
+
+            # Get the user's email address
+            user_email = 'shebinshaji99@gmail.com'
+
+            # Create the email message
+            #message = EmailMessage('Your OTP', f'Your OTP is: {otp}', to=[user_email])
+
+            # Send the email
+            #message.send()
+            
+            return render(request,'password/passeord_new_entry.html')
+     
+    return render(request,'password/password_change.html')
+
+def change_to_new_password(request):
+
+    if request.method == 'POST':
+        send_otp= request.POST['otp_send']
+        new_psw= request.POST['new_psw']
+        con_psw= request.POST['con_psw']
+        if new_psw == con_psw:
+            uid=Otp_password.objects.get(otp_psw=send_otp)
+            user=User.objects.get(id=uid.id)
+            user.set_password(new_psw)
+            user.save()
+            uid.delete()
+            check=1
+            messages.success(request,'PassWord Change Successful')
+            return render(request,'password/passeord_new_entry.html',{'check':check})
+        else:
+            messages.success(request,'Password does not Match ')
+            return render(request,'password/passeord_new_entry.html')
+        
+    return render(request,'password/passeord_new_entry.html')
