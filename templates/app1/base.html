@@ -302,9 +302,9 @@
                 <div class="menu-title">Banking</div>
               </a>
               <ul>
-                <li><a href="{% url 'goonlinebank' %}"><i class="bx bx-right-arrow-alt"></i>Online
+                <!-- <li><a href="{% url 'goonlinebank' %}"><i class="bx bx-right-arrow-alt"></i>Online
                     Banking</a>
-                </li>
+                </li> -->
                 <li><a href="{% url 'bnnk' %}"><i class="bx bx-right-arrow-alt"></i>Offline
                     Banking</a>
                 </li>
@@ -555,8 +555,9 @@
 
 $(document).ready(function(){
   $("#myList li").hide();
-
+  
   $("#myInput").on("keyup", function() {
+    
     var value = $(this).val().toLowerCase();
     if (value !== '' ) {
     $("#myList li").filter(function() {
@@ -567,6 +568,12 @@ $(document).ready(function(){
     }    
   });
 });
+
+
+
+
+
+
 
    
    

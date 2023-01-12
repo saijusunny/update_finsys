@@ -2,6 +2,7 @@
 from curses.ascii import HT
 from http.client import HTTPResponse
 from multiprocessing import context
+from django.db.models import Avg,Max,Min,Sum
 import os
 from django.conf import settings
 from django.core.mail import send_mail
@@ -26704,6 +26705,7 @@ def search_estimate(request):
 
 
 def estimate_view(request,id):
+    
     cmp1 = company.objects.get(id=request.session['uid'])
     upd = estimate.objects.get(estimateid=id, cid=cmp1)
 
@@ -26770,58 +26772,201 @@ def convert1(request,id):
     return redirect(estimate_view,id)
 
 def convert2(request,id):
+    
     cmp1 = company.objects.get(id=request.session['uid'])
     est= estimate.objects.get(estimateid=id, cid=cmp1)
 
     est.status = 'Sales'
     est.save()
-
-
-    cmp1 = company.objects.get(id=request.session['uid'])
-    upd = salesorder()
-    upd.cid =  cmp1 
-    upd.salename  = est.customer
-    upd.saleemail = est.email
-    upd.saleaddress = est.billingaddress
-    upd.saledate = est.estimatedate
-    upd.shipmentdate = est.expirationdate
-    upd.placeofsupply= est.placeofsupply
-
+    ins=invoice.objects.all().aggregate(Max('invoiceno')).get('invoiceno__max')
     
-    upd.taxamount = est.taxamount
+    
+    cmp1 = company.objects.get(id=request.session['uid'])
+    inv2 = invoice(customername=est.customer, email=est.email,
+                    invoiceno=int(ins)+1,
+                    invoicedate=est.estimatedate, duedate=est.expirationdate, 
+                    placosupply=est.placeofsupply,
+                    bname=est.billingaddress,
+                    cid=cmp1,
+                    subtotal=float(est.subtotal),
+                    note = est.note,
+                    IGST = est.IGST,
+                    CGST = est.CGST,
+                    SGST = est.SGST,
+                    TCS = est.TCS ,
+                    grandtotal=est.estimatetotal,
+                    baldue=est.estimatetotal,
 
-    upd.reference_number = est.reference_number
-    upd.note = est.note
 
-    upd.subtotal=est.subtotal
-    upd.IGST =est. IGST
-    upd.CGST  = est.CGST
-    upd.SGST = est.SGST
-    upd.TCS = est.TCS 
-    upd.salestotal = est.estimatetotal
-  
-    upd.file = est.file
-    upd.saleno = '1000'
+                    )
+    try:
+        inv2.file=est.file
+    except:
+        pass
+    orderno = 'OR'+str(random.randint(1111111,9999999))
+    while invoice.objects.filter(invoice_orderno=orderno ) is None:
+        orderno = 'OR'+str(random.randint(1111111,9999999))
+    inv2.invoice_orderno =orderno
+    inv2.save()
+    
 
-    upd.save()
-    upd.saleno = int(upd.saleno) + upd.id
-    upd.save()
+    pl3=profit_loss()
+    pl3.details = inv2.customername
+    pl3.cid = cmp1
+    pl3.acctype = "Income"
+    pl3.transactions = "Invoice"
+    pl3.accname = "Sales"
+    pl3.inv = inv2
+    pl3.details1 = inv2.invoiceno
+    pl3.date = inv2.invoicedate
+    pl3.payments = inv2.grandtotal
+    pl3.save()
+
+    bs3=balance_sheet()
+    bs3.details = inv2.customername
+    bs3.cid = cmp1
+    bs3.acctype = "Account Receivable(Debtors)"
+    bs3.transactions = "Invoice"
+    bs3.account = "Account Receivable(Debtors)"
+    bs3.invc = inv2
+    bs3.details1 = inv2.invoiceno
+    bs3.details2 = inv2.invoice_orderno
+    bs3.date = inv2.invoicedate
+    bs3.payments = inv2.grandtotal
+    bs3.save()
+
+    placosupply=est.placeofsupply
+    if placosupply == cmp1.state:
+        bs4=balance_sheet()
+        bs4.details = inv2.customername
+        bs4.cid = cmp1
+        bs4.acctype = "Current Liabilities"
+        bs4.transactions = "Invoice"
+        bs4.account = "Output CGST"
+        bs4.invc = inv2
+        bs4.details1 = inv2.invoiceno
+        bs4.details2 = inv2.invoice_orderno
+        bs4.date = inv2.invoicedate
+        bs4.amount = inv2.grandtotal
+        bs4.payments = inv2.CGST
+        bs4.save()
+
+        bs5=balance_sheet()
+        bs5.details = inv2.customername
+        bs5.cid = cmp1
+        bs5.acctype = "Current Liabilities"
+        bs5.transactions = "Invoice"
+        bs5.account = "Output SGST"
+        bs5.invc = inv2
+        bs5.details1 = inv2.invoiceno
+        bs5.details2 = inv2.invoice_orderno
+        bs5.date = inv2.invoicedate
+        bs5.amount = inv2.grandtotal
+        bs5.payments = inv2.SGST
+        bs5.save()
+    else:
+        bs6=balance_sheet()
+        bs6.details = inv2.customername
+        bs6.cid = cmp1
+        bs6.acctype = "Current Liabilities"
+        bs6.transactions = "Invoice"
+        bs6.account = "Output IGST"
+        bs6.invc = inv2
+        bs6.details1 = inv2.invoiceno
+        bs6.details2 = inv2.invoice_orderno
+        bs6.date = inv2.invoicedate
+        bs6.amount = inv2.grandtotal
+        bs6.payments = inv2.IGST
+        bs6.save()
+        
+    bs7=balance_sheet()
+    bs7.details = inv2.customername
+    bs7.cid = cmp1
+    bs7.acctype = "Current Assets"
+    bs7.transactions = "Invoice"
+    bs7.account = "TDS Receivable"
+    bs7.invc = inv2
+    bs7.details1 = inv2.invoiceno
+    bs7.details2 = inv2.invoice_orderno
+    bs7.date = inv2.invoicedate
+    bs7.amount = inv2.grandtotal
+    bs7.payments = inv2.TCS
+    bs7.save()
+
+    grandtotal = float(est.estimatetotal)
+    acc = accounts1.objects.get(
+        name='Account Receivable(Debtors)', cid=cmp1)
+    if grandtotal != 0:
+        if accounts1.objects.get(name='Account Receivable(Debtors)', cid=cmp1):
+            acc.balance = float(acc.balance - grandtotal)
+            acc.save()
+        else:
+            pass
+    else:
+        pass
+    try:
+        if accounts1.objects.get(name='Sales', cid=cmp1):
+            acc = accounts1.objects.get(name='Sales', cid=cmp1)
+            acc.balance = float(acc.balance - grandtotal)
+            acc.save()
+    except:
+        pass
+
+    placosupply=est.placeofsupply
+    if placosupply == cmp1.state:
+        CGST = float(est.CGST)
+        accocgst = accounts1.objects.get(
+            name='Output CGST', cid=cmp1)
+        accocgst.balance = round(float(accocgst.balance + CGST), 2)
+        accocgst.save()
+        SGST = float(est.SGST)
+        accosgst = accounts1.objects.get(
+            name='Output SGST', cid=cmp1)
+        accosgst.balance = round(float(accosgst.balance + SGST), 2)
+        accosgst.save()
+    else:
+        IGST = float(est.IGST)
+        accoigst = accounts1.objects.get(
+            name='Output IGST', cid=cmp1)
+        accoigst.balance = round(
+            float(accoigst.balance + IGST), 2)
+        accoigst.save()
+
+    TCS = float(est.TCS)
+    accont = accounts1.objects.get(
+        name='TDS Receivable',cid=cmp1)
+    accont.balance = accont.balance - TCS
+    accont.save()
+
 
     es =estimate_item.objects.filter(estimate=id)
 
-    salid = salesorder.objects.get(id=upd.id)
+    num=invoice.objects.get(invoiceid=inv2.invoiceid)
     for i in es:
-        a=sales_item()
-        a. salesorder = salid 
-        a.product = i.item
-        a.hsn = i.hsn
-        a.description = i.description
-        a.qty  = i.quantity
-        a.price = i.rate
-        a.total = i.total
-        a.tax = i.tax
-        a.cid = i.cid
-        a.save()
+        invoiceAdd,created = invoice_item.objects.get_or_create(product = i.item,hsn=i.hsn,description=i.description,qty=i.quantity,price=i.rate,tax=i.tax,total=i.total,invoice=num,cid=i.cid)
+
+        itemqty1 = itemtable.objects.get(name=i.item,cid=cmp1)
+        if itemqty1.stock != 0:
+            temp=0
+            temp = itemqty1.stock
+            temp = temp-int(i.quantity)
+            itemqty1.stock =temp
+            itemqty1.save()
+
+        itemqty = itemtable.objects.get(name=i.item,cid=cmp1)
+        if itemqty.stockout != 0:
+            temp=0
+            temp = itemqty.stockout
+            temp = temp+int(i.quantity)
+            itemqty.stockout =temp
+            itemqty.save()
+
+        elif itemqty.stockout == 0:
+            temp=0
+            temp = itemqty.stockout 
+            temp = temp+int(i.quantity)
+            itemqty.stockout =temp
+            itemqty.save()
 
 
     return redirect(estimate_view,id)
@@ -27289,67 +27434,196 @@ def sale_convert2(request,id):
     upd.status = 'Invoice'
     upd.save()
 
-    inv = invoice()
-    inv.cid =  cmp1 
-    inv.customername  = upd.salename
-    inv.email = upd.saleemail
-   
-    inv.invoicedate = upd.saledate
-    inv.duedate  =  upd.shipmentdate
-    inv.bname = upd.saleaddress
-    inv.placosupply= upd.placeofsupply
-
-    # inv.reference_number = est.reference_number
-    inv.note = upd.note
+    ins=invoice.objects.all().aggregate(Max('invoiceno')).get('invoiceno__max')
     
-    inv.subtotal=upd.subtotal 
-    inv.IGST =upd. IGST
-    inv.CGST  = upd.CGST
-    inv.SGST = upd.SGST
-    inv.TCS = upd.TCS 
-    inv.amtrecvd = 0 
-    inv.baldue = upd.salestotal 
-    inv.grandtotal = upd.salestotal 
-  
-    inv.file = upd.file
-    inv.saleno = '1000'
+    
+    cmp1 = company.objects.get(id=request.session['uid'])
+    inv2 = invoice(customername=upd.salename, email=upd.saleemail,
+                    invoiceno=int(ins)+1,
+                    invoicedate=upd.saledate, 
+                    placosupply=upd.placeofsupply,
+                    bname=upd.saleaddress,
+                    cid=cmp1,
+                    subtotal=float(upd.subtotal ),
+                    note = upd.note,
+                    IGST = upd.IGST,
+                    CGST = upd.CGST,
+                    SGST = upd.SGST,
+                    TCS = upd.TCS ,
+                    grandtotal=upd.salestotal ,
+                    baldue=upd.salestotal ,
 
 
-
+                    )
+    
+    try:
+        inv2.file=upd.file
+    except:
+        pass
     orderno = 'OR'+str(random.randint(1111111,9999999))
     while invoice.objects.filter(invoice_orderno=orderno ) is None:
         orderno = 'OR'+str(random.randint(1111111,9999999))
-    inv.invoice_orderno =orderno
-    inv.save()
-    inv.invoiceno = int(inv.invoiceno) + inv.invoiceid
-    inv.save()
+    inv2.invoice_orderno =orderno
+    inv2.save()
     
-    sl =sales_item.objects.filter(salesorder=id)
 
-    salid = invoice.objects.get(invoiceid=inv.invoiceid)
-    for i in sl:
+    pl3=profit_loss()
+    pl3.details = inv2.customername
+    pl3.cid = cmp1
+    pl3.acctype = "Income"
+    pl3.transactions = "Invoice"
+    pl3.accname = "Sales"
+    pl3.inv = inv2
+    pl3.details1 = inv2.invoiceno
+    pl3.date = inv2.invoicedate
+    pl3.payments = inv2.grandtotal
+    pl3.save()
+
+    bs3=balance_sheet()
+    bs3.details = inv2.customername
+    bs3.cid = cmp1
+    bs3.acctype = "Account Receivable(Debtors)"
+    bs3.transactions = "Invoice"
+    bs3.account = "Account Receivable(Debtors)"
+    bs3.invc = inv2
+    bs3.details1 = inv2.invoiceno
+    bs3.details2 = inv2.invoice_orderno
+    bs3.date = inv2.invoicedate
+    bs3.payments = inv2.grandtotal
+    bs3.save()
+
+    placosupply=upd.placeofsupply
+    if placosupply == cmp1.state:
+        bs4=balance_sheet()
+        bs4.details = inv2.customername
+        bs4.cid = cmp1
+        bs4.acctype = "Current Liabilities"
+        bs4.transactions = "Invoice"
+        bs4.account = "Output CGST"
+        bs4.invc = inv2
+        bs4.details1 = inv2.invoiceno
+        bs4.details2 = inv2.invoice_orderno
+        bs4.date = inv2.invoicedate
+        bs4.amount = inv2.grandtotal
+        bs4.payments = inv2.CGST
+        bs4.save()
+
+        bs5=balance_sheet()
+        bs5.details = inv2.customername
+        bs5.cid = cmp1
+        bs5.acctype = "Current Liabilities"
+        bs5.transactions = "Invoice"
+        bs5.account = "Output SGST"
+        bs5.invc = inv2
+        bs5.details1 = inv2.invoiceno
+        bs5.details2 = inv2.invoice_orderno
+        bs5.date = inv2.invoicedate
+        bs5.amount = inv2.grandtotal
+        bs5.payments = inv2.SGST
+        bs5.save()
+    else:
+        bs6=balance_sheet()
+        bs6.details = inv2.customername
+        bs6.cid = cmp1
+        bs6.acctype = "Current Liabilities"
+        bs6.transactions = "Invoice"
+        bs6.account = "Output IGST"
+        bs6.invc = inv2
+        bs6.details1 = inv2.invoiceno
+        bs6.details2 = inv2.invoice_orderno
+        bs6.date = inv2.invoicedate
+        bs6.amount = inv2.grandtotal
+        bs6.payments = inv2.IGST
+        bs6.save()
         
-        a=invoice_item()
-        a. invoice = salid 
-        a.product = i.product
-        a.hsn = i.hsn
-        a.description = i.description
-        a.qty  = i.qty
+    bs7=balance_sheet()
+    bs7.details = inv2.customername
+    bs7.cid = cmp1
+    bs7.acctype = "Current Assets"
+    bs7.transactions = "Invoice"
+    bs7.account = "TDS Receivable"
+    bs7.invc = inv2
+    bs7.details1 = inv2.invoiceno
+    bs7.details2 = inv2.invoice_orderno
+    bs7.date = inv2.invoicedate
+    bs7.amount = inv2.grandtotal
+    bs7.payments = inv2.TCS
+    bs7.save()
 
-        a.price = i.price
-        a.total = i.total
-        a.tax = i.tax
-        a.cid = i.cid
-        a.save()
-        print(i.product)
-        itemqty = itemtable.objects.get(name=i.product,cid=cmp1)
-    
-        if itemqty.stock != 0:
+    grandtotal = float(upd.salestotal)
+    acc = accounts1.objects.get(
+        name='Account Receivable(Debtors)', cid=cmp1)
+    if grandtotal != 0:
+        if accounts1.objects.get(name='Account Receivable(Debtors)', cid=cmp1):
+            acc.balance = float(acc.balance - grandtotal)
+            acc.save()
+        else:
+            pass
+    else:
+        pass
+    try:
+        if accounts1.objects.get(name='Sales', cid=cmp1):
+            acc = accounts1.objects.get(name='Sales', cid=cmp1)
+            acc.balance = float(acc.balance - grandtotal)
+            acc.save()
+    except:
+        pass
+
+    placosupply=upd.placeofsupply
+    if placosupply == cmp1.state:
+        CGST = float(upd.CGST)
+        accocgst = accounts1.objects.get(
+            name='Output CGST', cid=cmp1)
+        accocgst.balance = round(float(accocgst.balance + CGST), 2)
+        accocgst.save()
+        SGST = float(upd.SGST)
+        accosgst = accounts1.objects.get(
+            name='Output SGST', cid=cmp1)
+        accosgst.balance = round(float(accosgst.balance + SGST), 2)
+        accosgst.save()
+    else:
+        IGST = float(upd.IGST)
+        accoigst = accounts1.objects.get(
+            name='Output IGST', cid=cmp1)
+        accoigst.balance = round(
+            float(accoigst.balance + IGST), 2)
+        accoigst.save()
+
+    TCS = float(upd.TCS)
+    accont = accounts1.objects.get(
+        name='TDS Receivable',cid=cmp1)
+    accont.balance = accont.balance - TCS
+    accont.save()
+
+
+    es =sales_item.objects.filter(salesorder=id)
+
+    num=invoice.objects.get(invoiceid=inv2.invoiceid)
+    for i in es:
+
+        invoiceAdd,created = invoice_item.objects.get_or_create(product = i.product,hsn=i.hsn,description=i.description,qty=i.qty,price=i.price,tax=i.tax,total=i.total,invoice=num,cid=i.cid)
+
+        itemqty1 = itemtable.objects.get(name=i.product,cid=cmp1)
+        if itemqty1.stock != 0:
             temp=0
-            temp = itemqty.stock
-            temp = temp-i.qty
-        
-            itemqty.stock = temp 
+            temp = itemqty1.stock
+            temp = temp-int(i.qty)
+            itemqty1.stock =temp
+            itemqty1.save()
+
+        itemqty = itemtable.objects.get(name=i.product,cid=cmp1)
+        if itemqty.stockout != 0:
+            temp=0
+            temp = itemqty.stockout
+            temp = temp+int(i.qty)
+            itemqty.stockout =temp
+            itemqty.save()
+
+        elif itemqty.stockout == 0:
+            temp=0
+            temp = itemqty.stockout 
+            temp = temp+int(i.qty)
+            itemqty.stockout =temp
             itemqty.save()
 
 

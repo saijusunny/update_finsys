@@ -394,7 +394,7 @@
         <div class="card radius-15">
             <div class="card-body">
                 <div class="card-title">
-                    <center><h2 class="mb-0">INVOICES VIEW</h2> <h4></h4></center>
+                    <center><h2 class="mb-0">INVOICE VIEW</h2> <h4></h4></center>
                     <hr>
                 </div>
                 <div class="btn-group" style="float: right; ">
@@ -499,23 +499,23 @@
                         
                           <div class="invoice-content row ">
                             <div class="col-4">
-                              <p  style="color:black; font-size:14px">Buyer/Client Name : {{invoice.customername}}<br>
+                              <p  style="color:black; font-size:14px">Buyer / Client Name : {{invoice.customername}}<br>
                               
                               {{invoice.bname}}<br>
-                             GSTIN/UIN: <br>
-                             State: {{invoice.placosupply}} <br>
+                             GSTIN/UIN : <br>
+                             State : {{invoice.placosupply}} <br>
                               Place of Supply : {{invoice.placosupply}}</p>
                             </div>
                             <div class="col-8">
                              <table width="100%" style="font-size:14px" class="table1" border="1">
                               <tr>
-                                <td id="number">Invoice No: {{invoice.invoiceno}}</td>
-                                <td>Dated:{{invoice.invoicedate }}</td>
+                                <td id="number">Invoice No : {{invoice.invoiceno}}</td>
+                                <td>Dated : {{invoice.invoicedate }}</td>
         
                               
                               </tr>
                               <tr>
-                                <td>Delivery Note :{{invoice.note}} </td>
+                                <td>Delivery Note : {{invoice.note}} </td>
                                 <td>Mode/Terms of Payment</td>
         
                               
@@ -562,16 +562,16 @@
                               <table border="1" width="100%" class="table2" style="font-size:14px">
                                     <thead class="thead splitForPrint">
                                       <tr style="width:100%;">
-                                        <th >Sl no.</th>
+                                        <th >Sl No.</th>
                                         <th >Description of Goods</th>
-                                        <th >Batch name</th>
-                                        <th >Expiry date</th>
+                                        <th >Batch Name</th>
+                                        <th >Expiry Date</th>
                                         <th >HSN/SAC</th>
                                         
                                         <th>Qty</th>
                                         <th>Rate</th>
                                         <!-- <th>per</th> -->
-                                        <th>GST rate</th>
+                                        <th>GST Rate</th>
                                         <th>Disc %</th>
                                         <th>Amount</th>
                                       </tr>
@@ -602,27 +602,27 @@
                                       <tr>
                                         <th colspan="9"   ><span style="float: right;margin-right: 14px;">Sub Total</span></th>
                                         
-                                        <td> {{invoice.subtotal}}</td>
+                                        <td style="font-weight: bold;"> {{invoice.subtotal}}</td>
                                       </tr>
                                       {% if invoice.IGST %}
                                       <tr>
                                         <th colspan="9"  ><span style="float: right;margin-right: 14px;">IGST</span></th>
                                         
-                                        <td> {{invoice.IGST}}</td>
+                                        <td style="font-weight: bold;"> {{invoice.IGST}}</td>
                                       </tr>
                                       {% endif %}
                                       {% if invoice.CGST != '0.00' %}
                                       <tr>
                                         <th colspan="9"  ><span style="float: right;margin-right: 14px;">CGST</span></th>
                                         
-                                        <td> {{invoice.CGST}}</td>
+                                        <td style="font-weight: bold;"> {{invoice.CGST}}</td>
                                       </tr>
                                       {% endif %}
                                       {% if invoice.SGST %}
                                       <tr>
                                         <th colspan="9"  ><span style="float: right;margin-right: 14px;">SGST</span></th>
                                         
-                                        <td> {{invoice.SGST}}</td>
+                                        <td style="font-weight: bold;"> {{invoice.SGST}}</td>
                                       </tr>
                                       {% endif %}
                                       
@@ -630,13 +630,13 @@
                                       <tr>
                                         <th colspan="9"  ><span style="float: right;margin-right: 14px;">TCS</span></th>
                                         
-                                        <td> {{invoice.TCS}}</td>
+                                        <td style="font-weight: bold;"> {{invoice.TCS}}</td>
                                       </tr>
                                       {% endif %}
                                       <tr>
                                         <th colspan="9"  ><span style="float: right;margin-right: 14px;">Grand Total</span></th>
                                         
-                                        <td> {{invoice.grandtotal}}</td>
+                                        <td style="font-weight: bold;"> {{invoice.grandtotal}}</td>
                                       </tr>
                                       
                                       

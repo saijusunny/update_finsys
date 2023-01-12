@@ -115,11 +115,11 @@
             <tr>
                 <td>
                     <div< class="details" >
-                        <h6>Bill To ,</h6>
-                        <p><span>Buyer/Client Name : {{invoice.customername}}</span><br>
+                        <h6>Bill To</h6>
+                        <p><span>Buyer / Client Name : {{invoice.customername}}</span><br>
                             <span>{{invoice.bname}}</span><br>
-                            <span> GSTIN/UIN: {{cmp1.gstno}}</span> <br>
-                            <span>State:{{invoice.placosupply}}</span><br>
+                            <span> GSTIN / UIN : {{cmp1.gstno}}</span> <br>
+                            <span>State : {{invoice.placosupply}}</span><br>
                             <span>Place of Supply : {{invoice.placosupply}}</span>
                         </p>
                     </div>
@@ -127,12 +127,12 @@
                 <td>
                     <table class="table1" border="1" >
                         <tr>
-                        <td id="number">Invoice No: {{invoice.invoiceno}}</td>
-                        <td>Dated:{{invoice.invoicedate }}</td>
+                        <td id="number">Invoice No : {{invoice.invoiceno}}</td>
+                        <td>Dated : {{invoice.invoicedate }}</td>
                         </tr>
                         <tr>
-                        <td>Delivery Note :{{invoice.note}} </td>
-                        <td>Mode/Terms of payment</td>
+                        <td>Delivery Note : {{invoice.note}} </td>
+                        <td>Mode / Terms of payment</td>
                         </tr>
                         <tr>
                         <td>Reference No. & Date</td>
@@ -140,7 +140,7 @@
                         </tr>
                         <tr>
                         <td>Buyers Order No. {{invoice.invoice_orderno}}</td>
-                        <td>Dated:</td>
+                        <td>Dated : </td>
                         </tr>
                         <tr>
                         <td>Dispatch Doc No.</td>
@@ -153,7 +153,10 @@
                         <tr>
                         <td colspan="2">Terms of Delivery</td>
                         </tr>
-                    </table>
+                        
+                        
+                    </table><br><br>
+
               
 
                 </td>
@@ -168,16 +171,16 @@
         <table class="table2">
             <thead class="table-head" >
                 <tr>
-                  <th >Sl no.</th>
+                  <th >Sl No.</th>
                   <th >Description of Goods</th>
-                  <th >Batch name</th>
-                  <th >Expiry date</th>
-                  <th >HSN/SAC</th>
+                  <th >Batch Name</th>
+                  <th >Expiry Date</th>
+                  <th >HSN / SAC</th>
                   
                   <th>Qty</th>
                   <th>Rate</th>
                   <!-- <th>per</th> -->
-                   <th>GST rate</th>
+                   <th>GST Rate</th>
                   <th>Disc %</th>
                   <th>Amount</th>
                 </tr>
@@ -205,27 +208,27 @@
                 <tr>
                   <th colspan="9"   ><span>Sub Total</span></th>
                   
-                  <td> {{invoice.subtotal}}</td>
+                  <td style="font-weight: bold;"> {{invoice.subtotal}}</td>
                 </tr>
                 {% if invoice.IGST %}
                 <tr>
                   <th colspan="9"  ><span>IGST</span></th>
                   
-                  <td> {{invoice.IGST}}</td>
+                  <td style="font-weight: bold;"> {{invoice.IGST}}</td>
                 </tr>
                 {% endif %}
                 {% if invoice.CGST != '0.00' %}
                 <tr>
                   <th colspan="9"  ><span >CGST</span></th>
                   
-                  <td> {{invoice.CGST}}</td>
+                  <td style="font-weight: bold;"> {{invoice.CGST}}</td>
                 </tr>
                 {% endif %}
                 {% if invoice.SGST %}
                 <tr>
                   <th colspan="9"  ><span >SGST</span></th>
                   
-                  <td> {{invoice.SGST}}</td>
+                  <td style="font-weight: bold;"> {{invoice.SGST}}</td>
                 </tr>
                 {% endif %}
                 
@@ -233,13 +236,13 @@
                 <tr>
                   <th colspan="9"  ><span >TCS</span></th>
                   
-                  <td> {{invoice.TCS}}</td>
+                  <td style="font-weight: bold;"> {{invoice.TCS}}</td>
                 </tr>
                 {% endif %}
                 <tr>
                   <th colspan="9"  ><span>Grand Total</span></th>
                   
-                  <td> {{invoice.grandtotal}}</td>
+                  <td style="font-weight: bold;"> {{invoice.grandtotal}}</td>
                 </tr>
                 
             </tbody>
@@ -260,17 +263,7 @@
     {% endif %}
 
           
-    <div class="invoice_details" style="margin-top:5px ;"> 
-        <div class="col-12 ">
-            <p class="gray-ish terms"  style="font-size:13px ;"><b>Terms & Conditions</b><br>
-                1.All Amount in INR Only<br>
-                2.CASH : Payment is to be made directly to the office<br>
-                3.CHEQUE : Cheques should be drawn in favour of COMPANY<br>
-                4.RECIEPTS: Official receipts duly signed will be considered valid
-            </p>
-        </div>                       
-    </div>
-    <br>
+    
     <table>
         <td>
             <div class="col-md-6">

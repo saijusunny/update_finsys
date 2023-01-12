@@ -130,7 +130,7 @@
                         
                         <th style="text-align: center;">INVOICE DATE</th>
                         <th style="text-align: center;">INVOICE NO</th>
-                        <th style="text-align: center;">ORDER NO</th>
+                        
                         <th style="text-align: center;">CUSTOMER</th>
                         <th style="text-align: center;">STATUS</th>
                         <th style="text-align: center;">DUE DATE</th>
@@ -146,7 +146,7 @@
                             <tr tr class="table-row " data-href="{% url 'invoice_view' invoices.invoiceid %}">
                                 <td style="text-align: center;">{{ invoices.invoicedate }}</td>
                                 <th style="text-align: center;">{{ invoices.invoiceno }}</th>
-                                <td style="text-align: center;">{{ invoices.invoice_orderno }}</td>
+                          
                                 <td style="text-align: center;">{{ invoices.customername }}</td>
                                 <td style="text-align: center;">{{ invoices.status }}</td>
                                 <td style="text-align: center;">{{ invoices.duedate }}</td>

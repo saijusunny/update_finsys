@@ -510,37 +510,37 @@ function uplodfile(){
                                 <div class="col-4">
                                     <table class="table border-0 table-hover">
                                         <tr >
-                                            <td style="color:black">Sub Total :</td>
-                                            <td style="color:black">{{estimate.subtotal}}</td>
+                                            <td style="color:black; font-weight:bold">Sub Total :</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.subtotal}}</td>
                                         </tr>
                                         {% if estimate.IGST != "" %}
                                         <tr>
-                                            <td style="color:black">IGST :</td>
-                                            <td style="color:black">{{estimate.IGST}}</td>
+                                            <td style="color:black; font-weight:bold">IGST :</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.IGST}}</td>
                                         </tr>
                                         {% endif %}
                                         {% if estimate.CGST != "" %}
                                         <tr>
-                                            <td style="color:black">CGST :</td>
-                                            <td style="color:black">{{estimate.CGST}}</td>
+                                            <td style="color:black; font-weight:bold">CGST :</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.CGST}}</td>
                                         </tr>
                                         {% endif %}
                                         {% if estimate.SGST != "" %}
                                         <tr>
-                                            <td style="color:black">SGST:</td>
-                                            <td style="color:black">{{estimate.SGST}}</td>
+                                            <td style="color:black; font-weight:bold">SGST:</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.SGST}}</td>
                                         </tr>
                                         {% endif %}
                                         {% if estimate.TCS != "" %}
                                         <tr>
-                                            <td style="color:black">TCS:</td>
-                                            <td style="color:black">{{estimate.TCS}}</td>
+                                            <td style="color:black; font-weight:bold">TCS:</td>
+                                            <td style="color:black; font-weight:bold">{{estimate.TCS}}</td>
                                         </tr>
                                         {% endif %}
                                         <tfoot>
                                             <tr>
-                                                <td style="color:black">Estimate Total:</td>
-                                                <td style="color:black ;">{{estimate.estimatetotal}}</td>
+                                                <td style="color:black; font-weight:bold">Estimate Total:</td>
+                                                <td style="color:black; font-weight:bold ;">{{estimate.estimatetotal}}</td>
                                             </tr>
                                         </tfoot>
                                     </table>
