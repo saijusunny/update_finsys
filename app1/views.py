@@ -15606,7 +15606,7 @@ def accreceivables(request):
             statment = cust_statment.objects.filter(customer=custname,cid=cmp1)
 
             # previous year amount
-            current_year=datetime.datetime.now().year
+            current_year=int(datetime.datetime.now().year)-1
             end_date=str(current_year)+"-03-31"
             previous_year = int(current_year) - 1
             start_date=str(previous_year)+"-04-01"
@@ -15618,7 +15618,6 @@ def accreceivables(request):
             
             adv_pym1= advancepayment.objects.filter(payee=custname,cid=cmp1,paymentdate__gte=start_date,paymentdate__lte=end_date).aggregate(Sum('amount')).get('amount__sum',0.00)
             
-            # cust_pym= customer.objects.filter(firstname=i.firstname,lastname=i.lastname,cid=cmp1).aggregate(Sum('opening_balance')).get('opening_balance__sum',0.00)
 
             totss1 = invoice.objects.filter(customername=custname,cid=cmp1,invoicedate__gte=start_date,invoicedate__lte=end_date).aggregate(Sum('grandtotal')).get('grandtotal__sum',0.00)
 
@@ -15655,14 +15654,13 @@ def accreceivables(request):
             cst_sum=0.0
             pym_sum=0.0
 
-            current_years=datetime.datetime.now().year
+            current_years=int(datetime.datetime.now().year)-1
             end_date12=str(current_years)+"-04-01"
             previous_years = int(current_year) +1 
             start_date12=str(previous_years)+"-03-31"
 
             fromdate=datetime.datetime.strptime(start_date12, "%Y-%m-%d").date()
             todate=datetime.datetime.strptime(end_date12, "%Y-%m-%d").date()
-             
             
 
             credits= salescreditnote.objects.filter(customer=custname,cid=cmp1,creditdate__gte=todate,creditdate__lte=fromdate).aggregate(Sum('grandtotal')).get('grandtotal__sum',0.00)
@@ -15703,8 +15701,13 @@ def accreceivables(request):
             total1 = 0
             total1=float(inv_sum)-float(cred_sum)-float(adv_sum)-float(cst_sum)-float(pym_sum)
             
+            if int(total1) < 0:
+                lt=0.0
+            else:
+                lt=total1
+
         
-            i.receivables = total1
+            i.receivables = lt
             i.save()
 
             sum=0
@@ -15717,13 +15720,17 @@ def accreceivables(request):
                 
     
 
-
+        neg=0
 
         context = {'invoice': inv, 'cmp1': cmp1,
                    'tot': tot, 
                     "cust":cust,
                     'sum':sum,
-                    'prev_amount':prev_amount
+                    'prev_amount':prev_amount,
+                    "neg":neg,
+                    "todate":fromdate,
+                    "fromdate":todate
+                    
                     }
         return render(request, 'app1/accreceivables.html', context)
     
@@ -15752,10 +15759,12 @@ def accreceivables1(request):
             statment = cust_statment.objects.filter(customer=custname,cid=cmp1)
 
             # previous year amount
-            current_year=datetime.datetime.now().year
+            current_year=datetime.datetime.now().year-1
             end_date=str(current_year)+"-03-31"
             previous_year = int(current_year) - 1
             start_date=str(previous_year)+"-04-01"
+
+            
             
             # str_date=start_date.strptime("%Y-%m-%d")
             
@@ -15838,8 +15847,13 @@ def accreceivables1(request):
             total1 = 0
             total1=float(inv_sum)-float(cred_sum)-float(adv_sum)-float(cst_sum)-float(pym_sum)
             
+
+            if int(total1) < 0:
+                lt=0.0
+            else:
+                lt=total1
         
-            i.receivables = total1
+            i.receivables = lt
             i.save()
 
             sum=0
@@ -15848,16 +15862,18 @@ def accreceivables1(request):
                     sum +=i.receivables
             sum+=prev_amount
 
-                       
+        fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+        todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
           
         
-
 
         context = {'invoice': inv, 'cmp1': cmp1,
                    'tot': tot, 
                     "cust":cust,
                     'sum':sum,
-                    'prev_amount':prev_amount
+                    'prev_amount':prev_amount,
+                    "todate":todates,
+                    "fromdate":fromdates
                     }
         return render(request, 'app1/accreceivables.html', context)
     except:
@@ -30252,7 +30268,7 @@ def create_unit(request):
         if request.method == 'POST':
             usymbol = request.POST['usymbol']
             uname = request.POST['uname']
-            unit = unittable(unit_symbol=usymbol,name=uname)
+            unit = unittable(unit_symbol=usymbol,name=uname,cid=cmp1)
             unit.save()
             return redirect('add_item')
         return render(request,'app1/unitcreation.html',{'cmp1': cmp1})    
@@ -32147,6 +32163,8 @@ def createvendor1(request):
             supply=request.POST['sourceofsupply']
             currency=request.POST['currency']
             balance=request.POST['openingbalance']
+            due=request.POST['openingbalance']
+            date=request.POST['date']
             payment=request.POST['paymentterms']
             street=request.POST['street']
             city=request.POST['city']
@@ -32159,17 +32177,11 @@ def createvendor1(request):
             shippincode=request.POST['shippincode']
             shipcountry=request.POST['shipcountry']
             
-            vndr = vendor(title=title, firstname=first_name,
-                            lastname=last_name, companyname= cmpnm,
-                            gsttype=gsttype, gstin=gstin, 
-                            panno=panno, email=email,sourceofsupply=supply,currency=currency,
-                            website=website, mobile=mobile,openingbalance=balance,
-                            street=street, city=city, state=state,paymentterms=payment,
-                            pincode=pincode, country=country,
-                            shipstreet=shipstreet, shipcity=shipcity,
-                            shipstate=shipstate,
-                            shippincode=shippincode, shipcountry=shipcountry)
-
+            vndr = vendor(title=title, firstname=first_name, lastname=last_name, companyname= cmpnm, gsttype=gsttype, gstin=gstin, 
+                        panno=panno, email=email,sourceofsupply=supply,currency=currency, website=website, mobile=mobile, date=date,
+                        openingbalance=balance,opblnc_due=due, street=street, city=city, state=state, paymentterms=payment,
+                        pincode=pincode, country=country, shipstreet=shipstreet, shipcity=shipcity, shipstate=shipstate,
+                        shippincode=shippincode, shipcountry=shipcountry,cid=cmp1)
             vndr.save()
             return redirect('addpurchaseorder')
         return render(request,'app1/addpurchaseorder.html',{'cmp1': cmp1})
@@ -32197,6 +32209,8 @@ def createvendor2(request):
             supply=request.POST['sourceofsupply']
             currency=request.POST['currency']
             balance=request.POST['openingbalance']
+            due=request.POST['openingbalance']
+            date=request.POST['date']
             payment=request.POST['paymentterms']
             street=request.POST['street']
             city=request.POST['city']
@@ -32209,17 +32223,11 @@ def createvendor2(request):
             shippincode=request.POST['shippincode']
             shipcountry=request.POST['shipcountry']
             
-            vndr = vendor(title=title, firstname=first_name,
-                            lastname=last_name, companyname= cmpnm,
-                            gsttype=gsttype, gstin=gstin, 
-                            panno=panno, email=email,sourceofsupply=supply,currency=currency,
-                            website=website, mobile=mobile,openingbalance=balance,
-                            street=street, city=city, state=state,paymentterms=payment,
-                            pincode=pincode, country=country,
-                            shipstreet=shipstreet, shipcity=shipcity,
-                            shipstate=shipstate,
-                            shippincode=shippincode, shipcountry=shipcountry)
-
+            vndr = vendor(title=title, firstname=first_name, lastname=last_name, companyname= cmpnm, gsttype=gsttype, gstin=gstin, 
+                        panno=panno, email=email,sourceofsupply=supply,currency=currency, website=website, mobile=mobile, date=date,
+                        openingbalance=balance,opblnc_due=due, street=street, city=city, state=state, paymentterms=payment,
+                        pincode=pincode, country=country, shipstreet=shipstreet, shipcity=shipcity, shipstate=shipstate,
+                        shippincode=shippincode, shipcountry=shipcountry,cid=cmp1)
             vndr.save()
             return redirect('addbilling')
         return render(request,'app1/addbilling.html',{'cmp1': cmp1})
@@ -32247,6 +32255,8 @@ def createvendor3(request):
             supply=request.POST['sourceofsupply']
             currency=request.POST['currency']
             balance=request.POST['openingbalance']
+            due=request.POST['openingbalance']
+            date=request.POST['date']
             payment=request.POST['paymentterms']
             street=request.POST['street']
             city=request.POST['city']
@@ -32259,16 +32269,11 @@ def createvendor3(request):
             shippincode=request.POST['shippincode']
             shipcountry=request.POST['shipcountry']
             
-            vndr = vendor(title=title, firstname=first_name,
-                            lastname=last_name, companyname= cmpnm,
-                            gsttype=gsttype, gstin=gstin, 
-                            panno=panno, email=email,sourceofsupply=supply,currency=currency,
-                            website=website, mobile=mobile,openingbalance=balance,
-                            street=street, city=city, state=state,paymentterms=payment,
-                            pincode=pincode, country=country,
-                            shipstreet=shipstreet, shipcity=shipcity,
-                            shipstate=shipstate,
-                            shippincode=shippincode, shipcountry=shipcountry)
+            vndr = vendor(title=title, firstname=first_name, lastname=last_name, companyname= cmpnm, gsttype=gsttype, gstin=gstin, 
+                        panno=panno, email=email,sourceofsupply=supply,currency=currency, website=website, mobile=mobile, date=date,
+                        openingbalance=balance,opblnc_due=due, street=street, city=city, state=state, paymentterms=payment,
+                        pincode=pincode, country=country, shipstreet=shipstreet, shipcity=shipcity, shipstate=shipstate,
+                        shippincode=shippincode, shipcountry=shipcountry,cid=cmp1)
             vndr.save()
             return redirect('addexpenses')
         return render(request,'app1/addexpense.html',{'cmp1': cmp1})
@@ -32296,6 +32301,8 @@ def createvendor4(request):
             supply=request.POST['sourceofsupply']
             currency=request.POST['currency']
             balance=request.POST['openingbalance']
+            due=request.POST['openingbalance']
+            date=request.POST['date']
             payment=request.POST['paymentterms']
             street=request.POST['street']
             city=request.POST['city']
@@ -32308,16 +32315,11 @@ def createvendor4(request):
             shippincode=request.POST['shippincode']
             shipcountry=request.POST['shipcountry']
             
-            vndr = vendor(title=title, firstname=first_name,
-                            lastname=last_name, companyname= cmpnm,
-                            gsttype=gsttype, gstin=gstin, 
-                            panno=panno, email=email,sourceofsupply=supply,currency=currency,
-                            website=website, mobile=mobile,openingbalance=balance,
-                            street=street, city=city, state=state,paymentterms=payment,
-                            pincode=pincode, country=country,
-                            shipstreet=shipstreet, shipcity=shipcity,
-                            shipstate=shipstate,
-                            shippincode=shippincode, shipcountry=shipcountry)
+            vndr = vendor(title=title, firstname=first_name, lastname=last_name, companyname= cmpnm, gsttype=gsttype, gstin=gstin, 
+                        panno=panno, email=email,sourceofsupply=supply,currency=currency, website=website, mobile=mobile, date=date,
+                        openingbalance=balance,opblnc_due=due, street=street, city=city, state=state, paymentterms=payment,
+                        pincode=pincode, country=country, shipstreet=shipstreet, shipcity=shipcity, shipstate=shipstate,
+                        shippincode=shippincode, shipcountry=shipcountry,cid=cmp1)
             vndr.save()
             return redirect('addpurchasedebit')
         return render(request,'app1/addpurchasedebit.html',{'cmp1': cmp1})
@@ -32331,78 +32333,166 @@ def createcustomer1(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
+    
         if request.method == "POST":
-            customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
-                            lastname=request.POST['lastname'], company=request.POST['company'],
-                            location=request.POST['location'], gsttype=request.POST['gsttype'],
-                            gstin=request.POST['gstin'], panno=request.POST['panno'],
-                            email=request.POST['email'], opening_balance=request.POST['openbalance'],
-                            website=request.POST['website'], mobile=request.POST['mobile'],
-                            street=request.POST['street'], city=request.POST['city'],
-                            state=request.POST['state'],
-                            pincode=request.POST['pincode'], country=request.POST['country'],
-                            shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
-                            shipstate=request.POST['shipstate'],
-                            shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'], cid=cmp1
-                        )
-            customer1.save()
-            return redirect('addpurchaseorder')   
-        return render(request, 'app1/addpurchaseorder.html', {'cmp1': cmp1})
+            firstname = request.POST['firstname']
+            lastname = request.POST['lastname']
+            if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
+                messages.info(request,
+                    f"Customer {firstname} {lastname} already exists. Please provide a different name.")
+                return redirect('gocustomers')
+            else:
+                toda = date.today()
+                tod = toda.strftime("%Y-%m-%d")
+                customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
+                                    lastname=request.POST['lastname'], company=request.POST['company'],
+                                    location=request.POST['location'], gsttype=request.POST['gsttype'],
+                                    gstin=request.POST['gstin'], panno=request.POST['panno'],
+                                    email=request.POST['email'],
+                                    website=request.POST['website'], mobile=request.POST['mobile'],
+                                    street=request.POST['street'], city=request.POST['city'],
+                                    state=request.POST['state'],
+                                    pincode=request.POST['pincode'], country=request.POST['country'],
+                                    shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
+                                    shipstate=request.POST['shipstate'],
+                                    shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
+                                    cid=cmp1,
+
+                                    #  opening_balance = request.POST['openbalance'], 
+                            )
+
+                customer1.save()
+                
+                temp=request.POST['openbalance']
+                if temp != "":
+                    customer1.opening_balance = request.POST['openbalance'] 
+                    customer1.opening_balance_due = request.POST['openbalance'] 
+                    customer1.date= tod
+                    customer1.save()
+
+                if customer1.opening_balance != "":
+                    add_cust_stat=cust_statment(
+                    customer = customer1.firstname +" "+ customer1.lastname,
+                    cid  = cmp1,
+                    Date = tod,
+                    Transactions="Customer Opening Balance",
+                    Amount= customer1.opening_balance,
+                )
+                add_cust_stat.save()
+
+                return redirect('addpurchaseorder')
+            customers = customer.objects.filter(cid=cmp1).all()
+            context = {'customers': customers, 'cmp1': cmp1}
+        return render(request, 'app1/addpurchaseorder.html', context)
     return redirect('/')
 
 @login_required(login_url='regcomp')
 def createcustomer2(request):
-    if 'uid' in request.session:
-        if request.session.has_key('uid'):
-            uid = request.session['uid']
+    cmp1 = company.objects.get(id=request.session["uid"])
+    if request.method == "POST":
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
+            messages.info(request,
+                f"Customer {firstname} {lastname} already exists. Please provide a different name.")
+            return redirect('gocustomers')
         else:
-            return redirect('/')
-        cmp1 = company.objects.get(id=request.session['uid'])
-        if request.method == "POST":
+            toda = date.today()
+            tod = toda.strftime("%Y-%m-%d")
             customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
-                            lastname=request.POST['lastname'], company=request.POST['company'],
-                            location=request.POST['location'], gsttype=request.POST['gsttype'],
-                            gstin=request.POST['gstin'], panno=request.POST['panno'],
-                            email=request.POST['email'], opening_balance=request.POST['openbalance'],
-                            website=request.POST['website'], mobile=request.POST['mobile'],
-                            street=request.POST['street'], city=request.POST['city'],
-                            state=request.POST['state'],
-                            pincode=request.POST['pincode'], country=request.POST['country'],
-                            shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
-                            shipstate=request.POST['shipstate'],
-                            shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'], cid=cmp1
+                                lastname=request.POST['lastname'], company=request.POST['company'],
+                                location=request.POST['location'], gsttype=request.POST['gsttype'],
+                                gstin=request.POST['gstin'], panno=request.POST['panno'],
+                                email=request.POST['email'],
+                                website=request.POST['website'], mobile=request.POST['mobile'],
+                                street=request.POST['street'], city=request.POST['city'],
+                                state=request.POST['state'],
+                                pincode=request.POST['pincode'], country=request.POST['country'],
+                                shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
+                                shipstate=request.POST['shipstate'],
+                                shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
+                                cid=cmp1,
+
+                                #  opening_balance = request.POST['openbalance'], 
                         )
+
             customer1.save()
-            return redirect('addbilling')   
-        return render(request, 'app1/addbilling.html', {'cmp1': cmp1})
-    return redirect('/')
+               
+            temp=request.POST['openbalance']
+            if temp != "":
+                customer1.opening_balance = request.POST['openbalance'] 
+                customer1.opening_balance_due = request.POST['openbalance'] 
+                customer1.date= tod
+                customer1.save()
+
+            if customer1.opening_balance != "":
+                add_cust_stat=cust_statment(
+                customer = customer1.firstname +" "+ customer1.lastname,
+                cid  = cmp1,
+                Date = tod,
+                Transactions="Customer Opening Balance",
+                Amount= customer1.opening_balance,
+            )
+            add_cust_stat.save()
+
+            return redirect('addpurchaseorder')
+        customers = customer.objects.filter(cid=cmp1).all()
+        context = {'customers': customers, 'cmp1': cmp1}
+        return render(request, 'app1/addpurchaseorder.html', context)
 
 @login_required(login_url='regcomp')
 def createcustomer3(request):
-    if 'uid' in request.session:
-        if request.session.has_key('uid'):
-            uid = request.session['uid']
+    cmp1 = company.objects.get(id=request.session["uid"])
+    if request.method == "POST":
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
+            messages.info(request,
+                f"Customer {firstname} {lastname} already exists. Please provide a different name.")
+            return redirect('gocustomers')
         else:
-            return redirect('/')
-        cmp1 = company.objects.get(id=request.session['uid'])
-        if request.method == "POST":
+            toda = date.today()
+            tod = toda.strftime("%Y-%m-%d")
             customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
-                            lastname=request.POST['lastname'], company=request.POST['company'],
-                            location=request.POST['location'], gsttype=request.POST['gsttype'],
-                            gstin=request.POST['gstin'], panno=request.POST['panno'],
-                            email=request.POST['email'], opening_balance=request.POST['openbalance'],
-                            website=request.POST['website'], mobile=request.POST['mobile'],
-                            street=request.POST['street'], city=request.POST['city'],
-                            state=request.POST['state'],
-                            pincode=request.POST['pincode'], country=request.POST['country'],
-                            shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
-                            shipstate=request.POST['shipstate'],
-                            shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'], cid=cmp1
+                                lastname=request.POST['lastname'], company=request.POST['company'],
+                                location=request.POST['location'], gsttype=request.POST['gsttype'],
+                                gstin=request.POST['gstin'], panno=request.POST['panno'],
+                                email=request.POST['email'],
+                                website=request.POST['website'], mobile=request.POST['mobile'],
+                                street=request.POST['street'], city=request.POST['city'],
+                                state=request.POST['state'],
+                                pincode=request.POST['pincode'], country=request.POST['country'],
+                                shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
+                                shipstate=request.POST['shipstate'],
+                                shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
+                                cid=cmp1,
+
+                                #  opening_balance = request.POST['openbalance'], 
                         )
+
             customer1.save()
-            return redirect('addexpenses')   
-        return render(request, 'app1/addexpense.html', {'cmp1': cmp1})
-    return redirect('/')
+               
+            temp=request.POST['openbalance']
+            if temp != "":
+                customer1.opening_balance = request.POST['openbalance'] 
+                customer1.opening_balance_due = request.POST['openbalance'] 
+                customer1.date= tod
+                customer1.save()
+
+            if customer1.opening_balance != "":
+                add_cust_stat=cust_statment(
+                customer = customer1.firstname +" "+ customer1.lastname,
+                cid  = cmp1,
+                Date = tod,
+                Transactions="Customer Opening Balance",
+                Amount= customer1.opening_balance,
+            )
+            add_cust_stat.save()
+
+            return redirect('addpurchaseorder')
+        customers = customer.objects.filter(cid=cmp1).all()
+        context = {'customers': customers, 'cmp1': cmp1}
+    return render(request, 'app1/addpurchaseorder.html', context)
 
 def create_item1(request):
     if 'uid' in request.session:
@@ -32420,21 +32510,23 @@ def create_item1(request):
             itax = request.POST['taxref']
             ipcost = request.POST['pcost']
             iscost = request.POST['salesprice']
-            # itrate = request.POST['tax']
+            itmdate = request.POST['itmdate']
+            #itrate = request.POST['tax']
             ipuracc = request.POST['pur_account']
             isalacc = request.POST['sale_account']
             ipurdesc = request.POST['pur_desc']
             isaledesc = request.POST['sale_desc']
             iintra = request.POST['intra_st']
             iinter = request.POST['inter_st']
-            iinv = request.POST['invacc']
-            istock = request.POST['stock']
+            iinv = request.POST.get('invacc')
+            istock = request.POST.get('stock')
             istatus = request.POST['status']
             item = itemtable(name=iname,item_type=itype,unit=iunit,
                                 hsn=ihsn,tax_reference=itax,
                                 purchase_cost=ipcost,
                                 sales_cost=iscost,
-                                # tax_rate=itrate,
+                                itmdate=itmdate,
+                                #tax_rate=itrate,
                                 acount_pur=ipuracc,
                                 account_sal=isalacc,
                                 pur_desc=ipurdesc,
@@ -32442,6 +32534,7 @@ def create_item1(request):
                                 intra_st=iintra,
                                 inter_st=iinter,
                                 inventry=iinv,
+                                stockin=istock,
                                 stock=istock,
                                 status=istatus,
                                 cid=cmp1)
@@ -32515,21 +32608,23 @@ def create_item3(request):
             itax = request.POST['taxref']
             ipcost = request.POST['pcost']
             iscost = request.POST['salesprice']
-            # itrate = request.POST['tax']
+            itmdate = request.POST['itmdate']
+            #itrate = request.POST['tax']
             ipuracc = request.POST['pur_account']
             isalacc = request.POST['sale_account']
             ipurdesc = request.POST['pur_desc']
             isaledesc = request.POST['sale_desc']
             iintra = request.POST['intra_st']
             iinter = request.POST['inter_st']
-            iinv = request.POST['invacc']
-            istock = request.POST['stock']
+            iinv = request.POST.get('invacc')
+            istock = request.POST.get('stock')
             istatus = request.POST['status']
             item = itemtable(name=iname,item_type=itype,unit=iunit,
                                 hsn=ihsn,tax_reference=itax,
                                 purchase_cost=ipcost,
                                 sales_cost=iscost,
-                                # tax_rate=itrate,
+                                itmdate=itmdate,
+                                #tax_rate=itrate,
                                 acount_pur=ipuracc,
                                 account_sal=isalacc,
                                 pur_desc=ipurdesc,
@@ -32537,6 +32632,7 @@ def create_item3(request):
                                 intra_st=iintra,
                                 inter_st=iinter,
                                 inventry=iinv,
+                                stockin=istock,
                                 stock=istock,
                                 status=istatus,
                                 cid=cmp1)
@@ -32544,6 +32640,57 @@ def create_item3(request):
             return redirect('addpurchasedebit')
         return render(request,'app1/addpurchasedebit.html')
     return redirect('/') 
+
+@login_required(login_url='regcomp')
+def create_unit1(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            usymbol = request.POST['usymbol']
+            uname = request.POST['uname']
+            unit = unittable(unit_symbol=usymbol,name=uname,cid=cmp1)
+            unit.save()
+            return redirect('addpurchaseorder')
+        return render(request,'app1/addpurchaseorder.html',{'cmp1': cmp1})  
+    return redirect('/')  
+
+@login_required(login_url='regcomp')
+def create_unit3(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            usymbol = request.POST['usymbol']
+            uname = request.POST['uname']
+            unit = unittable(unit_symbol=usymbol,name=uname,cid=cmp1)
+            unit.save()
+            return redirect('addbilling')
+        return render(request,'app1/addbilling.html',{'cmp1': cmp1})  
+    return redirect('/') 
+
+@login_required(login_url='regcomp')
+def create_unit3(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            usymbol = request.POST['usymbol']
+            uname = request.POST['uname']
+            unit = unittable(unit_symbol=usymbol,name=uname,cid=cmp1)
+            unit.save()
+            return redirect('addpurchasedebit')
+        return render(request,'app1/addpurchasedebit.html',{'cmp1': cmp1})  
+    return redirect('/')   
 
 def getvendordata(request):
     if 'uid' in request.session:
@@ -32641,14 +32788,16 @@ def addpurchaseorder(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         vndr = vendor.objects.filter(cid=cmp1)
         itm = itemtable.objects.filter(cid=cmp1)
+        unit = unittable.objects.filter(cid=cmp1)
         cust = customer.objects.filter(cid=cmp1)
         cpd = creditperiod.objects.filter(cid=cmp1)
-        acc2 = accounts1.objects.filter(cid=cmp1,name='Sales')
+        acc2 = accounts1.objects.filter(cid=cmp1,acctype='Sales')
         acc1 = accounts1.objects.filter(cid=cmp1,acctype='Cost of Goods Sold')
         context = {
                     'cmp1': cmp1,
                     'vndr':vndr,
                     'item':itm ,
+                    'unit':unit,
                     'cust':cust,        
                     'cpd':cpd ,
                     'acc1':acc1,    
@@ -33035,14 +33184,16 @@ def addbilling(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         vndr = vendor.objects.filter(cid=cmp1)
         itm = itemtable.objects.filter(cid=cmp1)
+        unit = unittable.objects.filter(cid=cmp1)
         cust = customer.objects.filter(cid=cmp1)
         cpd = creditperiod.objects.filter(cid=cmp1)
-        acc2 = accounts1.objects.filter(cid=cmp1,name='Sales')
+        acc2 = accounts1.objects.filter(cid=cmp1,acctype='Sales')
         acc1 = accounts1.objects.filter(cid=cmp1,acctype='Cost of Goods Sold')
         context = {
                     'cmp1': cmp1,
                     'vndr':vndr,
                     'item':itm ,
+                    'unit':unit,
                     'cust':cust,        
                     'cpd':cpd ,
                     'acc1':acc1,    
@@ -33991,8 +34142,40 @@ def credit_period2(request):
             period = request.POST['newperiod']
             cpd=creditperiod(newperiod = period)
             cpd.save()
-            return redirect('aaddbilling')
+            return redirect('addbilling')
         return render(request,'app1/addbilling.html',{'cmp1':cmp1})
+    return redirect('/')
+
+@login_required(login_url='regcomp')
+def credit_period3(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method=='POST':
+            period = request.POST['newperiod']
+            cpd=creditperiod(newperiod = period)
+            cpd.save()
+            return redirect('addexpense')
+        return render(request,'app1/addexpense.html',{'cmp1':cmp1})
+    return redirect('/')
+
+@login_required(login_url='regcomp')
+def credit_period4(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method=='POST':
+            period = request.POST['newperiod']
+            cpd=creditperiod(newperiod = period)
+            cpd.save()
+            return redirect('addpurchasedebit')
+        return render(request,'app1/addpurchasedebit.html',{'cmp1':cmp1})
     return redirect('/')
 
 def getbilldata(request):
@@ -34459,7 +34642,10 @@ def addpurchasedebit(request):
         vndr = vendor.objects.filter(cid=cmp1)  
         pbill = purchasebill.objects.filter(cid=cmp1)
         item = itemtable.objects.filter(cid=cmp1)
-        context = {'cmp1': cmp1,'vndr':vndr,'item':item,'pbill':pbill} 
+        unit = unittable.objects.filter(cid=cmp1)
+        acc2 = accounts1.objects.filter(cid=cmp1,acctype='Sales')
+        acc1 = accounts1.objects.filter(cid=cmp1,acctype='Cost of Goods Sold')
+        context = {'cmp1': cmp1,'vndr':vndr,'item':item,'unit':unit,'pbill':pbill,'acc1':acc1,'acc2':acc2} 
         return render(request,'app1/addpurchasedebit.html',context)
     return redirect('gopurchasedebit') 
 

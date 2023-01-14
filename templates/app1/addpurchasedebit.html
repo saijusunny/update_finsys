@@ -613,6 +613,12 @@
                                         <a class="btn btn-outline-secondary ml-1" data-target="#crperiod" data-toggle="modal">+</a>
                                     </div> 
                                     </div>
+                                    <div class="row" style="display: none;">
+                                        <div class="col-md-3 mt-2" >
+                                            <label for="">Date</label>
+                                            <input type="date" id="date2" class="form-control" name="date">
+                                        </div>
+                                    </div>
                                 </div>
                                 <hr>
                                 <div class="row">
@@ -644,6 +650,7 @@
                                                     <label for="state">State</label>
                                                     <select type="text" class="form-control" id="state" name="state">
                                                         <option value="" selected>Choose</option>
+                                                        <option value="None Of This">None Of This</option>
                                                         <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
                                                         </option>
                                                         <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -738,6 +745,7 @@
                                                     <label for="shipstate">State</label>
                                                     <select type="text" class="form-control" id="plosu" name="shipstate">
                                                         <option id="shipst" selected>Choose</option>
+                                                        <option value="None Of This">None Of This</option>
                                                         <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
                                                         </option>
                                                         <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -828,6 +836,35 @@
         </div>  
     </div> 
 
+    <div class="modal fade" id="crperiod">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #213b52;">
+                <div class="modal-header">
+                    <h5 class="m-3">New Payment Terms</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card p-3 m-3">
+                        <form action="{% url 'credit_period4' %}" method="post" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-2 mt-2"></div>
+                                <div class="col-md-5 mt-2">
+                                    <input type="number" name="newperiod" class="form-control">
+                                </div>
+                                <div class="col-md-2 mt-2">
+                                    <button class="btn btn-outline-info text-grey mb-3" type="submit">Save</button>
+                                </div>
+                            </div>
+                        </form>  
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div> 
+
     <div class="modal fade" id="newitem">
         <div class="modal-dialog modal-xl">
             <div class="modal-content" style="background-color: #213b52;">
@@ -853,8 +890,8 @@
                                     <label for="validationCustom03">Type</label>
                                     <select name="type" class="form-control" id="validationCustom01">
                                         <option >Choose...</option>
-                                        <option value="goods">Goods</option>
-                                        <option value="services">Services</option></select>
+                                        <option value="Goods">Goods</option>
+                                        <option value="Services">Services</option></select>
                                     
                                 </div>
                                 <div class="col-md-4 mt-2">
@@ -909,11 +946,7 @@
                                             <option>UGS-US GALLONS</option>
                                             <option>YDS-YARDS</otion> 
                                         </select>
-                                        <a href="{% url 'add_unit' %}">
-                                            <button type="button"
-                                                class="btn btn-outline-secondary ml-1">+
-                                            </button>
-                                        </a>
+                                        <a class="btn btn-outline-secondary ml-1" data-target="#unit" data-toggle="modal">+</a>
                                     </div>
                                     
                                 </div>
@@ -958,7 +991,7 @@
                                     <select name="pur_account" class="form-control">
                                         
                                         {% for a in acc1 %}
-                                            <option value="goods">{{ a.name }}</option>
+                                            <option value="{{ a.name }}">{{ a.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -984,9 +1017,9 @@
                                 <div class="col-md-4 mt-2">
                                     <label for="">Account</label>
                                     <select name="sale_account" class="form-control">
-                                        
+                                        <option value="Sales">Sales</option>
                                         {% for a in acc2 %}
-                                            <option value="goods">{{ a.name }}</option>
+                                            <option value="{{ a.name }}">{{ a.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -1076,6 +1109,10 @@
                                         </label>
                                     </div>
                                 </div>
+                                <div class="col-md-1"></div>
+                                <div class="col-md-3" style="display: none;">
+                                    <input type="date" name="itmdate" id="date3" class="form-control">
+                                </div>
                             </div>
                             <hr>
                             <div class="row mt-3">
@@ -1102,13 +1139,52 @@
                 </div>
             </div>
         </div> 
-    </div>    
+    </div>   
+    
+    <div class="modal fade" id="unit">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #213b52;">
+                <div class="modal-header">
+                    <h5 class="m-3">Unit Create</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card p-3 m-3">
+                        <form method="post" action="create_unit3" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-6">
+                                    <label for="acctyp">Unit Symbol</label>
+                                    <input type="text" name="usymbol" id="select1" class="custom-select-md form-control w-100">        
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name">Name</label>
+                                    <input name="uname" id="name" class="custom-select-md form-control w-100">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4 mt-4 mb-4">
+                                    <button type="submit" class="btn btn-outline-info rounded-pill w-100">Create</button>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div> 
 
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
         $('#date').val(new Date().toJSON().slice(0,10));
+        $('#date2').val(new Date().toJSON().slice(0,10));
+        $('#date3').val(new Date().toJSON().slice(0,10));
     </script>
 
     <script>

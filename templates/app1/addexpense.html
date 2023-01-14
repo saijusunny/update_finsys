@@ -24,19 +24,19 @@
                     <div class="row">
                         <div class="col-md-3 mt-2">
                             <label for="validationCustom01">Date</label>
-                            <input type="date" class="form-control" id="date" name="date">
+                            <input type="date" class="form-control" required id="date" name="date">
                         </div>
                         <div class="col-md-3 mt-2">
                             <label for="">Expense Account</label>
                             <div class="d-flex">
-                                <select class="form-control" name="expenseaccount">
+                                <select class="form-control" required name="expenseaccount">
                                     <option selected disabled>Expenses</option>
                                     {% for a in acc %}
-                                        <option value="a.name">{{a.name}}</option>
+                                        <option value="{{a.name}}">{{a.name}}</option>
                                     {% endfor %}
                                     <option disabled>Other Expenses</option>
                                     {% for a in acc1 %}
-                                        <option value="a.name">{{a.name}}</option>
+                                        <option value="{{a.name}}">{{a.name}}</option>
                                     {% endfor %}
                                     <!-- <option value="Advertising and Marketing">Advertising and Marketing</option>
                                     <option value="Audit Fee">Audit Fee</option>
@@ -59,7 +59,7 @@
                         <div class="col-md-3 mt-2">
                              <label for="">Expense Type</label>
                             <select name="expensetype" id="" class="form-control">
-                                <option selected disabled>Choose..</option>
+                                <option></option>
                                 <option value="Goods">Goods</option>
                                 <option value="Services">Services</option>
                             </select>   
@@ -73,15 +73,15 @@
                         <div class="col-md-3 mt-3">
                             <label for="">Amount</label>
                             <div class="d-flex">
-                                <select style="width: 84px;" class="form-control">
+                                <select style="width: 84px;" class="form-control" required>
                                     <option value="INR">INR</option>
                                 </select>
-                                <input type="number" name="amount" id="" class="form-control">
+                                <input type="number" name="amount" id="" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-md-3 mt-3">
                             <label for="">Paid Through</label>
-                            <select class="form-control" name="paidthrough">
+                            <select class="form-control" name="paidthrough" required>
                                 <option disabled>Cash</option>
                                 {% for a in acc2 %}
                                     <option value="{{ a.name }}">{{ a.name }}</option>
@@ -140,7 +140,7 @@
                             <label for="">Vendor</label>
                             <div class="d-flex">
                                 <select name="vendor" id="vendor" class="form-control" onchange="showvendor()">
-                                    <option value="Null" selected>Select Vendor</option>
+                                    <option></option>
                                     {% for v in vndr %}
                                     <option value="{{ v.firstname }} {{ v.lastname }}">{{ v.firstname }} {{ v.lastname }}</option>
                                     {% endfor %}
@@ -155,7 +155,7 @@
                             <label for="">Customer</label>
                             <div class="d-flex">
                                 <select name="customer" id="select" class="form-control">
-                                    <option selected disabled>Select Customer</option>
+                                    <option></option>
                                     {% for c in cust %}
                                     <option value="{{ c.firstname }} {{ c.lastname }}">{{ c.firstname }} {{ c.lastname }}</option>
                                     {% endfor %}
@@ -484,6 +484,12 @@
                                                     <a class="btn btn-outline-secondary ml-1" data-target="#crperiod" data-toggle="modal">+</a>
                                                 </div> 
                                                 </div>
+                                                <div class="row" style="display: none;">
+                                                    <div class="col-md-3 mt-2" >
+                                                        <label for="">Date</label>
+                                                        <input type="date" id="date2" class="form-control" name="date">
+                                                    </div>
+                                                </div>
                                             </div>
                                             <hr>
                                             <div class="row">
@@ -515,6 +521,7 @@
                                                                 <label for="state">State</label>
                                                                 <select type="text" class="form-control" id="state" name="state">
                                                                     <option value="" selected>Choose</option>
+                                                                    <option value="None Of This">None Of This</option>
                                                                     <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
                                                                     </option>
                                                                     <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -609,6 +616,7 @@
                                                                 <label for="shipstate">State</label>
                                                                 <select type="text" class="form-control" id="plosu" name="shipstate">
                                                                     <option id="shipst" selected>Choose</option>
+                                                                    <option value="None Of This">None Of This</option>
                                                                     <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
                                                                     </option>
                                                                     <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -699,6 +707,35 @@
                     </div>  
                 </div>  
 
+                <div class="modal fade" id="crperiod">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: #213b52;">
+                            <div class="modal-header">
+                                <h5 class="m-3">New Payment Terms</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card p-3 m-3">
+                                    <form action="{% url 'credit_period3' %}" method="post" autocomplete="off">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-2 mt-2"></div>
+                                            <div class="col-md-5 mt-2">
+                                                <input type="number" name="newperiod" class="form-control">
+                                            </div>
+                                            <div class="col-md-2 mt-2">
+                                                <button class="btn btn-outline-info text-grey mb-3" type="submit">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>  
+                                </div>
+                            </div>
+                        </div>   
+                    </div>
+                </div> 
+
                 <div class="modal fade" id="newcustomer">
                     <div class="modal-dialog modal-xl">
                         <div class="modal-content" style="background-color: #213b52;">
@@ -747,29 +784,29 @@
                                         <div class="row">
                                             <div class="col-md-4 mt-3">
                                                 <label for="validationCustom04">GST type</label>
-                                                <select class="form-control" id="gsttyp" name="gsttype" onchange="showgsttyp()"
-                                                        onclick="hidinput('hello', this)" required>
+                                                <select class="form-control" id="gsttyp" name="gsttype"
+                                                        onclick="hidinput1('hello1', this)" required>
                                                         <option selected disabled value="">Choose..</option>
-                                                        <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
-                                                        <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
-                                                        <option value="unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
-                                                        <option value="Overseas">Overseas (Import/Export of supply outside india)</option>
-                                                        <option value="Special Economic Zone (SEZ)">Special Economic Zone (SEZ) (Business that is located in a special economic zone of india or a SEZ developer)</option>
-                                                        <option value="Demed Exports">Demed Exports (Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</option>
-                                                        <option value="Tax Deductor">Tax Deductor (State of central gov,government agencies or local authority)</option>
-                                                        <option value="SEZ Developer">SEZ Developer (A person or organization who owns atleast 26% eqaulity in creating business units in special economic zone)</option>
+                                                        <option value="Registered Business - Regular">Registered Business - Regular</option>
+                                                        <option value="Registered Business - Composition">Registered Business - Composition</option>
+                                                        <option value="Unregistered Business">Unregistered Business</option>
+                                                        <option value="Overseas">Overseas</option>
+                                                        <option value="Special Economic Zone (SEZ)">Special Economic Zone (SEZ)</option>
+                                                        <option value="Demed Exports">Demed Exports</option>
+                                                        <option value="Tax Deductor">Tax Deductor</option>
+                                                        <option value="SEZ Developer">SEZ Developer</option>
                                                     </select>
                                                 <div class="invalid-feedback">Please select a valid registration type.</div>
                                             </div>
                                             <div class="col-md-4 mt-3">
-                                                <div id="hello">
+                                                <div id="hello1">
                                                     <label for="validationCustom05">GSTIN</label>
-                                                    <input type="text" class="form-control" onchange="checkgst(this)"
+                                                    <input type="text" class="form-control" onchange="checkgst1(this)"
                                                         id="validationCustom05" name="gstin"
                                                         placeholder="29APPCK7465F1Z1">
                                                     <a href="https://services.gst.gov.in/services/searchtp"
                                                         target="_blank" style="color:#3dd5f3">Get Taxpayer details ?</a>
-                                                    <div class="text-danger m-2" id="warngst"></div>
+                                                    <div class="text-danger m-2" id="warngst1"></div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4 mt-3">
@@ -1077,6 +1114,25 @@
                 document.getElementById('warngst').innerHTML = '';
             } else {
                 document.getElementById('warngst').innerHTML = 'Please provide a valid GSTIN';
+                alert('Please provide a valid GSTIN');
+            }
+        }
+
+        function hidinput1(divId, element) {
+            if (element.value == 'Unregistered Business' || element.value == 'Consumer' || element.value == 'Overseas') {
+                document.getElementById(divId).style.display = 'none';
+            } else {
+                document.getElementById(divId).style.display = 'block';
+            }
+        }
+
+        function checkgst1(element) {
+            var gstinput = element.value;
+            var gstregexp = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+            if (gstinput.match(gstregexp)) {
+                document.getElementById('warngst1').innerHTML = '';
+            } else {
+                document.getElementById('warngst1').innerHTML = 'Please provide a valid GSTIN';
                 alert('Please provide a valid GSTIN');
             }
         }

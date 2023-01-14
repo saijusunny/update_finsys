@@ -679,6 +679,8 @@ urlpatterns = [
     re_path(r'^create_item2$',views.create_item2,name='create_item2'),
     re_path(r'^create_item3$',views.create_item3,name='create_item3'),
 
+    re_path(r'^create_unit1$',views.create_unit1,name='create_unit1'),
+
     re_path(r'^getvendordata$',views.getvendordata,name='getvendordata'),
     re_path(r'^getperiod$',views.getperiod,name='getperiod'),
 
@@ -715,6 +717,8 @@ urlpatterns = [
     re_path(r'^credit_period$', views.credit_period, name='credit_period'),
     re_path(r'^credit_period1$', views.credit_period1, name='credit_period1'),
     re_path(r'^credit_period2$', views.credit_period2, name='credit_period2'),
+    re_path(r'^credit_period3$', views.credit_period3, name='credit_period3'),
+    re_path(r'^credit_period4$', views.credit_period4, name='credit_period4'),
 
     re_path(r'^porder_draft$', views.porder_draft, name='porder_draft'),
     re_path(r'^porder_billed$', views.porder_billed, name='porder_billed'),

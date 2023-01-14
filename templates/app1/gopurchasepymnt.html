@@ -58,7 +58,8 @@
                             <tbody>
                             {% for p in py %}
                                 <tr onclick="window.location='viewpurchasepymnt/{{ p.pymntid }}';">
-                                    <td><strong>{{ p.reference }}</strong></td>
+                                    <td><strong>{{ p.pymntid }}</strong></td>
+                                    <td>{{ p.reference }}</td>
                                     <td>{{ p.paymentdate |date:'d-m-Y' }}</td>
                                     <td>{{ p.vendor }}</td>
                                     <td>{{ p.paymentmethod }}</td>

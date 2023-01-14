@@ -279,8 +279,8 @@
                                                           style="background-color: #2a4964; color: white;"
                                                           id="validationCustom01" required>
                                                           <option value="{{ a.item_type }}">{{ a.item_type }}</option>
-                                                        <option value="goods">Goods</option>
-                                                    <option value="services">Services</option></select>
+                                                        <option value="Goods">Goods</option>
+                                                    <option value="Services">Services</option></select>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -444,7 +444,6 @@
                                                            style="background-color: #2a4964; color: white;"
                                                            id="validationCustom01" value="{{ a.acount_pur }}" >
                                                            <option value="{{ a.acount_pur }}" >{{ a.acount_pur }}</option>
-                                                           <option value="Cost Of Goods Sold" >Cost Of Goods Sold</option>
                                                            {% for a in acc %}
                                                            <option value="{{ a.name }}">{{ a.name }}</option>
                                                            {% endfor %}</select>
@@ -453,13 +452,14 @@
                                                     <label for="validationCustom01"
                                                            style="color: white;">Account</label>
                                                     <select name="sale_account" class="form-control" 
-                                                              style="background-color: #2a4964; color: white;"
-                                                              id="validationCustom01" value="{{ a.account_sal }}" >
-                                                              <option value="{{ a.account_sal }}">{{ a.account_sal }}</option>
-                                                              <option value="Sales" >Sales</option>
-                                                           {% for a in acc1 %}
-                                                           <option value="{{ a.name }}">{{ a.name }}</option>
-                                                           {% endfor %}</select>
+                                                        style="background-color: #2a4964; color: white;"
+                                                        id="validationCustom01" value="{{ a.account_sal }}" >
+                                                        <option value="{{ a.account_sal }}">{{ a.account_sal }}</option>
+                                                        <option value="Sales">Sales</option>
+                                                        {% for a in acc1 %}
+                                                            <option value="{{ a.name }}">{{ a.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="row">

@@ -284,8 +284,8 @@
                                                           style="background-color: #2a4964; color: white;"
                                                           required>
                                                           <option selected disabled value="">Choose...</option>
-                                                        <option value="goods">Goods</option>
-                                                    <option value="services">Services</option></select>
+                                                        <option value="Goods">Goods</option>
+                                                    <option value="Services">Services</option></select>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -446,7 +446,7 @@
                                                            style="background-color: #2a4964; color: white;"
                                                            id="validationCustom01" >
                                                            {% for a in acc %}
-                                                           <option value="goods">{{ a.name }}</option>
+                                                           <option value="{{ a.name }}">{{ a.name }}</option>
                                                            {% endfor %}</select>
                                                 </div>
                                                 <div class="col-md-6 mt-3">
@@ -455,9 +455,9 @@
                                                     <select name="sale_account" class="form-control" 
                                                               style="background-color: #2a4964; color: white;"
                                                               id="validationCustom01" >
-                                                              <option >Sales</option>
+                                                              <option value="Sales">Sales</option>
                                                            {% for a in acc1 %}
-                                                           <option value="goods">{{ a.name }}</option>
+                                                           <option value="{{ a.name }}">{{ a.name }}</option>
                                                            {% endfor %}</select>
                                                 </div>
                                             </div>

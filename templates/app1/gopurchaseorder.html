@@ -63,13 +63,13 @@
                             <tbody>
                             {% for p in pordr %}
                             <tr onclick="window.location='viewpurchaseorder/{{ p.porderid }}';">
-                                <th>{{ p.date }}</th>
+                                <th>{{ p.date| date:'d-m-Y' }}</th>
                                 <td>{{ p.branch }}</td>
                                 <td>PO - {{ p.puchaseorder_no }}</a></td>
                                 <td>{{ p.reference }}</td>
                                 <td>{{ p.vendor_name }}</td>
                                 <td>{{ p.status }}</td>
-                                <td>{{ p.deliver_date }}</td>
+                                <td>{{ p.deliver_date| date:'d-m-Y' }}</td>
                                 <td>{{ p.grand_total }}</td>
                             </tr>
                             {% endfor %}

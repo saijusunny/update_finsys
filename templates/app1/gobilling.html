@@ -69,7 +69,7 @@
                                     <td>{{ p.reference }}</td>
                                     <td>{{ p.vendor_name }}</td>
                                     <td>{{ p.status }}</td>
-                                    <td>{{ p.deliver_date }}</td>
+                                    <td>{{ p.deliver_date| date:'d-m-Y' }}</td>
                                     <td>{{ p.grand_total }}</td>
                                 </tr> 
                             {% endfor %}
