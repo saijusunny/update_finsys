@@ -753,7 +753,8 @@ urlpatterns = [
 
     path('trial_balance', views.trial_balance, name='trial_balance'),
     path('trial_balance1', views.trial_balance1, name='trial_balance1'),
-    path('plreport/<str:id>', views.plreport, name='plreport'),
+    path('plreport/<str:id>', views.plreport, name='plreport'), 
+    path('plreport_flt/<int:id>', views.plreport_flt, name='plreport_flt'),
     path('bsreport/<str:id>', views.bsreport, name='bsreport'),
     path('tbreport/<str:id>', views.tbreport, name='tbreport'),
     path('streport/<str:id>', views.streport, name='streport'),

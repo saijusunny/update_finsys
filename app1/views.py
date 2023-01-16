@@ -9686,9 +9686,9 @@ def getdatainv(request):
             b = x[1] + " " + x[2]
         custobject = customer.objects.values().filter(firstname=a, lastname=b, cid=cmp1)
         invitems = invoice.objects.values().filter(customername=id ,cid =cmp1,status='Approved' )
-
+        
         custopenblan = customer.objects.get(firstname=a,lastname=b,cid =cmp1)
-
+        
         if custopenblan.opening_balance != 0.0:
 
             cust1 = customer.objects.get(firstname=a,lastname=b,cid =cmp1,opnbalance_status="Default")
@@ -13969,10 +13969,13 @@ def balancesheet2(request):
         tequity = round(equity + pandl)
         tlande = round(tcl + tequity)
 
+        fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+        todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+
         context = {'ar':ar, 'cas':cas, 'ca':ca, 'cs':ca, 'cl':cl, 'ap':ap, 
             'asset':asset, 'accrece':accrece, 'taxrece':taxrece, 'tca':tca,
             'accpy':accpy, 'taxpy':taxpy, 'tcl':tcl, 'cmp1':cmp1,
-            'pandl':pandl, 'tequity':tequity, 'tlande':tlande
+            'pandl':pandl, 'tequity':tequity, 'tlande':tlande,"fromdate":fromdates,"todate":todates,
         }
         return render(request,'app1/balancesheet1.html',context)
     return redirect('/') 
@@ -14047,13 +14050,15 @@ def profitandloss(request):
         # for i in cost:
         #     sum1+=i.balance
 
-        pbl = profit_loss.objects.filter(cid=cmp1,accname='Cost of Goods Sold').values('accname').annotate(t1=Sum('payments'))
+        pbl = profit_loss.objects.filter(cid=cmp1,accname='Cost of Goods Sold',date=date.today()).values('accname').annotate(t1=Sum('payments'))
+        print("pb1")
+        print(pbl)
 
-        inv = profit_loss.objects.filter(cid=cmp1,transactions='Invoice').values('accname').annotate(t1=Sum('payments'))
+        inv = profit_loss.objects.filter(cid=cmp1,transactions='Invoice',date=date.today()).values('accname').annotate(t1=Sum('payments'))
 
-        exp = profit_loss.objects.filter(cid=cmp1,transactions='Expense').values('accname').annotate(t1=Sum('payments'))
+        exp = profit_loss.objects.filter(cid=cmp1,transactions='Expense',date=date.today()).values('accname').annotate(t1=Sum('payments'))
 
-        acc = profit_loss.objects.filter(cid=cmp1)
+        acc = profit_loss.objects.filter(cid=cmp1,date=date.today())
         sum1=0
         sum2=0
         sum3=0
@@ -14086,7 +14091,7 @@ def profitandloss(request):
 
         sumtot=sum4-sum3  
 
-        context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1}
+        context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1,"fromdate":date.today(), "todate":date.today(),}
 
         return render(request, 'app1/profitandloss.html', context)
     return redirect('/')   
@@ -14105,34 +14110,78 @@ def profitandloss1(request):
         if filmeth == 'Today':
             fromdate = tod
             todate = tod
+            pbl = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,accname='Cost of Goods Sold').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            inv = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Invoice').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            exp = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Expense').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            acc = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         elif filmeth == 'Custom':
             fromdate = request.POST['fper']
             todate = request.POST['tper']
+            pbl = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,accname='Cost of Goods Sold').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            inv = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Invoice').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            exp = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Expense').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            acc = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         elif filmeth == 'This month':
             fromdate = toda.strftime("%Y-%m-01")
             todate = toda.strftime("%Y-%m-31")
+
+            pbl = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,accname='Cost of Goods Sold').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            inv = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Invoice').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            exp = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Expense').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            acc = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
                 fromdate = f'{pyear}-03-01'
                 todate = f'{toda.strftime("%Y")}-03-31'
+
             else:
                 pyear = int(toda.strftime("%Y")) + 1
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
+            pbl = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,accname='Cost of Goods Sold').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            inv = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Invoice').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            exp = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Expense').values(
+                'accname').annotate(t1=Sum('payments'))
+
+            acc = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         else:
-            return redirect('profitandloss')
+            
+            
+            pbl = profit_loss.objects.filter(cid=cmp1,accname='Cost of Goods Sold').values(
+                'accname').annotate(t1=Sum('payments'))
 
-        pbl = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,accname='Cost of Goods Sold').values(
-            'accname').annotate(t1=Sum('payments'))
+            inv = profit_loss.objects.filter(cid=cmp1,transactions='Invoice').values(
+                'accname').annotate(t1=Sum('payments'))
 
-        inv = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Invoice').values(
-            'accname').annotate(t1=Sum('payments'))
+            exp = profit_loss.objects.filter(cid=cmp1,transactions='Expense').values(
+                'accname').annotate(t1=Sum('payments'))
 
-        exp = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,transactions='Expense').values(
-            'accname').annotate(t1=Sum('payments'))
+            acc = profit_loss.objects.filter(cid=cmp1)
 
-        acc = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
+            
 
         sum1=0
         sum2=0
@@ -14153,13 +14202,21 @@ def profitandloss1(request):
         sum4 = sum1-sum2
 
         sumtot=sum4-sum3  
-
-        context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1}
+        
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates="all"
+            todates="all"
+            pass
+        context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1,"fromdate":fromdates, "todate":todates,}
 
         return render(request, 'app1/profitandloss.html', context)
     return redirect('/')   
 
 def plreport(request,id):
+   
     if 'uid' in request.session:
         if request.session.has_key('uid'):
             uid = request.session['uid']
@@ -14171,8 +14228,11 @@ def plreport(request,id):
         tod = toda.strftime("%Y-%m-%d")
 
         to=toda.strftime("%d-%m-%Y")
-
+        
         acc = profit_loss.objects.filter(accname=id,cid=cmp1)
+        accs = profit_loss.objects.filter(accname=id,cid=cmp1).last()
+        ids=accs.id
+       
 
         debit=0
         credit=0
@@ -14195,7 +14255,74 @@ def plreport(request,id):
         ldate =""
 
         total2 = credit-debit
-        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2}
+        context = {'acc':acc,"keys":ids, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2}
+        return render(request, 'app1/plreport.html', context)
+    return redirect('/')  
+
+def plreport_flt(request,id):
+    
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        
+        accs = profit_loss.objects.get(id=id)
+        cmp1 = company.objects.get(id=request.session['uid'])
+        filmeth = request.POST['reportperiod']
+        print(filmeth)
+        if filmeth == 'Custom':
+            fromdate = request.POST['fdate']
+            todate = request.POST['ldate']
+            acc = profit_loss.objects.filter(accname=accs.accname,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+        else:
+            acc = profit_loss.objects.filter(accname=accs.accname,cid=cmp1)
+           
+        
+        
+
+        
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+
+        to=toda.strftime("%d-%m-%Y")
+
+        
+
+        
+
+        debit=0
+        credit=0
+        total2 =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Credits":
+                credit+=i.payments
+
+            if i.transactions =="Expense":
+                debit+=i.payments
+
+            if i.transactions =="Invoice":
+                debit+=i.payments
+
+        fdate =""
+        ldate =""
+        
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates="all"
+            todates="all"
+            pass
+        
+
+        total2 = credit-debit
+        context = {'acc':acc, 'cmp1':cmp1,"keys":accs.id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates, "todate":todates,}
         return render(request, 'app1/plreport.html', context)
     return redirect('/')  
 
@@ -35606,6 +35733,7 @@ def trial_balance1(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
+        dates=User.objects.get(id=request.user.id)
 
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
@@ -35629,6 +35757,8 @@ def trial_balance1(request):
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
         else:
+            # fromdate=dates.date_joined
+            # todate=date.today()
             return redirect('trial_balance')
 
         ar=balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,acctype='Account Receivable(Debtors)')
@@ -35713,9 +35843,12 @@ def trial_balance1(request):
         sumtot1=sum2+sum4+sum5
         print(sumtot1)
 
+        fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+        todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+
 
         context = {'cmp1':cmp1, 'ar':ar, 'cas':cas, 'ca':ca, 'cs':ca, 'cl':cl, 'ap':ap, 
-        'cogs':cogs, 'expc':expc, 'incm':incm,'sumtot':sumtot, 'sumtot1':sumtot1}
+        'cogs':cogs, 'expc':expc, 'incm':incm,'sumtot':sumtot, 'sumtot1':sumtot1,"fromdate":fromdates,"todate":todates,}
         return render(request,'app1/trial_balance.html',context)
     return redirect('/') 
 
