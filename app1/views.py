@@ -13829,10 +13829,13 @@ def balancesheet1(request):
         tequity = round(equity + pandl)
         tlande = round(tcl + tequity)
 
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
         context = {'ar':ar, 'cas':cas, 'ca':ca, 'cs':ca, 'cl':cl, 'ap':ap, 
             'asset':asset, 'accrece':accrece, 'taxrece':taxrece, 'tca':tca,
             'accpy':accpy, 'taxpy':taxpy, 'tcl':tcl, 'cmp1':cmp1,
-            'pandl':pandl, 'tequity':tequity, 'tlande':tlande
+            'pandl':pandl, 'tequity':tequity, 'tlande':tlande,"fromdate":fromdates,"todate":todates
         }
         return render(request,'app1/balancesheet1.html',context)
     return redirect('/') 
@@ -13867,7 +13870,8 @@ def balancesheet2(request):
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
         else:
-            return redirect('balancesheet1')
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
 
         ca=balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,acctype='Current Asset').values(
             'account').annotate(t1=Sum('payments'))
@@ -13969,8 +13973,12 @@ def balancesheet2(request):
         tequity = round(equity + pandl)
         tlande = round(tcl + tequity)
 
-        fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
-        todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
 
         context = {'ar':ar, 'cas':cas, 'ca':ca, 'cs':ca, 'cl':cl, 'ap':ap, 
             'asset':asset, 'accrece':accrece, 'taxrece':taxrece, 'tca':tca,
@@ -14017,6 +14025,8 @@ def bsreport(request,id):
         fdate =""
         ldate =""
 
+        
+
         total2 = credit-debit
         context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2}
         return render(request, 'app1/bsreport.html', context)
@@ -14050,15 +14060,14 @@ def profitandloss(request):
         # for i in cost:
         #     sum1+=i.balance
 
-        pbl = profit_loss.objects.filter(cid=cmp1,accname='Cost of Goods Sold',date=date.today()).values('accname').annotate(t1=Sum('payments'))
-        print("pb1")
-        print(pbl)
+        pbl = profit_loss.objects.filter(cid=cmp1,accname='Cost of Goods Sold').values('accname').annotate(t1=Sum('payments'))
+        
 
-        inv = profit_loss.objects.filter(cid=cmp1,transactions='Invoice',date=date.today()).values('accname').annotate(t1=Sum('payments'))
+        inv = profit_loss.objects.filter(cid=cmp1,transactions='Invoice').values('accname').annotate(t1=Sum('payments'))
 
-        exp = profit_loss.objects.filter(cid=cmp1,transactions='Expense',date=date.today()).values('accname').annotate(t1=Sum('payments'))
+        exp = profit_loss.objects.filter(cid=cmp1,transactions='Expense').values('accname').annotate(t1=Sum('payments'))
 
-        acc = profit_loss.objects.filter(cid=cmp1,date=date.today())
+        acc = profit_loss.objects.filter(cid=cmp1)
         sum1=0
         sum2=0
         sum3=0
@@ -14091,7 +14100,10 @@ def profitandloss(request):
 
         sumtot=sum4-sum3  
 
-        context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1,"fromdate":date.today(), "todate":date.today(),}
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+        context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1,"fromdate":fromdates,"todate":todates}
 
         return render(request, 'app1/profitandloss.html', context)
     return redirect('/')   
@@ -14169,7 +14181,8 @@ def profitandloss1(request):
             acc = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         else:
             
-            
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
             pbl = profit_loss.objects.filter(cid=cmp1,accname='Cost of Goods Sold').values(
                 'accname').annotate(t1=Sum('payments'))
 
@@ -14207,9 +14220,9 @@ def profitandloss1(request):
             fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
             todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
         except:
-            fromdates="all"
-            todates="all"
-            pass
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+          
         context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1,"fromdate":fromdates, "todate":todates,}
 
         return render(request, 'app1/profitandloss.html', context)
@@ -14254,8 +14267,11 @@ def plreport(request,id):
         fdate =""
         ldate =""
 
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
         total2 = credit-debit
-        context = {'acc':acc,"keys":ids, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2}
+        context = {'acc':acc,"keys":ids, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/plreport.html', context)
     return redirect('/')  
 
@@ -14276,7 +14292,9 @@ def plreport_flt(request,id):
             todate = request.POST['ldate']
             acc = profit_loss.objects.filter(accname=accs.accname,cid=cmp1,date__gte=fromdate, date__lte=todate,)
         else:
-            acc = profit_loss.objects.filter(accname=accs.accname,cid=cmp1)
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
+            acc = profit_loss.objects.filter(accname=accs.accname,cid=cmp1,date__gte=fromdate, date__lte=todate,)   
            
         
         
@@ -14316,9 +14334,8 @@ def plreport_flt(request,id):
             fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
             todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
         except:
-            fromdates="all"
-            todates="all"
-            pass
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
         
 
         total2 = credit-debit
@@ -15848,6 +15865,7 @@ def accreceivables(request):
     
 
         neg=0
+        
 
         context = {'invoice': inv, 'cmp1': cmp1,
                    'tot': tot, 
@@ -16035,8 +16053,11 @@ def accpayables(request):
             cid=cmp1, payornot='').all().aggregate(t2=Sum('grandtotal'))
         tot4 = bills.objects.filter(
             cid=cmp1, payornot='openbalance').all().aggregate(t2=Sum('grandtotal'))
+
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
         context = {'expence': ex, 'cmp1': cmp1, 'tot': tot, 'tot1': tot1, 'cre': cre, 'op': op, 'bi': bi, 'bi1': bi1,
-                   'tot2': tot2, 'tot3': tot3, 'tot4': tot4,'pbl':pbl,'tot6': tot6}
+                   'tot2': tot2, 'tot3': tot3, 'tot4': tot4,'pbl':pbl,'tot6': tot6,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/accpayables.html', context)
     except:
         return redirect('godash')
@@ -16068,7 +16089,8 @@ def accpayables1(request):
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
         else:
-            return redirect('accpayables')
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
         ex = expences.objects.filter(cid=cmp1, paymdate__gte=fromdate, paymdate__lte=todate).values('payee').annotate(
             t1=Sum('grandtotal'))
         pbl = purchasebill.objects.filter(cid=cmp1, date__gte=fromdate, date__lte=todate).values('vendor_name').annotate(
@@ -16093,8 +16115,16 @@ def accpayables1(request):
             t2=Sum('grandtotal'))
         tot4 = bills.objects.filter(cid=cmp1, payornot='openbalance', paymdate__gte=fromdate,
                                     paymdate__lte=todate).aggregate(t2=Sum('grandtotal'))
+
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
         context = {'expence': ex, 'cmp1': cmp1, 'tot': tot, 'tot1': tot1, 'cre': cre, 'op': op, 'bi': bi, 'bi1': bi1,
-                   'tot2': tot2, 'tot3': tot3, 'tot4': tot4,'pbl':pbl,'tot6': tot6}
+                   'tot2': tot2, 'tot3': tot3, 'tot4': tot4,'pbl':pbl,'tot6': tot6,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/accpayables.html', context)
     except:
         return redirect('accpayables')
@@ -30483,7 +30513,8 @@ def add_mjournal(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         acc = accounts1.objects.filter(cid=cmp1)
         cust = customer.objects.filter(cid=cmp1)
-        context = {'acc':acc,'cmp1':cmp1,'cust':cust}
+        vndr = vendor.objects.filter(cid=cmp1)
+        context = {'acc':acc,'cmp1':cmp1,'cust':cust,'vndr':vndr}
         return render(request,'app1/add_mjournal.html',context)    
     except:
         return redirect('gomjoural')    
@@ -30491,71 +30522,84 @@ def add_mjournal(request):
 
 @login_required(login_url='regcomp')
 def create_mjournal(request):
-    if request.method == 'POST':
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        mjdate = request.POST['dateto1']
-        mjno = request.POST['jnum']
-        mjrno = request.POST.get('rjnum')
-        notes = request.POST['jnotes']
-        currency = request.POST['jcurrency']
-        mjtype = request.POST.get('jtype')
-        
-        file = request.FILES.get('pic')
-        subtotal = request.POST['sub_total']
-        subtotal1 = request.POST['sub_total1']
-        total = request.POST['total_amount']
-        total1 = request.POST['total_amount1']
-        differ = request.POST['differ']
+        if request.method == 'POST':
+            cmp1 = company.objects.get(id=request.session['uid'])
+            mjdate = request.POST['dateto1']
+            mjno = request.POST['jnum']
+            mjrno = request.POST.get('rjnum')
+            notes = request.POST['jnotes']
+            currency = request.POST['jcurrency']
+            mjtype = request.POST.get('jtype')
             
-        mjrnl1 = mjournal(date=mjdate, mj_no=mjno, ref_no=mjrno, notes=notes,j_type=mjtype, currency=currency, attach=file, 
-                        s_totaldeb=subtotal, s_totalcre=subtotal1, total_deb=total, total_cre=total1, difference=differ,
-                        cid=cmp1)
+            file = request.FILES.get('pic')
+            subtotal = request.POST['sub_total']
+            subtotal1 = request.POST['sub_total1']
+            total = request.POST['total_amount']
+            total1 = request.POST['total_amount1']
+            differ = request.POST['differ']
+                
+            mjrnl1 = mjournal(date=mjdate, mj_no=mjno, ref_no=mjrno, notes=notes,j_type=mjtype, currency=currency, attach=file, 
+                            s_totaldeb=subtotal, s_totalcre=subtotal1, total_deb=total, total_cre=total1, difference=differ,
+                            cid=cmp1)
 
-        # if subtotal == subtotal1:
-        #     mjrnl1.save()
-        # else:    
-        #     messages.info( request, 'Please ensure that the debit and credit are equal')
+            if subtotal == subtotal1:
+                mjrnl1.save()
 
-        mjrnl1.save()
-        acc = request.POST.getlist('account[]')
-        desc = request.POST.getlist('jdesc[]')
-        cont = request.POST.getlist('jcontact[]')
-        deb = request.POST.getlist('jdebit[]')
-        cred = request.POST.getlist('jcredit[]')
-        
-        mj=mjournal.objects.get(id=mjrnl1.id)
+                acc = request.POST.getlist('account[]')
+                desc = request.POST.getlist('jdesc[]')
+                cont = request.POST.getlist('jcontact[]')
+                deb = request.POST.getlist('jdebit[]')
+                cred = request.POST.getlist('jcredit[]')
+                
+                mj=mjournal.objects.get(id=mjrnl1.id)
 
-        if len(acc)==len(desc)==len(cont)==len(deb)==len(cred) and acc and desc and cont and deb and cred:
-            mapped=zip(acc,desc,cont,deb,cred)
-            mapped=list(mapped)
-            for ele in mapped:
-                mjrnlAdd,created = mjournal1.objects.get_or_create(account = ele[0],desc = ele[1],contact=ele[2],debit=ele[3],
-                credit=ele[4],mjrnl=mj,cid=cmp1)
+                if len(acc)==len(desc)==len(cont)==len(deb)==len(cred) and acc and desc and cont and deb and cred:
+                    mapped=zip(acc,desc,cont,deb,cred)
+                    mapped=list(mapped)
+                    for ele in mapped:
+                        mjrnlAdd,created = mjournal1.objects.get_or_create(account = ele[0],desc = ele[1],contact=ele[2],debit=ele[3],
+                        credit=ele[4],mjrnl=mj,cid=cmp1)
 
-            return render(request, 'app1/add_mjournal.html',{'cmp1':cmp1})                        
-        return redirect('gomjoural')
+            else:    
+                messages.info( request, 'Please ensure that the debit and credit are equal')
+            return redirect('add_mjournal')
+        return render(request, 'app1/mjournal.html',{'cmp1':cmp1})                        
+    return redirect('/')
          
 
 @login_required(login_url='regcomp')
 def view_mj(request,id):
     try:
         cmp1 = company.objects.get(id=request.session['uid'])
-        mjl = mjournal.objects.filter(id=id)
-        context = {'mjl':mjl,'cmp1': cmp1}
+        mjl = mjournal.objects.filter(id=id,cid=cmp1)
+        mjl1 = mjournal1.objects.filter(mjrnl=id,cid=cmp1)
+        context = {'mjl':mjl,'mjl1':mjl1,'cmp1': cmp1}
         return render(request,'app1/view_mj.html',context)
     except:
         return redirect('gomjoural')         
 
 @login_required(login_url='regcomp')
-def mj_edit_page(request,id):   
-    try:
+def mj_edit_page(request,id):  
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
+        cust = customer.objects.filter(cid=cmp1)
+        vndr = vendor.objects.filter(cid=cmp1)
         mjrnl = mjournal.objects.filter(id=id)
         acc  = accounts1.objects.filter(cid=cmp1)
-        context = {'mjrnl':mjrnl,'acc':acc,'cmp1': cmp1}
-        return render(request,'app1/mj_edit.html',context) 
-    except:
-        return redirect('gomjoural')
+        mjl1 = mjournal1.objects.filter(mjrnl=id,cid=cmp1)
+        context = {'mjrnl':mjrnl,'acc':acc,'mj1':mjl1,'cust':cust,'vndr':vndr,'cmp1': cmp1}
+        return render(request,'app1/mj_edit.html',context)
+    return redirect('gomjoural') 
 
 @login_required(login_url='regcomp')
 def update_mj(request, id):
@@ -30569,16 +30613,6 @@ def update_mj(request, id):
             mjrnl.notes = request.POST.get('jnotes')
             mjrnl.j_type = request.POST.get('jtype')
             mjrnl.currency = request.POST.get('jcurrency')
-            mjrnl.account1 = request.POST.get('account')
-            mjrnl.desc1 = request.POST.get('jdesc')
-            mjrnl.contact1 = request.POST.get('jcontact')
-            mjrnl.debit1 = request.POST.get('jdebit')
-            mjrnl.credit1 = request.POST.get('jcredit')
-            mjrnl.account2 = request.POST.get('account1')
-            mjrnl.desc2 = request.POST.get('jdesc1')
-            mjrnl.contact2 = request.POST.get('jcontact1')
-            mjrnl.debit2 = request.POST.get('jdebit1')
-            mjrnl.credit2 = request.POST.get('jcredit1')
             mjrnl.attach = request.POST.get('pic')
             mjrnl.s_totaldeb = request.POST.get('sub_total')
             mjrnl.s_totalcre = request.POST.get('sub_total1')
@@ -30587,12 +30621,28 @@ def update_mj(request, id):
             mjrnl.difference = request.POST.get('differ')
             mjrnl.status = request.POST.get('status')
             mjrnl.save()
+
+            acc = request.POST.getlist('account[]')
+            desc = request.POST.getlist('jdesc[]')
+            cont = request.POST.getlist('jcontact[]')
+            deb = request.POST.getlist('jdebit[]')
+            cred = request.POST.getlist('jcredit[]')
+
+            mjid = request.POST.getlist("id[]")
+
+            id = mjournal.objects.get(id=mjrnl.id)
+
+            if len(acc)==len(desc)==len(cont)==len(deb)==len(cred) and acc and desc and cont and deb and cred and mjid:
+                mapped=zip(acc,desc,cont,deb,cred,mjid)
+                mapped=list(mapped)
+                for ele in mapped:
+                    created = mjournal1.objects.filter(id=ele[5]).update(account = ele[0],desc = ele[1],contact=ele[2],debit=ele[3],
+                    credit=ele[4])
+
             return redirect('gomjoural')
         return render(request,'app1/view_mj.html',{'cmp1': cmp1})    
     except:
-        return redirect('gomjoural')
-
-        
+        return redirect('gomjoural')     
  
 @login_required(login_url='regcomp')
 def deletemj(request, id):
@@ -30610,7 +30660,7 @@ def deletemj(request, id):
 def mjdraft(request):
     try:
         cmp1 = company.objects.get(id=request.session['uid'])
-        mj = mjournal.objects.filter(status='DRAFT',cid=cmp1)
+        mj = mjournal.objects.filter(status='Draft',cid=cmp1)
         return render(request,'app1/mjournal.html',{'mj':mj})
     except:
         return redirect('gomjoural')            
@@ -31176,12 +31226,15 @@ def stocksummary(request):
 
         item = itemtable.objects.filter(cid=cmp1)
 
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
         # for i in item:
         #     iname = i.name
         #     st = stockadjust.objects.filter(item1=iname,cid=cmp1)
         # st1=st
         
-        context = {'item':item,'cmp1':cmp1}
+        context = {'item':item,'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/stocksummary.html', context)
         
 @login_required(login_url='regcomp')
@@ -31210,11 +31263,19 @@ def stocksummary1(request):
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
         else:
-            return redirect('stocksummary')
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
 
         item = itemtable.objects.filter(itmdate__gte=fromdate, itmdate__lte=todate)
 
-        context = {'item':item,'cmp1':cmp1}
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+
+        context = {'item':item,'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/stocksummary.html', context)
 
 def streport(request,id):
@@ -31262,8 +31323,10 @@ def stockvaluation(request):
         item = itemtable.objects.filter(cid=cmp1).exclude(inventry="").annotate(total=F('stock')*F('amount'))
         stock = stockadjust.objects.filter(cid=cmp1)
         stock1 = purchasebill_item.objects.filter(cid=cmp1)
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
         
-        context = {'item': item,'stock':stock,'cmp1':cmp1}
+        context = {'item': item,'stock':stock,'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/stockvaluation.html', context)
 
         
@@ -31293,13 +31356,21 @@ def stockvaluation1(request):
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
         else:
-            return redirect('stockvaluation')
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
 
         item = itemtable.objects.filter(cid=cmp1,itmdate__gte=fromdate, itmdate__lte=todate).exclude(inventry="").annotate(
             total=F('stock')*F('amount'))
         stock = stockadjust.objects.filter(cid=cmp1)
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
         
-        context = {'item': item,'stock':stock,'cmp1':cmp1}
+        context = {'item': item,'stock':stock,'cmp1':cmp1,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/stockvaluation.html', context)
      
 def stkvalreport(request,id):
@@ -31635,12 +31706,15 @@ def gstr3b(request):
         tax2 = sgst + sgst1 + sgst2
         tax3 = igst + igst1 + igst2
         tax4 = tds + tds1 + tds2
+
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
         
         context = {'total':total,'total1':total1,'sum1':sum1,
             'cgst':cgst, 'sgst':sgst, 'igst':igst, 'tds':tds,
             'cgst1':cgst1, 'sgst1':sgst1, 'igst1':igst1, 'tds1':tds1,
             'cgst2':cgst2, 'sgst2':sgst2, 'igst2':igst2, 'tds2':tds2,
-            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1
+            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1,"fromdate":fromdates,"todate":todates
         }
         return render(request,'app1/gstr3b.html',context)
     return redirect('gopurchaseorder')
@@ -31676,7 +31750,8 @@ def gstr3b1(request):
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
         else:
-            return redirect('gstr3b')
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
 
         tax = balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         tax1 = balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,
@@ -31829,12 +31904,20 @@ def gstr3b1(request):
         tax2 = sgst + sgst1 + sgst2
         tax3 = igst + igst1 + igst2
         tax4 = tds + tds1 + tds2
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+
         
         context = {'total':total,'total1':total1,'sum1':sum1,
             'cgst':cgst, 'sgst':sgst, 'igst':igst, 'tds':tds,
             'cgst1':cgst1, 'sgst1':sgst1, 'igst1':igst1, 'tds1':tds1,
             'cgst2':cgst2, 'sgst2':sgst2, 'igst2':igst2, 'tds2':tds2,
-            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1
+            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1,"fromdate":fromdates,"todate":todates
         }
         return render(request,'app1/gstr3b.html',context)
     return redirect('gopurchaseorder')
@@ -33402,7 +33485,8 @@ def createbill(request):
             pl3.details1 = billed.bill_no
             pl3.details2 = reference
             pl3.date = billed.date
-            pl3.payments = billed.sub_total
+            pl3.payments = billed.grand_total
+            pl3.payments1 = billed.sub_total
             pl3.save()
 
             bs3=balance_sheet()
@@ -33416,6 +33500,7 @@ def createbill(request):
             bs3.details2 = reference
             bs3.date = billed.date
             bs3.payments = billed.grand_total
+            bs3.payments1 = billed.sub_total
             bs3.save()
 
             if sourceofsupply == cmp1.state:
@@ -35720,9 +35805,12 @@ def trial_balance(request):
         sumtot1=sum2+sum4+sum5
         print(sumtot1)
 
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
 
         context = {'cmp1':cmp1, 'ar':ar, 'cas':cas, 'ca':ca, 'cs':ca, 'cl':cl, 'ap':ap, 
-        'cogs':cogs, 'expc':expc, 'incm':incm,'sumtot':sumtot, 'sumtot1':sumtot1}
+        'cogs':cogs, 'expc':expc, 'incm':incm,'sumtot':sumtot, 'sumtot1':sumtot1,"fromdate":fromdates,"todate":todates}
         return render(request,'app1/trial_balance.html',context)
     return redirect('/') 
 
@@ -35757,9 +35845,8 @@ def trial_balance1(request):
                 fromdate = f'{toda.strftime("%Y")}-03-01'
                 todate = f'{pyear}-03-31'
         else:
-            # fromdate=dates.date_joined
-            # todate=date.today()
-            return redirect('trial_balance')
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
 
         ar=balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,acctype='Account Receivable(Debtors)')
         cas=balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,acctype='Current Assets').values(
@@ -35843,8 +35930,12 @@ def trial_balance1(request):
         sumtot1=sum2+sum4+sum5
         print(sumtot1)
 
-        fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
-        todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
 
 
         context = {'cmp1':cmp1, 'ar':ar, 'cas':cas, 'ca':ca, 'cs':ca, 'cl':cl, 'ap':ap, 

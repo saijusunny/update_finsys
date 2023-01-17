@@ -202,7 +202,7 @@
                                 <input type="date" class="form-control" id="date" name="date" placeholder="">
                             </div>
                             <div class="col-md-3 mt-2">
-                                <label for="">Expected Deliver Date</label>
+                                <label for="">Expected Delivery Date</label>
                                 <input type="date" class="form-control date1-input" id="date1" name="deliver_date" onchange="checkDate()">
                             </div>
                             <div class="col-md-3 mt-2">
@@ -586,7 +586,7 @@
                                                         <option selected disabled value="">Choose..</option>
                                                         <option value="Registered Business - Regular">Registered Business - Regular <span><i>(Business that is registered under gst)</i></span></option>
                                                         <option value="Registered Business - Composition">Registered Business - Composition (Business that is registered under composition scheme in gst)</option>
-                                                        <option value="unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
+                                                        <option value="Unregistered Business">Unregistered Business (Business that has not been registered under gst)</option>
                                                         <option value="Overseas">Overseas (Import/Export of supply outside india)</option>
                                                         <option value="Special Economic Zone (SEZ)">Special Economic Zone (SEZ) (Business that is located in a special economic zone of india or a SEZ developer)</option>
                                                         <option value="Demed Exports">Demed Exports (Supply of woods to an exports oriented unit or againsed advanced authorization or export promotion capital woods)</option>
@@ -730,7 +730,7 @@
                                             <div class="row" style="display: none;">
                                                 <div class="col-md-3 mt-2" >
                                                     <label for="">Date</label>
-                                                    <input type="date" id="date2" class="form-control" name="date">
+                                                    <input type="date" id="dt" class="form-control" name="date">
                                                 </div>
                                             </div>
                                             <hr>
@@ -1613,7 +1613,7 @@
     <script>
         $('#date').val(new Date().toJSON().slice(0,10));
         $('#date1').val(new Date().toJSON().slice(0,10));
-        $('#date2').val(new Date().toJSON().slice(0,10));
+        $('#dt').val(new Date().toJSON().slice(0,10));
         $('#date3').val(new Date().toJSON().slice(0,10));
 
         function checkDate() {

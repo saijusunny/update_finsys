@@ -104,7 +104,7 @@
                         <th>NOTES</th>
                         
                         <th>AMOUNT</th>
-                        <th>DOCUMENTS</th>
+                        <!-- <th>DOCUMENTS</th> -->
                     </tr>
                     </thead>
                     <tbody>
@@ -114,15 +114,15 @@
                                 <td>{{ a.mj_no }}</td>
                                 <td>{{ a.ref_no }}</td>
                                 <td >
-                                    {% if a.status == 'publish' %}
-                                   PUBLISHED
+                                    {% if a.status == 'Publish' %}
+                                   Published
                                     {% else %}
-                                    DRAFT
+                                    Draft
                                     {% endif %}
                                 </td>
                                 <td>{{ a.notes }}</td>
-                                <td>{{ a.debit1 }}</td>
-                                <td>{{ a.attach }}</td>
+                                <td>{{ a.total_deb }}</td>
+                                <!-- <td>{{ a.attach }}</td> -->
                                 
                                         
                                     

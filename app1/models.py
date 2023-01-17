@@ -1234,7 +1234,7 @@ class mjournal(models.Model):
     total_deb = models.CharField(max_length=100, default='')
     total_cre = models.CharField(max_length=100, default='')
     difference = models.CharField(max_length=100, default='')
-    status = models.CharField(max_length=100,default="DRAFT")
+    status = models.CharField(max_length=100,default="Draft")
 
 class mjournal1(models.Model):
     mjrnl = models.ForeignKey(mjournal, on_delete=models.CASCADE,null=True)
@@ -1573,6 +1573,7 @@ class profit_loss(models.Model):
     details1 = models.CharField(max_length=255,blank=True,null=True)
     details2= models.CharField(max_length=255,blank=True,default='')
     payments=models.FloatField(blank=True,null=True)	
+    payments1=models.FloatField(blank=True,null=True)	
 
 class balance_sheet(models.Model):
     cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
@@ -1590,7 +1591,8 @@ class balance_sheet(models.Model):
     details1 = models.CharField(max_length=255,blank=True,null=True)
     details2= models.CharField(max_length=255,blank=True,default='')
     amount=models.FloatField(blank=True,null=True)	
-    payments=models.FloatField(blank=True,null=True)		
+    payments=models.FloatField(blank=True,null=True)
+    payments1=models.FloatField(blank=True,null=True)			
 
 class item_stock(models.Model):
     item = models.CharField(max_length=255, default='')

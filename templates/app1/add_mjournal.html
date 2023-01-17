@@ -10,6 +10,10 @@
                 border-radius: 5px;
                 color: white;
             }
+            .tdd{
+                border: none;
+                background-color: rgba(0,0,0,.001);
+            }
         </style>
         <div class="page-content">
             <div class="card radius-15">
@@ -80,8 +84,8 @@
                             
                                                 <label class="col-form-label">Journal Type </label>
                                                 <input style="margin-left:90px;" type="checkbox" 
-                                                       name="jtype">
-                                                       <label class="col-form-label">Cash based journal</label>
+                                                       name="jtype" id="jtype" value="Cash based journal">
+                                                       <label for="jtype" class="col-form-label">Cash based journal</label>
                                             </div>
                                     </div><br>
                                         <div class="row">
@@ -120,7 +124,7 @@
                                                                 {% for a in cust %}
                                                                     <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
                                                                 {% endfor %}
-                                                                {% for a in vend %}
+                                                                {% for a in vndr %}
                                                                     <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
                                                                 {% endfor %}
                                                             </select>
@@ -157,7 +161,7 @@
                                                                 {% for a in cust %}
                                                                     <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
                                                                 {% endfor %}
-                                                                {% for a in vend %}
+                                                                {% for a in vndr %}
                                                                     <option   value="{{ a.firstname }} {{ a.lastname }}">{{ a.firstname }} {{ a.lastname }} </option>
                                                                 {% endfor %}
                                                             </select>
@@ -194,17 +198,17 @@
                                                 <label for="formFileMultiple" class="form-label">Attach File(s)</label><br>
                                                 <input  type="file" name="pic" id="formFileMultiple" multiple />
                                             </div>
-                                            <div class="col-md-6 table-responsive-md">
-                                                <table class="table table-bordered table-hover"
+                                            <div class="col-md-6 table-responsive-md" style="background-color:rgba(0,0,0,.2);">
+                                                <table class="table table-hover"
                                                        id="tab_logic_total">
                                                     <tbody>
                                                     <tr>
-                                                        <th class="text-center">Sub Total</th>
+                                                        <th class="text-center text-muted">Sub Total</th>
                                                         <td class="text-center"><input
                                                             type="number"
                                                                                        name='sub_total'
                                                                                        placeholder='0.00'
-                                                                                       class="form-control"
+                                                                                       class="tdd"
                                                                                        id="subtotal" />
                                                         </td>
                                                         <td>
@@ -212,7 +216,7 @@
                                                             type="number"
                                                                                        name='sub_total1'
                                                                                        placeholder='0.00'
-                                                                                       class="form-control"
+                                                                                       class="tdd"
                                                                                        id="sub_total" />
                                                         </td>
                                                     </tr>
@@ -220,14 +224,14 @@
                                                         <th class="text-center">Total Amount</th>
                                                         <td class="text-center"><input type="number"
                                                                                        name='total_amount'
-                                                                                       id="tax_amount"
+                                                                                       id="amount"
                                                                                        placeholder='0.00'
                                                                                        class="form-control"
                                                                                        />
                                                         </td>
                                                         <td>
                                                             <input type="number" name='total_amount1' placeholder='0.00' class="form-control"
-                                                            id="sub_total" />
+                                                            id="amount1" />
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -347,7 +351,9 @@
                     });
 
                     $('#subtotal').val(parseFloat(total.toFixed(2)));
+                    $('#amount').val(parseFloat(total.toFixed(2)));
                     $('#sub_total').val(parseFloat(total1.toFixed(2)));
+                    $('#amount1').val(parseFloat(total1.toFixed(2)));
                     calc_diff();
                 }
                 function calc_diff() {
@@ -359,7 +365,7 @@
                     });
 
                     x=0
-                    if (subtotal === sub_total) {
+                    if (subtotal == sub_total) {
                         $('#diff').val(parseFloat(x.toFixed(2)));
                         $('#diff1').val(parseFloat(x.toFixed(2)));
                     } else if (subtotal > sub_total) {

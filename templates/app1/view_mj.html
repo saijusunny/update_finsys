@@ -87,7 +87,7 @@
                     
                                              <div class="pcs-template-body">
                                                
-                                                {% if a.status == 'publish' %}
+                                                {% if a.status == 'Publish' %}
                                                 <p class="btn btn-outline-success" >PUBLISHED</p>
                                                  {% else %}
                                                 <p class="btn btn-outline-dark"> DRAFT</p>
@@ -141,7 +141,7 @@
                                                                                 <span class="pcs-label">Amount:</span>
                                                                             </td>
                                                                             <td class="text-align-right">
-                                                                                <span >₹{{ a.debit1 }}.00</span>
+                                                                                <span >₹{{ a.total_deb }}.00</span>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -177,26 +177,28 @@
                                             
                                                     </thead>
                                                     <tbody>
+                                                        {% for m in mjl1 %}
                                                             <tr style="border-bottom:1px solid #ededed" class="breakrow-inside breakrow-after">
                                             
                                                                     <td  style="padding: 10px 0px 10px 10px; font-size:16px;" class="pcs-item-row">
-                                                                       {{ a.account1 }}
+                                                                       {{ m.account }}
                                                                         <p style="color: grey;"> </p>
                                                                         <p style="margin-bottom: 0px;color: grey; word-wrap: break-word;"></p>
                                                                     </td>
                                             
                                                                     <td  style="padding: 10px 10px 5px 5px;word-wrap: break-word;font-size:16px;" class="pcs-item-row">
-                                                                        {{ a.contact1 }}
+                                                                        {{ m.contact }}
                                                                     </td>
                                             
                                                                 <td style="padding: 10px 10px 10px 5px;word-wrap: break-word;font-size:18px;" class="table-head">
-                                                                    ₹{{ a.debit1 }}.00
+                                                                    ₹{{ m.debit }}.00
                                                                 </td>
                                                                 <td  style="padding: 10px 10px 10px 5px;word-wrap: break-word;font-size:18px;" class="table-head">
-                                                                    ₹{{ a.credit1 }}.00
+                                                                    ₹{{ m.credit }}.00
                                                                 </td>
                                                             </tr>
-                                                            <tr style="border-bottom:1px solid #ededed" class="breakrow-inside breakrow-after">
+                                                            {% endfor %} 
+                                                            <!-- <tr style="border-bottom:1px solid #ededed" class="breakrow-inside breakrow-after">
                                             
                                                                     <td valign="top" style="padding: 10px 0px 10px 10px;font-size:16px;" class="pcs-item-row">
                                                                        {{ a.account2 }}
@@ -214,7 +216,7 @@
                                                                 <td valign="top" style="padding: 10px 10px 10px 5px;word-wrap: break-word;font-size:18px;" class="table-head">
                                                                    ₹{{ a.credit2 }}.00
                                                                 </td>
-                                                            </tr>
+                                                            </tr> -->
                                                             <tr></tr>
                                                             <tr style="width: 100%;margin-top: 1px;"  >
                                                                 <td colspan="2" class="table-head" style="font-size:13px;">Sub Total</td>
