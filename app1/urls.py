@@ -756,9 +756,13 @@ urlpatterns = [
     path('plreport/<str:id>', views.plreport, name='plreport'), 
     path('plreport_flt/<int:id>', views.plreport_flt, name='plreport_flt'),
     path('bsreport/<str:id>', views.bsreport, name='bsreport'),
+    path('bsreport_flt/<int:id>', views.bsreport_flt, name='bsreport_flt'),
     path('tbreport/<str:id>', views.tbreport, name='tbreport'),
+    path('tbreport_flt/<int:id>', views.tbreport_flt, name='tbreport_flt'),
     path('streport/<str:id>', views.streport, name='streport'),
+    path('streport_flt/<int:id>', views.streport_flt, name='streport_flt'),
     path('stkvalreport/<str:id>', views.stkvalreport, name='stkvalreport'),
+    path('stkvalreport_flt/<int:id>', views.stkvalreport_flt, name='stkvalreport_flt'),
 
     re_path(r'^demo$', views.demo, name='demo'),
     re_path(r'^itemdata$', views.itemdata, name='itemdata'),

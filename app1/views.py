@@ -14001,7 +14001,10 @@ def bsreport(request,id):
         to=toda.strftime("%d-%m-%Y")
 
         acc = balance_sheet.objects.filter(account=id,cid=cmp1)
-
+        accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
+        ids=accs.id
+        print("hahahaha")
+        print(ids)
         debit=0
         credit=0
         total2 =0
@@ -14025,12 +14028,76 @@ def bsreport(request,id):
         fdate =""
         ldate =""
 
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+        total2 = credit-debit
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"keys":ids,"fromdate":fromdates, "todate":todates}
+        return render(request, 'app1/bsreport.html', context)
+    return redirect('/')  
+
+def bsreport_flt(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        to=toda.strftime("%d-%m-%Y")
+        accs = balance_sheet.objects.get(id=id,cid=cmp1)
+        print("id")
+        print(accs.account)
+        filmeth = request.POST['reportperiod']
+        print(filmeth)
+        if filmeth == 'Custom':
+            fromdate = request.POST['fdate']
+            todate = request.POST['ldate']
+            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+        else:
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
+            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
+
+        
+        
+        debit=0
+        credit=0
+        total2 =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Credits":
+                credit+=i.payments
+
+            if i.transactions =="Expense":
+                debit+=i.payments
+
+            if i.transactions =="Invoice":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Payment":
+                credit+=i.payments
+
+        fdate =""
+        ldate =""
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
         
 
         total2 = credit-debit
-        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2}
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates, "todate":todates,"keys":id}
         return render(request, 'app1/bsreport.html', context)
-    return redirect('/')  
+    return redirect('/') 
 
 def profitandloss(request):
     if 'uid' in request.session:
@@ -29623,6 +29690,9 @@ def account_transactions(request,id):
     fdate =""
     ldate =""
 
+    fromdates=request.user.date_joined.date()
+    todates=date.today()
+
     context = {
         "statment":statment,
         "cmp1":cmp1,
@@ -29632,6 +29702,8 @@ def account_transactions(request,id):
         'to':to,
         'fdate':fdate,
         'ldate':ldate,
+        "fromdate":fromdates, 
+        "todate":todates
         
     }
 
@@ -29644,104 +29716,117 @@ def account_transactions1(request):
 
         select=request.POST['reportperiod']
 
-        if select =="All dates":
-            return redirect('account_transactions',cust)
+   
         if select == "Custom":
             fdate = request.POST['fdate']
             ldate = request.POST['ldate']
             cust =  request.POST['cust']
-            cmp1 = company.objects.get(id=request.session["uid"])
-            print(fdate)
+        else:
+            fdate=request.user.date_joined.date()
+            ldate=date.today()
+            cust =  request.POST['cust']
 
-            cust = customer.objects.get(customerid=cust)
+        cmp1 = company.objects.get(id=request.session["uid"])
+        print(fdate)
 
-            cu = cust.firstname +" "+cust.lastname
-            a = cust.firstname
-            b = cust.lastname
+        cust = customer.objects.get(customerid=cust)
 
-            custobject = customer.objects.get(firstname=a, lastname=b, cid=cmp1)
-            opnbal =custobject.opening_balance
-            print(opnbal) 
+        cu = cust.firstname +" "+cust.lastname
+        a = cust.firstname
+        b = cust.lastname
 
-            statment1 = cust_statment.objects.filter(customer=cu,cid=cmp1)
-            bal=0
-            for i in statment1:
-                if i.Transactions =="Invoice":
-                    if i.Amount:
-                        i.Balance = bal + i.Amount
-                        bal = i.Balance
-                if i.Transactions =="Payment Received":
-                    if i.Payments:
-                        i.Balance = bal-i.Payments
-            
+        custobject = customer.objects.get(firstname=a, lastname=b, cid=cmp1)
+        opnbal =custobject.opening_balance
+        print(opnbal) 
 
-                i.save() 
-
-            preamount=0
-            prepayment=0
-            prebalance = 0
-            prev_balance = cust_statment.objects.filter(customer=cu,Date__lt=fdate)
-            for j in prev_balance:
-                if j.Amount:
-                    preamount += j.Amount
-
-                if j.Payments:
-                    prepayment += j.Payments
-    
-
-            prebalance = preamount-prepayment
-            print(prebalance)   
-
-            statment = cust_statment.objects.filter(customer=cu,cid=cmp1,Date__gte=fdate,Date__lte=ldate)
-            bal=0
-            for i in statment:
-                if i.Transactions =="Invoice":
-                    if i.Amount:
-                        i.Balance = bal + i.Amount
-                        bal = i.Balance
-                if i.Transactions =="Payment Received":
-                    if i.Payments:
-                        i.Balance = bal-i.Payments
-            
-
-                i.save()  
-
-            value = ""
-            if statment.exists():
-                value=1
-
-            debit=0
-            credit=0
-            total1 = 0
-    
-
-            for i in statment :
+        statment1 = cust_statment.objects.filter(customer=cu,cid=cmp1)
+        bal=0
+        for i in statment1:
+            if i.Transactions =="Invoice":
                 if i.Amount:
-                    debit+=i.Amount
+                    i.Balance = bal + i.Amount
+                    bal = i.Balance
+            if i.Transactions =="Payment Received":
                 if i.Payments:
-                    credit+=i.Payments
-
-            total1=prebalance+debit-credit          
-
-            bal=custobject.opening_balance
-            
+                    i.Balance = bal-i.Payments
         
-            context = {
-            "statment":statment,
-            "cmp1":cmp1,
-            'total1':total1,
-            'credit':credit,
-            "cust2":cust.customerid,
-            "prebalance":prebalance,
-            'fdate':fdate,
-            'ldate':ldate,
-            'value':value,
+
+            i.save() 
+
+        preamount=0
+        prepayment=0
+        prebalance = 0
+        prev_balance = cust_statment.objects.filter(customer=cu,Date__lt=fdate)
+        for j in prev_balance:
+            if j.Amount:
+                preamount += j.Amount
+
+            if j.Payments:
+                prepayment += j.Payments
 
 
-            }
+        prebalance = preamount-prepayment
+        print(prebalance)   
+
+        statment = cust_statment.objects.filter(customer=cu,cid=cmp1,Date__gte=fdate,Date__lte=ldate)
+        bal=0
+        for i in statment:
+            if i.Transactions =="Invoice":
+                if i.Amount:
+                    i.Balance = bal + i.Amount
+                    bal = i.Balance
+            if i.Transactions =="Payment Received":
+                if i.Payments:
+                    i.Balance = bal-i.Payments
+        
+
+            i.save()  
+
+        value = ""
+        if statment.exists():
+            value=1
+
+        debit=0
+        credit=0
+        total1 = 0
 
 
-            return render(request,'app1/account_transactions.html',context)
+        for i in statment :
+            if i.Amount:
+                debit+=i.Amount
+            if i.Payments:
+                credit+=i.Payments
+
+        total1=prebalance+debit-credit          
+
+        bal=custobject.opening_balance
+
+        try:
+            fromdates=datetime.datetime.strptime(fdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(ldate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+        
+    
+        context = {
+        "statment":statment,
+        "cmp1":cmp1,
+        'total1':total1,
+        'credit':credit,
+        "cust2":cust.customerid,
+        "prebalance":prebalance,
+        'fdate':fdate,
+        'ldate':ldate,
+        'value':value,
+        "fromdate":fromdates,
+        "todate":todates
+
+
+        }
+
+
+        return render(request,'app1/account_transactions.html',context)
 
 
 
@@ -31293,6 +31378,63 @@ def streport(request,id):
 
         acc = itemstock.objects.filter(items=id,cid=cmp1)
 
+        accs = itemstock.objects.filter(items=id,cid=cmp1).last()
+        ids=accs.id
+
+        debit=0
+        credit=0
+        total =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.qty
+
+            if i.transactions =="Vendor Credits":
+                credit+=i.qty
+
+            if i.transactions =="Invoice":
+                credit+=i.qty
+
+        fdate =""
+        ldate =""
+
+
+        total = credit-debit
+
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":ids,"fromdate":fromdates, "todate":todates}
+        return render(request, 'app1/streport.html', context)
+    return redirect('/')  
+
+def streport_flt(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+
+        to=toda.strftime("%d-%m-%Y")
+
+        filmeth = request.POST['reportperiod']
+        print(filmeth)
+        if filmeth == 'Custom':
+            fromdate = request.POST['fdate']
+            todate = request.POST['ldate']
+            
+        else:
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
+           
+        accs = itemstock.objects.get(id=id,cid=cmp1)
+        acc = itemstock.objects.filter(items=accs.items,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+
+     
+
         debit=0
         credit=0
         total =0
@@ -31311,7 +31453,15 @@ def streport(request,id):
         ldate =""
 
         total = credit-debit
-        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total}
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":id,"fromdate":fromdates, "todate":todates}
         return render(request, 'app1/streport.html', context)
     return redirect('/')  
 
@@ -31389,6 +31539,11 @@ def stkvalreport(request,id):
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
 
+        accs = itemstock.objects.filter(items=id,cid=cmp1).last()
+        print("accs.id")
+        print(accs.id)
+        ids=accs.id
+
         acc = itemstock.objects.filter(items=id,stocks='Stock Changed',cid=cmp1)
 
         debit=0
@@ -31407,7 +31562,69 @@ def stkvalreport(request,id):
 
         total = credit+debit
 
-        context = {'acc':acc, 'cmp1':cmp1, 'itm2':id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total}
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
+
+        context = {'acc':acc, 'cmp1':cmp1, 'itm2':id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":ids,"fromdate":fromdates, "todate":todates}
+        return render(request, 'app1/stkvalreport.html', context)
+    return redirect('/') 
+
+def stkvalreport_flt(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+
+        
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        to=toda.strftime("%d-%m-%Y")
+
+        filmeth = request.POST['reportperiod']
+        
+        if filmeth == 'Custom':
+            fromdate = request.POST['fdate']
+            todate = request.POST['ldate']
+            
+        else:
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
+              
+
+        accs = itemstock.objects.get(id=id,cid=cmp1)
+        
+
+        acc = itemstock.objects.filter(items=accs.items,stocks='Stock Changed',cid=cmp1,date__gte=fromdate, date__lte=todate)
+
+        debit=0
+        credit=0
+        total =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.qty
+
+            if i.transactions =="Stock Adjust":
+                credit+=i.qty
+
+        fdate =""
+        ldate =""
+
+        total = credit+debit
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+
+
+        context = {'acc':acc, 'cmp1':cmp1, 'itm2':id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":id,"fromdate":fromdates, "todate":todates}
         return render(request, 'app1/stkvalreport.html', context)
     return redirect('/') 
      
@@ -35308,9 +35525,11 @@ def purchase_acctransactions(request,id):
 
         fdate =""
         ldate =""
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
 
         context = {'statment':statment, 'cmp1':cmp1, 'total1':total1, 'total2':total2, 'credit':credit, 'debit':debit, 'vndr2':id, 'to':to,
-            'fdate':fdate, 'ldate':ldate,    
+            'fdate':fdate, 'ldate':ldate,"fromdate":fromdates, "todate":todates 
         }
         return render(request,'app1/purchase_acctransactions.html',context)
     return redirect('/')
@@ -35319,46 +35538,56 @@ def purchase_acctransactions1(request):
     if request.method =="POST":
         vndr = request.POST['vndr']
         select=request.POST['reportperiod']
-        if select =="All dates":
-            return redirect('purchase_acctransactions',vndr)
+        
         if select == "Custom":
             fdate = request.POST['fdate']
             ldate = request.POST['ldate']
-            cmp1 = company.objects.get(id=request.session["uid"])
-            print(fdate)
+        else:
+            fdate=request.user.date_joined.date()
+            ldate=date.today()
 
-            x = vndr.split()
-            x.append(" ")
-            a = x[0]
-            b = x[1]
-            cu = a +" "+ b
-            # vndrobject = vendor.objects.get(firstname=a, lastname=b,cid=cmp1)
-            # opnbal =vndrobject.openingbalance
-            # print(opnbal) 
+        cmp1 = company.objects.get(id=request.session["uid"])
+        print(fdate)
 
-            statment = vendor_statment.objects.filter(vendor=cu,cid=cmp1,date__gte=fdate,date__lte=ldate)
-            total1 = purchasebill.objects.filter(cid=cmp1,vendor_name=cu,date__gte=fdate,date__lte=ldate).all().aggregate(t2=Sum('balance_due'))
+        x = vndr.split()
+        x.append(" ")
+        a = x[0]
+        b = x[1]
+        cu = a +" "+ b
+        # vndrobject = vendor.objects.get(firstname=a, lastname=b,cid=cmp1)
+        # opnbal =vndrobject.openingbalance
+        # print(opnbal) 
 
-            debit=0
-            credit=0
-            total2 = 0
+        statment = vendor_statment.objects.filter(vendor=cu,cid=cmp1,date__gte=fdate,date__lte=ldate)
+        total1 = purchasebill.objects.filter(cid=cmp1,vendor_name=cu,date__gte=fdate,date__lte=ldate).all().aggregate(t2=Sum('balance_due'))
 
-            for i in statment :
-                if i.transactions =="Billed":
-                    credit+=i.payments
+        debit=0
+        credit=0
+        total2 = 0
 
-                if i.transactions =="Payable":
-                    debit+=i.payments
+        for i in statment :
+            if i.transactions =="Billed":
+                credit+=i.payments
 
-            total2=credit-debit         
+            if i.transactions =="Payable":
+                debit+=i.payments
+
+        total2=credit-debit         
+        
+            # if i.payments:
+            #     total2+=i.payments
+
+        try:
+            fromdates=datetime.datetime.strptime(fdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(ldate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
             
-                # if i.payments:
-                #     total2+=i.payments
-            
-            context = {'statment':statment, 'cmp1':cmp1,'total1':total1, 'total2':total2, 'credit':credit, 'debit':debit, 'vndr2':vndr,
-                'fdate':fdate,'ldate':ldate,
-            }
-            return render(request,'app1/purchase_acctransactions.html',context)
+        context = {'statment':statment, 'cmp1':cmp1,'total1':total1, 'total2':total2, 'credit':credit, 'debit':debit, 'vndr2':vndr,
+            'fdate':fdate,'ldate':ldate,"fromdate":fromdates, "todate":todates
+        }
+        return render(request,'app1/purchase_acctransactions.html',context)
 
 def demo(request):
     if 'uid' in request.session:
@@ -35955,6 +36184,9 @@ def tbreport(request,id):
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
 
+        accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
+        ids=accs.id
+
         bs = balance_sheet.objects.filter(account=id,cid=cmp1)
         pl = profit_loss.objects.filter(accname=id,cid=cmp1)
 
@@ -35998,11 +36230,96 @@ def tbreport(request,id):
 
         total1 = credit1-debit1
 
+        fromdates=request.user.date_joined.date()
+        todates=date.today()
+
         context = {'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'bs':bs, 'debit':debit, 'credit':credit, 'total':total,
-            'pl':pl, 'debit1':debit1, 'credit1':credit1, 'total1':total1
+            'pl':pl, 'debit1':debit1, 'credit1':credit1, 'total1':total1,"fromdate":fromdates, "todate":todates,"keys":ids
         }
         return render(request,'app1/tbreport.html',context)
     return redirect('/') 
+
+def tbreport_flt(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        to=toda.strftime("%d-%m-%Y")
+
+        accs = balance_sheet.objects.get(id=id,cid=cmp1)
+
+        
+
+        filmeth = request.POST['reportperiod']
+       
+        if filmeth == 'Custom':
+            fromdate = request.POST['fdate']
+            todate = request.POST['ldate']
+            bs = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+            pl = profit_loss.objects.filter(accname=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+        else:
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
+            bs = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+            pl = profit_loss.objects.filter(accname=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
+        debit=0
+        credit=0
+        total =0
+
+        for i in bs:
+            if i.transactions =="Billed":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Credits":
+                credit+=i.payments
+
+            if i.transactions =="Expense":
+                debit+=i.payments
+
+            if i.transactions =="Invoice":
+                debit+=i.payments
+
+        total = credit-debit
+
+        debit1=0
+        credit1=0
+        total1 =0
+        for i in pl:
+            if i.transactions =="Billed":
+                debit1+=i.payments
+
+            if i.transactions =="Vendor Credits":
+                credit1+=i.payments
+
+            if i.transactions =="Expense":
+                debit1+=i.payments
+
+            if i.transactions =="Invoice":
+                debit1+=i.payments
+
+        fdate =""
+        ldate =""
+
+        total1 = credit1-debit1
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+
+        context = {'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'bs':bs, 'debit':debit, 'credit':credit, 'total':total,
+            'pl':pl, 'debit1':debit1, 'credit1':credit1, 'total1':total1,"keys":id,"fromdate":fromdates, "todate":todates
+        }
+        return render(request,'app1/tbreport.html',context)
+    return redirect('/') 
+
 
 
 def trial(request):

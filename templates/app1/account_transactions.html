@@ -148,9 +148,9 @@ body{
                                 <button class="btn btn-outline-info  rounded-pill w-100" type="submit">Search</button>
                             </div>
                             <div class="col-md-3" >
-                                <button onclick="printDiv()">Print</button>
+                                <button class="btn btn-outline-info" onclick="printDiv()">Print</button>
 
-                                <button onclick="ExportToExcel('xlsx')">Export to excel</button>
+                        
                             </div>
                         </div>
                     </form>
@@ -161,6 +161,7 @@ body{
                     
                     <div class="container-fluid">
                         <div id="GFG" >
+                        <p style="text-align: right;color: rgb(255, 255, 255);"><span style="font-weight: bold;">From Date</span>  : {{fromdate|date:'d-m-Y'}} <br> <span style="font-weight: bold;">To Date</span> : {{todate|date:'d-m-Y'}}</p>
                         <table class="table table-responsive-md mt-4 table-hover" id="tbl_exporttable_to_xls" >
                             <thead>
                             <tr>
