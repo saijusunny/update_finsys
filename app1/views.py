@@ -14003,8 +14003,8 @@ def bsreport(request,id):
         acc = balance_sheet.objects.filter(account=id,cid=cmp1)
         accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
         ids=accs.id
-        print("hahahaha")
-        print(ids)
+        
+       
         debit=0
         credit=0
         total2 =0
@@ -26976,7 +26976,7 @@ def render_pdfestimate_view(request,id):
         'estitem':estitem,
 
     }
-    fname=upd.estimateid
+    fname=upd.estimateno
    
     # Create a Django response object, and specify content_type as pdftemp_creditnote
     response = HttpResponse(content_type='application/pdf')
@@ -27511,7 +27511,7 @@ def render_pdfsalesorder_view(request,id):
         'saleitem':saleitem
 
     }
-    fname=upd.id
+    fname=upd.saleno
    
     # Create a Django response object, and specify content_type as pdftemp_creditnote
     response = HttpResponse(content_type='application/pdf')
@@ -33343,7 +33343,7 @@ def render_pdfpurchase_view(request,id):
         'pitem':pitem,
 
     }
-    fname=pordr.porderid
+    fname=pordr.puchaseorder_no
    
     # Create a Django response object, and specify content_type as pdftemp_creditnote
     response = HttpResponse(content_type='application/pdf')
@@ -33446,34 +33446,71 @@ def editpurchaseorder(request,id):
             items = request.POST.getlist("items[]")
             hsn = request.POST.getlist("hsn[]")
             quantity = request.POST.getlist("quantity[]")
-            rate = request.POST.getlist("rate[]")
+            rate = request.POST.getlist("price[]")
             tax = request.POST.getlist("tax[]")
-            amount = request.POST.getlist("amount[]")
+            amount = request.POST.getlist("total[]")
 
             pitemid = request.POST.getlist("id[]")
+
+            print(items)
+            print(hsn)
+            print(quantity)
+            print(rate)
+            print(tax)
+            print(amount)
             porderid=purchaseorder.objects.get(porderid=pordr.porderid)
+            count = purchaseorder_item.objects.filter(porder=pordr.porderid).count()
             
-            if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount)==len(pitemid) and items and hsn and quantity and rate and tax and amount and pitemid:
-                mapped=zip(items,hsn,quantity,rate,tax,amount,pitemid)
-                mapped=list(mapped)
-                for ele in mapped:
-                    created = purchaseorder_item.objects.filter(id=ele[6]).update(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
-                    tax=ele[4],amount=ele[5])
+            if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount):
+                if int(len(items))>int(count):
+                    mapped=zip(items,hsn,quantity,rate,tax,amount)
+                    mapped=list(mapped)
+                    for ele in mapped:
+                        porderAdd,created = purchaseorder_item.objects.get_or_create(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
+                        tax=ele[4],amount=ele[5],porder=porderid,cid=cmp1)
 
-                    itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
-                    if itemqty.stock != 0:
-                        temp=0
-                        temp = itemqty.stock 
+                        itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
+                        if itemqty.stock != 0:
+                            temp=0
+                            temp = itemqty.stock 
 
-                        temp = temp-int(ele[2])
-                        itemqty.stock =temp
-                        itemqty.save()
+                            temp = temp-int(ele[2])
+                            itemqty.stock =temp
+                            itemqty.save()
+                else:
+                 
+                    mapped=zip(items,hsn,quantity,rate,tax,amount)
+                    mapped=list(mapped)
+                
+                    for ele in mapped:
+                        
+                        created = purchaseorder_item.objects.filter(porder=porderid.porderid,items = ele[0],hsn = ele[1]).update(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
+                        tax=ele[4],amount=ele[5])
+
+                        itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
+                        if itemqty.stock != 0:
+                            temp=0
+                            temp = itemqty.stock 
+
+                            temp = temp-int(ele[2])
+                            itemqty.stock =temp
+                            itemqty.save()
 
             pitem = purchaseorder_item.objects.filter(porder=pordr.porderid)
             print(pitem)
-            return redirect('gopurchaseorder')
+            return redirect('viewpurchaseorder',id)
         return render(request,'app1/gopurchaseorder.html',{'cmp1': cmp1})
     return redirect('/') 
+
+def removeporder(request):
+
+    id = request.GET.get('id')
+    crid = request.GET.get('cr')
+    
+    dbs=purchaseorder_item.objects.filter(items=id,porder_id=crid)
+    dbs.delete()
+
+    return JsonResponse({'crid':crid,})
 
 @login_required(login_url='regcomp')
 def deletepurchasorder(request, id):
@@ -33937,7 +33974,7 @@ def render_pdfbill_view(request,id):
         'bitem':bitem,
 
     }
-    fname=pbill.billid
+    fname=pbill.bill_no
    
     # Create a Django response object, and specify content_type as pdftemp_creditnote
     response = HttpResponse(content_type='application/pdf')
@@ -36705,7 +36742,7 @@ def create_credit(request):
 
             pdeb=salescreditnote.objects.get(screditid=pdebit.screditid)
 
-            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total) and items and hsn and quantity and price and tax and total:
+            if len(items)==len(hsn)==len(quantity)==len(price)==len(tax)==len(total):
                 print(items)
                 mapped=zip(items,hsn,quantity,price,tax,total)
                 mapped=list(mapped)

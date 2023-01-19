@@ -347,7 +347,7 @@ footer p {
                         <a class="dropdown-item " href="{% url 'sale_convert1' sale.id  %}"> &nbsp;Approved </a>
 
                         {% if sale.status != 'Invoice' %}
-                        <a class="dropdown-item " href="{% url 'sale_convert2' sale.id  %}"> &nbsp;Invoced</a>
+                        <a class="dropdown-item " href="{% url 'sale_convert2' sale.id  %}"> &nbsp;Invoice</a>
                         {% endif %}
                         
                     </ul>
@@ -489,7 +489,7 @@ footer p {
                                         </tr>
                                         {% endif %}
                                         {% if sale.TCS != "" %}
-                                        <tr>
+                                        <tr style="display:none">
                                             <td style="color:black">TCS:</td>
                                             <td style="color:black">{{sale.TCS}}</td>
                                         </tr>

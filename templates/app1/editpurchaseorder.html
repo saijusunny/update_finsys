@@ -25,7 +25,7 @@
                             <td>${roinc}</td>
                             <td style="width: 20%;">
                                 <div class="d-flex">
-                                    <select name='items1[]' id="product${roinc}" class="form-control">
+                                    <select name='items[]' id="product${roinc}" class="form-control">
                                         <option value=" " selected>Select Item</option>
                                         {% for i in item %}
                                             <option value="{{ i.name }}">{{ i.name }}</option>
@@ -46,7 +46,7 @@
                                 <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Rate' class="form-control price" step="0.00" min="0">
                             </td>                                            
                             <td>
-                                <select name="tax[]" id="tax${roinc+1}" class="form-control tax">
+                                <select name='tax[]' id="tax${roinc+1}" class="form-control tax">
                                     <option id="ta1${roinc}" value=0 text={{ cmp1.state }}>Choose</option>
                                     <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                     <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
@@ -84,9 +84,30 @@
             });
     
             $(document).on('click','.remove_row',function(){
-                var row_id = $(this).attr("id");
-                
-                $('#addr0'+row_id+'').remove();
+
+                const response = confirm("Are you sure you want to do that?");
+
+                if (response) {
+                    var row_id = $(this).attr("id");
+                    var rowprd = document.getElementById('product'+row_id).value
+                    var crdid='{{pordr.porderid}}'
+                    
+                    
+                    
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'removeporder' %}",
+                        data: {
+                        id: rowprd,
+                        cr:crdid
+                        
+                        }});
+                    $('#addr0'+row_id+'').remove();
+                    calc()
+                } else {
+                    pass;
+                }
+
                
 
                 calc()
@@ -911,7 +932,7 @@
                                             <td>{{ forloop.counter }}</td>
                                             <td style="width: 20%;">
                                                 
-                                                <select name="items[]" id="product" class="form-control">
+                                                <select name='items[]' id="product{{ forloop.counter }}" class="form-control">
                                                     <option value="{{ p.items }}">{{ p.items }}</option>
                                                     {% for i in item %}
                                                         <option value="{{ i.name }}">
@@ -925,14 +946,14 @@
                                             </td> 
                                             <td>
                                                 <input type="number" value="{{ p.quantity }}" name='quantity[]'  onchange="qtychange1(this)" placeholder='Enter Qty'
-                                                id="qty1" class="form-control qty" step=0 min=0>
+                                                id="qty1{{ forloop.counter }}" class="form-control qty" step=0 min=0>
                                             </td> 
-                                            <td><input type="number" value="{{ p.rate }}" name='rate[]' id="unit1" placeholder='Enter Rate' 
+                                            <td><input type="number" value="{{ p.rate }}" name='price[]' id="unit1{{ forloop.counter }}" placeholder='Enter Rate' 
                                                 class="form-control price" step="0.00" min="0">
                                             </td> 
                                             <td>
-                                                <select name="tax[]" id="tax1" class="form-control tax" onchange="filtertax()">
-                                                    <option id="ta1" value={{ p.tax }} text={{ cmp1.state }}>{{ p.tax }} % GST</option>
+                                                <select name='tax[]' id="tax1{{ forloop.counter }}" class="form-control tax" onchange="filtertax()">
+                                                    <option id="ta1{{ forloop.counter }}" value={{ p.tax }} text={{ cmp1.state }}>{{ p.tax }} % GST</option>
                                                     <option value=28 text={{ cmp1.state }}>28.0% GST(28%)</option>
                                                     <option value=18 text={{ cmp1.state }}>18.0% GST(18%)</option>
                                                     <option value=12 text={{ cmp1.state }}>12.0% GST(12%)</option>
@@ -943,7 +964,7 @@
                                                     <option value=0 text={{ cmp1.state }}>0.0% GST(0%)</option>
                                                     <option value=0 text={{ cmp1.state }}>Exempt GST(0%)</option>
                                                     <option value=0 text={{ cmp1.state }}>Out of Scope(0%)</option>
-                                                    <option id="ta5" value={{ p.tax }} text=" ">{{ p.tax }} % IGST</option>
+                                                    <option id="ta5{{ forloop.counter }}" value={{ p.tax }} text=" ">{{ p.tax }} % IGST</option>
                                                     <option value=28 text=" ">28.0% IGST(28%)</option>
                                                     <option value=18 text=" ">18.0% IGST(18%)</option>
                                                     <option value=12 text=" ">12.0% IGST(12%)</option>
@@ -957,8 +978,8 @@
                                               </select>
                                             </td> 
                                             
-                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount"/></td>   
-                                            <td><input type="number" value="{{ p.amount }}" name='amount[]' id="total1" class="form-control total" 
+                                            <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1{{ forloop.counter }}" class="form-control taxamount"/></td>   
+                                            <td><input type="number" value="{{ p.amount }}" name='total[]' id="total1{{ forloop.counter }}" class="form-control total" 
                                                 placeholder="0" step="any" readonly>
                                             </td> 
                                             <td><button type="button" id="{{ forloop.counter }}" class="btn btn-outline-secondary ml-1 remove_row">-</button></td>
@@ -1040,7 +1061,7 @@
                                         </div>
                                         <div class="col-sm-4 m-0 p-0"></div>
                                     </div>
-                                    <div class="row container-fluid p-2 m-0">
+                                    <div class="row container-fluid p-2 m-0" style="display: none;">
                                         <div class="col-sm-4 mt-2"><label for="a" class="text-center">TCS</label></div>
                                         <div class="col-sm-4 mt-2">
                                             <select name="tcs" class="form-control" id="tcs1" onchange="calc_tcs()">

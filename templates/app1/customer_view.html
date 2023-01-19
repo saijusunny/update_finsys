@@ -266,19 +266,40 @@
                     <div class="btn-group" style="float: right; ">
                        
                             
+                            
+                            <div>
+                                <center>
+                                    <a href="{% url 'editcustomer' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">
+                                        Edit
+                                    </a>&nbsp;&nbsp;&nbsp;
+                                    {% if customer.status == act%}
+                                    <a href="{% url 'active_cust' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Inactivate</a> &nbsp;&nbsp;&nbsp;
+                                    {% else %}
+                                    <a href="{% url 'inactive_cust' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Activate</a> &nbsp;&nbsp;&nbsp;
+                                    {% endif %}
+                                   
+                                    <a   class="btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button"> 
+
+                                        <form  action="{% url 'deletecustomer' customer.customerid %}"   > 
+                                           <i class="fa fa-trash-o delete"> Delete</i>
+                                           <input name="_method" type="hidden" value="DELETE">
+                                           
+                                           </form> </a>
+                                </center>
+                            </div>
                             <button type="button"
-                                    class="btn btn-outline-info  dropdown-toggle dropdown-toggle-split fa fa-paperclip"
+                                    class="btn btn-outline-info rounded-pill text-grey mt-3 mb-3 ml-3  dropdown-toggle dropdown-toggle-split fa fa-paperclip"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 8px;">
                                 <span class="sr-only ">Toggle Dropdown</span>
                                 Attach file
                             </button>
-                            <div class="dropdown-menu" style="margin-top: 8px;">
-                                <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
+                            <div class="dropdown-menu" >
+                                <a class="dropdown-item"  style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal">Attach file</a>
                                 {% if customer.file != "default.jpg" %}
                                 <a class="dropdown-item fa fa-download" style="cursor: pointer;"download  href="{{customer.file.url }}" >Download file</a>
                                 {% endif %}
                            
-                        </div>
+                            </div>
                         
                     </div> 
                 </div>
@@ -349,7 +370,7 @@
                         <div class="p-5">
                             <div class="d-flex justify-content-between align-items-center mb-5">
                                 <h1 class="fw-bold mb-0 text-black">{{ customer.title }}. {{ customer.firstname }} {{ customer.lastname }}</h1>
-                                <h6 class="mb-0 text-muted">{{ cmp1.cname }}</h6>
+                          
                             </div>
                             <hr class="my-4">
                             <div class="row mb-4 d-flex justify-content-between align-items-center">
@@ -487,31 +508,12 @@
                                 <h6>{{ customer.opening_balance }}</h6>
                             </div>
                             <div class="d-flex justify-content-between mb-4">
-                                <h5 class="">status</h5>
+                                <h5 class="">Status</h5>
                                 <h6>{{ customer.status }}</h6>
                             </div>
                             <hr class="my-4">
                             
-                            <div>
-                                <center>
-                                    <a href="{% url 'editcustomer' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">
-                                        Edit
-                                    </a>&nbsp;&nbsp;&nbsp;
-                                    {% if customer.status == act%}
-                                    <a href="{% url 'active_cust' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Inactivate</a> &nbsp;&nbsp;&nbsp;
-                                    {% else %}
-                                    <a href="{% url 'inactive_cust' customer.customerid %}" class=" fa fa-pencil btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button">Activate</a> &nbsp;&nbsp;&nbsp;
-                                    {% endif %}
-                                   
-                                    <a   class="btn btn-outline-info rounded-pill text-grey mt-3 mb-3" role="button"> 
-
-                                        <form  action="{% url 'deletecustomer' customer.customerid %}"   > 
-                                           <i class="fa fa-trash-o delete"> Delete</i>
-                                           <input name="_method" type="hidden" value="DELETE">
-                                           
-                                           </form> </a>
-                                </center>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

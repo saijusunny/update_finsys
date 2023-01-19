@@ -296,15 +296,7 @@ alert(col1);
                     document.getElementById('qtyspan').innerHTML = data2;
                     document.getElementById('unit1').value = data3
 
-                    if (data2<1)
-                    {
-                      
-                      
-                      document.getElementById('qtyspan').style.color="red";
-                    }
-                    else{
-                      pass
-                    }
+                    
                     
                     
                     if (place == '{{ cmp1.state }}')
@@ -316,6 +308,15 @@ alert(col1);
                     
                     document.getElementById('ta5').innerHTML  = data5 + ' % IGST';
                     document.getElementById('ta5').value=data5
+                    if (data2<1)
+                    {
+                      
+                      
+                      document.getElementById('qtyspan').style.color="red";
+                    }
+                    else{
+                      pass
+                    }
                   
                 }
       
@@ -347,15 +348,7 @@ alert(col1);
                     document.getElementById('description1').value = data1
                     document.getElementById('qtyspan1').innerHTML = data2;
                     document.getElementById('unit11').value = data3
-                    if (data2<1)
-                    {
-                      
-                      
-                      document.getElementById('qtyspan1').style.color="red";
-                    }
-                    else{
-                      pass
-                    }
+                    
 
                  
                     
@@ -369,6 +362,15 @@ alert(col1);
                     
                     document.getElementById('ta51').innerHTML  = data5 + ' % IGST';
                     document.getElementById('ta51').value=data5
+                    if (data2<1)
+                    {
+                      
+                      
+                      document.getElementById('qtyspan1').style.color="red";
+                    }
+                    else{
+                      pass
+                    }
                 }
       
       
@@ -1598,7 +1600,7 @@ alert(col1);
 
                 </div>
 
-                <div>
+                <div style="display: none;">
                     <label class="text-center  form-control " style=" width: 18%; font-weight: 10; background-color: #2f516f; color: white; ">TCS</label>
                     <select class="form-control tcs" style="width: 35%; margin-top: -45px; margin-left:20%;
                     background-color: #2f516f; color: white;" id="tcs1" onchange="calc_tcs()" >
