@@ -9685,7 +9685,7 @@ def getdatainv(request):
         if x[2] is not None:
             b = x[1] + " " + x[2]
         custobject = customer.objects.values().filter(firstname=a, lastname=b, cid=cmp1)
-        invitems = invoice.objects.values().filter(customername=id ,cid =cmp1,status='Approved' )
+        invitems = invoice.objects.values().filter(customername=id ,cid =cmp1,status='Approved')
         
         custopenblan = customer.objects.get(firstname=a,lastname=b,cid =cmp1)
         
@@ -29245,7 +29245,7 @@ def pym_acc_crt(request):
         else:
             return redirect('payment_received')
 
-
+# payment_save
 @login_required(login_url='regcomp')
 def paymentcreate2(request):
     if request.method == 'POST':
@@ -29355,6 +29355,30 @@ def paymentcreate2(request):
                     cid = cmp1,
                     invdate=ele[5],
                      )
+                print(ele[0])
+                if ele[0] != "Customer opening balance":
+                    print(ele[0])
+                    if invoice.objects.get(invoiceno=ele[0], cid=cmp1):
+                      
+                        invo = invoice.objects.get(invoiceno=ele[0], cid=cmp1)
+                        invo.amtrecvd = int(invo.amtrecvd) + int(ele[4])
+                        print(ele[3])
+                        print(ele[4])
+                        
+
+                        invo.baldue = float(ele[3]) - int(ele[4]) 
+                        invo.save()
+                        print(invo.baldue)
+                        if invo.baldue == 0.0:
+                            invo.status = "Paid"
+            
+                            invo.save()
+                        else:
+                            pass
+                    else:
+                        pass
+                else:
+                    pass
 
         pyit = paymentitems.objects.filter(payment=pay2.paymentid)
         print(pyit)
@@ -29399,16 +29423,7 @@ def paymentcreate2(request):
 
         
         for i in paymetitem:
-            if i.invno != "Customer opening balance":
-                if invoice.objects.get(invoiceno=i.invno, cid=cmp1) and i.invno != 'undefined':
-                    print(deposito)
-                    invo = invoice.objects.get(invoiceno=i.invno, cid=cmp1)
-                    invo.amtrecvd = int(invo.amtrecvd) + int(i.paymentamount)
-                    invo.baldue = float(i.balamount) 
-                    if invo.baldue == 0.0:
-                        invo.status = "Paid"
-        
-                        invo.save()
+            
             if i.invno == "Customer opening balance":            
                 if customer.objects.get(firstname=a,lastname= b , cid=cmp1) and i.invno != 'undefined': 
                     cust=customer.objects.get(firstname=a,lastname= b , cid=cmp1)
