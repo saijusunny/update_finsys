@@ -9677,26 +9677,42 @@ def getdatainv(request):
     if request.method == 'POST':
         cmp1 = company.objects.get(id=request.session["uid"])
         id = request.POST['select']
-        print (id)
+        
         x = id.split()
         x.append(" ")
         a = x[0]
         b = x[1]
         if x[2] is not None:
             b = x[1] + " " + x[2]
+        
         custobject = customer.objects.values().filter(firstname=a, lastname=b, cid=cmp1)
         invitems = invoice.objects.values().filter(customername=id ,cid =cmp1,status='Approved')
+        
         
         custopenblan = customer.objects.get(firstname=a,lastname=b,cid =cmp1)
         
         if custopenblan.opening_balance != 0.0:
+     
+            
+            try:
+                cust1 = customer.objects.get(firstname=a,lastname=b,cid =cmp1,opnbalance_status="Default")
+              
 
-            cust1 = customer.objects.get(firstname=a,lastname=b,cid =cmp1,opnbalance_status="Default")
+                date = cust1.date
+                opb = cust1.opening_balance
+                
+                obdue = cust1.opening_balance_due
 
-            date = cust1.date
-            opb = cust1.opening_balance
-            print(opb )
-            obdue = cust1.opening_balance_due
+            except:
+                cust1 = customer.objects.get(firstname=a,lastname=b,cid =cmp1)
+              
+
+                date = cust1.date
+                opb = cust1.opening_balance
+                
+                obdue = cust1.opening_balance_due
+            
+        
 
             
 
@@ -29355,20 +29371,19 @@ def paymentcreate2(request):
                     cid = cmp1,
                     invdate=ele[5],
                      )
-                print(ele[0])
+               
                 if ele[0] != "Customer opening balance":
-                    print(ele[0])
-                    if invoice.objects.get(invoiceno=ele[0], cid=cmp1):
+                   
+                    if invoice.objects.get(invoiceno=ele[0], cid=cmp1,baldue=ele[3]):
                       
-                        invo = invoice.objects.get(invoiceno=ele[0], cid=cmp1)
+                        invo = invoice.objects.get(invoiceno=ele[0], cid=cmp1,baldue=ele[3])
                         invo.amtrecvd = int(invo.amtrecvd) + int(ele[4])
-                        print(ele[3])
-                        print(ele[4])
+                       
                         
 
                         invo.baldue = float(ele[3]) - int(ele[4]) 
                         invo.save()
-                        print(invo.baldue)
+                  
                         if invo.baldue == 0.0:
                             invo.status = "Paid"
             
@@ -29381,7 +29396,7 @@ def paymentcreate2(request):
                     pass
 
         pyit = paymentitems.objects.filter(payment=pay2.paymentid)
-        print(pyit)
+       
         amt =0
         for m in pyit:
             if m.balamount:
@@ -29396,7 +29411,7 @@ def paymentcreate2(request):
         deposito = request.POST['depto']
         try:
             if accounts1.objects.get(name=deposito, cid=cmp1):
-                print(deposito)
+               
                 acconut = accounts1.objects.get(name=deposito, cid=cmp1)
                 acconut.balance = acconut.balance + amtreceived
                 acconut.save()
@@ -29466,7 +29481,7 @@ def payment_view(request,id):
     if x[2] is not None:
         b = x[1] + " " + x[2]
         custobject = customer.objects.get(firstname=a, lastname=b, cid=cmp1)
-    inv_dtl=invoice.objects.filter(invoiceno=pay.referno)
+    inv_dtl=invoice.objects.filter(customername=pk,status="paid")
     
   
     context = {
@@ -29491,7 +29506,7 @@ def render_pdfpayment_view(request,id):
         b = x[1] + " " + x[2]
         custobject = customer.objects.get(firstname=a, lastname=b, cid=cmp1)
     
-    inv_dtl=invoice.objects.filter(invoiceno=pay.referno)
+    inv_dtl=invoice.objects.filter(customername=pk,status="paid")
     
     total = pay.amtapply
     words_total = num2words(total)
@@ -29505,7 +29520,7 @@ def render_pdfpayment_view(request,id):
         'inv_dtl':inv_dtl,
     }
 
-    fname=pay.paymentid
+    fname=pay.refno
    
     # Create a Django response object, and specify content_type as pdftemp_creditnote
     response = HttpResponse(content_type='application/pdf')
