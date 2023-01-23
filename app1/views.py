@@ -30629,8 +30629,11 @@ def add_mjournal(request):
         acc = accounts1.objects.filter(cid=cmp1)
         cust = customer.objects.filter(cid=cmp1)
         vndr = vendor.objects.filter(cid=cmp1)
+        
         context = {'acc':acc,'cmp1':cmp1,'cust':cust,'vndr':vndr}
-        return render(request,'app1/add_mjournal.html',context)    
+        return render(request,'app1/add_mjournal.html',context)   
+        
+
     except:
         return redirect('gomjoural')    
 
@@ -35691,6 +35694,8 @@ def bnk1(request,pk):
     exp="Expense"
     recon="Disable"
     
+    acc=accounts1.objects.filter(cid=request.session["uid"],acctype="Expenses")
+    accs=accounts1.objects.filter(cid=request.session["uid"],acctype="Other Expenses")
     # import pdb; pdb.set_trace()
     
     
@@ -35703,10 +35708,36 @@ def bnk1(request,pk):
     'cust':cust,
     'vend':vend,
     'exp':exp,
-    'recon':recon
+    'recon':recon,
+    'acc':acc,
+    'accs':accs,
     
     }
     return render(request,"app1/bnk1.html",context)
+
+@login_required(login_url='regcomp')
+def crtaccount(request,pk):
+
+    cmp1 = company.objects.get(id=request.session["uid"])
+    acctype = request.POST.get('acctype')
+        
+    name = request.POST.get('name')
+    description = request.POST.get('description')                           
+    
+    balance = request.POST.get('balance')
+    if balance=="":
+            balance=0.0
+    asof = request.POST.get('asof')
+    dbbalance=request.POST.get('dbbalance')
+    if dbbalance=="":
+            dbbalance=0.0
+       
+        
+    account = accounts1(acctype=acctype, name=name, description=description,
+                                    balance=balance, asof=asof, cid=cmp1,dbbalance=dbbalance)
+    account.save()
+                
+    return redirect('bnk1',pk)
 
 @login_required(login_url='regcomp')
 def vend_view(request,pk):
@@ -35998,6 +36029,8 @@ def payment_vendor(request,pk):
 
         bk.balance=running_bl
         bk.save()
+
+
         return redirect('bnk1',pk)
     else:
         return redirect('bnnk')
