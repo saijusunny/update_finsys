@@ -14052,69 +14052,6 @@ def bsreport(request,id):
         return render(request, 'app1/bsreport.html', context)
     return redirect('/')  
 
-def bsreport_flt(request,id):
-    if 'uid' in request.session:
-        if request.session.has_key('uid'):
-            uid = request.session['uid']
-        else:
-            return redirect('/')
-        cmp1 = company.objects.get(id=request.session['uid'])
-
-        toda = date.today()
-        tod = toda.strftime("%Y-%m-%d")
-        to=toda.strftime("%d-%m-%Y")
-        accs = balance_sheet.objects.get(id=id,cid=cmp1)
-        print("id")
-        print(accs.account)
-        filmeth = request.POST['reportperiod']
-        print(filmeth)
-        if filmeth == 'Custom':
-            fromdate = request.POST['fdate']
-            todate = request.POST['ldate']
-            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
-        else:
-            fromdate = request.user.date_joined.date()
-            todate = date.today()
-            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
-
-        
-        
-        debit=0
-        credit=0
-        total2 =0
-
-        for i in acc :
-            if i.transactions =="Billed":
-                debit+=i.payments
-
-            if i.transactions =="Vendor Credits":
-                credit+=i.payments
-
-            if i.transactions =="Expense":
-                debit+=i.payments
-
-            if i.transactions =="Invoice":
-                debit+=i.payments
-
-            if i.transactions =="Vendor Payment":
-                credit+=i.payments
-
-        fdate =""
-        ldate =""
-
-        try:
-            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
-            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
-        except:
-            fromdates=request.user.date_joined.date()
-            todates=date.today()
-        
-
-        total2 = credit-debit
-        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates, "todate":todates,"keys":id}
-        return render(request, 'app1/bsreport.html', context)
-    return redirect('/') 
-
 def profitandloss(request):
     if 'uid' in request.session:
         if request.session.has_key('uid'):
@@ -14310,6 +14247,71 @@ def profitandloss1(request):
 
         return render(request, 'app1/profitandloss.html', context)
     return redirect('/')   
+
+def bsreport_flt(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        to=toda.strftime("%d-%m-%Y")
+        accs = balance_sheet.objects.get(id=id,cid=cmp1)
+        print("id")
+        print(accs.account)
+        filmeth = request.POST['reportperiod']
+        print(filmeth)
+        if filmeth == 'Custom':
+            fromdate = request.POST['fdate']
+            todate = request.POST['ldate']
+            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+        else:
+            fromdate = request.user.date_joined.date()
+            todate = date.today()
+            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
+
+        
+        
+        debit=0
+        credit=0
+        total2 =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Credits":
+                credit+=i.payments
+
+            if i.transactions =="Expense":
+                debit+=i.payments
+
+            if i.transactions =="Invoice":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Payment":
+                credit+=i.payments
+
+        fdate =""
+        ldate =""
+
+        try:
+            fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
+            todates=datetime.datetime.strptime(todate, "%Y-%m-%d").date()
+        except:
+            fromdates=request.user.date_joined.date()
+            todates=date.today()
+        
+
+        total2 = credit-debit
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates, "todate":todates,"keys":id}
+        return render(request, 'app1/bsreport.html', context)
+    return redirect('/') 
+
+
 
 def plreport(request,id):
    
