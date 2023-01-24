@@ -324,18 +324,19 @@
                                 <div class="row bb pb-3">
                                     <div class="col-7">
                                         <p>FROM,</p>
+                                        <h5>{{pbill.vendor_name}}</h5>
+                                        <p class="address col-6" style="margin-left: -14px;" > {{ pbill.billing_address}} </p> 
+                                         
+                                    </div>
+                                    <div class="col-5">
+                                        <p>TO,</p>
                                         <h5>{{cmp1.cname }}</h5>
                                         <p class="address "> {{cmp1.caddress}}<br>
                                             {{cmp1.city}},
                                             {{cmp1.state}}<br>
                                             {{cmp1.pincode}}<br>
                                             {{cmp1.email}}<br>
-                                        </p>  
-                                    </div>
-                                    <div class="col-5">
-                                        <p>TO,</p>
-                                        <h5>{{pbill.vendor_name}}</h5>
-                                        <p class="address col-6" style="margin-left: -14px;" > {{ pbill.billing_address}} </p>   
+                                        </p>   
                                     </div>
                                 </div>
                                 <div class="row extra-info pt-3">
