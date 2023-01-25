@@ -27307,6 +27307,74 @@ def newsalesorder(request):
 
     return render(request,'app1/salesorder.html',context )
 
+@login_required(login_url='regcomp')
+def new_customers2(request):
+    try:
+        cmp1 = company.objects.get(id=request.session["uid"])
+        if request.method == "POST":
+            toda = date.today()
+            tod = toda.strftime("%Y-%m-%d")
+            firstname = request.POST['firstname']
+            lastname = request.POST['lastname']
+            if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
+                messages.info(request,
+                              f"Customer {firstname} {lastname} already exists. Please provide a different name.")
+                return redirect('gocustomers')
+            else:
+                customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
+                                     lastname=request.POST['lastname'], company=request.POST['company'],
+                                     location=request.POST['location'], gsttype=request.POST['gsttype'],
+                                     gstin=request.POST['gstin'], panno=request.POST['panno'],
+                                     email=request.POST['email'],
+                                     website=request.POST['website'], mobile=request.POST['mobile'],
+                                     street=request.POST['street'], city=request.POST['city'],
+                                     state=request.POST['state'],
+                                     pincode=request.POST['pincode'], country=request.POST['country'],
+                                     shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
+                                     shipstate=request.POST['shipstate'],
+                                     shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
+                                     cid=cmp1)
+
+                customer1.save()
+                temp=request.POST['openbalance']
+                if temp != "":
+                    customer1.opening_balance = request.POST['openbalance'] 
+                    customer1.opening_balance_due = request.POST['openbalance'] 
+                    customer1.date= tod
+                    customer1.save()
+                    
+                   
+
+                
+
+                if customer1.opening_balance != "":
+
+                    add_cust_stat=cust_statment(
+
+                    customer = customer1.firstname +" "+ customer1.lastname,
+
+                    cid  = cmp1,
+
+                    
+
+                    Date = tod,
+
+                    Transactions="Customer Opening Balance",
+
+                    Amount= customer1.opening_balance,
+
+                )
+
+
+                add_cust_stat.save()
+
+                return redirect('newsalesorder')
+        customers = customer.objects.filter(cid=cmp1).all()
+        context = {'customers': customers, 'cmp1': cmp1}
+        return redirect('newsalesorder')
+    except:
+        return redirect('newsalesorder')
+
 
 @login_required(login_url='regcomp')
 def createsales_record(request):
@@ -27381,73 +27449,7 @@ def createsales_record(request):
 
 
 
-@login_required(login_url='regcomp')
-def new_customers2(request):
-    try:
-        cmp1 = company.objects.get(id=request.session["uid"])
-        if request.method == "POST":
-            toda = date.today()
-            tod = toda.strftime("%Y-%m-%d")
-            firstname = request.POST['firstname']
-            lastname = request.POST['lastname']
-            if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
-                messages.info(request,
-                              f"Customer {firstname} {lastname} already exists. Please provide a different name.")
-                return redirect('gocustomers')
-            else:
-                customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
-                                     lastname=request.POST['lastname'], company=request.POST['company'],
-                                     location=request.POST['location'], gsttype=request.POST['gsttype'],
-                                     gstin=request.POST['gstin'], panno=request.POST['panno'],
-                                     email=request.POST['email'],
-                                     website=request.POST['website'], mobile=request.POST['mobile'],
-                                     street=request.POST['street'], city=request.POST['city'],
-                                     state=request.POST['state'],
-                                     pincode=request.POST['pincode'], country=request.POST['country'],
-                                     shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
-                                     shipstate=request.POST['shipstate'],
-                                     shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
-                                     cid=cmp1)
 
-                customer1.save()
-                temp=request.POST['openbalance']
-                if temp != "":
-                    customer1.opening_balance = request.POST['openbalance'] 
-                    customer1.opening_balance_due = request.POST['openbalance'] 
-                    customer1.date= tod
-                    customer1.save()
-                    
-                   
-
-                
-
-                if customer1.opening_balance != "":
-
-                    add_cust_stat=cust_statment(
-
-                    customer = customer1.firstname +" "+ customer1.lastname,
-
-                    cid  = cmp1,
-
-                    
-
-                    Date = tod,
-
-                    Transactions="Customer Opening Balance",
-
-                    Amount= customer1.opening_balance,
-
-                )
-
-
-                add_cust_stat.save()
-
-                return redirect('newsalesorder')
-        customers = customer.objects.filter(cid=cmp1).all()
-        context = {'customers': customers, 'cmp1': cmp1}
-        return render(request, 'app1/customers.html', context)
-    except:
-        return redirect('newsalesorder')
 
 def sale_create_item(request):
     if 'uid' in request.session:
@@ -28019,47 +28021,6 @@ def invoice_view(request,id):
     return render(request,'app1/invoice_view.html',context)
 
 
-def render_pdfinvoice_view(request,id):
-
-    cmp1 = company.objects.get(id=request.session['uid'])
-    upd = invoice.objects.get(invoiceid=id, cid=cmp1)
-
-    invitem = invoice_item.objects.filter(invoice=id)
-
-    total = upd.grandtotal
-    words_total = num2words(total)
-    template_path = 'app1/pdfinvoice.html'
-    context ={
-        'invoice':upd,
-        'cmp1':cmp1,
-        'words_total':words_total,
-        'invitem':invitem,
-
-    }
-    fname=upd.invoiceno
-   
-    # Create a Django response object, and specify content_type as pdftemp_creditnote
-    response = HttpResponse(content_type='application/pdf')
-    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
-    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
-    # find the template and render it.
-    template = get_template(template_path)
-    html = template.render(context)
-
-    # create a pdf
-    pisa_status = pisa.CreatePDF(
-       html, dest=response)
-    
-
-
-    # if error then show some funy view
-    if pisa_status.err:
-       return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    return response
-
-
-
-
 @login_required(login_url='regcomp')
 def new_customers3(request):
     try:
@@ -28129,9 +28090,53 @@ def new_customers3(request):
                 return redirect('goaddinvoices')
         customers = customer.objects.filter(cid=cmp1).all()
         context = {'customers': customers, 'cmp1': cmp1}
-        return render(request, 'app1/customers.html', context)
+        return redirect('goaddinvoices')
     except:
         return redirect('goaddinvoices')
+
+
+def render_pdfinvoice_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = invoice.objects.get(invoiceid=id, cid=cmp1)
+
+    invitem = invoice_item.objects.filter(invoice=id)
+
+    total = upd.grandtotal
+    words_total = num2words(total)
+    template_path = 'app1/pdfinvoice.html'
+    context ={
+        'invoice':upd,
+        'cmp1':cmp1,
+        'words_total':words_total,
+        'invitem':invitem,
+
+    }
+    fname=upd.invoiceno
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+
+
+
 
 
 @login_required(login_url='regcomp')
@@ -29032,31 +29037,6 @@ def goinvoices2(request):
     context = {'invoice': invs, 'customers': customers, 'cmp1': cmp1}
     return render(request, 'app1/invoices.html', context)
 
-def goinvoices3(request):
-    if request.method == "POST":
-        cmp1 = company.objects.get(id=request.session["uid"])
-        search = request.POST['search']
-        cloumn = request.POST['type']
-
-        if cloumn == '1' or search  == '':
-            return redirect('goinvoices')    
-
-        else :
-            if cloumn == '2':
-                cmp1 = company.objects.get(id=request.session["uid"])
-                invs = invoice.objects.filter(cid=cmp1,customername=search).all()
-                context = {'invoice': invs,  'cmp1': cmp1}
-                return render(request, 'app1/invoices.html', context)
-            else:
-                if cloumn == '3':
-                    cmp1 = company.objects.get(id=request.session["uid"])
-                    invs = invoice.objects.filter(cid=cmp1,invoice_orderno=search).all()
-                    context = {'invoice': invs,  'cmp1': cmp1}
-                    return render(request, 'app1/invoices.html', context)        
-   
-    
-    return redirect('goinvoices')
-
 
 @login_required(login_url='regcomp')
 def new_customers1(request):
@@ -29122,14 +29102,40 @@ def new_customers1(request):
                 add_cust_stat.save()
 
 
-
-
                 return redirect('estindex2')
         customers = customer.objects.filter(cid=cmp1).all()
         context = {'customers': customers, 'cmp1': cmp1}
-        return render(request, 'app1/customers.html', context)
+        return redirect('estindex2') 
     except:
-        return redirect('estindex2')    
+        return redirect('estindex2')  
+
+def goinvoices3(request):
+    if request.method == "POST":
+        cmp1 = company.objects.get(id=request.session["uid"])
+        search = request.POST['search']
+        cloumn = request.POST['type']
+
+        if cloumn == '1' or search  == '':
+            return redirect('goinvoices')    
+
+        else :
+            if cloumn == '2':
+                cmp1 = company.objects.get(id=request.session["uid"])
+                invs = invoice.objects.filter(cid=cmp1,customername=search).all()
+                context = {'invoice': invs,  'cmp1': cmp1}
+                return render(request, 'app1/invoices.html', context)
+            else:
+                if cloumn == '3':
+                    cmp1 = company.objects.get(id=request.session["uid"])
+                    invs = invoice.objects.filter(cid=cmp1,invoice_orderno=search).all()
+                    context = {'invoice': invs,  'cmp1': cmp1}
+                    return render(request, 'app1/invoices.html', context)        
+   
+    
+    return redirect('goinvoices')
+
+
+  
 
 def inv_create_item(request):
     if 'uid' in request.session:
@@ -37130,3 +37136,125 @@ def change_to_new_password(request):
             return render(request,'password/passeord_new_entry.html')
         
     return render(request,'password/passeord_new_entry.html')
+
+
+@login_required(login_url='regcomp')
+def customers21(request):
+    
+    try:
+        cmp1 = company.objects.get(id=request.session["uid"])
+        if request.method == "POST":
+            toda = date.today()
+            tod = toda.strftime("%Y-%m-%d")
+            firstname = request.POST['firstname']
+            lastname = request.POST['lastname']
+            if customer.objects.filter(firstname=firstname, lastname=lastname, cid=cmp1).exists():
+                messages.info(request,
+                              f"Customer {firstname} {lastname} already exists. Please provide a different name.")
+                return redirect('gocustomers')
+            else:
+                customer1 = customer(title=request.POST['title'], firstname=request.POST['firstname'],
+                                     lastname=request.POST['lastname'], company=request.POST['company'],
+                                     location=request.POST['location'], gsttype=request.POST['gsttype'],
+                                     gstin=request.POST['gstin'], panno=request.POST['panno'],
+                                     email=request.POST['email'],
+                                     website=request.POST['website'], mobile=request.POST['mobile'],
+                                     street=request.POST['street'], city=request.POST['city'],
+                                     state=request.POST['state'],
+                                     pincode=request.POST['pincode'], country=request.POST['country'],
+                                     shipstreet=request.POST['shipstreet'], shipcity=request.POST['shipcity'],
+                                     shipstate=request.POST['shipstate'],
+                                     shippincode=request.POST['shippincode'], shipcountry=request.POST['shipcountry'],
+                                     cid=cmp1)
+
+                customer1.save()
+
+               
+                temp=request.POST['openbalance']
+                if temp != "":
+                    customer1.opening_balance = request.POST['openbalance'] 
+                    customer1.opening_balance_due = request.POST['openbalance'] 
+                    customer1.date= tod
+                    customer1.save()
+                    
+                   
+
+                
+
+                if customer1.opening_balance != "":
+
+                    add_cust_stat=cust_statment(
+
+                    customer = customer1.firstname +" "+ customer1.lastname,
+
+                    cid  = cmp1,
+
+                    
+
+                    Date = tod,
+
+                    Transactions="Customer Opening Balance",
+
+                    Amount= customer1.opening_balance,
+
+                )
+
+
+                add_cust_stat.save()
+
+
+
+
+                return redirect('addpurchasecredit')
+        customers = customer.objects.filter(cid=cmp1).all()
+        context = {'customers': customers, 'cmp1': cmp1}
+        return redirect('addpurchasecredit')
+    except:
+        return redirect('addpurchasecredit')
+
+
+def crd_create_item(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        if request.method == 'POST':
+            cmp1 = company.objects.get(id=request.session['uid'])
+            iname = request.POST['name']
+            itype = request.POST['type']
+            iunit = request.POST.get('unit')
+            ihsn = request.POST['hsn']
+            itax = request.POST['taxref']
+            ipcost = request.POST['pcost']
+            iscost = request.POST['salesprice']
+            #itrate = request.POST['tax']
+            ipuracc = request.POST['pur_account']
+            isalacc = request.POST['sale_account']
+            ipurdesc = request.POST['pur_desc']
+            isaledesc = request.POST['sale_desc']
+            iintra = request.POST['intra_st']
+            iinter = request.POST['inter_st']
+            iinv = request.POST.get('invacc')
+            istock = request.POST.get('stock')
+            istatus = request.POST['status']
+            item = itemtable(name=iname,item_type=itype,unit=iunit,
+                                hsn=ihsn,tax_reference=itax,
+                                purchase_cost=ipcost,
+                                sales_cost=iscost,
+                                #tax_rate=itrate,
+                                acount_pur=ipuracc,
+                                account_sal=isalacc,
+                                pur_desc=ipurdesc,
+                                sale_desc=isaledesc,
+                                intra_st=iintra,
+                                inter_st=iinter,
+                                inventry=iinv,
+                                stock=istock,
+                                status=istatus,
+                                cid=cmp1)
+            item.save()
+            return redirect('addpurchasecredit')
+        return redirect('addpurchasecredit')
+    return redirect('/') 

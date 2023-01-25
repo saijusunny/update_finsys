@@ -438,436 +438,845 @@
         </div>
     </form>
 
-    
-    <div class="modal fade" id="customercreation" style="overflow-y: scroll;">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content" style="background-color: #213b52;">
-                    <div class="modal-header">
-                        <h3 class="m-3">Customer Create</h3>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+    <div class="modal fade" id="customercreation">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="background-color: #213b52;">
+                <div class="modal-header">
+                    <h3 class="m-3">ADD CUSTOMER</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <div class="modal-body">
+
+                <form action="{% url 'customers21' %}" method="POST" autocomplete="off">{% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom01">Title</label>
+                            <select name="title" id="title" class="form-control" id="validationCustom01">
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                                <option value="Miss">Miss</option>
+                                <option value="Ms">Ms</option>
+                            </select>
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom02">First name</label>
+                            <input type="text" class="form-control" id="validationCustom02" name="firstname"
+                                   required style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom02">Last name</label>
+                            <input type="text" class="form-control" id="validationCustom02" name="lastname"
+                                   required style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <div class="card p-3 m-3">
-                            <form action="{% url 'customers' %}" autocomplete="off" method="post" class="needs-validation" novalidate>
-                                {% csrf_token %}
-                                
-                                    <div class="row">
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom01">Title</label>
-                                            <select name="title" id="title" class="form-control" id="validationCustom01">
-                                                <option value="Mr">Mr</option>
-                                                <option value="Mrs">Mrs</option>
-                                                <option value="Miss">Miss</option>
-                                                <option value="Ms">Ms</option>
-                                            </select>
-                                            <div class="valid-feedback">Looks good!</div>
-                                        </div>
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom02">First name</label>
-                                            <input type="text" class="form-control" id="validationCustom02" name="firstname"
-                                                   required style="background-color: #2f516f;color: white;">
-                                            <div class="valid-feedback">Looks good!</div>
-                                        </div>
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom02">Last name</label>
-                                            <input type="text" class="form-control" id="validationCustom02" name="lastname"
-                                                   required style="background-color: #2f516f;color: white;">
-                                            <div class="valid-feedback">Looks good!</div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom03">Company</label>
-                                            <input type="text" class="form-control" id="validationCustom03" name="company"
-                                                   required style="background-color: #2f516f;color: white;">
-                                            <div class="valid-feedback">Looks good!</div>
-                                        </div>
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom03">Location</label>
-                                            <input type="text" class="form-control" id="validationCustom03" name="location"
-                                                   style="background-color: #2f516f;color: white;">
-                                            <div class="valid-feedback">Looks good!</div>
-                                        </div>
-                                        <div class="col-md-4 mt-3"></div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom04">GST type</label>
-                                            <select class="custom-select" id="validationCustom04" name="gsttype"
-                                                    onclick="hidinput('hello', this),disinput('hai', this) ,disinput2('hai1', this)   "
-                                                    
-                                                    required
-                                                    style="background-color: #243e54; color: white;">
-                                                <option selected disabled value="">Choose...</option>
-                                                <option>GST registered- Regular</option>
-                                                <option>GST registered- Composition</option>
-                                                <option>GST unregistered</option>
-                                                <option>Consumer</option>
-                                                <option>Overseas</option>
-                                                <option>SEZ</option>
-                                                <option>Deemed exports - EOU's STP's EHTP's etc</option>
-                                            </select>
-                                            <div class="invalid-feedback">Please select a valid registration type.</div>
-                                        </div>
-            
-                                        <div class="col-md-4 mt-3" id="hello" style="display: none;">
-                                            <div >
-                                                <label for="validationCustom05">GSTIN</label>
-                                                <input type="text" class="form-control" onchange="checkgst(this)"
-                                                       id="validationCustom05" name="gstin"
-                                                       style="background-color: #2f516f;color: white;"
-                                                       value=""
-                                                       placeholder="29APPCK7465F1Z1">
-                                                       <a data-toggle="modal" href="#exampleModal"
-                                                style="color:#3dd5f3">Get Taxpayer Details</a>
-                                                <div class="text-danger m-2" id="warngst"></div>
-                                            </div>
-                                        </div>
-            
-                                        
-                                        <!-- <div class="col-md-4 mt-3" id="hai">
-                                            <div >
-                                                <label for="validationCustom05">BUSINESS LEGAL NAME</label>
-                                                <input type="text" class="form-control" 
-                                                       
-                                                       style="background-color: #2f516f;color: white;"
-                                                       >
-                                                <div class="text-danger m-2" id="warngst"></div>
-                                            </div>
-                                        </div>
-            
-                                        <div class="col-md-4 mt-3" id="hai1">
-                                            <div >
-                                                <label for="validationCustom05">BUSINESS TRADE NAME</label>
-                                                <input type="text" class="form-control" 
-                                                       
-                                                       style="background-color: #2f516f;color: white;"
-                                                       >
-                                                <div class="text-danger m-2" id="warngst"></div>
-                                            </div>
-                                        </div> -->
-                                        
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Company</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="company"
+                                    style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Location</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="location"
+                                    style="background-color: #2f516f;color: white;">
+                            <div class="valid-feedback">Looks good!</div>
+                        </div>
+                        <div class="col-md-4 mt-3"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom04">GST type</label>
+                            <select class="custom-select" id="validationCustom04" name="gsttype"
+                                    onclick="hidinput('hello1',this)   "
                                     
+                                    required
+                                    style="background-color: #243e54; color: white;">
+                                    <option selected disabled value="">Choose...</option>
+                                    <option>GST-registered-Regular</option>
+                                    <option>GST-registered-Composition</option>
+                                    <option>GST-unregistered</option>
+                                    <option>Consumer</option>
+                                    <option>Overseas</option>
+                                    <option>SEZ</option>
+                                    <option>Deemed exports - EOU's STP's EHTP's etc</option>
+                                    <option>Exempt</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a valid registration type.</div>
+                        </div>
+
+                        <div class="col-md-4 mt-3" id="hello1" style="display: none;">
+                            <div >
+                                <label for="validationCustom05">GSTIN</label>
+                                <input type="text" class="form-control" onchange="checkgst(this)"
+                                       id="validationCustom05" name="gstin"
+                                       style="background-color: #2f516f;color: white;"
+                                       value=""
+                                       placeholder="29APPCK7465F1Z1">
+                                       <a data-toggle="modal" href="#exampleModal"
+                                style="color:#3dd5f3">Get Taxpayer Details</a>
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+
+                        
+                        <!-- <div class="col-md-4 mt-3" id="hai">
+                            <div >
+                                <label for="validationCustom05">BUSINESS LEGAL NAME</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;"
+                                       >
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mt-3" id="hai1">
+                            <div >
+                                <label for="validationCustom05">BUSINESS TRADE NAME</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;"
+                                       >
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div> -->
+                        
+                    
+
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">PAN NO</label>
+                            <input type="text" class="form-control" id="validationCustom03" name="panno"
+                                    style="background-color: #2f516f;color: white;"
+                                   onchange="checkpan(this)" placeholder="APPCK7465F">
+                            <div class="text-danger m-2" id="warnpan"></div>
+                        </div>
+
+                        <div class="col-md-4 mt-3" >
+                          <div>
+                              <label for="validationCustom05">OPENING BALANCE</label>
+                              <input type="text" class="form-control" value=""  name="openbalance"
+                                     
+                                     style="background-color: #2f516f;color: white;"
+                                     >
+                              <div class="text-danger m-2" ></div>
+                          </div>
+                      </div>
+
+                        <!-- <div class="col-md-4 mt-3" id="hai1">
+                            <div >
+                                <label for="validationCustom05">PLACE OF SUPPLY</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;"
+                                       >
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mt-3" id="hai1">
+                            <div >
+                                <label for="validationCustom05">TAX PERFERENCE</label>
+                                <input type="text" class="form-control" 
+                                       
+                                       style="background-color: #2f516f;color: white;">
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mt-3" >
+                            <div>
+                                <label for="validationCustom05">TAX RETURNS</label><br>
+                                <input type="radio" name="Returns" 
+                                       
+                                       style="background-color: #2f516f;color: white;"> Taxable
+                                       <input type="radio" name="Returns"  
+                                       style="background-color: #2f516f;color: white;"> Non Taxable
+                                <div class="text-danger m-2" id="warngst"></div>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    
+
+                    
+
+                    <div class="row">
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Email</label>
+                            <input type="email" class="form-control" id="validationCustom03" name="email"
+                                    style="background-color: #2f516f;color: white;"
+                                   placeholder="finsys@mail.com">
+                            <div class="invalid-feedback">Please provide a valid Email</div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom03">Website</label>
+                            <input type="text" class="form-control" id="validationCustom03"
+                                   placeholder="www.finsys.com" onchange="checkweb(this)" name="website"
+                                   style="background-color: #2f516f;color: white;">
+                            <div id="warnweb" class="text-danger"></div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                            <label for="validationCustom01">Mobile</label>
+                            <input type="text" class="form-control" id="validationCustom01"
+                                   onchange="checkphone(this)" name="mobile"
+                                    style="background-color: #2f516f;color: white;">
+                            <div class="text-danger m-2" id="warnphone"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6 mt-5">
+                            <div class="row">
+                                <div class="col-md-12 card-title">
+                                    <h5 class="mb-0">Billing Address</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-row">
+                                        <label for="street">Street</label>
+                                        <textarea class="form-control street" id="street" name="street"
+                                                  
+                                                  style="background-color: #2f516f;color: white;"></textarea>
+                                        <div class="invalid-feedback">Please provide a valid Street</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="city">City</label>
+                                        <input type="text" class="form-control" id="city"
+                                               name="city"
+                                               
+                                               style="background-color: #2f516f;color: white;" placeholder="City">
+                                        <div class="invalid-feedback">Please provide a valid City</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="state">State</label>
+                                        <select type="text" class="form-control" id="state" name="state"
+                                            required style="background-color: #2f516f; color: white;">
+                                            <option value="" disabled selected>Choose</option>
+                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                            </option>
+                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Chandigarh">Chandigarh</option>
+                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                            <option value="Damn anad Diu">Damn anad Diu</option>
+                                            <option value="Delhi">Delhi</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+                                            <option value="Himachal Predesh">Himachal Predesh</option>
+                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                            <option value="Jharkhand">Jharkhand</option>
+                                            <option value="Karnataka">Karnataka</option>
+                                            <option value="Kerala">Kerala</option>
+                                            <option value="Ladakh">Ladakh</option>
+                                            <option value="Lakshadweep">Lakshadweep</option>
+                                            <option value="Madhya Predesh">Madhya Predesh</option>
+                                            <option value="Maharashtra">Maharashtra</option>
+                                            <option value="Manipur">Manipur</option>
+                                            <option value="Meghalaya">Meghalaya</option>
+                                            <option value="Mizoram">Mizoram</option>
+                                            <option value="Nagaland">Nagaland</option>
+                                            <option value="Odisha">Odisha</option>
+                                            <option value="Puducherry">Puducherry</option>
+                                            <option value="Punjab">Punjab</option>
+                                            <option value="Rajasthan">Rajasthan</option>
+                                            <option value="Sikkim">Sikkim</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Telangana">Telangana</option>
+                                            <option value="Tripura">Tripura</option>
+                                            <option value="Uttar Predesh">Uttar Predesh</option>
+                                            <option value="Uttarakhand">Uttarakhand</option>
+                                            <option value="West Bengal">West Bengal</option>
+                                            <option value="Other Territory">Other Territory</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please provide a valid State</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="pinco">Pin Code</label>
+                                        <input type="text" class="form-control" id="pinco"
+                                               name="pincode"
+                                                style="background-color: #2f516f;color: white;"
+                                               placeholder="PIN code">
+                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="country">Country</label>
+                                        <input type="text" class="form-control" id="country"
+                                               name="country"
+                                                style="background-color: #2f516f;color: white;"
+                                               placeholder="Country">
+                                        <div class="invalid-feedback">Please provide a valid Country</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mt-5">
+                            <div class="row">
+                                <div class="col-md-12 d-flex">
+                                    <h5>Shipping Address</h5>
+                                    <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
+                                           name="okay">
+                                    <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipstreet">Street</label>
+                                        <textarea class="form-control" id="shipstreet"
+                                                  name="shipstreet"
+                                                  
+                                                  style="background-color: #2f516f;color: white;"></textarea>
+                                        <div class="invalid-feedback">Please provide a valid Street</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipcity">City</label>
+                                        <input type="text" class="form-control" id="shipcity"
+                                               name="shipcity"
+                                               
+                                               style="background-color: #2f516f;color: white;" placeholder="City">
+                                        <div class="invalid-feedback">Please provide a valid City</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipstate">State</label>
+                                        <select type="text" class="form-control" id="plosu" name="shipstate"
+                                             style="background-color: #2f516f; color: white;">
+                                            <option id="shipst" selected>Choose</option>
+                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
+                                            </option>
+                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
+                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Chandigarh">Chandigarh</option>
+                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                            <option value="Damn anad Diu">Damn anad Diu</option>
+                                            <option value="Delhi">Delhi</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+                                            <option value="Himachal Predesh">Himachal Predesh</option>
+                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                            <option value="Jharkhand">Jharkhand</option>
+                                            <option value="Karnataka">Karnataka</option>
+                                            <option value="Kerala">Kerala</option>
+                                            <option value="Ladakh">Ladakh</option>
+                                            <option value="Lakshadweep">Lakshadweep</option>
+                                            <option value="Madhya Predesh">Madhya Predesh</option>
+                                            <option value="Maharashtra">Maharashtra</option>
+                                            <option value="Manipur">Manipur</option>
+                                            <option value="Meghalaya">Meghalaya</option>
+                                            <option value="Mizoram">Mizoram</option>
+                                            <option value="Nagaland">Nagaland</option>
+                                            <option value="Odisha">Odisha</option>
+                                            <option value="Puducherry">Puducherry</option>
+                                            <option value="Punjab">Punjab</option>
+                                            <option value="Rajasthan">Rajasthan</option>
+                                            <option value="Sikkim">Sikkim</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Telangana">Telangana</option>
+                                            <option value="Tripura">Tripura</option>
+                                            <option value="Uttar Predesh">Uttar Predesh</option>
+                                            <option value="Uttarakhand">Uttarakhand</option>
+                                            <option value="West Bengal">West Bengal</option>
+                                            <option value="Other Territory">Other Territory</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please provide a valid State</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shippinco">Pin Code</label>
+                                        <input type="text" class="form-control" id="shippinco"
+                                               name="shippincode"
+                                                style="background-color: #2f516f;color: white;"
+                                               placeholder="PIN code">
+                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <div class="form-row">
+                                        <label for="shipcountry">Country</label>
+                                        <input type="text" class="form-control" id="shipcountry"
+                                               name="shipcountry"
+                                                style="background-color: #2f516f;color: white;"
+                                               placeholder="Country">
+                                        <div class="invalid-feedback">Please provide a valid Country</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required
+                                       style="background-color: #2f516f;">
+                                <label>Agree to terms and conditions</label>
+                                <div class="invalid-feedback">You must agree before submitting.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
+                                    type="submit">
+                                Submit form
+                            </button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+
+                </form>
+
+
+              
+            </div>
             
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom03">PAN NO</label>
-                                            <input type="text" class="form-control" id="validationCustom03" name="panno"
-                                                    style="background-color: #2f516f;color: white;"
-                                                   onchange="checkpan(this)" placeholder="APPCK7465F">
-                                            <div class="text-danger m-2" id="warnpan"></div>
-                                        </div>
+          </div>
+        </div>
+
+
         
-                                        <div class="col-md-4 mt-3" >
-                                            <div >
-                                                <label for="validationCustom05">OPENING BALANCE</label>
-                                                <input type="text" class="form-control" value=""  name="openbalance"
-                                                       
-                                                       style="background-color: #2f516f;color: white;"
-                                                       >
-                                                <div class="text-danger m-2" ></div>
-                                            </div>
-                                        </div>
-            
-                                        <!-- <div class="col-md-4 mt-3" id="hai1">
-                                            <div >
-                                                <label for="validationCustom05">PLACE OF SUPPLY</label>
-                                                <input type="text" class="form-control" 
-                                                       
-                                                       style="background-color: #2f516f;color: white;"
-                                                       >
-                                                <div class="text-danger m-2" id="warngst"></div>
-                                            </div>
-                                        </div>
-            
-                                        <div class="col-md-4 mt-3" id="hai1">
-                                            <div >
-                                                <label for="validationCustom05">TAX PERFERENCE</label>
-                                                <input type="text" class="form-control" 
-                                                       
-                                                       style="background-color: #2f516f;color: white;">
-                                                <div class="text-danger m-2" id="warngst"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mt-3" >
-                                            <div>
-                                                <label for="validationCustom05">TAX RETURNS</label><br>
-                                                <input type="radio" name="Returns" 
-                                                       
-                                                       style="background-color: #2f516f;color: white;"> Taxable
-                                                       <input type="radio" name="Returns"  
-                                                       style="background-color: #2f516f;color: white;"> Non Taxable
-                                                <div class="text-danger m-2" id="warngst"></div>
-                                            </div>
-                                        </div> -->
-                                    </div>
-            
-                                    
-            
-                                    
-            
+      </div>
+
+      <div class="modal fade" id="newitem">
+  <div class="modal-dialog modal-xl">
+      <div class="modal-content" style="background-color: #213b52;">
+          <div class="modal-header">
+              <h3 class="m-3">New Item</h3>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <div class="card p-3 m-3">
+                  <form action="{% url 'crd_create_item' %}" method="post" class="needs-validation" novalidate autocomplete="off">
+                      {% csrf_token %}
+
+                      <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12 mx-0">
                                     <div class="row">
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom03">Email</label>
-                                            <input type="email" class="form-control" id="validationCustom03" name="email"
-                                                    style="background-color: #2f516f;color: white;"
-                                                   placeholder="finsys@mail.com">
-                                            <div class="invalid-feedback">Please provide a valid Email</div>
+                                        <div class="col-md-6 mt-3">
+                                            <label for="validationCustom01"
+                                                   style="color: white;">Name</label>
+                                            <input type="text" name="name" class="form-control" 
+                                                      style="background-color: #2a4964; color: white;"
+                                                     autocomplete="off" required>
                                         </div>
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom03">Website</label>
-                                            <input type="text" class="form-control" id="validationCustom03"
-                                                   placeholder="www.finsys.com" onchange="checkweb(this)" name="website"
-                                                   style="background-color: #2f516f;color: white;">
-                                            <div id="warnweb" class="text-danger"></div>
-                                        </div>
-                                        <div class="col-md-4 mt-3">
-                                            <label for="validationCustom01">Mobile</label>
-                                            <input type="text" class="form-control" id="validationCustom01"
-                                                   onchange="checkphone(this)" name="mobile"
-                                                   style="background-color: #2f516f;color: white;">
-                                            <div class="text-danger m-2" id="warnphone"></div>
+                                        <div class="col-md-6 mt-3">
+                                            <label for="validationCustom01"
+                                                   style="color: white;">Type</label>
+                                            <select name="type" class="form-control" 
+                                                      style="background-color: #2a4964; color: white;"
+                                                      required>
+                                                      <option selected disabled value="">Choose...</option>
+                                                    <option value="goods">Goods</option>
+                                                <option value="services">Services</option></select>
                                         </div>
                                     </div>
-                                    <hr>
                                     <div class="row">
-                                        <div class="col-md-6 mt-5">
+                                        <div class="col-md-12">
                                             <div class="row">
-                                                <div class="col-md-12 card-title">
-                                                    <h5 class="mb-0">Billing Address</h5>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="street">Street</label>
-                                                        <textarea class="form-control street" id="streets" name="street"
-                                                                 
-                                                                  style="background-color: #2f516f;color: white;"></textarea>
-                                                        <div class="invalid-feedback">Please provide a valid Street</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="city">City</label>
-                                                        <input type="text" class="form-control" id="citys"
-                                                               name="city"
-                                                              
-                                                               style="background-color: #2f516f;color: white;" placeholder="City">
-                                                        <div class="invalid-feedback">Please provide a valid City</div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="state">State</label>
-                                                        <select type="text" class="form-control" id="states" name="state"
-                                                            required style="background-color: #2f516f; color: white;">
-                                                            <option value="" disabled selected>Choose</option>
-                                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
-                                                            </option>
-                                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
-                                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
-                                                            <option value="Assam">Assam</option>
-                                                            <option value="Bihar">Bihar</option>
-                                                            <option value="Chandigarh">Chandigarh</option>
-                                                            <option value="Chhattisgarh">Chhattisgarh</option>
-                                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
-                                                            <option value="Damn anad Diu">Damn anad Diu</option>
-                                                            <option value="Delhi">Delhi</option>
-                                                            <option value="Goa">Goa</option>
-                                                            <option value="Gujarat">Gujarat</option>
-                                                            <option value="Haryana">Haryana</option>
-                                                            <option value="Himachal Predesh">Himachal Predesh</option>
-                                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                                                            <option value="Jharkhand">Jharkhand</option>
-                                                            <option value="Karnataka">Karnataka</option>
-                                                            <option value="Kerala">Kerala</option>
-                                                            <option value="Ladakh">Ladakh</option>
-                                                            <option value="Lakshadweep">Lakshadweep</option>
-                                                            <option value="Madhya Predesh">Madhya Predesh</option>
-                                                            <option value="Maharashtra">Maharashtra</option>
-                                                            <option value="Manipur">Manipur</option>
-                                                            <option value="Meghalaya">Meghalaya</option>
-                                                            <option value="Mizoram">Mizoram</option>
-                                                            <option value="Nagaland">Nagaland</option>
-                                                            <option value="Odisha">Odisha</option>
-                                                            <option value="Puducherry">Puducherry</option>
-                                                            <option value="Punjab">Punjab</option>
-                                                            <option value="Rajasthan">Rajasthan</option>
-                                                            <option value="Sikkim">Sikkim</option>
-                                                            <option value="Tamil Nadu">Tamil Nadu</option>
-                                                            <option value="Telangana">Telangana</option>
-                                                            <option value="Tripura">Tripura</option>
-                                                            <option value="Uttar Predesh">Uttar Predesh</option>
-                                                            <option value="Uttarakhand">Uttarakhand</option>
-                                                            <option value="West Bengal">West Bengal</option>
-                                                            <option value="Other Territory">Other Territory</option>
-                                                        </select>
-                                                        <div class="invalid-feedback">Please provide a valid State</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="pinco">Pin Code</label>
-                                                        <input type="text" class="form-control" id="pincoss"
-                                                               name="pincode"
-                                                                style="background-color: #2f516f;color: white;"
-                                                               placeholder="PIN code">
-                                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="country">Country</label>
-                                                        <input type="text" class="form-control" id="countrys"
-                                                               name="country"
-                                                                style="background-color: #2f516f;color: white;"
-                                                               placeholder="Country">
-                                                        <div class="invalid-feedback">Please provide a valid Country</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mt-5">
-                                            <div class="row">
-                                                <div class="col-md-12 d-flex">
-                                                    <h5>Shipping Address</h5>
-                                                    <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
-                                                           name="okay">
-                                                    <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
-                                                </div Address>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="shipstreet">Street</label>
-                                                        <textarea class="form-control"  id="shipstreets"
-                                                                  name="shipstreet" 
+                                                <div class="col-md-12 mx-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mt-3">
+                                                            <label for="validationCustom03" style="color: white;">Unit
+                                                                </label>
+                                                            <div class="d-flex">
+                                                                <select class="custom-select" name="unit"
+                                                                        required
+                                                                        style="background-color: #2a4964; color: white;">
+                                                                        <option selected disabled value="">Choose...</option>
+                                                                        {% for a in unit %}
+                                                                        <option style="text-transform:Uppercase;">{{ a.unit_symbol}}-{{ a.name }}</option>
+                                                                        {% endfor %}
+                                                                        <option>BAG-BAGS</option>
+                                                                        <option>BAL-BALE</option>
+                                                                        <option>BDL-BUNDLES</option>
+                                                                        <option>BKL-BUCKLES</option>
+                                                                        <option>BOX-BOX</option>
+                                                                        <option>BOU-BILLIONS OF UNITS</option>
+                                                                        <option>BTL-BOTTLES</option>
+                                                                        <option>BUN-BUNCHES</option>
+                                                                        <option>CAN-CANS</option>
+                                                                        <option>CBM-CUBIC METER</option>
+                                                                        <option>CMS-CENTIMETER</option>
+                                                                        <option>CCM-CUBIC CENTIMETER</option>
+                                                                        <option>CTN-CARTONS</option>
+                                                                        <option>DOZ-DOZEN</option>
+                                                                        <option>DRM-DRUM</option>
+                                                                        <option>GGR-GREAT GROSS</option>
+                                                                        <option>GMS-GRAMS</option>
+                                                                        <option>GRS-GROSS</option>
+                                                                        <option>GYD-GROSS YARDS</option>
+                                                                        <option>KGS-KILOGRAMS</option>
+                                                                        <option>KLR-KILOLITER</option>
+                                                                        <option>KME-KILOMETRE</option>
+                                                                        <option>MTS Metric ton</option>
+                                                                        <option>MLT-MILLILITRE</option>
+                                                                        <option>MTR-METERS</option>
+                                                                        <option>NOS-NUMBER</option>
+                                                                        <option>PAC-PACKS</option>
+                                                                        <option>PCS-PIECES</option>
+                                                                        <option>PRS-PAIRS</option>
+                                                                        <option>QTL-QUINTAL</option>
+                                                                        <option>ROL-ROLLS</option>
+                                                                        <option>SQF-SQUARE FEET</option>
+                                                                        <option>SET-SETS</option>
+                                                                        <option>SQM-SQUARE METERS</option>
+                                                                        <option>SQY-SQUARE YARDS</option>
+                                                                        <option>TBS-TABLETS</option>
+                                                                        <option>TGM-TEN GROSS</option>
+                                                                        <option>THD-THOUSANDS</option>
+                                                                        <option>TON-TONNES</option>
+                                                                        <option>TUB-TUBES</option>
+                                                                        <option>UGS-US GALLONS</option>
+                                                                        <option>UNT-UNITS</option>
+                                                                        <option>YDS-YARDS</option>
+                                        
+                                                                   
+                                                                </select>
+                                                                <a href="{% url 'add_unit' %}">
+                                                                    <button type="button"
+                                                                            class="btn btn-outline-secondary ml-1">+
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mt-3">
+                                                            <label for="validationCustom05" style="color: white;">HSN
+                                                                Code</label>
+                                                        <input type="text" name="hsn" class="form-control" 
+                                                                   style="background-color: #2a4964; color: white;"
                                                                   
-                                                                  style="background-color: #2f516f;color: white;"></textarea>
-                                                        <div class="invalid-feedback">Please provide a valid Street</div>
+                                                                   placeholder="Enter a valid HSN code" required>
+                                                          
+                                                        </div>
+                                                       
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="shipcity">City</label>
-                                                        <input type="text" class="form-control" id="shipcitys"
-                                                               name="shipcity"
-                                                               
-                                                               style="background-color: #2f516f;color: white;" placeholder="City">
-                                                        <div class="invalid-feedback">Please provide a valid City</div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mt-3">
+                                                           
+                                                        </div>
+                                                       
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="shipstate">State</label>
-                                                        <select type="text" class="form-control" id="plosu" name="shipstate"
-                                                                style="background-color: #2f516f; color: white;">
-                                                            <option id="shipsts" selected>Choose</option>
-                                                            <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
-                                                            </option>
-                                                            <option value="Andhra Predhesh">Andhra Predhesh</option>
-                                                            <option value="Arunachal Predesh">Arunachal Predesh</option>
-                                                            <option value="Assam">Assam</option>
-                                                            <option value="Bihar">Bihar</option>
-                                                            <option value="Chandigarh">Chandigarh</option>
-                                                            <option value="Chhattisgarh">Chhattisgarh</option>
-                                                            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
-                                                            <option value="Damn anad Diu">Damn anad Diu</option>
-                                                            <option value="Delhi">Delhi</option>
-                                                            <option value="Goa">Goa</option>
-                                                            <option value="Gujarat">Gujarat</option>
-                                                            <option value="Haryana">Haryana</option>
-                                                            <option value="Himachal Predesh">Himachal Predesh</option>
-                                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                                                            <option value="Jharkhand">Jharkhand</option>
-                                                            <option value="Karnataka">Karnataka</option>
-                                                            <option value="Kerala">Kerala</option>
-                                                            <option value="Ladakh">Ladakh</option>
-                                                            <option value="Lakshadweep">Lakshadweep</option>
-                                                            <option value="Madhya Predesh">Madhya Predesh</option>
-                                                            <option value="Maharashtra">Maharashtra</option>
-                                                            <option value="Manipur">Manipur</option>
-                                                            <option value="Meghalaya">Meghalaya</option>
-                                                            <option value="Mizoram">Mizoram</option>
-                                                            <option value="Nagaland">Nagaland</option>
-                                                            <option value="Odisha">Odisha</option>
-                                                            <option value="Puducherry">Puducherry</option>
-                                                            <option value="Punjab">Punjab</option>
-                                                            <option value="Rajasthan">Rajasthan</option>
-                                                            <option value="Sikkim">Sikkim</option>
-                                                            <option value="Tamil Nadu">Tamil Nadu</option>
-                                                            <option value="Telangana">Telangana</option>
-                                                            <option value="Tripura">Tripura</option>
-                                                            <option value="Uttar Predesh">Uttar Predesh</option>
-                                                            <option value="Uttarakhand">Uttarakhand</option>
-                                                            <option value="West Bengal">West Bengal</option>
-                                                            <option value="Other Territory">Other Territory</option>
-                                                        </select>
-                                                        <div class="invalid-feedback">Please provide a valid State</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="shippinco">Pin Code</label>
-                                                        <input type="text" class="form-control" id="shippincos"
-                                                               name="shippincode"
-                                                               required style="background-color: #2f516f;color: white;"
-                                                               placeholder="PIN code">
-                                                        <div class="invalid-feedback">Please provide a valid Pin Code</div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 mt-3">
-                                                    <div class="form-row">
-                                                        <label for="shipcountry">Country</label>
-                                                        <input type="text" class="form-control" id="shipcountrys"
-                                                               name="shipcountry"
-                                                                style="background-color: #2f516f;color: white;"
-                                                               placeholder="Country">
-                                                        <div class="invalid-feedback">Please provide a valid Country</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required
-                                                       style="background-color: #2f516f;">
-                                                <label>Agree to terms and conditions</label>
-                                                <div class="invalid-feedback">You must agree before submitting.</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                    
                                     <div class="row">
-                                        <div class="col-md-4"></div>
+                                        <div class="col-md-3 mt-3">
+                                            <label for="validationCustom05" name style="color: white;">Tax Reference
+                                                </label>
+                                         
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-check mt-1">
+                                               
+                                                    <input class="form-check-input" name="taxref" type="checkbox" id="inclusive"
+                                                         value="taxable" checked >taxable
+                                                    <label style="color: white;">
+                                                        </label>
+                                              
+                                            </div>
+                                        </div>
+                                        <div class="form-check mt-1">
+                                            <input class="form-check-input" name="taxref" type="checkbox"
+                                                   value="non taxable" 
+                                                   id="check">
+                                            <label style="color: white;">non taxable</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mt-3">
+                                            <label for="validationCustom01"
+                                                   style="color: white;">Purchase Price</label>
+                                                <div class="row">
+                                                   <div >
+                                                   <input type="text" class="form-control" value="INR"
+                                                    style="margin-left:20px;width:60px;background-color: #2a4960; color: white;"></div>
+                                                   <div >
+                                                   <input type="number" name="pcost" class="form-control"
+                                                   id="purprice" style="width:540px;background-color: #2a4964; color: white; width:200%"
+                                                   value="0"
+                                                   >
+                                                   </div>
+                                                </div>
+
+                                        </div>
+                                        <div class="col-md-6 mt-3">
+                                            <label for="validationCustom01"
+                                                   style="color: white;">Sales Price</label>
+                                                   <div class="row">
+                                                    <div >
+                                                        <input type="text" class="form-control" value="INR"
+                                                         style="margin-left:20px;width:60px;background-color: #2a4960; color: white;"></div>
+                                                        <div >
+                                                    <div >
+                                                   <input type="text" name="salesprice" class="form-control"
+                                                   id="saleprice" style="width:540px;background-color: #2a4964; color: white; width:200%"
+                                                   value="0"
+                                                   >
+                                                    </div>
+                                                </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mx-0">
+                                        <div class="row">
+                                            <div class="col-md-6 mt-3">
+                                                <label for="validationCustom01"
+                                                       style="color: white;">Account</label>
+                                                       <select name="pur_account" class="form-control" 
+                                                       style="background-color: #2a4964; color: white;"
+                                                       id="validationCustom01" >
+                                                       <option >Cost of Goods Sold</option>
+                                                       {% for a in acc %}
+                                                       <option value="goods">{{ a.name }}</option>
+                                                       {% endfor %}</select>
+                                            </div>
+                                            <div class="col-md-6 mt-3">
+                                                <label for="validationCustom01"
+                                                       style="color: white;">Account</label>
+                                                <select name="sale_account" class="form-control" 
+                                                          style="background-color: #2a4964; color: white;"
+                                                          id="validationCustom01" >
+                                                          <option >Sales</option>
+                                                       {% for a in acc1 %}
+                                                       <option value="goods">{{ a.name }}</option>
+                                                       {% endfor %}</select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mx-0">
+                                                <div class="row">
+                                                    <div class="col-md-6 mt-3">
+                                                        <label for="validationCustom01"
+                                                               style="color: white;">Description</label>
+                                                               <textarea class="form-control" name="pur_desc"
+                                                               id="validationCustom01" 
+                                                               style="background-color: #2a4964; color: white;"
+                                                               ></textarea>  
+                                                    </div>
+                                                    <div class="col-md-6 mt-3">
+                                                        <label for="validationCustom01"
+                                                               style="color: white;">Description</label>
+                                                               <textarea class="form-control" name="sale_desc"
+                                                               id="validationCustom01"
+                                                               style="background-color: #2a4964; color: white;"
+                                                               ></textarea>
+                                                    </div>
+                                                </div>
+                                    <!--<div class="row">
+                                        
+                                        <div class="col-md-12 mt-3"><center>
+                                            <label 
+                                                   style="color: white;">Tax rate</label><br>
+                                            <select  name="tax"
+                                                    id="tax" required class="form-control"
+                                                    style=" width:60%;background-color: #2a4964; color: white;">
+                                                <option selected disabled value=0>Choose...</option>
+                                                <option value="28.0% GST ">28.0% GST (28%)</option>
+                                                <option value="28.0% IGST ">28.0% IGST (28%)</option>
+                                                <option value="18.0% GST">18.0% GST (18%)</option>
+                                                <option value="18.0% IGST">18.0% IGST (18%)</option>
+                                                <option value="15.0% ST">15.0% ST (100%)</option>
+                                                <option value="14.5% ST">14.5% ST (100%)</option>
+                                                <option value="14.00% ST">14.00% ST (100%)</option>
+                                                <option value="14.0% VAT">14.0% VAT (100%)</option>
+                                                <option value="12.36% ST">12.36% ST (100%)</option>
+                                                <option value="12.0% GST">12.0% GST (12%)</option>
+                                                <option value="12.0% IGST">12.0% IGST (12%)</option>
+                                                <option value="6.0% GST">6.0% GST (6%)</option>
+                                                <option value="6.0% IGST">6.0% IGST (6%)</option>
+                                                <option value="5.0% GST">5.0% GST (5%)</option>
+                                                <option value="5.0% GST">5.0% IGST (5%)</option>
+                                                <option value="5.0% VAT">5.0% VAT (100%)</option>
+                                                <option value="4.0% VAT">4.0% VAT (100%)</option>
+                                                <option value="3.0% GST">3.0% GST (3%)</option>
+                                                <option value="3.0% IGST">3.0% IGST (3%)</option>
+                                                <option value="2.0% CST">2.0% CST (100%)</option>
+                                                <option value="0.25% GST">0.25% GST (0.25%)</option>
+                                                <option value="0.25%">0.25% IGST (0.25%)</option>
+                                                <option value="0% GST">0% GST (0%)</option>
+                                                <option value="0% IGST">0% IGST (0%)</option>
+                                                <option value="Exempt GST">Exempt GST (0%)</option>
+                                                <option value="Exempt IGST">Exempt IGST (0%)</option>
+                                                <option value="Out of Scope">Out of Scope(0%)</option>
+                                            </select></center>
+                                        </div>
+                                    </div>-->
+                                    
+                                    <div class="row">
+                                        <div class="col-md-12 mx-0">
+                                            <div class="row">
+                                                <div class="col-md-6 mt-3">
+                                                    <label for="validationCustom01"
+                                                           style="color: white;">Intra State Tax Rate</label>
+                                                           <select name="intra_st" class="form-control" 
+                                                           style="background-color: #2a4964; color: white;"
+                                                           id="validationCustom01" >
+                                                           <option >Choose...</option>
+                                                           <option value=0>GST 0 (0%)</option>
+                                                           <option value=5>GST 5 (5%)</option>
+                                                           <option value=12>GST 12 (12%)</option>
+                                                           <option value=18>GST 18 (18%)</option>
+                                                           <option value=28>GST 28 (28%)</option>
+                                                           <option value=0>Out of Scope(0%)</option>
+                                                </select>
+                                                </div>
+                                            
+                                                <div class="col-md-6 mt-3">
+                                                    <label for="validationCustom01"
+                                                           style="color: white;">Inter State Tax Rate</label>
+                                                    <select name="inter_st" class="form-control" 
+                                                              style="background-color: #2a4964; color: white;"
+                                                              id="validationCustom01" >
+                                                              <option >Choose...</option>
+                                                              <option value=0>IGST 0 (0%)</option>
+                                                           <option value=5>IGST 5 (5%)</option>
+                                                           <option value=12>IGST 12 (12%)</option>
+                                                           <option value=18>IGST 18 (18%)</option>
+                                                           <option value=28>IGST 28 (28%)</option>
+                                                           <option value=0>Out of Scope(0%)</option>
+                                                </select>
+                                                </div>
+                                            </div><br>
+                                            <div class="row" >
+                                               
+                                               
+                                  
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" onclick="ShowHideDiv(this)" type="checkbox"  id="track">
+                                                        <label class="form-check-label" for="track" >
+                                                          Track Inventory
+                                                        </label>
+                                                      </div>
+                                                     
+                                                </div>
+                                            
+                                            </div>
+
+                                            <div class="row" id="inventorytrack" style="display: none">
+                                                <div class="col-md-6 mt-3">
+                                                    <label for="validationCustom01"
+                                                           style="color: white;">Inventory Account</label>
+                                                           <select name="invacc" class="form-control" 
+                                                              style="background-color: #2a4964; color: white;"
+                                                              >
+                                                           <option selected disabled value="" >Choose...</option>
+                                                           <option value="Inventory Assets">Inventory Assets</option>
+                                                       
+                                                </select>
+                                                </div>
+                                                <div class="col-md-6 mt-3">
+                                                    <label for="validationCustom01"
+                                                           style="color: white;">Stock on hand</label>
+                                                           <input type="number" name="stock" class="form-control"
+                                                           style="width:540px;background-color: #2a4964; color: white;"
+                                                           value="0"
+                                                           >
+                                                </div>
+                                            </div>
+                                           
+
+                                        
+                           
+                                            <div class="row">
+                                                <div class="col-md-6 mt-3">
+                                                   
+                                                </div>
+                                               
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3 mt-3">
+                                                    <label for="validationCustom05" name style="color: white;">Active/Inactive
+                                                        </label>
+                                                 
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" value="Active" type="radio" name="status" id="flexRadioDefault1" checked>
+                                                        <label class="form-check-label" for="flexRadioDefault1">
+                                                          Active
+                                                        </label>
+                                                      </div>
+                                                     
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" value="Inactive" type="radio" name="status" id="flexRadioDefault2" >
+                                                    <label class="form-check-label" for="flexRadioDefault2">
+                                                      Inactive
+                                                    </label>
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                   
+                                    <div class="row mt-5 mb-5">
                                         <div class="col-md-4">
-                                            <button class="btn btn-outline-info rounded-pill text-grey w-100 mt-3 mb-3"
-                                                    type="submit">
-                                                Submit form
+                                            <a href="{% url 'goitem' %}"class="btn btn-outline-info rounded-pill w-25 text-light"
+                                            >
+                                            BACK
+                                         </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-outline-info rounded-pill w-100 text-light"
+                                                    type="submit">SUBMIT
                                             </button>
                                         </div>
                                         <div class="col-md-4"></div>
                                     </div>
-                                
-                            </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>  
+                </form>
+              </div>
+          </div>
+      </div>
+  </div> 
+</div> 
 
-    </div>
+    
+    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
@@ -1746,10 +2155,10 @@
 
     <script>
         function hidinput(divId, element) {
-            if (element.value == 'unregistered Business' || element.value == 'Consumer' || element.value == 'Overseas') {
-                document.getElementById(divId).style.display = 'none';
-            } else {
+            if (element.value == 'GST-registered-Regular') {
                 document.getElementById(divId).style.display = 'block';
+            } else {
+                document.getElementById(divId).style.display = 'none';
             }
         }
 
