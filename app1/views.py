@@ -14004,6 +14004,9 @@ def balancesheet2(request):
         return render(request,'app1/balancesheet1.html',context)
     return redirect('/') 
 
+
+
+
 def bsreport(request,id):
     if 'uid' in request.session:
         if request.session.has_key('uid'):
@@ -14017,8 +14020,12 @@ def bsreport(request,id):
         to=toda.strftime("%d-%m-%Y")
 
         acc = balance_sheet.objects.filter(account=id,cid=cmp1)
-        accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
-        ids=accs.id
+        try:
+            accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
+            ids=accs.id
+        except:
+            ids=1
+            pass
         
        
         debit=0
@@ -14051,6 +14058,9 @@ def bsreport(request,id):
         context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"keys":ids,"fromdate":fromdates, "todate":todates}
         return render(request, 'app1/bsreport.html', context)
     return redirect('/')  
+
+
+
 
 def profitandloss(request):
     if 'uid' in request.session:
@@ -14311,8 +14321,6 @@ def bsreport_flt(request,id):
         return render(request, 'app1/bsreport.html', context)
     return redirect('/') 
 
-
-
 def plreport(request,id):
    
     if 'uid' in request.session:
@@ -14328,8 +14336,12 @@ def plreport(request,id):
         to=toda.strftime("%d-%m-%Y")
         
         acc = profit_loss.objects.filter(accname=id,cid=cmp1)
-        accs = profit_loss.objects.filter(accname=id,cid=cmp1).last()
-        ids=accs.id
+        try:
+            accs = profit_loss.objects.filter(accname=id,cid=cmp1).last()
+            ids=accs.id
+        except:
+            ids=1
+            pass
        
 
         debit=0
@@ -29712,17 +29724,20 @@ def account_transactions(request,id):
     total1=debit-credit          
 
     bal=custobject.opening_balance
-    for i in statment:
-        if i.Transactions =="Invoice":
-            
-            i.Balance = bal + i.Amount
-            bal = i.Balance
-        if i.Transactions =="Payment Received":
-            
-            i.Balance = bal-i.Payments
-            
+    try:
+        for i in statment:
+            if i.Transactions =="Invoice":
+                
+                i.Balance = bal + i.Amount
+                bal = i.Balance
+            if i.Transactions =="Payment Received":
+                
+                i.Balance = bal-i.Payments
+                
 
-        i.save() 
+            i.save() 
+    except:
+        pass
     print(bal)
 
     fdate =""
@@ -31418,9 +31433,12 @@ def streport(request,id):
         to=toda.strftime("%d-%m-%Y")
 
         acc = itemstock.objects.filter(items=id,cid=cmp1)
-
-        accs = itemstock.objects.filter(items=id,cid=cmp1).last()
-        ids=accs.id
+        try:
+            accs = itemstock.objects.filter(items=id,cid=cmp1).last()
+            ids=accs.id
+        except:
+            ids=1
+            pass
 
         debit=0
         credit=0
@@ -31580,10 +31598,13 @@ def stkvalreport(request,id):
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
 
-        accs = itemstock.objects.filter(items=id,cid=cmp1).last()
-        print("accs.id")
-        print(accs.id)
-        ids=accs.id
+        try:
+            accs = itemstock.objects.filter(items=id,cid=cmp1).last()
+        
+            ids=accs.id
+        except:
+            ids=1
+            pass
 
         acc = itemstock.objects.filter(items=id,stocks='Stock Changed',cid=cmp1)
 
@@ -33242,7 +33263,9 @@ def gopurchaseorder(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        pordr = purchaseorder.objects.all()
+        
+        pordr = purchaseorder.objects.filter(cid=cmp1).all()
+        print(pordr)
         return render(request,'app1/gopurchaseorder.html',{'cmp1': cmp1,'pordr':pordr})
     return redirect('gopurchaseorder')
 
@@ -33315,7 +33338,7 @@ def createpurchaseorder(request):
                                     date=date,deliver_date=deliver_dt,
                                     credit_period=credit_period,due_date=due_date,sub_total=sub_total,discount=discount,sgst=sgst,
                                     cgst=cgst,igst=igst,tax_amount=tax_amount,tcs=tcs,tcs_amount=tcs_amount,round_off=round_off,
-                                    grand_total=grand_total,balance_due=balance_due,note=note)
+                                    grand_total=grand_total,balance_due=balance_due,note=note,cid=cmp1)
 
             if len(request.FILES) != 0:
                 porder.file=request.FILES['file'] 
@@ -34316,12 +34339,12 @@ def billconvert(request,id):
 
 def bill_draft(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    pbill = purchasebill.objects.filter(status='Draft').all()
+    pbill = purchasebill.objects.filter(status='Draft',cid=cmp1).all()
     return render(request,'app1/gobilling.html',{'cmp1':cmp1,'pbill':pbill})
 
 def bill_billed(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    pbill = purchasebill.objects.filter(status='Billed').all()
+    pbill = purchasebill.objects.filter(status='Billed',cid=cmp1).all()
     return render(request,'app1/gobilling.html',{'cmp1':cmp1,'pbill':pbill})
 
 def getdata2(request):
@@ -36291,10 +36314,11 @@ def tbreport(request,id):
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
-
-        accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
-        ids=accs.id
-
+        try:
+            accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
+            ids=accs.id
+        except:
+            ids=1
         bs = balance_sheet.objects.filter(account=id,cid=cmp1)
         pl = profit_loss.objects.filter(accname=id,cid=cmp1)
 
@@ -36730,7 +36754,7 @@ def start_reconcile(request,pk):
 #credit note
 def credit_note(request):
     cmp1 = company.objects.get(id=request.session['uid'])
-    pdebit = salescreditnote.objects.all()  
+    pdebit = salescreditnote.objects.filter(cid=cmp1)  
 
     return render(request,'app1/credit_note.html',{'cmp1': cmp1,'pdebit':pdebit})
 
@@ -36758,8 +36782,8 @@ def getcustdata(request):
         id = request.GET.get('id')
         print(id)
         # import pdb; pdb.set_trace()
-        invdata = invoice.objects.get(customername=id, cid_id=cmp1)
-        print(invdata.invoiceno)
+        invdata = invoice.objects.filter(customername=id, cid_id=cmp1).last()
+        
         context={'invdata':invdata}
         
         x = id.split()
