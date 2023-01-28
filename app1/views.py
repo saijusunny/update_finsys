@@ -14020,12 +14020,7 @@ def bsreport(request,id):
         to=toda.strftime("%d-%m-%Y")
 
         acc = balance_sheet.objects.filter(account=id,cid=cmp1)
-        try:
-            accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
-            ids=accs.id
-        except:
-            ids=1
-            pass
+        
         
        
         debit=0
@@ -14055,7 +14050,7 @@ def bsreport(request,id):
         todates=date.today()
 
         total2 = credit-debit
-        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"keys":ids,"fromdate":fromdates, "todate":todates}
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"keys":id,"fromdate":fromdates, "todate":todates}
         return render(request, 'app1/bsreport.html', context)
     return redirect('/')  
 
@@ -14269,19 +14264,17 @@ def bsreport_flt(request,id):
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
-        accs = balance_sheet.objects.get(id=id,cid=cmp1)
-        print("id")
-        print(accs.account)
+        
         filmeth = request.POST['reportperiod']
-        print(filmeth)
+       
         if filmeth == 'Custom':
             fromdate = request.POST['fdate']
             todate = request.POST['ldate']
-            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+            acc = balance_sheet.objects.filter(account=id,cid=cmp1,date__gte=fromdate, date__lte=todate,)
         else:
             fromdate = request.user.date_joined.date()
             todate = date.today()
-            acc = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
+            acc = balance_sheet.objects.filter(account=id,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
 
         
         
@@ -14336,12 +14329,7 @@ def plreport(request,id):
         to=toda.strftime("%d-%m-%Y")
         
         acc = profit_loss.objects.filter(accname=id,cid=cmp1)
-        try:
-            accs = profit_loss.objects.filter(accname=id,cid=cmp1).last()
-            ids=accs.id
-        except:
-            ids=1
-            pass
+        
        
 
         debit=0
@@ -14368,7 +14356,7 @@ def plreport(request,id):
         todates=date.today()
 
         total2 = credit-debit
-        context = {'acc':acc,"keys":ids, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates,"todate":todates}
+        context = {'acc':acc,"keys":id, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates,"todate":todates}
         return render(request, 'app1/plreport.html', context)
     return redirect('/')  
 
@@ -14380,18 +14368,18 @@ def plreport_flt(request,id):
         else:
             return redirect('/')
         
-        accs = profit_loss.objects.get(id=id)
+       
         cmp1 = company.objects.get(id=request.session['uid'])
         filmeth = request.POST['reportperiod']
-        print(filmeth)
+      
         if filmeth == 'Custom':
             fromdate = request.POST['fdate']
             todate = request.POST['ldate']
-            acc = profit_loss.objects.filter(accname=accs.accname,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+            acc = profit_loss.objects.filter(accname=id,cid=cmp1,date__gte=fromdate, date__lte=todate,)
         else:
             fromdate = request.user.date_joined.date()
             todate = date.today()
-            acc = profit_loss.objects.filter(accname=accs.accname,cid=cmp1,date__gte=fromdate, date__lte=todate,)   
+            acc = profit_loss.objects.filter(accname=id,cid=cmp1,date__gte=fromdate, date__lte=todate,)   
            
         
         
@@ -14436,7 +14424,7 @@ def plreport_flt(request,id):
         
 
         total2 = credit-debit
-        context = {'acc':acc, 'cmp1':cmp1,"keys":accs.id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates, "todate":todates,}
+        context = {'acc':acc, 'cmp1':cmp1,"keys":id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2,"fromdate":fromdates, "todate":todates,}
         return render(request, 'app1/plreport.html', context)
     return redirect('/')  
 
@@ -31433,12 +31421,7 @@ def streport(request,id):
         to=toda.strftime("%d-%m-%Y")
 
         acc = itemstock.objects.filter(items=id,cid=cmp1)
-        try:
-            accs = itemstock.objects.filter(items=id,cid=cmp1).last()
-            ids=accs.id
-        except:
-            ids=1
-            pass
+        
 
         debit=0
         credit=0
@@ -31462,7 +31445,7 @@ def streport(request,id):
 
         fromdates=request.user.date_joined.date()
         todates=date.today()
-        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":ids,"fromdate":fromdates, "todate":todates}
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":id,"fromdate":fromdates, "todate":todates}
         return render(request, 'app1/streport.html', context)
     return redirect('/')  
 
@@ -31489,8 +31472,8 @@ def streport_flt(request,id):
             fromdate = request.user.date_joined.date()
             todate = date.today()
            
-        accs = itemstock.objects.get(id=id,cid=cmp1)
-        acc = itemstock.objects.filter(items=accs.items,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+      
+        acc = itemstock.objects.filter(items=id,cid=cmp1,date__gte=fromdate, date__lte=todate,)
 
      
 
@@ -31598,13 +31581,7 @@ def stkvalreport(request,id):
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
 
-        try:
-            accs = itemstock.objects.filter(items=id,cid=cmp1).last()
         
-            ids=accs.id
-        except:
-            ids=1
-            pass
 
         acc = itemstock.objects.filter(items=id,stocks='Stock Changed',cid=cmp1)
 
@@ -31628,7 +31605,7 @@ def stkvalreport(request,id):
         todates=date.today()
 
 
-        context = {'acc':acc, 'cmp1':cmp1, 'itm2':id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":ids,"fromdate":fromdates, "todate":todates}
+        context = {'acc':acc, 'cmp1':cmp1, 'itm2':id, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total':total,"keys":id,"fromdate":fromdates, "todate":todates}
         return render(request, 'app1/stkvalreport.html', context)
     return redirect('/') 
 
@@ -31657,10 +31634,10 @@ def stkvalreport_flt(request,id):
             todate = date.today()
               
 
-        accs = itemstock.objects.get(id=id,cid=cmp1)
+        
         
 
-        acc = itemstock.objects.filter(items=accs.items,stocks='Stock Changed',cid=cmp1,date__gte=fromdate, date__lte=todate)
+        acc = itemstock.objects.filter(items=id,stocks='Stock Changed',cid=cmp1,date__gte=fromdate, date__lte=todate)
 
         debit=0
         credit=0
@@ -36314,19 +36291,19 @@ def tbreport(request,id):
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
-        try:
-            accs = balance_sheet.objects.filter(account=id,cid=cmp1).last()
-            ids=accs.id
-        except:
-            ids=1
+        
+       
+        
+     
         bs = balance_sheet.objects.filter(account=id,cid=cmp1)
         pl = profit_loss.objects.filter(accname=id,cid=cmp1)
-
+        
         debit=0
         credit=0
         total =0
-
+        
         for i in bs:
+            
             if i.transactions =="Billed":
                 debit+=i.payments
 
@@ -36338,35 +36315,33 @@ def tbreport(request,id):
 
             if i.transactions =="Invoice":
                 debit+=i.payments
-
-        total = credit-debit
-
-        debit1=0
-        credit1=0
-        total1 =0
+            
+    
+        
         for i in pl:
             if i.transactions =="Billed":
-                debit1+=i.payments
+                debit+=i.payments
 
             if i.transactions =="Vendor Credits":
-                credit1+=i.payments
+                credit+=i.payments
 
             if i.transactions =="Expense":
-                debit1+=i.payments
+                debit+=i.payments
 
             if i.transactions =="Invoice":
-                debit1+=i.payments
+                debit+=i.payments
+            
 
         fdate =""
         ldate =""
 
-        total1 = credit1-debit1
+        total = credit-debit
 
         fromdates=request.user.date_joined.date()
         todates=date.today()
-
+       
         context = {'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'bs':bs, 'debit':debit, 'credit':credit, 'total':total,
-            'pl':pl, 'debit1':debit1, 'credit1':credit1, 'total1':total1,"fromdate":fromdates, "todate":todates,"keys":ids
+            'pl':pl, "fromdate":fromdates, "todate":todates,"keys":id
         }
         return render(request,'app1/tbreport.html',context)
     return redirect('/') 
@@ -36383,8 +36358,6 @@ def tbreport_flt(request,id):
         tod = toda.strftime("%Y-%m-%d")
         to=toda.strftime("%d-%m-%Y")
 
-        accs = balance_sheet.objects.get(id=id,cid=cmp1)
-
         
 
         filmeth = request.POST['reportperiod']
@@ -36392,13 +36365,13 @@ def tbreport_flt(request,id):
         if filmeth == 'Custom':
             fromdate = request.POST['fdate']
             todate = request.POST['ldate']
-            bs = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
-            pl = profit_loss.objects.filter(accname=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+            bs = balance_sheet.objects.filter(account=id,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+            pl = profit_loss.objects.filter(accname=id,cid=cmp1,date__gte=fromdate, date__lte=todate,)
         else:
             fromdate = request.user.date_joined.date()
             todate = date.today()
-            bs = balance_sheet.objects.filter(account=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,)
-            pl = profit_loss.objects.filter(accname=accs.account,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
+            bs = balance_sheet.objects.filter(account=id,cid=cmp1,date__gte=fromdate, date__lte=todate,)
+            pl = profit_loss.objects.filter(accname=id,cid=cmp1,date__gte=fromdate, date__lte=todate,) 
         debit=0
         credit=0
         total =0
@@ -36416,28 +36389,26 @@ def tbreport_flt(request,id):
             if i.transactions =="Invoice":
                 debit+=i.payments
 
-        total = credit-debit
+        
 
-        debit1=0
-        credit1=0
-        total1 =0
+        
         for i in pl:
             if i.transactions =="Billed":
-                debit1+=i.payments
+                debit+=i.payments
 
             if i.transactions =="Vendor Credits":
-                credit1+=i.payments
+                credit+=i.payments
 
             if i.transactions =="Expense":
-                debit1+=i.payments
+                debit+=i.payments
 
             if i.transactions =="Invoice":
-                debit1+=i.payments
+                debit+=i.payments
 
         fdate =""
         ldate =""
-
-        total1 = credit1-debit1
+        
+        total = credit-debit
 
         try:
             fromdates=datetime.datetime.strptime(fromdate, "%Y-%m-%d").date()
@@ -36447,7 +36418,7 @@ def tbreport_flt(request,id):
             todates=date.today()
 
         context = {'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'bs':bs, 'debit':debit, 'credit':credit, 'total':total,
-            'pl':pl, 'debit1':debit1, 'credit1':credit1, 'total1':total1,"keys":id,"fromdate":fromdates, "todate":todates
+            'pl':pl,"keys":id,"fromdate":fromdates, "todate":todates
         }
         return render(request,'app1/tbreport.html',context)
     return redirect('/') 
