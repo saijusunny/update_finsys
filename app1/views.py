@@ -36736,9 +36736,9 @@ def addpurchasecredit(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        vndr = customer.objects.all()  
+        vndr = customer.objects.filter(cid=cmp1)  
         pbill = purchasebill.objects.all()  
-        item = itemtable.objects.all() 
+        item = itemtable.objects.filter(cid=cmp1) 
         context = {'cmp1': cmp1,'vndr':vndr,'item':item,'pbill':pbill} 
         return render(request,'app1/add_credit_note.html',context)
     return redirect('credit_note') 
