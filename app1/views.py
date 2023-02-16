@@ -13874,8 +13874,16 @@ def balancesheet2(request):
             fromdate = request.POST['fper']
             todate = request.POST['tper']
         elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+            input_dt = date.today()
+            day_num = input_dt.strftime("%d")
+            res = input_dt - timedelta(days=int(day_num) - 1)
+            fromdate = str(res)
+
+            any_day=date.today()
+            next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            d = next_month - datetime.timedelta(days=next_month.day)
+
+            todate = str(d)
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
@@ -14171,8 +14179,16 @@ def profitandloss1(request):
 
             acc = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+            input_dt = date.today()
+            day_num = input_dt.strftime("%d")
+            res = input_dt - timedelta(days=int(day_num) - 1)
+            fromdate = str(res)
+
+            any_day=date.today()
+            next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            d = next_month - datetime.timedelta(days=next_month.day)
+
+            todate = str(d)
 
             pbl = profit_loss.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,accname='Cost of Goods Sold').values(
                 'accname').annotate(t1=Sum('payments'))
@@ -16162,8 +16178,16 @@ def accpayables1(request):
             fromdate = request.POST['fper']
             todate = request.POST['tper']
         elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+            input_dt = date.today()
+            day_num = input_dt.strftime("%d")
+            res = input_dt - timedelta(days=int(day_num) - 1)
+            fromdate = str(res)
+
+            any_day=date.today()
+            next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            d = next_month - datetime.timedelta(days=next_month.day)
+
+            todate = str(d)
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
@@ -31380,8 +31404,17 @@ def stocksummary1(request):
             fromdate = request.POST['fper']
             todate = request.POST['tper']
         elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+
+            input_dt = date.today()
+            day_num = input_dt.strftime("%d")
+            res = input_dt - timedelta(days=int(day_num) - 1)
+            fromdate = str(res)
+
+            any_day=date.today()
+            next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            d = next_month - datetime.timedelta(days=next_month.day)
+
+            todate = str(d)
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
@@ -31394,6 +31427,8 @@ def stocksummary1(request):
         else:
             fromdate = request.user.date_joined.date()
             todate = date.today()
+
+        
 
         item = itemtable.objects.filter(itmdate__gte=fromdate, itmdate__lte=todate)
 
@@ -31536,8 +31571,16 @@ def stockvaluation1(request):
             fromdate = request.POST['fper']
             todate = request.POST['tper']
         elif filmeth == 'This Month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+            input_dt = date.today()
+            day_num = input_dt.strftime("%d")
+            res = input_dt - timedelta(days=int(day_num) - 1)
+            fromdate = str(res)
+
+            any_day=date.today()
+            next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            d = next_month - datetime.timedelta(days=next_month.day)
+
+            todate = str(d)
         elif filmeth == 'This Financial Year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
@@ -31817,6 +31860,9 @@ def gstr3b(request):
         tax2 = balance_sheet.objects.filter(cid=cmp1,account='Output CGST',payments='0')
         tax3 = balance_sheet.objects.filter(cid=cmp1,account='Output IGST',payments='0')
 
+        igst_sum=purchasebill.objects.filter(cid=cmp1,status="Billed").aggregate(Sum('igst')).get('igst__sum',0.00)
+        
+
         t0 = 0
         total = 0
         total2 = 0
@@ -31970,7 +32016,7 @@ def gstr3b(request):
             'cgst':cgst, 'sgst':sgst, 'igst':igst, 'tds':tds,
             'cgst1':cgst1, 'sgst1':sgst1, 'igst1':igst1, 'tds1':tds1,
             'cgst2':cgst2, 'sgst2':sgst2, 'igst2':igst2, 'tds2':tds2,
-            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1,"fromdate":fromdates,"todate":todates
+            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1,"fromdate":fromdates,"todate":todates,"igst_sum":igst_sum
         }
         return render(request,'app1/gstr3b.html',context)
     return redirect('gopurchaseorder')
@@ -31994,8 +32040,16 @@ def gstr3b1(request):
             fromdate = request.POST['fdate']
             todate = request.POST['ldate']
         elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+            input_dt = date.today()
+            day_num = input_dt.strftime("%d")
+            res = input_dt - timedelta(days=int(day_num) - 1)
+            fromdate = str(res)
+
+            any_day=date.today()
+            next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            d = next_month - datetime.timedelta(days=next_month.day)
+
+            todate = str(d)
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
@@ -32008,12 +32062,16 @@ def gstr3b1(request):
         else:
             fromdate = request.user.date_joined.date()
             todate = date.today()
+        
+    
 
         tax = balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate)
         tax1 = balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,
             account='Account Receivable(Debtors)',transactions='Invoice')
         tax2 = balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,account='Output CGST',payments='0')
         tax3 = balance_sheet.objects.filter(cid=cmp1,date__gte=fromdate, date__lte=todate,account='Output IGST',payments='0')
+
+        igst_sum=purchasebill.objects.filter(cid=cmp1,status="Billed",date__gte=fromdate, date__lte=todate).aggregate(Sum('igst')).get('igst__sum',0.00)
 
         t0 = 0
         total = 0
@@ -32173,7 +32231,7 @@ def gstr3b1(request):
             'cgst':cgst, 'sgst':sgst, 'igst':igst, 'tds':tds,
             'cgst1':cgst1, 'sgst1':sgst1, 'igst1':igst1, 'tds1':tds1,
             'cgst2':cgst2, 'sgst2':sgst2, 'igst2':igst2, 'tds2':tds2,
-            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1,"fromdate":fromdates,"todate":todates
+            'tax1':tax1, 'tax2':tax2, 'tax3':tax3, 'tax4':tax4,'cmp1': cmp1,"fromdate":fromdates,"todate":todates,"igst_sum":igst_sum
         }
         return render(request,'app1/gstr3b.html',context)
     return redirect('gopurchaseorder')
@@ -36170,8 +36228,16 @@ def trial_balance1(request):
             fromdate = request.POST['fper']
             todate = request.POST['tper']
         elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+            input_dt = date.today()
+            day_num = input_dt.strftime("%d")
+            res = input_dt - timedelta(days=int(day_num) - 1)
+            fromdate = str(res)
+
+            any_day=date.today()
+            next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            d = next_month - datetime.timedelta(days=next_month.day)
+
+            todate = str(d)
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1

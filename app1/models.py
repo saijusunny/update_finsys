@@ -1657,3 +1657,16 @@ class salescreditnote1(models.Model):
 class Otp_password(models.Model):
     user_ckeck = models.ForeignKey(User,blank=True,null=True, on_delete=models.CASCADE)
     otp_psw=models.IntegerField()
+
+
+
+            # input_dt = date.today()
+            # day_num = input_dt.strftime("%d")
+            # res = input_dt - timedelta(days=int(day_num) - 1)
+            # fromdate = str(res)
+
+            # any_day=date.today()
+            # next_month = any_day.replace(day=28) + datetime.timedelta(days=4)
+            # d = next_month - datetime.timedelta(days=next_month.day)
+
+            # todate = str(d)

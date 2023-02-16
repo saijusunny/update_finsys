@@ -200,8 +200,8 @@
                             <tr>
                                 <td>ITC Available</td>
                                 <td style="text-align: center;">
-                                    {% if igst2 %}
-                                        ₹{{ igst2 }}.00
+                                    {% if igst_sum %}
+                                        ₹{{ igst_sum }}.00
                                     {% else %}
                                         ₹0.00
                                     {% endif %}
@@ -230,7 +230,13 @@
                             </tr>
                             <tr>
                                 <td><b>Total Value</b></td>
-                                <td style="text-align: center;"><b>₹{{ igst2 }}.00</b></td>
+                                <td style="text-align: center;"><b>
+                                    {% if igst_sum %}
+                                        ₹{{ igst_sum }}.00
+                                    {% else %}
+                                        ₹0.00
+                                    {% endif %}
+                                    </b></td>
                                 <td style="text-align: center;"><b>₹{{ cgst2 }}.00</b></td>
                                 <td style="text-align: center;"><b>₹{{ sgst2 }}.00</b></td>
                                 <td style="text-align: center;"><b>₹{{ tds2 }}.00</b></td>    
